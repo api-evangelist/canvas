@@ -3,9 +3,9 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/canvas/refs/heads/main/apis.yml
 name: Canvas
 tags:
+  - Education
   - Learning Management System
   - LMS
-  - Education
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
@@ -21,8 +21,8 @@ apis:
   - aid: canvas:canvas
     name: Canvas LMS API
     tags:
-      - LMS
       - Education
+      - LMS
     humanURL: https://canvas.instructure.com
     properties:
       - url: https://canvas.instructure.com/doc/api/
