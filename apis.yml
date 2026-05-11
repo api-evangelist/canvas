@@ -140,6 +140,13 @@ common:
     url: https://www.instructure.com/policies/privacy
   - type: Terms of Service
     url: https://www.instructure.com/policies/product-acceptable-use
+  - type: Integrations
+    url: https://www.instructure.com/partners
+integrations:
+  - name: Become a partner
+  - name: Scale with us
+  - name: Expand your reach
+  - name: Make an impact
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
