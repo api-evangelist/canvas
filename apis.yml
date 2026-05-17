@@ -11,7 +11,7 @@ description: >-
   enrollments, content, and account administration, and it integrates
   with external tools through LTI, Caliper, and live event streams.
 type: Index
-x-type: company
+kind: company
 position: Consumer
 access: 3rd-Party
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
@@ -49,7 +49,7 @@ apis:
         url: https://canvas.instructure.com/doc/api/file.oauth.html
       - type: Pagination
         url: https://canvas.instructure.com/doc/api/file.pagination.html
-      - type: GitHub Repository
+      - type: GitHubRepository
         url: https://github.com/instructure/canvas-lms
     x-features:
       - OAuth 2.0 authentication with access tokens
@@ -128,17 +128,17 @@ common:
     url: https://www.instructure.com/canvas
   - type: Documentation
     url: https://canvas.instructure.com/doc/api/
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/instructure
-  - type: GitHub Repository
+  - type: GitHubRepository
     url: https://github.com/instructure/canvas-lms
-  - type: Status
+  - type: StatusPage
     url: https://status.instructure.com/
   - type: Community
     url: https://community.canvaslms.com/
-  - type: Privacy Policy
+  - type: PrivacyPolicy
     url: https://www.instructure.com/policies/privacy
-  - type: Terms of Service
+  - type: TermsOfService
     url: https://www.instructure.com/policies/product-acceptable-use
   - type: Integrations
     url: https://www.instructure.com/partners
