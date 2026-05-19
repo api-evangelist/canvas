@@ -124,6 +124,8 @@ apis:
       - Passing grades from external graders back to Canvas
       - Provisioning course rosters into external tools
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/showcase/canvaslms
   - type: Website
     url: https://www.instructure.com/canvas
   - type: Documentation
