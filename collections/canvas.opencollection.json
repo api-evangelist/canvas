@@ -1,0 +1,648 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Canvas LMS REST API (Courses subset)",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Courses",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List your courses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses",
+            "params": [
+              {
+                "name": "enrollment_type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "enrollment_state",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List your courses"
+        },
+        {
+          "info": {
+            "name": "List courses for a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/users/:user_id/courses",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List courses for a user"
+        },
+        {
+          "info": {
+            "name": "Get user progress in a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/users/:user_id/progress",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get user progress in a course"
+        },
+        {
+          "info": {
+            "name": "List courses in an account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/accounts/:account_id/courses",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List courses in an account"
+        },
+        {
+          "info": {
+            "name": "Create a new course",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://canvas.instructure.com/api/v1/accounts/:account_id/courses",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new course"
+        },
+        {
+          "info": {
+            "name": "Update courses (bulk)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://canvas.instructure.com/api/v1/accounts/:account_id/courses/:id",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update courses (bulk)"
+        },
+        {
+          "info": {
+            "name": "Get a single course",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get a single course"
+        },
+        {
+          "info": {
+            "name": "Update a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://canvas.instructure.com/api/v1/courses/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update a course"
+        },
+        {
+          "info": {
+            "name": "Delete or conclude a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://canvas.instructure.com/api/v1/courses/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "event",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Delete or conclude a course"
+        },
+        {
+          "info": {
+            "name": "List course files",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/files",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List course files"
+        },
+        {
+          "info": {
+            "name": "Upload a file to a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/files",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "name",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "size",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "content_type",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Upload a file to a course"
+        },
+        {
+          "info": {
+            "name": "List students in a course (deprecated - use users)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/students",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List students in a course (deprecated - use users)"
+        },
+        {
+          "info": {
+            "name": "List users in a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/users",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "enrollment_type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List users in a course"
+        },
+        {
+          "info": {
+            "name": "Search users in a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/search_users",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "search_term",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search users in a course"
+        },
+        {
+          "info": {
+            "name": "List recently logged-in students",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/recent_students",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List recently logged-in students"
+        },
+        {
+          "info": {
+            "name": "Get a single user in a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/users/:id",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get a single user in a course"
+        },
+        {
+          "info": {
+            "name": "List content share users for a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/content_share_users",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List content share users for a course"
+        },
+        {
+          "info": {
+            "name": "Preview HTML in a course context",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/preview_html",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Preview HTML in a course context"
+        },
+        {
+          "info": {
+            "name": "Course activity stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/activity_stream",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Course activity stream"
+        },
+        {
+          "info": {
+            "name": "Course activity stream summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/activity_stream/summary",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Course activity stream summary"
+        },
+        {
+          "info": {
+            "name": "Course TODO items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/todo",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Course TODO items"
+        },
+        {
+          "info": {
+            "name": "Get course settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/settings",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get course settings"
+        },
+        {
+          "info": {
+            "name": "Update course settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/settings",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Update course settings"
+        },
+        {
+          "info": {
+            "name": "Get course permissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/permissions",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get course permissions"
+        },
+        {
+          "info": {
+            "name": "Reset a course",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/reset_content",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Reset a course"
+        },
+        {
+          "info": {
+            "name": "Get effective due dates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/effective_due_dates",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get effective due dates"
+        },
+        {
+          "info": {
+            "name": "Copy course content",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/course_copy",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Copy course content"
+        },
+        {
+          "info": {
+            "name": "Get course copy status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/course_copy/:id",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get course copy status"
+        },
+        {
+          "info": {
+            "name": "Get student view student",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/student_view_student",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get student view student"
+        },
+        {
+          "info": {
+            "name": "Get bulk user progress",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://canvas.instructure.com/api/v1/courses/:course_id/bulk_user_progress",
+            "params": [
+              {
+                "name": "course_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get bulk user progress"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
