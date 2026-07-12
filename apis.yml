@@ -126,6 +126,14 @@ apis:
   - Passing grades from external graders back to Canvas
   - Provisioning course rosters into external tools
 common:
+- type: TrustCenter
+  url: security/canvas-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/canvas-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/canvas-domain-security.yml
+- type: Authentication
+  url: authentication/canvas-authentication.yml
 - type: LinkedIn
   url: https://www.linkedin.com/showcase/canvaslms
 - type: Website
@@ -146,6 +154,8 @@ common:
   url: https://www.instructure.com/policies/product-acceptable-use
 - type: Integrations
   url: https://www.instructure.com/partners
+- url: https://www.instructure.com/resources/blog
+  type: Blog
 integrations:
 - name: Become a partner
 - name: Scale with us

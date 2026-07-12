@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/canvas-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: |-
+    OAuth 2.0 access token. See
+    https://canvas.instructure.com/doc/api/file.oauth.html.
+  sources:
+  - openapi/canvas-openapi.yml
