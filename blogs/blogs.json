@@ -1,0 +1,14 @@
+{
+  "repo": "canvas",
+  "feeds": [
+    {
+      "source": "https://www.instructure.com/resources/blog",
+      "feed_url": "https://www.instructure.com/resources/blog",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "fetched": "2026-07-11T11:50:51Z",
+  "post_count": 5
+}
