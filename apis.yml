@@ -126,6 +126,8 @@ apis:
   - Passing grades from external graders back to Canvas
   - Provisioning course rosters into external tools
 common:
+- type: AgenticAccess
+  url: agentic-access/canvas-agentic-access.yml
 - type: TrustCenter
   url: security/canvas-trust-center.yml
 - type: VulnerabilityDisclosure
