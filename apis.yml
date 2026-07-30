@@ -12,9 +12,22 @@ description: >-
   with external tools through LTI, Caliper, and live event streams.
 type: Index
 kind: company
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 position: Consumer
 access: 3rd-Party
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/canvas.png
 tags:
 - Education
 - EdTech
@@ -31,12 +44,10 @@ apis:
 - aid: canvas:canvas-lms-rest-api
   name: Canvas LMS REST API
   description: >-
-    The Canvas LMS REST API provides programmatic access to courses,
-    assignments, quizzes, grades, users, enrollments, accounts,
-    discussions, files, modules, rubrics, submissions, SIS imports,
-    and account administration. It uses OAuth 2.0 access tokens and
-    returns JSON with ISO 8601 timestamps, supporting pagination,
-    request throttling, masquerading, and compound documents.
+    The Canvas LMS REST API provides programmatic access to courses, assignments, quizzes, grades, users,
+    enrollments, accounts, discussions, files, modules, rubrics, submissions, SIS imports, and account
+    administration. It uses OAuth 2.0 access tokens and returns JSON with ISO 8601 timestamps, supporting
+    pagination, request throttling, masquerading, and compound documents.
   humanURL: https://canvas.instructure.com/doc/api/
   tags:
   - Education
@@ -76,11 +87,9 @@ apis:
 - aid: canvas:canvas-lms-graphql-api
   name: Canvas LMS GraphQL API
   description: >-
-    The Canvas LMS GraphQL API is an alternative to the REST API
-    that lets clients request exactly the fields they need across
-    Canvas resources in a single request. It is well suited for
-    dashboards and aggregated views that otherwise require many
-    REST round-trips.
+    The Canvas LMS GraphQL API is an alternative to the REST API that lets clients request exactly the
+    fields they need across Canvas resources in a single request. It is well suited for dashboards and
+    aggregated views that otherwise require many REST round-trips.
   humanURL: https://canvas.instructure.com/doc/api/file.graphql.html
   tags:
   - Education
@@ -103,10 +112,9 @@ apis:
 - aid: canvas:canvas-lti-integrations
   name: Canvas LTI Integrations
   description: >-
-    Canvas supports Learning Tools Interoperability (LTI 1.1 and
-    LTI 1.3 / Advantage) for embedding external tools, assignments,
-    and content into courses with deep linking, grade passback, and
-    names-and-roles service.
+    Canvas supports Learning Tools Interoperability (LTI 1.1 and LTI 1.3 / Advantage) for embedding external
+    tools, assignments, and content into courses with deep linking, grade passback, and names-and-roles
+    service.
   humanURL: https://canvas.instructure.com/doc/api/file.tools_intro.html
   tags:
   - Education
@@ -125,6 +133,15 @@ apis:
   - Embedding third-party learning tools in Canvas courses
   - Passing grades from external graders back to Canvas
   - Provisioning course rosters into external tools
+- aid: canvas:canvas-courses-api
+  name: Canvas Courses API
+  description: The Courses API from Canvas — 25 operation(s) for courses.
+  humanURL: https://canvas.instructure.com/doc/api/
+  tags:
+  - Courses
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-courses-api-openapi.yml
 common:
 - type: AgenticAccess
   url: agentic-access/canvas-agentic-access.yml
