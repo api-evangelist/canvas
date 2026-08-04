@@ -1,0 +1,14 @@
+{
+  "provider": "canvas",
+  "sources": [
+    "canvas-courses-api-openapi.yml"
+  ],
+  "outputs": [
+    "canvas-courses-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

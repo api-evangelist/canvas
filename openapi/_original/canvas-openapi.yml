@@ -1,0 +1,451 @@
+openapi: 3.1.0
+info:
+  title: Canvas LMS REST API (Courses subset)
+  description: |
+    Canvas LMS REST API uses OAuth 2.0 bearer tokens. Endpoints live under
+    /api/v1/ on the institution's Canvas host (e.g.
+    https://canvas.instructure.com/api/v1/...). Responses are JSON with
+    ISO 8601 timestamps, and list endpoints support Link-header pagination.
+
+    This specification is a best-effort, hand-authored subset covering the
+    Courses resource, modeled from the publicly documented Courses API
+    page (https://canvas.instructure.com/doc/api/courses.html). Canvas has
+    many additional resources — assignments, quizzes, submissions, users,
+    enrollments, files, etc. — that are not enumerated here. Refer to the
+    Canvas API documentation for the full surface area.
+  version: "v1"
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+servers:
+  - url: https://canvas.instructure.com/api/v1
+    description: Hosted Canvas instance (replace host for your institution).
+security:
+  - bearerAuth: []
+tags:
+  - name: Courses
+paths:
+  /courses:
+    get:
+      tags: [Courses]
+      summary: List your courses
+      operationId: listCourses
+      parameters:
+        - in: query
+          name: enrollment_type
+          schema:
+            type: string
+            enum: [teacher, student, ta, observer, designer]
+        - in: query
+          name: enrollment_state
+          schema:
+            type: string
+            enum: [active, invited_or_pending, completed]
+        - in: query
+          name: state
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [unpublished, available, completed, deleted]
+        - in: query
+          name: include
+          schema:
+            type: array
+            items: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/CourseList' }
+  /users/{user_id}/courses:
+    parameters:
+      - { $ref: '#/components/parameters/UserId' }
+    get:
+      tags: [Courses]
+      summary: List courses for a user
+      responses:
+        '200': { $ref: '#/components/responses/CourseList' }
+  /courses/{course_id}/users/{user_id}/progress:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+      - { $ref: '#/components/parameters/UserId' }
+    get:
+      tags: [Courses]
+      summary: Get user progress in a course
+      responses:
+        '200': { $ref: '#/components/responses/CourseProgress' }
+  /accounts/{account_id}/courses:
+    parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Courses]
+      summary: List courses in an account
+      responses:
+        '200': { $ref: '#/components/responses/CourseList' }
+    post:
+      tags: [Courses]
+      summary: Create a new course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CourseCreate' }
+      responses:
+        '200': { $ref: '#/components/responses/Course' }
+  /accounts/{account_id}/courses/{id}:
+    parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema: { type: string }
+      - in: path
+        name: id
+        required: true
+        schema: { type: string }
+    put:
+      tags: [Courses]
+      summary: Update courses (bulk)
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Courses]
+      summary: Get a single course
+      parameters:
+        - in: query
+          name: include
+          schema:
+            type: array
+            items: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/Course' }
+    put:
+      tags: [Courses]
+      summary: Update a course
+      responses:
+        '200': { $ref: '#/components/responses/Course' }
+    delete:
+      tags: [Courses]
+      summary: Delete or conclude a course
+      parameters:
+        - in: query
+          name: event
+          required: true
+          schema:
+            type: string
+            enum: [delete, conclude]
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/files:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: List course files
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+    post:
+      tags: [Courses]
+      summary: Upload a file to a course
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                size: { type: integer }
+                content_type: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/students:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: List students in a course (deprecated - use users)
+      responses:
+        '200': { $ref: '#/components/responses/UserList' }
+  /courses/{course_id}/users:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: List users in a course
+      parameters:
+        - in: query
+          name: enrollment_type
+          schema:
+            type: array
+            items: { type: string }
+        - in: query
+          name: include
+          schema:
+            type: array
+            items: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/UserList' }
+  /courses/{course_id}/search_users:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Search users in a course
+      parameters:
+        - in: query
+          name: search_term
+          schema: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/UserList' }
+  /courses/{course_id}/recent_students:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: List recently logged-in students
+      responses:
+        '200': { $ref: '#/components/responses/UserList' }
+  /courses/{course_id}/users/{id}:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+      - in: path
+        name: id
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Courses]
+      summary: Get a single user in a course
+      responses:
+        '200': { $ref: '#/components/responses/User' }
+  /courses/{course_id}/content_share_users:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: List content share users for a course
+      responses:
+        '200': { $ref: '#/components/responses/UserList' }
+  /courses/{course_id}/preview_html:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    post:
+      tags: [Courses]
+      summary: Preview HTML in a course context
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/activity_stream:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Course activity stream
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/activity_stream/summary:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Course activity stream summary
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/todo:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Course TODO items
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/settings:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Get course settings
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+    put:
+      tags: [Courses]
+      summary: Update course settings
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/permissions:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Get course permissions
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/reset_content:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    post:
+      tags: [Courses]
+      summary: Reset a course
+      responses:
+        '200': { $ref: '#/components/responses/Course' }
+  /courses/{course_id}/effective_due_dates:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Get effective due dates
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/course_copy:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    post:
+      tags: [Courses]
+      summary: Copy course content
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/course_copy/{id}:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+      - in: path
+        name: id
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Courses]
+      summary: Get course copy status
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+  /courses/{course_id}/student_view_student:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Get student view student
+      responses:
+        '200': { $ref: '#/components/responses/User' }
+  /courses/{course_id}/bulk_user_progress:
+    parameters:
+      - { $ref: '#/components/parameters/CourseId' }
+    get:
+      tags: [Courses]
+      summary: Get bulk user progress
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        OAuth 2.0 access token. See
+        https://canvas.instructure.com/doc/api/file.oauth.html.
+  parameters:
+    CourseId:
+      in: path
+      name: course_id
+      required: true
+      schema: { type: string }
+    UserId:
+      in: path
+      name: user_id
+      required: true
+      schema: { type: string }
+  schemas:
+    Course:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        account_id: { type: integer, format: int64 }
+        uuid: { type: string }
+        start_at: { type: string, format: date-time, nullable: true }
+        end_at: { type: string, format: date-time, nullable: true }
+        course_code: { type: string }
+        workflow_state:
+          type: string
+          enum: [unpublished, available, completed, deleted]
+        enrollment_term_id: { type: integer, nullable: true }
+        sis_course_id: { type: string, nullable: true }
+        integration_id: { type: string, nullable: true }
+        public_syllabus: { type: boolean }
+        storage_quota_mb: { type: integer }
+        is_public: { type: boolean }
+      additionalProperties: true
+    CourseCreate:
+      type: object
+      properties:
+        course:
+          type: object
+          properties:
+            name: { type: string }
+            course_code: { type: string }
+            start_at: { type: string, format: date-time }
+            end_at: { type: string, format: date-time }
+            is_public: { type: boolean }
+          additionalProperties: true
+        offer: { type: boolean }
+        enroll_me: { type: boolean }
+    User:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        sortable_name: { type: string }
+        short_name: { type: string }
+        sis_user_id: { type: string, nullable: true }
+        email: { type: string, format: email, nullable: true }
+        login_id: { type: string }
+      additionalProperties: true
+    Progress:
+      type: object
+      properties:
+        requirement_count: { type: integer }
+        requirement_completed_count: { type: integer }
+        next_requirement_url: { type: string, nullable: true }
+        completed_at: { type: string, format: date-time, nullable: true }
+      additionalProperties: true
+    Generic:
+      type: object
+      additionalProperties: true
+  responses:
+    Course:
+      description: Single course.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Course' }
+    CourseList:
+      description: List of courses.
+      content:
+        application/json:
+          schema:
+            type: array
+            items: { $ref: '#/components/schemas/Course' }
+    User:
+      description: Single user.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/User' }
+    UserList:
+      description: List of users.
+      content:
+        application/json:
+          schema:
+            type: array
+            items: { $ref: '#/components/schemas/User' }
+    CourseProgress:
+      description: User progress in a course.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Progress' }
+    Generic:
+      description: Generic JSON object response.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Generic' }
