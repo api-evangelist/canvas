@@ -143,6 +143,17 @@ apis:
   - type: OpenAPI
     url: openapi/canvas-courses-api-openapi.yml
 common:
+- type: IssueTracker
+  url: https://github.com/instructure/canvas-lms/issues
+- type: SecurityPolicy
+  url: https://github.com/instructure/canvas-lms/blob/master/SECURITY.md
+- type: CodeOfConduct
+  url: https://github.com/instructure/canvas-lms/blob/master/code_of_conduct.md
+- type: ContributionGuide
+  url: https://github.com/instructure/canvas-lms/blob/master/CONTRIBUTING.md
+- type: License
+  name: AGPL-3.0
+  url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
 - type: AgenticAccess
   url: agentic-access/canvas-agentic-access.yml
 - type: TrustCenter
