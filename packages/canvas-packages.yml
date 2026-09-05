@@ -1,0 +1,81 @@
+generated: '2026-09-05'
+method: searched
+source: registry.npmjs.org, pypi.org/pypi, rubygems.org/api/v1 (all queried unauthenticated 2026-09-05); plus https://developerdocs.instructure.com/services/dap
+  and https://instructure.design/
+summary:
+  official_client_libraries: 3
+  community_client_libraries: 3
+  finding: Instructure publishes NO first-party client SDK for the Canvas LMS REST API itself. The three official
+    packages below are (a) the Data Access Platform client for Canvas Data 2, (b) the Instructure-authored canvas_sync
+    Rails gem, and (c) the Instructure UI component library. The most widely used Canvas REST client, ucfopen/canvasapi,
+    is maintained by the University of Central Florida, not by Instructure.
+packages:
+- language: python
+  registry: pypi
+  name: instructure-dap-client
+  url: https://pypi.org/project/instructure-dap-client/
+  install: pip install instructure-dap-client
+  official: true
+  version: 2.3.0
+  published: '2026-08-27'
+  covers: Instructure Data Access Platform (Canvas Data 2) — query API client and the `dap` CLI
+  docs: https://developerdocs.instructure.com/services/dap
+- language: ruby
+  registry: rubygems
+  name: canvas_sync
+  url: https://rubygems.org/gems/canvas_sync
+  install: gem install canvas_sync
+  official: true
+  version: 0.27.16
+  published: '2026-09-01'
+  note: Published by "Instructure CustomDev"; homepage instructure.com. Generates Canvas models/migrations and syncs
+    Canvas data.
+- language: javascript
+  registry: npm
+  name: '@instructure/ui'
+  url: https://www.npmjs.com/package/@instructure/ui
+  install: npm install @instructure/ui
+  official: true
+  version: 11.7.5
+  published: '2026-08-26'
+  note: Instructure UI (InstUI) — the design system Canvas itself is built from. A UI component library, not an
+    API client.
+  source_code: https://github.com/instructure/instructure-ui
+  docs: https://instructure.design/
+- language: javascript
+  registry: npm
+  name: '@instructure/canvas-rce'
+  url: https://www.npmjs.com/package/@instructure/canvas-rce
+  install: npm install @instructure/canvas-rce
+  official: true
+  version: 8.1.0
+  published: '2026-05-06'
+  note: Canvas Rich Content Editor component, published from instructure/canvas-lms.
+- language: python
+  registry: pypi
+  name: canvasapi
+  url: https://pypi.org/project/canvasapi/
+  install: pip install canvasapi
+  official: false
+  version: 3.6.0
+  published: '2026-04-16'
+  note: Community. Maintained by University of Central Florida - Center for Distributed Learning (ucfopen). The
+    de-facto Canvas REST client.
+  source_code: https://github.com/ucfopen/canvasapi
+- language: javascript
+  registry: npm
+  name: canvas-lms-api
+  url: https://www.npmjs.com/package/canvas-lms-api
+  official: false
+  version: 1.0.6
+  published: '2026-01-29'
+  note: Community (beardon/canvas-lms-api).
+- language: javascript
+  registry: npm
+  name: node-canvas-api
+  url: https://www.npmjs.com/package/node-canvas-api
+  official: false
+  version: 2.0.0
+  published: '2024-10-30'
+  note: Community (University of British Columbia). Last release 2024-10-30 — nearly two years stale against an
+    API that ships monthly.

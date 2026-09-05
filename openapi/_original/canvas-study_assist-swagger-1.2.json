@@ -1,0 +1,66 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/study_assist",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/courses/{course_id}/study_assist",
+      "description": "",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Request a study assist response",
+          "notes": "",
+          "nickname": "request_study_assist_response",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "prompt",
+              "description": "Short prompt (e.g. \"Summarize\"). Blank returns chips.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "state",
+              "description": "Content state with courseID, and one of pageID or fileID.",
+              "type": "Hash",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "regenerate",
+              "description": "If true, bypasses the LLM response cache.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AssistResponse"
+        }
+      ]
+    }
+  ],
+  "models": {}
+}

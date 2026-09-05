@@ -1,0 +1,134 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/canvas_career_experiences",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/career/enabled",
+      "description": "Returns whether the root account has Canvas Career (Horizon) enabled\nin at least one subaccount.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Check if Canvas Career is enabled",
+          "notes": "Returns whether the root account has Canvas Career (Horizon) enabled\nin at least one subaccount.",
+          "nickname": "check_if_canvas_career_is_enabled",
+          "parameters": [],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{enabled: boolean}"
+        }
+      ]
+    },
+    {
+      "path": "/v1/career/experience_summary",
+      "description": "Returns the current user's active experience and available experiences\nthey can switch to.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get current and available experiences",
+          "notes": "Returns the current user's active experience and available experiences\nthey can switch to.",
+          "nickname": "get_current_and_available_experiences",
+          "parameters": [],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ExperienceSummary"
+        }
+      ]
+    },
+    {
+      "path": "/v1/career/switch_experience",
+      "description": "Switch the current user's active experience to the specified one.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Switch experience",
+          "notes": "Switch the current user's active experience to the specified one.",
+          "nickname": "switch_experience",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "experience",
+              "description": "The experience to switch to.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "academic",
+                "career"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{experience: String} The newly set experience"
+        }
+      ]
+    },
+    {
+      "path": "/v1/career/switch_role",
+      "description": "Switch the current user's role within the current experience.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Switch role",
+          "notes": "Switch the current user's role within the current experience.",
+          "nickname": "switch_role",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "role",
+              "description": "The role to switch to.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "learner",
+                "learning_provider"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{role: String} The newly set role"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "ExperienceSummary": {
+      "id": "ExperienceSummary",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "current_app": {
+          "description": "The current active experience. One of: 'academic', 'career_learner', 'career_learning_provider'.",
+          "example": "career_learner",
+          "type": "string"
+        },
+        "available_apps": {
+          "description": "List of available experiences for the user. Can include: 'academic', 'career_learner', 'career_learning_provider'.",
+          "example": [
+            "academic",
+            "career_learner"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

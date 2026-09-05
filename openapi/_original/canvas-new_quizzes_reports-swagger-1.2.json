@@ -1,0 +1,143 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/new_quizzes_reports",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/quiz/v1/courses/{course_id}/quizzes/{assignment_id}/reports",
+      "description": "Generate a new report for this quiz. Returns a progress object that can be used to track\nthe progress of the report generation.\n\n*Responses*\n\n* <code>400 Bad Request</code> if the specified report type or format is invalid\n* <code>409 Conflict</code> if a quiz report of the specified type is already being\n  generated",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create a quiz report",
+          "notes": "Generate a new report for this quiz. Returns a progress object that can be used to track\nthe progress of the report generation.\n\n*Responses*\n\n* <code>400 Bad Request</code> if the specified report type or format is invalid\n* <code>409 Conflict</code> if a quiz report of the specified type is already being\n  generated",
+          "nickname": "create_quiz_report",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "assignment_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "quiz_report[report_type]",
+              "description": "The type of report to be generated.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "student_analysis",
+                "item_analysis"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "quiz_report[format]",
+              "description": "The format of report to be generated.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "csv",
+                "json"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Progress"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "Progress": {
+      "id": "Progress",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "the ID of the Progress object",
+          "example": 1,
+          "type": "integer"
+        },
+        "context_id": {
+          "description": "the context owning the job.",
+          "example": 1,
+          "type": "integer"
+        },
+        "context_type": {
+          "example": "Assignment",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "the id of the user who started the job",
+          "example": 123,
+          "type": "integer"
+        },
+        "completion": {
+          "description": "percent completed",
+          "example": 100,
+          "type": "integer"
+        },
+        "workflow_state": {
+          "description": "the state of the job one of 'queued', 'running', 'completed', 'failed'",
+          "example": "completed",
+          "type": "string",
+          "allowableValues": {
+            "values": [
+              "queued",
+              "running",
+              "completed",
+              "failed"
+            ]
+          }
+        },
+        "created_at": {
+          "description": "the time the job was created",
+          "example": "2013-01-15T15:00:00Z",
+          "type": "datetime"
+        },
+        "updated_at": {
+          "description": "the time the job was last updated",
+          "example": "2013-01-15T15:04:00Z",
+          "type": "datetime"
+        },
+        "results": {
+          "description": "for successfully completed jobs, this is a JSON object containing url of the report and other details",
+          "example": {
+            "url": "https://canvas.example.edu/api/assignments/1/files/2/download"
+          },
+          "type": "object"
+        },
+        "url": {
+          "description": "url where a progress update can be retrieved",
+          "example": "https://canvas.example.edu/api/v1/progress/1",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

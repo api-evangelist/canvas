@@ -1,0 +1,19 @@
+generated: '2026-09-05'
+method: searched
+source: https://community.canvaslms.com/t5/Change-Log/tkb-p/changelog
+docs: https://developerdocs.instructure.com/services/canvas/basics/file.changelog
+scheme: dated, per-release; grouped into Additions / Changes / Deprecations / Removals
+current_version: v1 (the API path has not been versioned since launch; changes ship inside v1)
+cadence: monthly, aligned to the Canvas release train (release notes on the third Wednesday)
+location:
+  primary: https://community.canvaslms.com/t5/Change-Log/tkb-p/changelog
+  note: Instructure does NOT host the API change log on the developer docs portal. developerdocs.instructure.com/services/canvas/basics/file.changelog
+    is a one-line stub that redirects the reader to the Instructure Community knowledge base. There is no feed,
+    no JSON, and no per-entry permalink scheme a machine can follow — the change log is a Khoros community TKB page.
+entries: []
+entries_note: 'Not captured: the change log is rendered by a Khoros community platform behind client-side pagination
+  and returns a single 1.1 MB HTML document with no dated entry markup a parser can trust. Recording invented or
+  half-read entries here would be worse than recording none. The location, cadence and grouping above are what Instructure
+  states.'
+machine_readable: false
+gap_to_raise_with_provider: No RSS/Atom feed, no JSON, and no changelog on the developer portal itself.

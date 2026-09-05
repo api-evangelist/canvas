@@ -1,0 +1,344 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/assessment_question_banks",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/question_banks",
+      "description": "Returns the paginated list of question banks for a given context.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List question banks",
+          "notes": "Returns the paginated list of question banks for a given context.",
+          "nickname": "list_question_banks",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "context_type",
+              "description": "The type of context. Must be either \"Course\" or \"Account\".",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "Course",
+                "Account"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "context_id",
+              "description": "The id of the context.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_question_count",
+              "description": "Whether to include the number of questions in each bank.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "AssessmentQuestionBank"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/question_banks/{id}",
+      "description": "Returns the question bank with the given id",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get a single question bank",
+          "notes": "Returns the question bank with the given id",
+          "nickname": "get_single_question_bank",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The question bank unique identifier.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_question_count",
+              "description": "Whether to include the number of questions in the bank.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AssessmentQuestionBank"
+        }
+      ]
+    },
+    {
+      "path": "/v1/question_banks/{id}/questions",
+      "description": "Returns the paginated list of assessment questions in this bank.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List assessment questions for a question bank",
+          "notes": "Returns the paginated list of assessment questions in this bank.",
+          "nickname": "list_assessment_questions_for_question_bank",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The question bank unique identifier.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "AssessmentQuestion"
+          }
+        }
+      ]
+    }
+  ],
+  "models": {
+    "AssessmentQuestionBank": {
+      "id": "AssessmentQuestionBank",
+      "description": "",
+      "required": [
+        "id",
+        "context_id",
+        "context_type",
+        "title"
+      ],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The ID of the assessment question bank.",
+          "example": 1,
+          "type": "integer",
+          "format": "int64"
+        },
+        "context_id": {
+          "description": "The ID of the context (course or account) the question bank belongs to.",
+          "example": 2,
+          "type": "integer",
+          "format": "int64"
+        },
+        "context_type": {
+          "description": "The type of context (Course or Account).",
+          "example": "Course",
+          "type": "string"
+        },
+        "title": {
+          "description": "The title of the question bank.",
+          "example": "Chapter 1 Questions",
+          "type": "string"
+        },
+        "workflow_state": {
+          "description": "The workflow state of the question bank.",
+          "example": "active",
+          "type": "string"
+        },
+        "assessment_question_count": {
+          "description": "The number of questions in the bank.",
+          "example": 10,
+          "type": "integer",
+          "format": "int64"
+        },
+        "context_code": {
+          "description": "The combined context type and ID.",
+          "example": "course_2",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "The date and time the question bank was created.",
+          "example": "2013-01-01T00:00:00Z",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "description": "The date and time the question bank was last updated.",
+          "example": "2013-01-01T00:00:00Z",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "AssessmentQuestion": {
+      "id": "AssessmentQuestion",
+      "description": "",
+      "required": [
+        "id"
+      ],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The ID of the assessment question.",
+          "example": 1,
+          "type": "integer",
+          "format": "int64"
+        },
+        "position": {
+          "description": "The order of the question.",
+          "example": 1,
+          "type": "integer",
+          "format": "int64"
+        },
+        "assessment_question_bank_id": {
+          "description": "The ID of the question bank this question belongs to.",
+          "example": 3,
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_at": {
+          "description": "The date and time when the assessment question was created.",
+          "example": "2013-01-23T23:59:00-07:00",
+          "type": "string",
+          "format": "date-time"
+        },
+        "question_name": {
+          "description": "The name of the question.",
+          "example": "Prime Number Identification",
+          "type": "string"
+        },
+        "question_type": {
+          "description": "The type of the question.",
+          "example": "multiple_choice_question",
+          "type": "string"
+        },
+        "question_text": {
+          "description": "The text of the question.",
+          "example": "Which of the following is NOT a prime number?",
+          "type": "string"
+        },
+        "points_possible": {
+          "description": "The maximum amount of points possible received for getting this question correct.",
+          "example": 5,
+          "type": "number"
+        },
+        "correct_comments": {
+          "description": "The comments to display if the student answers the question correctly.",
+          "example": "That's correct!",
+          "type": "string"
+        },
+        "incorrect_comments": {
+          "description": "The comments to display if the student answers incorrectly.",
+          "example": "Unfortunately, that IS a prime number.",
+          "type": "string"
+        },
+        "neutral_comments": {
+          "description": "The comments to display regardless of how the student answered.",
+          "example": "Goldbach's conjecture proposes that every even integer greater than 2 can be expressed as the sum of two prime numbers.",
+          "type": "string"
+        },
+        "correct_comments_html": {
+          "description": "The HTML version of the comments to display if the student answers the question correctly.",
+          "example": "<p>That's correct!</p>",
+          "type": "string"
+        },
+        "incorrect_comments_html": {
+          "description": "The HTML version of the comments to display if the student answers incorrectly.",
+          "example": "<p>Unfortunately, that IS a prime number.</p>",
+          "type": "string"
+        },
+        "neutral_comments_html": {
+          "description": "The HTML version of the comments to display regardless of how the student answered.",
+          "example": "<p>Goldbach's conjecture proposes that every even integer greater than 2 can be expressed as the sum of two prime numbers.</p>",
+          "type": "string"
+        },
+        "answers": {
+          "description": "An array of available answers. Each answer contains id, text, html, comments, comments_html, and weight properties.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "The ID of the answer.",
+                "example": 9072,
+                "type": "integer",
+                "format": "int64"
+              },
+              "text": {
+                "description": "The text of the answer.",
+                "example": "A X men",
+                "type": "string"
+              },
+              "html": {
+                "description": "The HTML version of the answer text.",
+                "example": "",
+                "type": "string"
+              },
+              "comments": {
+                "description": "Comments for this specific answer.",
+                "example": "",
+                "type": "string"
+              },
+              "comments_html": {
+                "description": "The HTML version of the comments for this answer.",
+                "example": "",
+                "type": "string"
+              },
+              "weight": {
+                "description": "The weight of the answer. 100 indicates a correct answer, 0 indicates incorrect.",
+                "example": 100.0,
+                "type": "number"
+              }
+            }
+          }
+        },
+        "variables": {
+          "description": "Variables for calculated questions. Null for other question types.",
+          "type": "array"
+        },
+        "formulas": {
+          "description": "Formulas for calculated questions. Null for other question types.",
+          "type": "array"
+        },
+        "answer_tolerance": {
+          "description": "The tolerance for numerical answers. Null for non-numerical question types.",
+          "type": "string"
+        },
+        "formula_decimal_places": {
+          "description": "The number of decimal places for formula results. Null for non-calculated question types.",
+          "type": "integer"
+        },
+        "matches": {
+          "description": "Matching pairs for matching questions. Null for other question types.",
+          "type": "array"
+        },
+        "matching_answer_incorrect_matches": {
+          "description": "Incorrect match options for matching questions. Null for other question types.",
+          "type": "array"
+        }
+      }
+    }
+  }
+}

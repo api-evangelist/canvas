@@ -1,0 +1,264 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/new_quizzes_accommodations",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/quiz/v1/courses/{course_id}/quizzes/{assignment_id}/accommodations",
+      "description": "Apply accommodations at the <b>quiz level</b> for students in a specific assignment.\n\n<b>Request Body Format:</b>\n  [{\n    \"user_id\": 3,\n    \"extra_time\": 60,\n    \"extra_attempts\": 1,\n    \"reduce_choices_enabled\": true\n  }]\n\n<b>Responses</b>\n\n* <code>200 OK</code>: Accommodations were processed with some successes and failures\n* <code>401 Unauthorized</code>: User does not have permission to update accommodations\n* <code>404 Not Found</code>: The course or assignment was not found\n* <code>400 Bad Request</code>: Validation error (e.g., invalid JSON, missing user IDs)",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Set Quiz-Level Accommodations",
+          "notes": "Apply accommodations at the <b>quiz level</b> for students in a specific assignment.\n\n<b>Request Body Format:</b>\n  [{\n    \"user_id\": 3,\n    \"extra_time\": 60,\n    \"extra_attempts\": 1,\n    \"reduce_choices_enabled\": true\n  }]\n\n<b>Responses</b>\n\n* <code>200 OK</code>: Accommodations were processed with some successes and failures\n* <code>401 Unauthorized</code>: User does not have permission to update accommodations\n* <code>404 Not Found</code>: The course or assignment was not found\n* <code>400 Bad Request</code>: Validation error (e.g., invalid JSON, missing user IDs)",
+          "nickname": "set_quiz_level_accommodations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "The ID of the course where the quiz is located.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "assignment_id",
+              "description": "The ID of the assignment/quiz that needs accommodations.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "user_id",
+              "description": "The Canvas user ID of the student receiving accommodations.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "extra_time",
+              "description": "Amount of extra time in <b>minutes</b> granted for quiz submission.\nAllowed range: 0 to 10080 minutes (168 hours).",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "extra_attempts",
+              "description": "Number of times the student is allowed to re-take the quiz over the multiple-attempt limit.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "reduce_choices_enabled",
+              "description": "If 'true', removes <b>one incorrect answer</b> from multiple-choice questions with <b>4 or more options</b>.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AccommodationResponse"
+        }
+      ]
+    },
+    {
+      "path": "/quiz/v1/courses/{course_id}/accommodations",
+      "description": "Apply accommodations at the <b>course level</b> for students enrolled in a given course.\n\n<b>Request Body Format:</b>\n  [{\n    \"user_id\": 3,\n    \"extra_time\": 60,\n    \"apply_to_in_progress_quiz_sessions\": true,\n    \"reduce_choices_enabled\": true\n  }]\n\n<b>Responses</b>\n\n* <code>200 OK</code>: Accommodations were processed with some successes and failures\n* <code>401 Unauthorized</code>: User does not have permission to update accommodations\n* <code>404 Not Found</code>: The course was not found\n* <code>400 Bad Request</code>: Validation error (e.g., invalid JSON, missing user IDs)",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Set Course-Level Accommodations",
+          "notes": "Apply accommodations at the <b>course level</b> for students enrolled in a given course.\n\n<b>Request Body Format:</b>\n  [{\n    \"user_id\": 3,\n    \"extra_time\": 60,\n    \"apply_to_in_progress_quiz_sessions\": true,\n    \"reduce_choices_enabled\": true\n  }]\n\n<b>Responses</b>\n\n* <code>200 OK</code>: Accommodations were processed with some successes and failures\n* <code>401 Unauthorized</code>: User does not have permission to update accommodations\n* <code>404 Not Found</code>: The course was not found\n* <code>400 Bad Request</code>: Validation error (e.g., invalid JSON, missing user IDs)",
+          "nickname": "set_course_level_accommodations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "The ID of the course where accommodations should be applied.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "user_id",
+              "description": "The Canvas user ID of the student receiving accommodations.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "extra_time",
+              "description": "Amount of extra time in <b>minutes</b> granted for quiz submission.\nAllowed range: 0 to 10080 minutes (168 hours).",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "apply_to_in_progress_quiz_sessions",
+              "description": "If 'true', applies the accommodation to currently <b>in-progress</b> quiz sessions.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "reduce_choices_enabled",
+              "description": "If 'true', removes <b>one incorrect answer</b> from multiple-choice questions with <b>4 or more options</b>.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AccommodationResponse"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "AccommodationResponse": {
+      "id": "AccommodationResponse",
+      "description": "Response structure for processing accommodations",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "message": {
+          "description": "Processing result message",
+          "example": "Accommodations processed",
+          "type": "string"
+        },
+        "successful": {
+          "description": "List of successfully processed accommodations",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "description": "Canvas user ID of the student",
+                "example": 5,
+                "type": "integer"
+              }
+            }
+          },
+          "example": [
+            {
+              "user_id": 5
+            }
+          ]
+        },
+        "failed": {
+          "description": "List of accommodations that failed to process",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "description": "Canvas user ID of the student",
+                "example": 6,
+                "type": "integer"
+              },
+              "error": {
+                "description": "Reason for failure",
+                "example": "User is not in any in-progress quiz sessions for course 3",
+                "type": "string"
+              }
+            }
+          },
+          "example": [
+            {
+              "user_id": 6,
+              "error": "User is not in any in-progress quiz sessions for course 3"
+            }
+          ]
+        }
+      }
+    },
+    "CourseAccommodationRequest": {
+      "id": "CourseAccommodationRequest",
+      "description": "Request format for setting course-level accommodations",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "user_id": {
+          "description": "Canvas user ID of the student receiving accommodations",
+          "example": 3,
+          "type": "integer"
+        },
+        "extra_time": {
+          "description": "Amount of extra time (in minutes) for quiz submission",
+          "example": 60,
+          "type": "integer"
+        },
+        "apply_to_in_progress_quiz_sessions": {
+          "description": "Apply accommodations to ongoing quiz sessions",
+          "example": true,
+          "type": "boolean"
+        },
+        "reduce_choices_enabled": {
+          "description": "Removes one incorrect answer from multiple-choice questions with 4+ choices",
+          "example": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "QuizAccommodationRequest": {
+      "id": "QuizAccommodationRequest",
+      "description": "Request format for setting quiz-level accommodations",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "user_id": {
+          "description": "Canvas user ID of the student receiving accommodations",
+          "example": 3,
+          "type": "integer"
+        },
+        "extra_time": {
+          "description": "Amount of extra time (in minutes) for quiz submission",
+          "example": 60,
+          "type": "integer"
+        },
+        "extra_attempts": {
+          "description": "Number of additional attempts allowed beyond the quiz limit",
+          "example": 1,
+          "type": "integer"
+        },
+        "reduce_choices_enabled": {
+          "description": "Removes one incorrect answer from multiple-choice questions with 4+ choices",
+          "example": true,
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

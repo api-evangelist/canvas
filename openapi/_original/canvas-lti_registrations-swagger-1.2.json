@@ -1,0 +1,3164 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/lti_registrations",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations",
+      "description": "Returns all LTI registrations in the specified account.\nIncludes registrations created in this account, those set to 'allow' from a\nparent root account (like Site Admin) and 'on' for this account,\nand those enabled 'on' at the parent root account level.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List LTI Registrations in an account",
+          "notes": "Returns all LTI registrations in the specified account.\nIncludes registrations created in this account, those set to 'allow' from a\nparent root account (like Site Admin) and 'on' for this account,\nand those enabled 'on' at the parent root account level.",
+          "nickname": "list_lti_registrations_in_account_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "per_page",
+              "description": "The number of registrations to return per page. Defaults to 15.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "page",
+              "description": "The page number to return. Defaults to 1.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "sort",
+              "description": "The field to sort by. Choices are: name, nickname, lti_version, installed,\ninstalled_by, updated_by, updated, and on. Defaults to installed.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "dir",
+              "description": "The order to sort the given column by. Defaults to desc.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "Array of additional data to include. Always includes [account_binding].\n\n\"account_binding\":: the registration's binding to the given account\n\"configuration\":: the registration's Canvas-style tool configuration, without any overlays applied.\n\"overlaid_configuration\":: the registration's Canvas-style tool configuration, with all overlays applied.\n\"overlay\":: the registration's admin-defined configuration overlay",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ListLtiRegistrationsResponse"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps",
+      "description": "Returns all LTI registrations in the specified account.\nIncludes registrations created in this account, those set to 'allow' from a\nparent root account (like Site Admin) and 'on' for this account,\nand those enabled 'on' at the parent root account level.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List LTI Registrations in an account",
+          "notes": "Returns all LTI registrations in the specified account.\nIncludes registrations created in this account, those set to 'allow' from a\nparent root account (like Site Admin) and 'on' for this account,\nand those enabled 'on' at the parent root account level.",
+          "nickname": "list_lti_registrations_in_account_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "per_page",
+              "description": "The number of registrations to return per page. Defaults to 15.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "page",
+              "description": "The page number to return. Defaults to 1.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "sort",
+              "description": "The field to sort by. Choices are: name, nickname, lti_version, installed,\ninstalled_by, updated_by, updated, and on. Defaults to installed.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "dir",
+              "description": "The order to sort the given column by. Defaults to desc.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "Array of additional data to include. Always includes [account_binding].\n\n\"account_binding\":: the registration's binding to the given account\n\"configuration\":: the registration's Canvas-style tool configuration, without any overlays applied.\n\"overlaid_configuration\":: the registration's Canvas-style tool configuration, with all overlays applied.\n\"overlay\":: the registration's admin-defined configuration overlay",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ListLtiRegistrationsResponse"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}",
+      "description": "Return details about the specified LTI registration, including the\nconfiguration and account binding.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show an LTI Registration",
+          "notes": "Return details about the specified LTI registration, including the\nconfiguration and account binding.",
+          "nickname": "show_lti_registration_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "Array of additional data to include. Always includes [account_binding configuration].\n\n\"account_binding\":: the registration's binding to the given account\n\"configuration\":: the registration's Canvas-style tool configuration, without any overlays applied.\n\"overlaid_configuration\":: the registration's Canvas-style tool configuration, with all overlays applied.\n\"overlaid_legacy_configuration\":: the registration's legacy-style configuration, with all overlays applied.\n\"overlay\":: the registration's admin-defined configuration overlay\n\"overlay_versions\":: the registration's overlay's edit history",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}",
+      "description": "Return details about the specified LTI registration, including the\nconfiguration and account binding.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show an LTI Registration",
+          "notes": "Return details about the specified LTI registration, including the\nconfiguration and account binding.",
+          "nickname": "show_lti_registration_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "Array of additional data to include. Always includes [account_binding configuration].\n\n\"account_binding\":: the registration's binding to the given account\n\"configuration\":: the registration's Canvas-style tool configuration, without any overlays applied.\n\"overlaid_configuration\":: the registration's Canvas-style tool configuration, with all overlays applied.\n\"overlaid_legacy_configuration\":: the registration's legacy-style configuration, with all overlays applied.\n\"overlay\":: the registration's admin-defined configuration overlay\n\"overlay_versions\":: the registration's overlay's edit history",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations",
+      "description": "Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account\nbinding.\nTo install/create using Dynamic Registration, please use the\n{file:file.registration.html Dynamic Registration API}.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an LTI Registration",
+          "notes": "Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account\nbinding.\nTo install/create using Dynamic Registration, please use the\n{file:file.registration.html Dynamic Registration API}.",
+          "nickname": "create_lti_registration_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "description": "The name of the tool. If one isn't provided, it will be inferred from the configuration's title.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "admin_nickname",
+              "description": "A friendly nickname set by admins to override the tool name",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "vendor",
+              "description": "The vendor of the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "A description of the tool. Cannot exceed 2048 bytes.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "configuration",
+              "description": "[Required, Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "overlay",
+              "description": "[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "unified_tool_id",
+              "description": "The unique identifier for the tool, used for analytics. If not provided, one will be generated.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "lock_deploying",
+              "description": "When true, no new deployments of this registration can be created.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "\"on\"/\"off\"/\"allow\" set the account binding state directly (binding vocabulary).\n\"active\"/\"inactive\" set the registration state directly (registration vocabulary).\nAll five values update both the binding and the registration to equivalent states.\n\"allow\" is only valid for Site Admin registrations. Defaults to \"off\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "on",
+                "off",
+                "allow",
+                "active",
+                "inactive"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps",
+      "description": "Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account\nbinding.\nTo install/create using Dynamic Registration, please use the\n{file:file.registration.html Dynamic Registration API}.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an LTI Registration",
+          "notes": "Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account\nbinding.\nTo install/create using Dynamic Registration, please use the\n{file:file.registration.html Dynamic Registration API}.",
+          "nickname": "create_lti_registration_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "description": "The name of the tool. If one isn't provided, it will be inferred from the configuration's title.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "admin_nickname",
+              "description": "A friendly nickname set by admins to override the tool name",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "vendor",
+              "description": "The vendor of the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "A description of the tool. Cannot exceed 2048 bytes.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "configuration",
+              "description": "[Required, Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "overlay",
+              "description": "[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "unified_tool_id",
+              "description": "The unique identifier for the tool, used for analytics. If not provided, one will be generated.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "lock_deploying",
+              "description": "When true, no new deployments of this registration can be created.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "\"on\"/\"off\"/\"allow\" set the account binding state directly (binding vocabulary).\n\"active\"/\"inactive\" set the registration state directly (registration vocabulary).\nAll five values update both the binding and the registration to equivalent states.\n\"allow\" is only valid for Site Admin registrations. Defaults to \"off\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "on",
+                "off",
+                "allow",
+                "active",
+                "inactive"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registration_by_client_id/{client_id}",
+      "description": "Returns details about the specified LTI registration, including the\nconfiguration and account binding.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show an LTI Registration (via the client_id)",
+          "notes": "Returns details about the specified LTI registration, including the\nconfiguration and account binding.",
+          "nickname": "show_lti_registration_via_client_id_lti_registration_by_client_id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "client_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/app_by_client_id/{client_id}",
+      "description": "Returns details about the specified LTI registration, including the\nconfiguration and account binding.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show an LTI Registration (via the client_id)",
+          "notes": "Returns details about the specified LTI registration, including the\nconfiguration and account binding.",
+          "nickname": "show_lti_registration_via_client_id_app_by_client_id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "client_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/by_utid/{utid}",
+      "description": "Returns an LTI registration by looking up its unified_tool_id.\nSearches both manual configurations and IMS registrations.\nOnly returns registrations that are active and accessible from the\ncurrent account (owned by account, Site Admin, or has binding).",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration by Unified Tool ID",
+          "notes": "Returns an LTI registration by looking up its unified_tool_id.\nSearches both manual configurations and IMS registrations.\nOnly returns registrations that are active and accessible from the\ncurrent account (owned by account, Site Admin, or has binding).",
+          "nickname": "get_lti_registration_by_unified_tool_id_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "utid",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/by_utid/{utid}",
+      "description": "Returns an LTI registration by looking up its unified_tool_id.\nSearches both manual configurations and IMS registrations.\nOnly returns registrations that are active and accessible from the\ncurrent account (owned by account, Site Admin, or has binding).",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration by Unified Tool ID",
+          "notes": "Returns an LTI registration by looking up its unified_tool_id.\nSearches both manual configurations and IMS registrations.\nOnly returns registrations that are active and accessible from the\ncurrent account (owned by account, Site Admin, or has binding).",
+          "nickname": "get_lti_registration_by_unified_tool_id_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "utid",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/install_status/{client_id}",
+      "description": "Returns the local installation status for a Site Admin LTI registration.\nIf the developer key's registration is in Site Admin, returns the local copy\nin the current account (if installed). If the registration is already in the\ncurrent account, returns it directly.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Check LTI Registration Install Status",
+          "notes": "Returns the local installation status for a Site Admin LTI registration.\nIf the developer key's registration is in Site Admin, returns the local copy\nin the current account (if installed). If the registration is already in the\ncurrent account, returns it directly.",
+          "nickname": "check_lti_registration_install_status_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "client_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/install_status/{client_id}",
+      "description": "Returns the local installation status for a Site Admin LTI registration.\nIf the developer key's registration is in Site Admin, returns the local copy\nin the current account (if installed). If the registration is already in the\ncurrent account, returns it directly.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Check LTI Registration Install Status",
+          "notes": "Returns the local installation status for a Site Admin LTI registration.\nIf the developer key's registration is in Site Admin, returns the local copy\nin the current account (if installed). If the registration is already in the\ncurrent account, returns it directly.",
+          "nickname": "check_lti_registration_install_status_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "client_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}",
+      "description": "Update the specified LTI registration with the provided parameters. Note that updating the base tool configuration\nof a registration that is associated with a Dynamic Registration will return a 422. All other fields can be updated\nfreely.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update an LTI Registration",
+          "notes": "Update the specified LTI registration with the provided parameters. Note that updating the base tool configuration\nof a registration that is associated with a Dynamic Registration will return a 422. All other fields can be updated\nfreely.",
+          "nickname": "update_lti_registration_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "description": "The name of the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "admin_nickname",
+              "description": "The admin-configured friendly display name for the registration",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "A description of the tool. Cannot exceed 2048 bytes.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "configuration",
+              "description": "[Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool. Note that updating the base tool configuration of a registration associated with a Dynamic Registration is not allowed.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "overlay",
+              "description": "[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration. Note that updating the overlay of a registration associated with a Dynamic Registration IS allowed.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "\"on\"/\"off\"/\"allow\" set the account binding state directly (binding vocabulary) and will be deprecated soon.\n\"active\"/\"inactive\" set the registration state directly (registration vocabulary).\nAll five values update both the binding and the registration to equivalent states.\n\"allow\" is only valid for Site Admin registrations.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "on",
+                "off",
+                "allow",
+                "active",
+                "inactive"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "A comment explaining why this change was made. Cannot exceed 2000 characters.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "lock_deploying",
+              "description": "When true, no new deployments of this registration can be created.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}",
+      "description": "Update the specified LTI registration with the provided parameters. Note that updating the base tool configuration\nof a registration that is associated with a Dynamic Registration will return a 422. All other fields can be updated\nfreely.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update an LTI Registration",
+          "notes": "Update the specified LTI registration with the provided parameters. Note that updating the base tool configuration\nof a registration that is associated with a Dynamic Registration will return a 422. All other fields can be updated\nfreely.",
+          "nickname": "update_lti_registration_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "description": "The name of the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "admin_nickname",
+              "description": "The admin-configured friendly display name for the registration",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "A description of the tool. Cannot exceed 2048 bytes.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "configuration",
+              "description": "[Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool. Note that updating the base tool configuration of a registration associated with a Dynamic Registration is not allowed.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "overlay",
+              "description": "[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration. Note that updating the overlay of a registration associated with a Dynamic Registration IS allowed.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "\"on\"/\"off\"/\"allow\" set the account binding state directly (binding vocabulary) and will be deprecated soon.\n\"active\"/\"inactive\" set the registration state directly (registration vocabulary).\nAll five values update both the binding and the registration to equivalent states.\n\"allow\" is only valid for Site Admin registrations.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "on",
+                "off",
+                "allow",
+                "active",
+                "inactive"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "A comment explaining why this change was made. Cannot exceed 2000 characters.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "lock_deploying",
+              "description": "When true, no new deployments of this registration can be created.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/reset",
+      "description": "Reset the specified LTI registration to its default settings in this context. This removes all customizations\nthat were present in the overlay associated with this context.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Reset an LTI Registration to Defaults",
+          "notes": "Reset the specified LTI registration to its default settings in this context. This removes all customizations\nthat were present in the overlay associated with this context.",
+          "nickname": "reset_lti_registration_to_defaults_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/reset",
+      "description": "Reset the specified LTI registration to its default settings in this context. This removes all customizations\nthat were present in the overlay associated with this context.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Reset an LTI Registration to Defaults",
+          "notes": "Reset the specified LTI registration to its default settings in this context. This removes all customizations\nthat were present in the overlay associated with this context.",
+          "nickname": "reset_lti_registration_to_defaults_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}",
+      "description": "Remove the specified LTI registration",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete an LTI Registration",
+          "notes": "Remove the specified LTI registration",
+          "nickname": "delete_lti_registration_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}",
+      "description": "Remove the specified LTI registration",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete an LTI Registration",
+          "notes": "Remove the specified LTI registration",
+          "nickname": "delete_lti_registration_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/bind",
+      "description": "Enable or disable the specified LTI registration for the specified root account.\nTo enable an inherited registration (eg from Site Admin), pass the registration's global ID.\n\nOnly allowed for root accounts.\n\n<b>Specifics for centrally-managed/federated consortia:</b>\nChild root accounts may not bind inherited registrations.\nFor parent root account, binding also applies to all child root accounts.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Bind an LTI Registration to a Root Account",
+          "notes": "Enable or disable the specified LTI registration for the specified root account.\nTo enable an inherited registration (eg from Site Admin), pass the registration's global ID.\n\nOnly allowed for root accounts.\n\n<b>Specifics for centrally-managed/federated consortia:</b>\nChild root accounts may not bind inherited registrations.\nFor parent root account, binding also applies to all child root accounts.",
+          "nickname": "bind_lti_registration_to_root_account_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "The desired state for this registration/account binding.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "on",
+                "off"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationAccountBinding"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/bind",
+      "description": "Enable or disable the specified LTI registration for the specified root account.\nTo enable an inherited registration (eg from Site Admin), pass the registration's global ID.\n\nOnly allowed for root accounts.\n\n<b>Specifics for centrally-managed/federated consortia:</b>\nChild root accounts may not bind inherited registrations.\nFor parent root account, binding also applies to all child root accounts.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Bind an LTI Registration to a Root Account",
+          "notes": "Enable or disable the specified LTI registration for the specified root account.\nTo enable an inherited registration (eg from Site Admin), pass the registration's global ID.\n\nOnly allowed for root accounts.\n\n<b>Specifics for centrally-managed/federated consortia:</b>\nChild root accounts may not bind inherited registrations.\nFor parent root account, binding also applies to all child root accounts.",
+          "nickname": "bind_lti_registration_to_root_account_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "The desired state for this registration/account binding.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "on",
+                "off"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationAccountBinding"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/bind",
+      "description": "Deletes the account binding for this registration, effectively removing it from the account.\n\nOnly available when the lti_deactivate_registrations feature flag is enabled.\nOnly valid for inherited (Site Admin) registrations — use destroy for registrations owned by this account.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Remove an Inherited LTI Registration",
+          "notes": "Deletes the account binding for this registration, effectively removing it from the account.\n\nOnly available when the lti_deactivate_registrations feature flag is enabled.\nOnly valid for inherited (Site Admin) registrations — use destroy for registrations owned by this account.",
+          "nickname": "remove_inherited_lti_registration_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationAccountBinding"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/bind",
+      "description": "Deletes the account binding for this registration, effectively removing it from the account.\n\nOnly available when the lti_deactivate_registrations feature flag is enabled.\nOnly valid for inherited (Site Admin) registrations — use destroy for registrations owned by this account.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Remove an Inherited LTI Registration",
+          "notes": "Deletes the account binding for this registration, effectively removing it from the account.\n\nOnly available when the lti_deactivate_registrations feature flag is enabled.\nOnly valid for inherited (Site Admin) registrations — use destroy for registrations owned by this account.",
+          "nickname": "remove_inherited_lti_registration_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationAccountBinding"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/install_from_template",
+      "description": "This endpoint installs a local copy of a \"template\" LTI registration from Site Admin into the specified account.\nThe local copy can then be customized for the account without affecting the template registration.\n\nOnly allowed for root accounts and for registrations from Site Admin marked as templates.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Install an LTI Registration from a Template",
+          "notes": "This endpoint installs a local copy of a \"template\" LTI registration from Site Admin into the specified account.\nThe local copy can then be customized for the account without affecting the template registration.\n\nOnly allowed for root accounts and for registrations from Site Admin marked as templates.",
+          "nickname": "install_lti_registration_from_template_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/install_from_template",
+      "description": "This endpoint installs a local copy of a \"template\" LTI registration from Site Admin into the specified account.\nThe local copy can then be customized for the account without affecting the template registration.\n\nOnly allowed for root accounts and for registrations from Site Admin marked as templates.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Install an LTI Registration from a Template",
+          "notes": "This endpoint installs a local copy of a \"template\" LTI registration from Site Admin into the specified account.\nThe local copy can then be customized for the account without affecting the template registration.\n\nOnly allowed for root accounts and for registrations from Site Admin marked as templates.",
+          "nickname": "install_lti_registration_from_template_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{registration_id}/deployments/{deployment_id}/context_search",
+      "description": "This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.\n\nSearch for accounts and courses that match the search term on name, SIS id, or course code.\nReturns all matching accounts and courses, including those nested in sub-accounts.\nReturns bare-bones data about each account and course, and only up to 20 of each.\nUsed to populate the search dropdowns when managing LTI registration availability.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Search for Accounts and Courses",
+          "notes": "This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.\n\nSearch for accounts and courses that match the search term on name, SIS id, or course code.\nReturns all matching accounts and courses, including those nested in sub-accounts.\nReturns bare-bones data about each account and course, and only up to 20 of each.\nUsed to populate the search dropdowns when managing LTI registration availability.",
+          "nickname": "search_for_accounts_and_courses_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "deployment_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "only_children_of",
+              "description": "Account ID. If provided, only searches within this account and only returns direct children of this account.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "search_term",
+              "description": "String to search for in account names, SIS ids, or course codes.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextSearchResponse"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{registration_id}/deployments/{deployment_id}/context_search",
+      "description": "This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.\n\nSearch for accounts and courses that match the search term on name, SIS id, or course code.\nReturns all matching accounts and courses, including those nested in sub-accounts.\nReturns bare-bones data about each account and course, and only up to 20 of each.\nUsed to populate the search dropdowns when managing LTI registration availability.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Search for Accounts and Courses",
+          "notes": "This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.\n\nSearch for accounts and courses that match the search term on name, SIS id, or course code.\nReturns all matching accounts and courses, including those nested in sub-accounts.\nReturns bare-bones data about each account and course, and only up to 20 of each.\nUsed to populate the search dropdowns when managing LTI registration availability.",
+          "nickname": "search_for_accounts_and_courses_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "deployment_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "only_children_of",
+              "description": "Account ID. If provided, only searches within this account and only returns direct children of this account.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "search_term",
+              "description": "String to search for in account names, SIS ids, or course codes.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextSearchResponse"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/overlay_history",
+      "description": "Returns the overlay history items for the specified LTI registration.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration Overlay History",
+          "notes": "Returns the overlay history items for the specified LTI registration.",
+          "nickname": "get_lti_registration_overlay_history_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "description": "The maximum number of history items to return. Defaults to 10. Maximum allowed is 100.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Lti::OverlayVersion"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/overlay_history",
+      "description": "Returns the overlay history items for the specified LTI registration.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration Overlay History",
+          "notes": "Returns the overlay history items for the specified LTI registration.",
+          "nickname": "get_lti_registration_overlay_history_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "description": "The maximum number of history items to return. Defaults to 10. Maximum allowed is 100.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Lti::OverlayVersion"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/history",
+      "description": "Returns the history entries for the specified LTI registration.\nThis endpoint provides comprehensive change tracking for all fields associated\nwith the registration, including registration fields, developer key changes,\ninternal configuration changes, and overlay changes. Supports pagination using the `page` and `per_page` parameters.\nThe default page size is 10.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration History",
+          "notes": "Returns the history entries for the specified LTI registration.\nThis endpoint provides comprehensive change tracking for all fields associated\nwith the registration, including registration fields, developer key changes,\ninternal configuration changes, and overlay changes. Supports pagination using the `page` and `per_page` parameters.\nThe default page size is 10.",
+          "nickname": "get_lti_registration_history_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Lti::RegistrationHistoryEntry"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/history",
+      "description": "Returns the history entries for the specified LTI registration.\nThis endpoint provides comprehensive change tracking for all fields associated\nwith the registration, including registration fields, developer key changes,\ninternal configuration changes, and overlay changes. Supports pagination using the `page` and `per_page` parameters.\nThe default page size is 10.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration History",
+          "notes": "Returns the history entries for the specified LTI registration.\nThis endpoint provides comprehensive change tracking for all fields associated\nwith the registration, including registration fields, developer key changes,\ninternal configuration changes, and overlay changes. Supports pagination using the `page` and `per_page` parameters.\nThe default page size is 10.",
+          "nickname": "get_lti_registration_history_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Lti::RegistrationHistoryEntry"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/update_requests/{update_request_id}",
+      "description": "Retrieves details about a specific registration update request.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration Update Request",
+          "notes": "Retrieves details about a specific registration update request.",
+          "nickname": "get_lti_registration_update_request_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The id of the registration.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "update_request_id",
+              "description": "The id of the registration update request to retrieve.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "no description",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "String] Array of additional information to include [configuration",
+                "lti_registration"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationUpdateRequest"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/update_requests/{update_request_id}",
+      "description": "Retrieves details about a specific registration update request.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get LTI Registration Update Request",
+          "notes": "Retrieves details about a specific registration update request.",
+          "nickname": "get_lti_registration_update_request_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The id of the registration.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "update_request_id",
+              "description": "The id of the registration update request to retrieve.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include",
+              "description": "no description",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "String] Array of additional information to include [configuration",
+                "lti_registration"
+              ]
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationUpdateRequest"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/latest_update_request",
+      "description": "Retrieves the most recent update request for a registration, regardless of its status.\nReturns 404 if there are no update requests for this registration.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Latest LTI Registration Update Request",
+          "notes": "Retrieves the most recent update request for a registration, regardless of its status.\nReturns 404 if there are no update requests for this registration.",
+          "nickname": "get_latest_lti_registration_update_request_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The id of the registration.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationUpdateRequest"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/latest_update_request",
+      "description": "Retrieves the most recent update request for a registration, regardless of its status.\nReturns 404 if there are no update requests for this registration.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Latest LTI Registration Update Request",
+          "notes": "Retrieves the most recent update request for a registration, regardless of its status.\nReturns 404 if there are no update requests for this registration.",
+          "nickname": "get_latest_lti_registration_update_request_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The id of the registration.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::RegistrationUpdateRequest"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{id}/update_requests/{update_request_id}/apply",
+      "description": "Applies a registration update request to an existing registration,\nreplacing the existing configuration and overlay with the new values.\nIf the request is rejected, marks it as rejected without applying changes.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Apply LTI Registration Update Requst",
+          "notes": "Applies a registration update request to an existing registration,\nreplacing the existing configuration and overlay with the new values.\nIf the request is rejected, marks it as rejected without applying changes.",
+          "nickname": "apply_lti_registration_update_requst_lti_registrations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The id of the registration to update.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "update_request_id",
+              "description": "The id of the registration update request to apply.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "accepted",
+              "description": "Whether to accept (true) or reject (false) the registration update request.",
+              "type": "boolean",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "overlay",
+              "description": "Optional overlay data to apply on top of the new configuration.",
+              "type": "LtiConfigurationOverlay",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "Optional comment explaining the reason for applying this update.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/apps/{id}/update_requests/{update_request_id}/apply",
+      "description": "Applies a registration update request to an existing registration,\nreplacing the existing configuration and overlay with the new values.\nIf the request is rejected, marks it as rejected without applying changes.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Apply LTI Registration Update Requst",
+          "notes": "Applies a registration update request to an existing registration,\nreplacing the existing configuration and overlay with the new values.\nIf the request is rejected, marks it as rejected without applying changes.",
+          "nickname": "apply_lti_registration_update_requst_apps",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "The id of the registration to update.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "update_request_id",
+              "description": "The id of the registration update request to apply.",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "accepted",
+              "description": "Whether to accept (true) or reject (false) the registration update request.",
+              "type": "boolean",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "overlay",
+              "description": "Optional overlay data to apply on top of the new configuration.",
+              "type": "LtiConfigurationOverlay",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "Optional comment explaining the reason for applying this update.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::Registration"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "Lti::Registration": {
+      "id": "Lti::Registration",
+      "description": "A registration of an LTI tool in Canvas",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "the Canvas ID of the Lti::Registration object",
+          "example": 2,
+          "type": "integer"
+        },
+        "name": {
+          "description": "Tool-provided registration name",
+          "example": "My LTI Tool",
+          "type": "string"
+        },
+        "admin_nickname": {
+          "description": "Admin-configured friendly display name",
+          "example": "My LTI Tool (Campus A)",
+          "type": "string"
+        },
+        "icon_url": {
+          "description": "Tool-provided URL to the tool's icon",
+          "example": "https://mytool.com/icon.png",
+          "type": "string"
+        },
+        "vendor": {
+          "description": "Tool-provided name of the tool vendor",
+          "example": "My Tool LLC",
+          "type": "string"
+        },
+        "account_id": {
+          "description": "The Canvas id of the account that owns this registration",
+          "example": 1,
+          "type": "integer"
+        },
+        "internal_service": {
+          "description": "Flag indicating if registration is internally-owned",
+          "example": false,
+          "type": "boolean"
+        },
+        "lock_deploying": {
+          "description": "Flag indicating if registration is locked for deployment",
+          "example": false,
+          "type": "boolean"
+        },
+        "inherited": {
+          "description": "Flag indicating if registration is owned by this account, or inherited from Site Admin",
+          "example": false,
+          "type": "boolean"
+        },
+        "template_registration_id": {
+          "description": "The Canvas ID of the template registration, if this registration is inherited from a template",
+          "example": 1,
+          "type": "integer"
+        },
+        "lti_version": {
+          "description": "LTI version of the registration, either 1.1 or 1.3",
+          "example": "1.3",
+          "type": "string"
+        },
+        "dynamic_registration": {
+          "description": "Flag indicating if registration was created using LTI Dynamic Registration. Only present if lti_version is 1.3",
+          "example": false,
+          "type": "boolean"
+        },
+        "workflow_state": {
+          "description": "The state of the registration",
+          "example": "active",
+          "type": "string",
+          "enum": [
+            "active",
+            "deleted"
+          ]
+        },
+        "created_at": {
+          "description": "Timestamp of the registration's creation",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "Timestamp of the registration's last update",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "created_by": {
+          "description": "The user that created this registration. Not always present. If a string, this registration was created by Instructure.",
+          "example": {
+            "type": "User"
+          },
+          "type": "string|User",
+          "$ref": "User"
+        },
+        "updated_by": {
+          "description": "The user that last updated this registration. Not always present. If a string, this registration was last updated by Instructure.",
+          "example": {
+            "type": "User"
+          },
+          "type": "string|User",
+          "$ref": "User"
+        },
+        "root_account_id": {
+          "description": "The Canvas id of the root account",
+          "example": 1,
+          "type": "integer"
+        },
+        "account_binding": {
+          "description": "The binding for this registration and this account",
+          "example": {
+            "type": "Lti::RegistrationAccountBinding"
+          },
+          "$ref": "Lti::RegistrationAccountBinding"
+        },
+        "configuration": {
+          "description": "The Canvas-style tool configuration for this registration",
+          "example": {
+            "type": "Lti::ToolConfiguration"
+          },
+          "$ref": "Lti::ToolConfiguration"
+        }
+      }
+    },
+    "Lti::RegistrationAccountBinding": {
+      "id": "Lti::RegistrationAccountBinding",
+      "description": "A binding between an LTI registration and an account, defining the registration's availability in that account",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "the Canvas ID of the Lti::RegistrationAccountBinding object",
+          "example": 10,
+          "type": "integer"
+        },
+        "account_id": {
+          "description": "The Canvas id of the account",
+          "example": 1,
+          "type": "integer"
+        },
+        "root_account_id": {
+          "description": "The Canvas id of the root account",
+          "example": 1,
+          "type": "integer"
+        },
+        "registration_id": {
+          "description": "The Canvas id of the Lti::Registration",
+          "example": 2,
+          "type": "integer"
+        },
+        "workflow_state": {
+          "description": "The state of the binding (on, off, allow, deleted)",
+          "example": "on",
+          "type": "string",
+          "enum": [
+            "on",
+            "off",
+            "allow",
+            "deleted"
+          ]
+        },
+        "created_at": {
+          "description": "Timestamp of the binding's creation",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "Timestamp of the binding's last update",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "created_by": {
+          "description": "The user that created this binding",
+          "example": {
+            "type": "User"
+          },
+          "$ref": "User"
+        },
+        "updated_by": {
+          "description": "The user that last updated this binding",
+          "example": {
+            "type": "User"
+          },
+          "$ref": "User"
+        }
+      }
+    },
+    "Lti::LegacyConfiguration": {
+      "id": "Lti::LegacyConfiguration",
+      "description": "A legacy configuration format for LTI 1.3 tools.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "title": {
+          "description": "The display name of the tool",
+          "example": "My Tool",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the tool",
+          "example": "My Tool is built by me, for me.",
+          "type": "string"
+        },
+        "custom_fields": {
+          "description": "A key-value listing of all custom fields the tool has requested",
+          "example": {
+            "context_title": "$Context.title",
+            "special_tool_thing": "foo1234"
+          },
+          "type": "object"
+        },
+        "target_link_uri": {
+          "description": "The default launch URL for the tool. Overridable by placements.",
+          "example": "https://mytool.com/launch",
+          "type": "string"
+        },
+        "oidc_initiation_url": {
+          "description": "1.3 specific. URL used for initial login request",
+          "example": "https://mytool.com/1_3/login",
+          "type": "string"
+        },
+        "oidc_initiation_urls": {
+          "description": "1.3 specific. Region-specific login URLs for data protection compliance",
+          "example": {
+            "eu-west-1": "https://dub.mytool.com/1_3/login"
+          },
+          "type": "object"
+        },
+        "public_jwk": {
+          "description": "1.3 specific. The tool's public JWK in JSON format. Discouraged in favor of a url hosting a JWK set.",
+          "example": {
+            "e": "AQAB",
+            "etc": "etc"
+          },
+          "type": "object"
+        },
+        "public_jwk_url": {
+          "description": "1.3 specific. The tool-hosted URL containing its public JWK keyset. Canvas may cache JWKs up to 5 minutes.",
+          "example": "https://mytool.com/1_3/jwks",
+          "type": "string"
+        },
+        "scopes": {
+          "description": "1.3 specific. List of LTI scopes requested by the tool",
+          "example": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "extensions": {
+          "description": "Array of extensions for the tool",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "platform",
+              "settings"
+            ],
+            "properties": {
+              "platform": {
+                "description": "Must be canvas.instructure.com",
+                "example": "canvas.instructure.com",
+                "type": "string"
+              },
+              "domain": {
+                "description": "The domain of the tool",
+                "example": "legacytool.com",
+                "type": "string"
+              },
+              "tool_id": {
+                "description": "Tool-provided identifier, can be anything",
+                "example": "LegacyTool",
+                "type": "string"
+              },
+              "privacy_level": {
+                "description": "Canvas-defined privacy level for the tool",
+                "example": "public",
+                "type": "string",
+                "enum": [
+                  "public",
+                  "anonymous",
+                  "name_only",
+                  "email_only"
+                ]
+              },
+              "settings": {
+                "description": "Settings for the tool",
+                "type": "object",
+                "required": [
+                  "placements"
+                ],
+                "properties": {
+                  "text": {
+                    "description": "The text of the link to the tool (if applicable).",
+                    "example": "Hello World",
+                    "type": "object"
+                  },
+                  "labels": {
+                    "description": "Canvas-specific i18n for placement text. See the Navigation Placement docs.",
+                    "example": {
+                      "en": "Hello World",
+                      "es": "Hola Mundo"
+                    },
+                    "type": "object"
+                  },
+                  "custom_fields": {
+                    "description": "Placement-specific custom fields to send in the launch. Merged with tool-level custom fields.",
+                    "example": {
+                      "special_placement_thing": "foo1234"
+                    },
+                    "type": "object"
+                  },
+                  "selection_height": {
+                    "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+                    "example": 800,
+                    "type": "number"
+                  },
+                  "selection_width": {
+                    "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+                    "example": 1000,
+                    "type": "number"
+                  },
+                  "launch_height": {
+                    "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+                    "example": 800,
+                    "type": "number"
+                  },
+                  "launch_width": {
+                    "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+                    "example": 1000,
+                    "type": "number"
+                  },
+                  "icon_url": {
+                    "description": "Default icon URL. Not valid for all placements. Overrides tool-level icon_url.",
+                    "example": "https://mytool.com/icon.png",
+                    "type": "string"
+                  },
+                  "canvas_icon_class": {
+                    "description": "The HTML class name of an InstUI Icon. Used instead of an icon_url in select placements.",
+                    "example": "icon-lti",
+                    "type": "string"
+                  },
+                  "required_permissions": {
+                    "description": "Comma-separated list of Canvas permission short names required for a user to launch from this placement.",
+                    "example": "manage_course_content_edit,manage_course_content_read",
+                    "type": "string"
+                  },
+                  "windowTarget": {
+                    "description": "When set to '_blank', opens placement in a new tab.",
+                    "example": "_blank",
+                    "type": "string"
+                  },
+                  "display_type": {
+                    "description": "The Canvas layout to use when launching the tool. See the Navigation Placement docs.",
+                    "example": "full_width_in_context",
+                    "type": "string",
+                    "enum": [
+                      "default",
+                      "full_width",
+                      "full_width_in_context",
+                      "full_width_with_nav",
+                      "in_nav_context",
+                      "borderless"
+                    ]
+                  },
+                  "url": {
+                    "description": "The 1.1 launch URL for this placement. Overrides tool-level url.",
+                    "example": "https://mytool.com/launch?placement=course_navigation",
+                    "type": "string"
+                  },
+                  "target_link_uri": {
+                    "description": "The 1.3 launch URL for this placement. Overrides tool-level target_link_uri.",
+                    "example": "https://mytool.com/launch?placement=course_navigation",
+                    "type": "string"
+                  },
+                  "visibility": {
+                    "description": "Specifies types of users that can see this placement. Only valid for some placements like course_navigation.",
+                    "example": "admins",
+                    "type": "string"
+                  },
+                  "prefer_sis_email": {
+                    "description": "1.1 specific. If true, the tool will send the SIS email in the lis_person_contact_email_primary launch property",
+                    "example": false,
+                    "type": "boolean"
+                  },
+                  "oauth_compliant": {
+                    "description": "1.1 specific. If true, query parameters from the launch URL will not be copied to the POST body.",
+                    "example": true,
+                    "type": "boolean"
+                  },
+                  "icon_svg_path_64": {
+                    "description": "An SVG to use instead of an icon_url. Only valid for global_navigation.",
+                    "example": "M100,37L70.1,10.5v176H37...",
+                    "type": "string"
+                  },
+                  "default": {
+                    "description": "Default display state for course_navigation. If 'enabled', will show in course sidebar. If 'disabled', will be hidden.",
+                    "example": "disabled",
+                    "type": "string"
+                  },
+                  "accept_media_types": {
+                    "description": "Comma-separated list of media types that the tool can accept. Only valid for file_item.",
+                    "example": "image/*,video/*",
+                    "type": "string"
+                  },
+                  "use_tray": {
+                    "description": "If true, the tool will be launched in the tray. Only used by the editor_button placement.",
+                    "example": true,
+                    "type": "boolean"
+                  },
+                  "placements": {
+                    "description": "List of placements configured by the tool",
+                    "type": "array",
+                    "items": {
+                      "$ref": "Lti::Placement"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Lti::ToolConfiguration": {
+      "id": "Lti::ToolConfiguration",
+      "description": "A Registration's Canvas-specific tool configuration.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "title": {
+          "description": "The display name of the tool",
+          "example": "My Tool",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the tool",
+          "example": "My Tool is built by me, for me.",
+          "type": "string"
+        },
+        "custom_fields": {
+          "description": "A key-value listing of all custom fields the tool has requested",
+          "example": {
+            "context_title": "$Context.title",
+            "special_tool_thing": "foo1234"
+          },
+          "type": "object"
+        },
+        "target_link_uri": {
+          "description": "The default launch URL for the tool. Overridable by placements.",
+          "example": "https://mytool.com/launch",
+          "type": "string"
+        },
+        "domain": {
+          "description": "The tool's main domain. Highly recommended for deep linking, used to match links to the tool.",
+          "example": "mytool.com",
+          "type": "string"
+        },
+        "tool_id": {
+          "description": "Tool-provided identifier, can be anything",
+          "example": "MyTool",
+          "type": "string"
+        },
+        "privacy_level": {
+          "description": "Canvas-defined privacy level for the tool",
+          "example": "public",
+          "type": "string",
+          "enum": [
+            "public",
+            "anonymous",
+            "name_only",
+            "email_only"
+          ]
+        },
+        "oidc_initiation_url": {
+          "description": "1.3 specific. URL used for initial login request",
+          "example": "https://mytool.com/1_3/login",
+          "type": "string"
+        },
+        "oidc_initiation_urls": {
+          "description": "1.3 specific. Region-specific login URLs for data protection compliance",
+          "example": {
+            "eu-west-1": "https://dub.mytool.com/1_3/login"
+          },
+          "type": "object"
+        },
+        "public_jwk": {
+          "description": "1.3 specific. The tool's public JWK in JSON format. Discouraged in favor of a url hosting a JWK set.",
+          "example": {
+            "e": "AQAB",
+            "etc": "etc"
+          },
+          "type": "object"
+        },
+        "public_jwk_url": {
+          "description": "1.3 specific. The tool-hosted URL containing its public JWK keyset. Canvas may cache JWKs up to 5 minutes.",
+          "example": "https://mytool.com/1_3/jwks",
+          "type": "string"
+        },
+        "scopes": {
+          "description": "1.3 specific. List of LTI scopes requested by the tool",
+          "example": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "redirect_uris": {
+          "description": "1.3 specific. List of possible launch URLs for after the Canvas authorize redirect step",
+          "example": [
+            "https://mytool.com/launch",
+            "https://mytool.com/1_3/launch"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "launch_settings": {
+          "description": "Default launch settings for all placements",
+          "example": {
+            "message_type": "LtiResourceLinkRequest"
+          },
+          "$ref": "Lti::LaunchSettings"
+        },
+        "placements": {
+          "description": "List of placements configured by the tool",
+          "example": [
+            {
+              "type": "Lti::Placement"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "Lti::Placement"
+          }
+        }
+      }
+    },
+    "Lti::LaunchSettings": {
+      "id": "Lti::LaunchSettings",
+      "description": "Default launch settings for all placements",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "message_type": {
+          "description": "Default message type for all placements",
+          "example": "LtiResourceLinkRequest",
+          "type": "string",
+          "enum": [
+            "LtiResourceLinkRequest",
+            "LtiDeepLinkingRequest"
+          ]
+        },
+        "text": {
+          "description": "The text of the link to the tool (if applicable).",
+          "example": "Hello World",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Canvas-specific i18n for placement text. See the Navigation Placement docs.",
+          "example": {
+            "en": "Hello World",
+            "es": "Hola Mundo"
+          },
+          "type": "object"
+        },
+        "custom_fields": {
+          "description": "Placement-specific custom fields to send in the launch. Merged with tool-level custom fields.",
+          "example": {
+            "special_placement_thing": "foo1234"
+          },
+          "type": "object"
+        },
+        "selection_height": {
+          "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+          "example": 800,
+          "type": "number"
+        },
+        "selection_width": {
+          "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+          "example": 1000,
+          "type": "number"
+        },
+        "launch_height": {
+          "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+          "example": 800,
+          "type": "number"
+        },
+        "launch_width": {
+          "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+          "example": 1000,
+          "type": "number"
+        },
+        "icon_url": {
+          "description": "Default icon URL. Not valid for all placements. Overrides tool-level icon_url.",
+          "example": "https://mytool.com/icon.png",
+          "type": "string"
+        },
+        "canvas_icon_class": {
+          "description": "The HTML class name of an InstUI Icon. Used instead of an icon_url in select placements.",
+          "example": "icon-lti",
+          "type": "string"
+        },
+        "required_permissions": {
+          "description": "Comma-separated list of Canvas permission short names required for a user to launch from this placement.",
+          "example": "manage_course_content_edit,manage_course_content_read",
+          "type": "string"
+        },
+        "windowTarget": {
+          "description": "When set to '_blank', opens placement in a new tab.",
+          "example": "_blank",
+          "type": "string"
+        },
+        "display_type": {
+          "description": "The Canvas layout to use when launching the tool. See the Navigation Placement docs.",
+          "example": "full_width_in_context",
+          "type": "string",
+          "enum": [
+            "default",
+            "full_width",
+            "full_width_in_context",
+            "full_width_with_nav",
+            "in_nav_context",
+            "borderless"
+          ]
+        },
+        "url": {
+          "description": "The 1.1 launch URL for this placement. Overrides tool-level url.",
+          "example": "https://mytool.com/launch?placement=course_navigation",
+          "type": "string"
+        },
+        "target_link_uri": {
+          "description": "The 1.3 launch URL for this placement. Overrides tool-level target_link_uri.",
+          "example": "https://mytool.com/launch?placement=course_navigation",
+          "type": "string"
+        },
+        "visibility": {
+          "description": "Specifies types of users that can see this placement. Only valid for some placements like course_navigation.",
+          "example": "admins",
+          "type": "string"
+        },
+        "prefer_sis_email": {
+          "description": "1.1 specific. If true, the tool will send the SIS email in the lis_person_contact_email_primary launch property",
+          "example": false,
+          "type": "boolean"
+        },
+        "oauth_compliant": {
+          "description": "1.1 specific. If true, query parameters from the launch URL will not be copied to the POST body.",
+          "example": true,
+          "type": "boolean"
+        },
+        "icon_svg_path_64": {
+          "description": "An SVG to use instead of an icon_url. Only valid for global_navigation.",
+          "example": "M100,37L70.1,10.5v176H37...",
+          "type": "string"
+        },
+        "default": {
+          "description": "Default display state for course_navigation. If 'enabled', will show in course sidebar. If 'disabled', will be hidden.",
+          "example": "disabled",
+          "type": "string"
+        },
+        "accept_media_types": {
+          "description": "Comma-separated list of media types that the tool can accept. Only valid for file_item.",
+          "example": "image/*,video/*",
+          "type": "string"
+        },
+        "use_tray": {
+          "description": "If true, the tool will be launched in the tray. Only used by the editor_button placement.",
+          "example": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "Lti::Placement": {
+      "id": "Lti::Placement",
+      "description": "The tool's configuration for a specific placement",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "placement": {
+          "description": "The name of the placement.",
+          "example": "course_navigation",
+          "type": "string",
+          "enum": [
+            "account_navigation",
+            "analytics_hub",
+            "assignment_edit",
+            "assignment_group_menu",
+            "assignment_index_menu",
+            "assignment_menu",
+            "assignment_selection",
+            "assignment_view",
+            "collaboration",
+            "conference_selection",
+            "course_assignments_menu",
+            "course_home_sub_navigation",
+            "course_navigation",
+            "course_settings_sub_navigation",
+            "discussion_topic_index_menu",
+            "discussion_topic_menu",
+            "file_index_menu",
+            "file_menu",
+            "global_navigation",
+            "homework_submission",
+            "link_selection",
+            "migration_selection",
+            "module_group_menu",
+            "module_index_menu",
+            "module_index_menu_modal",
+            "module_menu_modal",
+            "module_menu",
+            "post_grades",
+            "quiz_index_menu",
+            "quiz_menu",
+            "resource_selection",
+            "similarity_detection",
+            "student_context_card",
+            "submission_type_selection",
+            "tool_configuration",
+            "top_navigation",
+            "user_navigation",
+            "wiki_index_menu",
+            "wiki_page_menu",
+            "editor_button"
+          ]
+        },
+        "enabled": {
+          "description": "If true, the tool will show in this placement. If false, it will not.",
+          "example": true,
+          "type": "boolean"
+        },
+        "message_type": {
+          "description": "Default message type for all placements",
+          "example": "LtiResourceLinkRequest",
+          "type": "string",
+          "enum": [
+            "LtiResourceLinkRequest",
+            "LtiDeepLinkingRequest"
+          ]
+        },
+        "text": {
+          "description": "The text of the link to the tool (if applicable).",
+          "example": "Hello World",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Canvas-specific i18n for placement text. See the Navigation Placement docs.",
+          "example": {
+            "en": "Hello World",
+            "es": "Hola Mundo"
+          },
+          "type": "object"
+        },
+        "custom_fields": {
+          "description": "Placement-specific custom fields to send in the launch. Merged with tool-level custom fields.",
+          "example": {
+            "special_placement_thing": "foo1234"
+          },
+          "type": "object"
+        },
+        "selection_height": {
+          "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+          "example": 800,
+          "type": "number"
+        },
+        "selection_width": {
+          "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+          "example": 1000,
+          "type": "number"
+        },
+        "launch_height": {
+          "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+          "example": 800,
+          "type": "number"
+        },
+        "launch_width": {
+          "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+          "example": 1000,
+          "type": "number"
+        },
+        "icon_url": {
+          "description": "Default icon URL. Not valid for all placements. Overrides tool-level icon_url.",
+          "example": "https://mytool.com/icon.png",
+          "type": "string"
+        },
+        "canvas_icon_class": {
+          "description": "The HTML class name of an InstUI Icon. Used instead of an icon_url in select placements.",
+          "example": "icon-lti",
+          "type": "string"
+        },
+        "required_permissions": {
+          "description": "Comma-separated list of Canvas permission short names required for a user to launch from this placement.",
+          "example": "manage_course_content_edit,manage_course_content_read",
+          "type": "string"
+        },
+        "windowTarget": {
+          "description": "When set to '_blank', opens placement in a new tab.",
+          "example": "_blank",
+          "type": "string"
+        },
+        "display_type": {
+          "description": "The Canvas layout to use when launching the tool. See the Navigation Placement docs.",
+          "example": "full_width_in_context",
+          "type": "string",
+          "enum": [
+            "default",
+            "full_width",
+            "full_width_in_context",
+            "full_width_with_nav",
+            "in_nav_context",
+            "borderless"
+          ]
+        },
+        "url": {
+          "description": "The 1.1 launch URL for this placement. Overrides tool-level url.",
+          "example": "https://mytool.com/launch?placement=course_navigation",
+          "type": "string"
+        },
+        "target_link_uri": {
+          "description": "The 1.3 launch URL for this placement. Overrides tool-level target_link_uri.",
+          "example": "https://mytool.com/launch?placement=course_navigation",
+          "type": "string"
+        },
+        "visibility": {
+          "description": "Specifies types of users that can see this placement. Only valid for some placements like course_navigation.",
+          "example": "admins",
+          "type": "string",
+          "enum": [
+            "admins",
+            "members",
+            "public"
+          ]
+        },
+        "prefer_sis_email": {
+          "description": "1.1 specific. If true, the tool will send the SIS email in the lis_person_contact_email_primary launch property",
+          "example": false,
+          "type": "boolean"
+        },
+        "oauth_compliant": {
+          "description": "1.1 specific. If true, query parameters from the launch URL will not be copied to the POST body.",
+          "example": true,
+          "type": "boolean"
+        },
+        "icon_svg_path_64": {
+          "description": "An SVG to use instead of an icon_url. Only valid for global_navigation.",
+          "example": "M100,37L70.1,10.5v176H37...",
+          "type": "string"
+        },
+        "default": {
+          "description": "Default display state for course_navigation. If 'enabled', will show in course sidebar. If 'disabled', will be hidden.",
+          "example": "disabled",
+          "type": "string"
+        },
+        "accept_media_types": {
+          "description": "Comma-separated list of media types that the tool can accept. Only valid for file_item.",
+          "example": "image/*,video/*",
+          "type": "string"
+        },
+        "use_tray": {
+          "description": "If true, the tool will be launched in the tray. Only used by the editor_button placement.",
+          "example": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "Lti::Overlay": {
+      "id": "Lti::Overlay",
+      "description": "Changes made by a Canvas admin to a tool's configuration.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "title": {
+          "description": "The display name of the tool",
+          "example": "My Tool",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the tool",
+          "example": "My Tool is built by me, for me.",
+          "type": "string"
+        },
+        "custom_fields": {
+          "description": "A key-value listing of all custom fields the tool has requested",
+          "example": {
+            "context_title": "$Context.title",
+            "special_tool_thing": "foo1234"
+          },
+          "type": "object"
+        },
+        "target_link_uri": {
+          "description": "The default launch URL for the tool. Overridable by placements.",
+          "example": "https://mytool.com/launch",
+          "type": "string"
+        },
+        "domain": {
+          "description": "The tool's main domain. Highly recommended for deep linking, used to match links to the tool.",
+          "example": "mytool.com",
+          "type": "string"
+        },
+        "privacy_level": {
+          "description": "Canvas-defined privacy level for the tool",
+          "example": "public",
+          "type": "string",
+          "enum": [
+            "public",
+            "anonymous",
+            "name_only",
+            "email_only"
+          ]
+        },
+        "oidc_initiation_url": {
+          "description": "1.3 specific. URL used for initial login request",
+          "example": "https://mytool.com/1_3/login",
+          "type": "string"
+        },
+        "disabled_scopes": {
+          "description": "1.3 specific. List of LTI scopes that the tool has requested but an admin has disabled",
+          "example": [
+            "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "disabled_placements": {
+          "description": "List of placements that the tool has requested but an admin has disabled",
+          "example": [
+            "course_navigation"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "placements": {
+          "description": "Placement-specific settings changed by an admin",
+          "example": {
+            "course_navigation": {
+              "$ref": "Lti::Placement"
+            }
+          },
+          "type": "object",
+          "items": {
+            "$ref": "Lti::PlacementOverlay"
+          }
+        }
+      }
+    },
+    "Lti::OverlayVersion": {
+      "id": "Lti::OverlayVersion",
+      "description": "A single version of a tool's configuration overlay",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "root_account_id": {
+          "description": "The Canvas id of the root account",
+          "example": 1,
+          "type": "integer"
+        },
+        "created_at": {
+          "description": "Timestamp of the version's creation",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "Timestamp of the version's last update",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "caused_by_reset": {
+          "description": "Whether or not this change was caused by a reset of the tool's configuration",
+          "example": false,
+          "type": "boolean"
+        },
+        "created_by": {
+          "description": "The user that created this version. If a string, this registration was created by Instructure.",
+          "example": {
+            "type": "User"
+          },
+          "type": "string|User",
+          "$ref": "User"
+        },
+        "diff": {
+          "description": "A list of changes made in this version compared to the previous version",
+          "example": [
+            [
+              "+",
+              "disabled_placements[0]",
+              "top_navigation"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "lti_overlay_id": {
+          "description": "The id of the overlay this version is for",
+          "example": 1,
+          "type": "integer"
+        },
+        "account_id": {
+          "description": "The id of the account this version is for",
+          "example": 1,
+          "type": "integer"
+        }
+      }
+    },
+    "Lti::PlacementOverlay": {
+      "id": "Lti::PlacementOverlay",
+      "description": "Changes made by a Canvas admin to a tool's configuration for a specific placement.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "text": {
+          "description": "The text of the link to the tool (if applicable).",
+          "example": "Hello World",
+          "type": "string"
+        },
+        "target_link_uri": {
+          "description": "The default launch URL for the tool. Overridable by placements.",
+          "example": "https://mytool.com/launch",
+          "type": "string"
+        },
+        "message_type": {
+          "description": "Default message type for all placements",
+          "example": "LtiResourceLinkRequest",
+          "type": "string",
+          "enum": [
+            "LtiResourceLinkRequest",
+            "LtiDeepLinkingRequest"
+          ]
+        },
+        "launch_height": {
+          "description": "Default iframe height. Not valid for all placements. Overrides tool-level launch_height.",
+          "example": 800,
+          "type": "number"
+        },
+        "launch_width": {
+          "description": "Default iframe width. Not valid for all placements. Overrides tool-level launch_width.",
+          "example": 1000,
+          "type": "number"
+        },
+        "icon_url": {
+          "description": "Default icon URL. Not valid for all placements. Overrides tool-level icon_url.",
+          "example": "https://mytool.com/icon.png",
+          "type": "string"
+        },
+        "default": {
+          "description": "Default display state for course_navigation. If 'enabled', will show in course sidebar. If 'disabled', will be hidden.",
+          "example": "disabled",
+          "type": "string"
+        }
+      }
+    },
+    "ListLtiRegistrationsResponse": {
+      "id": "ListLtiRegistrationsResponse",
+      "description": "The response for the List LTI Registrations API endpoint",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "total": {
+          "description": "The total number of LTI registrations across all pages",
+          "example": 1,
+          "type": "integer"
+        },
+        "data": {
+          "description": "The paginated list of LTI::Registrations",
+          "example": [
+            {
+              "$ref": "Lti::Registration"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "Lti::Registration"
+          }
+        }
+      }
+    },
+    "ContextSearchResponse": {
+      "id": "ContextSearchResponse",
+      "description": "The response for the Search Accounts and Courses API endpoint",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "accounts": {
+          "description": "Accounts that match the search query. Limited to 100.",
+          "example": [
+            {
+              "$ref": "Account"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "SearchableAccount"
+          }
+        },
+        "courses": {
+          "description": "Courses that match the search query. Limited to 100.",
+          "example": [
+            {
+              "$ref": "Course"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "SearchableCourse"
+          }
+        }
+      }
+    },
+    "SearchableAccount": {
+      "id": "SearchableAccount",
+      "description": "A minimal representation of an Account for Canvas Apps search purposes",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The Canvas DB ID",
+          "example": "1",
+          "type": "string"
+        },
+        "name": {
+          "description": "The account name",
+          "example": "An Account",
+          "type": "string"
+        },
+        "sis_id": {
+          "description": "The SIS ID of the account, if any. Only present if user can read or manage SIS.",
+          "example": "sis-account-1",
+          "type": "string"
+        },
+        "display_path": {
+          "description": "Names of the accounts in this account's hierarchy, excluding the root and this account.",
+          "example": [
+            "Sub Account"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SearchableCourse": {
+      "id": "SearchableCourse",
+      "description": "A minimal representation of a Course for Canvas Apps search purposes",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The Canvas DB ID",
+          "example": "1",
+          "type": "string"
+        },
+        "name": {
+          "description": "The course name",
+          "example": "A Course",
+          "type": "string"
+        },
+        "sis_id": {
+          "description": "The SIS ID of the course, if any. Only present if user can read or manage SIS.",
+          "example": "sis-course-1",
+          "type": "string"
+        },
+        "display_path": {
+          "description": "Names of the accounts in this course's account hierarchy, excluding the root.",
+          "example": [
+            "Sub Account"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "course_code": {
+          "description": "The course code",
+          "example": "COURSE-101",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

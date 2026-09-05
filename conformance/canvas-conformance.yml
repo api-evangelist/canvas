@@ -1,0 +1,118 @@
+generated: '2026-09-05'
+method: searched
+source:
+- openapi/canvas-lms-openapi.yml
+- openapi/_original/swagger-1.2/
+- https://developerdocs.instructure.com/services/canvas/data-services/live-events/event-format/caliper-ims-1.1
+- https://developerdocs.instructure.com/services/canvas/external-tools/lti/file.tools_intro
+- https://www.instructure.com/trust-center
+- https://developerdocs.instructure.com/services/canvas/basics/file.pagination
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+domain: education / learning management
+regulatory_regime: education (FERPA, GDPR, accessibility)
+standards:
+- id: lti-1.3
+  name: 1EdTech Learning Tools Interoperability 1.3 / LTI Advantage
+  conforms: true
+  role: platform (tool consumer)
+  domain_standard: true
+  evidence: 'The contract itself carries the LTI surface: tags "Lti Registrations", "Lti Context Controls", "Lti
+    Resource Links", "Lti Launch Definitions", "Accounts (Lti)"; paths /v1/accounts/{account_id}/lti_registrations,
+    .../lti_resource_links, .../lti_apps/launch_definitions in openapi/canvas-lms-openapi.yml. Docs: LTI Advantage
+    services (AGS, NRPS, Deep Linking, Platform Notification Service) at https://developerdocs.instructure.com/services/canvas/external-tools/lti/file.tools_intro'
+  services:
+  - Assignment and Grade Services (AGS)
+  - Names and Roles Provisioning Service (NRPS)
+  - Deep Linking
+  - Platform Notification Service (PNS)
+  - Asset Processor / Document Processor
+- id: lti-1.1
+  name: 1EdTech LTI 1.1 (legacy)
+  conforms: true
+  domain_standard: true
+  evidence: Legacy 1.1 XML tool configuration is still documented at https://developerdocs.instructure.com/services/canvas/external-tools/lti/file.tools_xml
+- id: caliper-1.1
+  name: 1EdTech Caliper Analytics 1.1
+  conforms: true
+  domain_standard: true
+  evidence: Canvas Live Events can be emitted in the Caliper IMS 1.1 envelope. Instructure publishes a full Caliper
+    event catalogue (6 families, 30 event types) at https://developerdocs.instructure.com/services/canvas/data-services/live-events/event-format/caliper-ims-1.1
+  see: asyncapi/canvas-live-events-webhooks.yml
+- id: qti
+  name: 1EdTech Question & Test Interoperability
+  conforms: true
+  domain_standard: true
+  evidence: 'Content Exports declare export_type: qti and Content Migrations accept QTI packages — see the export_type
+    enum in openapi/canvas-lms-openapi.yml under /v1/courses/{course_id}/content_exports'
+- id: common-cartridge
+  name: 1EdTech Common Cartridge
+  conforms: true
+  domain_standard: true
+  evidence: 'export_type: common_cartridge in the Content Exports operations of openapi/canvas-lms-openapi.yml'
+- id: saml-2.0
+  name: SAML 2.0 identity federation
+  conforms: true
+  domain_standard: true
+  evidence: The Authentication Providers resource configures SAML (32 references), CAS, LDAP and OpenID Connect
+    auth_types in openapi/canvas-lms-openapi.yml — this is how a campus federates Canvas with its IdP.
+- id: oauth2
+  name: OAuth 2.0 (RFC 6749)
+  conforms: true
+  evidence: securitySchemes oauth2 (authorizationCode) in openapi/canvas-lms-openapi.yml; Canvas cites RFC-6749
+    explicitly at https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+- id: rfc8288-link-pagination
+  name: RFC 8288 Web Linking (pagination)
+  conforms: true
+  evidence: Link header with rel current/next/prev/first/last, documented at https://developerdocs.instructure.com/services/canvas/basics/file.pagination
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: true
+  evidence: https://www.instructure.com/.well-known/security.txt returned HTTP 200 with Contact, Policy, Encryption,
+    Canonical and Expires
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: No application/problem+json anywhere in the 144 published Swagger 1.2 documents; Canvas uses a bare
+    {"errors":[...]} envelope.
+- id: oneroster
+  name: 1EdTech OneRoster
+  conforms: false
+  evidence: No OneRoster endpoints in the contract. Canvas provisions rosters through its own SIS Imports (CSV)
+    resource instead.
+- id: scim
+  name: SCIM 2.0
+  conforms: false
+  evidence: No urn:ietf:params:scim:schemas URN and no /scim path in the contract. User provisioning is via SIS
+    Imports and the Users resource.
+- id: ed-fi
+  name: Ed-Fi Data Standard
+  conforms: false
+  evidence: Not present in the contract or the docs.
+- id: oai-pmh
+  name: OAI-PMH
+  conforms: false
+  evidence: Not applicable — Canvas is an LMS, not a repository.
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: Instructure publishes Swagger 1.2 (swaggerVersion "1.2"), a specification retired in 2014. openapi/canvas-lms-openapi.yml
+    is API Evangelist's conversion, not an Instructure artifact. This is the single most actionable gap in the Canvas
+    developer surface.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: Live Events are documented in prose and JSON payload examples; no AsyncAPI document is published.
+compliance_program:
+  published: true
+  url: https://www.instructure.com/trust-center
+  certifications:
+  - SOC 2
+  - ISO 27001
+  - ISO 27017
+  - ISO 27018
+  - PCI DSS
+  - HIPAA
+  - FedRAMP
+  - GDPR
+  - CSA STAR
+  see: security/canvas-trust-center.yml

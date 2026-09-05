@@ -1,0 +1,40 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Canvas LMS Courses API
+  version: 1.0.0
+extends: openapi/canvas-courses-api-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: canvas
+    x-apievangelist-source: https://canvas.instructure.com/doc/api/api-docs.json
+    x-apievangelist-source-format: Swagger 1.2
+    x-apievangelist-harvested: '2026-09-05'
+    x-apievangelist-artifacts:
+      conventions: conventions/canvas-conventions.yml
+      errors: errors/canvas-problem-types.yml
+      rate_limits: rate-limits/canvas-rate-limits.yml
+      scopes: scopes/canvas-scopes.yml
+      authentication: authentication/canvas-authentication.yml
+      lifecycle: lifecycle/canvas-lifecycle.yml
+      conformance: conformance/canvas-conformance.yml
+      events: asyncapi/canvas-live-events-webhooks.yml
+      data_model: data-model/canvas-data-model.yml
+      skills: skills/_index.yml
+- target: $.info
+  update:
+    x-agentic-readiness:
+      idempotency: none — no idempotency key anywhere in 566 mutating operations
+      reversibility: documented — reversal operations exist, no windows are published
+      rate_limit_signal: X-Request-Cost / X-Rate-Limit-Remaining, 429 on exhaustion
+      error_catalog: not published by the provider
+      source: conventions/canvas-conventions.yml
+- target: $.servers
+  update:
+    x-note: Canvas is multi-tenant and self-hostable. canvas.instructure.com is Instructure's own Free-for-Teacher
+      instance, not "the" Canvas host — every institution runs its own, plus a .beta and .test sibling. Always parameterise
+      the host.
+- target: $.paths.*.*[?(@.deprecated == true)]
+  update:
+    x-deprecation-source: Instructure declares deprecation per operation in the first-party Swagger 1.2 (`deprecated`
+      + `deprecation_description`); it emits no RFC 8594 Sunset/Deprecation headers.

@@ -1,0 +1,150 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/notice_handlers",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/lti/notice-handlers/{context_external_tool_id}",
+      "description": "List all notice handlers for the tool",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show notice handlers",
+          "notes": "List all notice handlers for the tool",
+          "nickname": "show_notice_handlers",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "context_external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "NoticeCatalog"
+        }
+      ]
+    },
+    {
+      "path": "/lti/notice-handlers/{context_external_tool_id}",
+      "description": "Subscribe (set) or unsubscribe (remove) a notice handler for the tool",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Set notice handler",
+          "notes": "Subscribe (set) or unsubscribe (remove) a notice handler for the tool",
+          "nickname": "set_notice_handler",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "context_external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "notice_type",
+              "description": "The type of notice",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "handler",
+              "description": "URL to receive the notice, or an empty string to unsubscribe",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "max_batch_size",
+              "description": "The maximum number of notices to include in a single batch",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "NoticeHandler"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "NoticeCatalog": {
+      "id": "NoticeCatalog",
+      "description": "Set of notice handlers (one per notice type) for an LTI tool deployment.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "client_id": {
+          "description": "The LTI tool's client ID (global developer key ID)",
+          "example": "10000000000001",
+          "type": "string"
+        },
+        "deployment_id": {
+          "description": "String that identifies the Platform-Tool integration governing the notices",
+          "example": "123:8865aa05b4b79b64a91a86042e43af5ea8ae79eb",
+          "type": "string"
+        },
+        "notice_handlers": {
+          "type": "array",
+          "description": "List of notice handlers for the tool",
+          "items": {
+            "$ref": "NoticeHandler"
+          },
+          "example": [
+            {
+              "handler": "",
+              "notice_type": "LtiHelloWorldNotice"
+            }
+          ]
+        }
+      }
+    },
+    "NoticeHandler": {
+      "id": "NoticeHandler",
+      "description": "A notice handler for a particular tool deployment and notice type.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "handler": {
+          "description": "URL to receive the notice",
+          "example": "https://example.com/notice_handler",
+          "type": "string"
+        },
+        "notice_type": {
+          "description": "The type of notice",
+          "example": "LtiHelloWorldNotice",
+          "type": "string"
+        },
+        "max_batch_size": {
+          "description": "The maximum number of notices to include in a single batch, or 'null' if not set.",
+          "example": 100,
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+generated: '2026-09-05'
+method: searched
+source:
+- https://developerdocs.instructure.com/services/canvas/basics/file.changelog
+- https://community.canvaslms.com/t5/Change-Log/tkb-p/changelog
+- https://status.instructure.com/
+- openapi/canvas-lms-openapi.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://developerdocs.instructure.com/services/canvas
+release_cadence:
+  production: monthly release, third Wednesday release notes
+  beta: new features land in beta on the third Monday of each month; beta is refreshed from production every Saturday
+  source: https://community.canvaslms.com/t5/Canvas-Releases/What-is-the-Canvas-beta-environment/ta-p/255260
+change_log:
+  url: https://community.canvaslms.com/t5/Change-Log/tkb-p/changelog
+  scope: API additions, changes, deprecations and removals
+  see: changelog/canvas-changelog.yml
+deprecation:
+  policy_url: https://community.canvaslms.com/t5/Change-Log/tkb-p/changelog
+  sunset_header: false
+  deprecation_header: false
+  mechanism: 'Canvas marks deprecation IN THE CONTRACT: the first-party Swagger 1.2 carries a per-operation `deprecated`
+    boolean and a `deprecation_description` string, and per-parameter `deprecated` flags. Removals and deprecations
+    are announced ahead of time in the Community API Change Log.'
+  note: No RFC 8594 Sunset or Deprecation response headers are emitted.
+deprecated_operations:
+- openapi/canvas-lms-openapi.yml#reset_link_verifier
+- openapi/canvas-lms-openapi.yml#publish_provisional_grades_for_assignment
+beta_flagged_resources:
+- API Token Scopes — the resource documentation carries an explicit BETA warning that breaking changes may land
+  before final release.
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA or uptime target is published for Canvas; SLAs are contractual and quote-only.
+status_page: https://status.instructure.com/
+status_page_api: https://status.instructure.com/api/v2/summary.json
+incidents_at_time_of_probe: canvas.instructure.com (the Free-for-Teacher instance) was serving a "Free-for-Teacher
+  Platform Restoration" page with HTTP 503 on every path except /doc/api/ on 2026-09-05.
+source_code:
+  repo: https://github.com/instructure/canvas-lms
+  license: AGPL-3.0
+  note: Canvas LMS is open source; the API documentation is generated directly from this repository.

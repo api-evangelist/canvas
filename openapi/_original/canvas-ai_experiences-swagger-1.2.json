@@ -1,0 +1,491 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/ai_experiences",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences",
+      "description": "Retrieve the paginated list of AI experiences for a course",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List AI experiences",
+          "notes": "Retrieve the paginated list of AI experiences for a course",
+          "nickname": "list_ai_experiences",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "workflow_state",
+              "description": "Only return experiences with the specified workflow state.\nAllowed values: published, unpublished, deleted",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "AiExperience"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{id}",
+      "description": "Retrieve an AI experience by ID",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show an AI experience",
+          "notes": "Retrieve an AI experience by ID",
+          "nickname": "show_ai_experience",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AiExperience"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/new",
+      "description": "Display the form for creating a new AI experience",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show new AI experience form",
+          "notes": "Display the form for creating a new AI experience",
+          "nickname": "show_new_ai_experience_form",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{id}/edit",
+      "description": "Display the form for editing an existing AI experience",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show edit AI experience form",
+          "notes": "Display the form for editing an existing AI experience",
+          "nickname": "show_edit_ai_experience_form",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences",
+      "description": "Create a new AI experience for the specified course",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an AI experience",
+          "notes": "Create a new AI experience for the specified course",
+          "nickname": "create_ai_experience",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "title",
+              "description": "The title of the AI experience.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "The description of the AI experience.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "facts",
+              "description": "The AI facts for the experience.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "learning_objective",
+              "description": "The learning objectives for this experience.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "pedagogical_guidance",
+              "description": "The pedagogical guidance for the experience.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "The initial state of the experience. Defaults to 'unpublished'.\nAllowed values: published, unpublished",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AiExperience"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{id}",
+      "description": "Update an existing AI experience",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update an AI experience",
+          "notes": "Update an existing AI experience",
+          "nickname": "update_ai_experience",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "title",
+              "description": "The title of the AI experience.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "The description of the AI experience.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "facts",
+              "description": "The AI facts for the experience.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "learning_objective",
+              "description": "The learning objectives for this experience.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "pedagogical_guidance",
+              "description": "The pedagogical guidance for the experience.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "The state of the experience.\nAllowed values: published, unpublished",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AiExperience"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{id}",
+      "description": "Delete an AI experience (soft delete - marks as deleted)",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete an AI experience",
+          "notes": "Delete an AI experience (soft delete - marks as deleted)",
+          "nickname": "delete_ai_experience",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AiExperience"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{id}/ai_conversations",
+      "description": "Retrieve the latest AI conversation for each student in the course for this AI experience.\nOnly available to teachers and course managers.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List student AI conversations",
+          "notes": "Retrieve the latest AI conversation for each student in the course for this AI experience.\nOnly available to teachers and course managers.",
+          "nickname": "list_student_ai_conversations",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "AiConversation"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{id}/ai_conversations/{conversation_id}",
+      "description": "Retrieve a specific student's AI conversation with full message history.\nOnly available to teachers and course managers.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show student AI conversation",
+          "notes": "Retrieve a specific student's AI conversation with full message history.\nOnly available to teachers and course managers.",
+          "nickname": "show_student_ai_conversation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "conversation_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "AiConversation"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "AiExperience": {
+      "id": "AiExperience",
+      "description": "An AI Experience for interactive learning",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The ID of the AI experience",
+          "example": 234,
+          "type": "integer"
+        },
+        "title": {
+          "description": "The title for the AI experience",
+          "example": "Customer Service Simulation",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the AI experience",
+          "example": "Practice customer service skills in a simulated environment",
+          "type": "string"
+        },
+        "facts": {
+          "description": "The AI facts for the experience (optional)",
+          "example": "You are a customer service representative...",
+          "type": "string"
+        },
+        "learning_objective": {
+          "description": "The learning objectives for this experience",
+          "example": "Students will practice active listening and problem-solving",
+          "type": "string"
+        },
+        "pedagogical_guidance": {
+          "description": "The pedagogical guidance for the experience",
+          "example": "A customer is calling about a billing issue",
+          "type": "string"
+        },
+        "workflow_state": {
+          "description": "The current published state of the AI experience",
+          "example": "published",
+          "type": "string"
+        },
+        "course_id": {
+          "description": "The course this experience belongs to",
+          "example": 1578941,
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

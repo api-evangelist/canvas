@@ -1,0 +1,279 @@
+generated: '2026-09-05'
+method: derived
+source:
+- mcp/canvas-mcp.yml
+- openapi/canvas-lms-openapi.yml
+- graphql/canvas-graphql.md
+surfaces:
+  openapi:
+    file: openapi/canvas-lms-openapi.yml
+    operations: 1117
+    gated: false
+    origin: converted from the 144 first-party Swagger 1.2 documents at https://canvas.instructure.com/doc/api/
+  graphql:
+    endpoint: https://<canvas-host>/api/graphql
+    gated: true
+    introspection: Not obtained. canvas.instructure.com returned HTTP 503 behind a Free-for-Teacher Platform Restoration
+      page for POST /api/graphql on 2026-09-05, and Canvas GraphQL requires an authenticated bearer token in any
+      case. No SDL is recorded and none is guessed.
+    docs: https://developerdocs.instructure.com/services/canvas/basics/file.graphql
+  mcp:
+    url: null
+    gated: null
+    note: No MCP server exists — see mcp/canvas-mcp.yml.
+coverage:
+  tools_named: 20
+  tools_bound: 20
+  mcp_only: 0
+  rest_operations_total: 1117
+  rest_operations_with_a_tool: 20
+  note: 'Coverage is deliberately tiny: there is no published Canvas MCP server, so the only tools that exist are
+    the candidates this pipeline derived. The gap between 20 candidate tools and 1,117 published operations is the
+    honest measurement — it is what any Canvas MCP author has to triage.'
+crosswalk:
+- tool: list_courses
+  category: Courses
+  rest:
+  - list_your_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: get_course
+  category: Courses
+  rest:
+  - get_single_course_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_course_users
+  category: Courses
+  rest:
+  - list_users_in_course_users
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_assignments
+  category: Assignments
+  rest:
+  - list_assignments_assignments
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: get_assignment
+  category: Assignments
+  rest:
+  - get_single_assignment
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_submissions
+  category: Submissions
+  rest:
+  - list_assignment_submissions_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: get_submission
+  category: Submissions
+  rest:
+  - get_single_submission_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: grade_submission
+  category: Submissions
+  rest:
+  - grade_or_comment_on_submission_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_enrollments
+  category: Enrollments
+  rest:
+  - list_enrollments_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_modules
+  category: Modules
+  rest:
+  - list_modules
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_pages
+  category: Pages
+  rest:
+  - list_pages_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_announcements
+  category: Announcements
+  rest:
+  - list_announcements
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_quizzes
+  category: Quizzes
+  rest:
+  - list_quizzes_in_course
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: get_user_profile
+  category: Users
+  rest:
+  - get_user_profile
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_todo
+  category: Users
+  rest:
+  - list_todo_items
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_upcoming_events
+  category: Users
+  rest:
+  - list_upcoming_assignments_calendar_events
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_calendar_events
+  category: Calendar Events
+  rest:
+  - list_calendar_events
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_discussion_topics
+  category: Discussion Topics
+  rest:
+  - list_discussion_topics_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: list_files
+  category: Files
+  rest:
+  - list_files_courses
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+- tool: get_course_gradebook_history
+  category: Gradebook History
+  rest:
+  - days_in_gradebook_history_for_this_course
+  binding: rest
+  confidence: high
+  note: Candidate tool derived directly from this operation; it inherits the operation's parameters and requestBody
+    as its real inputSchema.
+mcp_only: []
+graphql_only:
+- note: Canvas GraphQL is documented as an alternative projection of the same data core, aimed at dashboards that
+    would otherwise need many REST round-trips. Whether it exposes fields REST does not could not be established
+    without an authenticated introspection call; nothing is asserted.
+rest_only_by_capability:
+- capability: Discussion Topics
+  operations: 57
+- capability: Files
+  operations: 52
+- capability: Users
+  operations: 45
+- capability: Submissions
+  operations: 43
+- capability: Content Migrations
+  operations: 37
+- capability: Outcome Groups
+  operations: 37
+- capability: Lti Registrations
+  operations: 36
+- capability: Courses
+  operations: 28
+- capability: Groups
+  operations: 25
+- capability: Pages
+  operations: 22
+- capability: Accounts
+  operations: 21
+- capability: Rubrics
+  operations: 20
+- capability: External Tools
+  operations: 19
+- capability: Analytics
+  operations: 18
+- capability: Assignments
+  operations: 18
+- capability: Feature Flags
+  operations: 16
+- capability: Group Categories
+  operations: 16
+- capability: Modules
+  operations: 16
+- capability: Blackout Dates
+  operations: 13
+- capability: Blueprint Courses
+  operations: 13
+- capability: Enrollments
+  operations: 13
+- capability: Conversations
+  operations: 12
+- capability: Media Objects
+  operations: 12
+- capability: Planner
+  operations: 12
+- capability: Calendar Events
+  operations: 11
+- capability: Learning Object Dates
+  operations: 11
+- capability: Grading Standards
+  operations: 10
+- capability: Notification Preferences
+  operations: 10
+- capability: Ai Conversations
+  operations: 9
+- capability: Ai Experiences
+  operations: 9
+- capability: Authentication Providers
+  operations: 9
+- capability: Content Exports
+  operations: 9
+- capability: Peer Reviews
+  operations: 9
+- capability: Poll Sessions
+  operations: 9
+- capability: Roles
+  operations: 9
+- capability: Sections
+  operations: 9
+- capability: Appointment Groups
+  operations: 8
+- capability: Content Security Policy Settings
+  operations: 8
+- capability: Content Shares
+  operations: 8
+- capability: Custom Gradebook Columns
+  operations: 8

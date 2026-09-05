@@ -1,0 +1,749 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/roles",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/accounts/{account_id}/roles",
+      "description": "A paginated list of the roles available to an account.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List roles",
+          "notes": "A paginated list of the roles available to an account.",
+          "nickname": "list_roles",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "The id of the account to retrieve roles for.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "state",
+              "description": "Filter by role state. If this argument is omitted, only 'active' roles are\nreturned.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "active",
+                "inactive"
+              ],
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "show_inherited",
+              "description": "If this argument is true, all roles inherited from parent accounts will\nbe included.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Role"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/roles/{id}",
+      "description": "Retrieve information about a single role",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get a single role",
+          "notes": "Retrieve information about a single role",
+          "nickname": "get_single_role",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "The id of the account containing the role",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "role_id",
+              "description": "The unique identifier for the role",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "role",
+              "description": "The name for the role",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Role"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/roles",
+      "description": "Create a new course-level or account-level role.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create a new role",
+          "notes": "Create a new course-level or account-level role.",
+          "nickname": "create_new_role",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "label",
+              "description": "Label for the role.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "role",
+              "description": "Deprecated alias for label.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "base_role_type",
+              "description": "Specifies the role type that will be used as a base\nfor the permissions granted to this role.\n\nDefaults to 'AccountMembership' if absent",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "AccountMembership",
+                "StudentEnrollment",
+                "TeacherEnrollment",
+                "TaEnrollment",
+                "ObserverEnrollment",
+                "DesignerEnrollment"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][explicit]",
+              "description": "no description",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][enabled]",
+              "description": "If explicit is 1 and enabled is 1, permission <X> will be explicitly\ngranted to this role. If explicit is 1 and enabled has any other value\n(typically 0), permission <X> will be explicitly denied to this role. If\nexplicit is any other value (typically 0) or absent, or if enabled is\nabsent, the value for permission <X> will be inherited from upstream.\nIgnored if permission <X> is locked upstream (in an ancestor account).\n\nMay occur multiple times with unique values for <X>. Recognized\npermission names for <X> can be found on the\n{file:file.permissions.html Permissions list page}.\n\nSome of these permissions are applicable only for roles on the site admin\naccount, on a root account, or for course-level roles with a particular base role type;\nif a specified permission is inapplicable, it will be ignored.\n\nAdditional permissions may exist based on installed plugins.\n\nA comprehensive list of all permissions are available:\n\nCourse Permissions PDF: http://bit.ly/cnvs-course-permissions\n\nAccount Permissions PDF: http://bit.ly/cnvs-acct-permissions",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][locked]",
+              "description": "If the value is 1, permission <X> will be locked downstream (new roles in\nsubaccounts cannot override the setting). For any other value, permission\n<X> is left unlocked. Ignored if permission <X> is already locked\nupstream. May occur multiple times with unique values for <X>.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][applies_to_self]",
+              "description": "If the value is 1, permission <X> applies to the account this role is in.\nThe default value is 1. Must be true if applies_to_descendants is false.\nThis value is only returned if enabled is true.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][applies_to_descendants]",
+              "description": "If the value is 1, permission <X> cascades down to sub accounts of the\naccount this role is in. The default value is 1.  Must be true if\napplies_to_self is false.This value is only returned if enabled is true.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Role"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/roles/{id}",
+      "description": "Deactivates a custom role.  This hides it in the user interface and prevents it\nfrom being assigned to new users.  Existing users assigned to the role will\ncontinue to function with the same permissions they had previously.\nBuilt-in roles cannot be deactivated.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Deactivate a role",
+          "notes": "Deactivates a custom role.  This hides it in the user interface and prevents it\nfrom being assigned to new users.  Existing users assigned to the role will\ncontinue to function with the same permissions they had previously.\nBuilt-in roles cannot be deactivated.",
+          "nickname": "deactivate_role",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "role_id",
+              "description": "The unique identifier for the role",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "role",
+              "description": "The name for the role",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Role"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/roles/{id}/activate",
+      "description": "Re-activates an inactive role (allowing it to be assigned to new users)",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Activate a role",
+          "notes": "Re-activates an inactive role (allowing it to be assigned to new users)",
+          "nickname": "activate_role",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "role_id",
+              "description": "The unique identifier for the role",
+              "type": "integer",
+              "format": "int64",
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "role",
+              "description": "The name for the role",
+              "type": "Deprecated",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Role"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/roles/{id}",
+      "description": "Update permissions for an existing role.\n\nRecognized roles are:\n* TeacherEnrollment\n* StudentEnrollment\n* TaEnrollment\n* ObserverEnrollment\n* DesignerEnrollment\n* AccountAdmin\n* Any previously created custom role",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update a role",
+          "notes": "Update permissions for an existing role.\n\nRecognized roles are:\n* TeacherEnrollment\n* StudentEnrollment\n* TaEnrollment\n* ObserverEnrollment\n* DesignerEnrollment\n* AccountAdmin\n* Any previously created custom role",
+          "nickname": "update_role",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "label",
+              "description": "The label for the role. Can only change the label of a custom role that belongs directly to the account.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][explicit]",
+              "description": "no description",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][enabled]",
+              "description": "These arguments are described in the documentation for the\n{api:RoleOverridesController#add_role add_role method}.\nThe list of available permissions can be found on the\n{file:file.permissions.html Permissions list page}.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][applies_to_self]",
+              "description": "If the value is 1, permission <X> applies to the account this role is in.\nThe default value is 1. Must be true if applies_to_descendants is false.\nThis value is only returned if enabled is true.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "permissions[<X>][applies_to_descendants]",
+              "description": "If the value is 1, permission <X> cascades down to sub accounts of the\naccount this role is in. The default value is 1.  Must be true if\napplies_to_self is false.This value is only returned if enabled is true.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Role"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/roles/permissions",
+      "description": "List all permissions that can be granted to roles in the given account.\n\nThis returns largely the same information documented on the {file:file.permissions.html Permissions list page},\nwith a few caveats:\n* Permission labels and group labels returned by this API are localized (the same text visible in the web UI).\n* This API includes permissions added by plugins.\n* This API excludes permissions that are disabled in or otherwise do not apply to the given account.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List assignable permissions",
+          "notes": "List all permissions that can be granted to roles in the given account.\n\nThis returns largely the same information documented on the {file:file.permissions.html Permissions list page},\nwith a few caveats:\n* Permission labels and group labels returned by this API are localized (the same text visible in the web UI).\n* This API includes permissions added by plugins.\n* This API excludes permissions that are disabled in or otherwise do not apply to the given account.",
+          "nickname": "list_assignable_permissions",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "search_term",
+              "description": "If provided, return only permissions whose key, label, group, or group_label match the search string.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Permission"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/permissions/{context_type}/{permission}/help",
+      "description": "these actions access only static (but localized) information about permissions,\nbut require a logged-in user to mitigate possible abuse\nRetrieve information about what Canvas permissions do and considerations for their use.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get help text for permissions",
+          "notes": "these actions access only static (but localized) information about permissions,\nbut require a logged-in user to mitigate possible abuse\nRetrieve information about what Canvas permissions do and considerations for their use.",
+          "nickname": "get_help_text_for_permissions",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "context_type",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "permission",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "PermissionHelpText"
+        }
+      ]
+    },
+    {
+      "path": "/v1/permissions/groups",
+      "description": "Retrieve information about groups of granular permissions\n\nThe return value is a dictionary of permission group keys to objects\ncontaining +label+ and +subtitle+ keys.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Retrieve permission groups",
+          "notes": "Retrieve information about groups of granular permissions\n\nThe return value is a dictionary of permission group keys to objects\ncontaining +label+ and +subtitle+ keys.",
+          "nickname": "retrieve_permission_groups",
+          "parameters": [],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "RolePermissions": {
+      "id": "RolePermissions",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "enabled": {
+          "description": "Whether the role has the permission",
+          "example": true,
+          "type": "boolean"
+        },
+        "locked": {
+          "description": "Whether the permission is locked by this role",
+          "example": false,
+          "type": "boolean",
+          "default": false
+        },
+        "applies_to_self": {
+          "description": "Whether the permission applies to the account this role is in. Only present if enabled is true",
+          "example": true,
+          "type": "boolean",
+          "default": true
+        },
+        "applies_to_descendants": {
+          "description": "Whether the permission cascades down to sub accounts of the account this role is in. Only present if enabled is true",
+          "example": false,
+          "type": "boolean",
+          "default": true
+        },
+        "readonly": {
+          "description": "Whether the permission can be modified in this role (i.e. whether the permission is locked by an upstream role).",
+          "example": false,
+          "type": "boolean",
+          "default": false
+        },
+        "explicit": {
+          "description": "Whether the value of enabled is specified explicitly by this role, or inherited from an upstream role.",
+          "example": true,
+          "type": "boolean",
+          "default": false
+        },
+        "prior_default": {
+          "description": "The value that would have been inherited from upstream if the role had not explicitly set a value. Only present if explicit is true.",
+          "example": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "Role": {
+      "id": "Role",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The id of the role",
+          "example": 1,
+          "type": "integer"
+        },
+        "label": {
+          "description": "The label of the role.",
+          "example": "New Role",
+          "type": "string"
+        },
+        "role": {
+          "description": "The label of the role. (Deprecated alias for 'label')",
+          "example": "New Role",
+          "type": "string"
+        },
+        "base_role_type": {
+          "description": "The role type that is being used as a base for this role. For account-level roles, this is 'AccountMembership'. For course-level roles, it is an enrollment type.",
+          "example": "AccountMembership",
+          "type": "string"
+        },
+        "is_account_role": {
+          "description": "Whether this role applies to account memberships (i.e., not linked to an enrollment in a course).",
+          "example": true,
+          "type": "boolean"
+        },
+        "account": {
+          "description": "JSON representation of the account the role is defined in.",
+          "example": {
+            "id": 1019,
+            "name": "CGNU",
+            "parent_account_id": 73,
+            "root_account_id": 1,
+            "sis_account_id": "cgnu"
+          },
+          "type": "object",
+          "$ref": "Account"
+        },
+        "workflow_state": {
+          "description": "The state of the role: 'active', 'inactive', or 'built_in'",
+          "example": "active",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "The date and time the role was created.",
+          "example": "2020-12-01T16:20:00-06:00",
+          "type": "datetime"
+        },
+        "last_updated_at": {
+          "description": "The date and time the role was last updated.",
+          "example": "2023-10-31T23:59:00-06:00",
+          "type": "datetime"
+        },
+        "permissions": {
+          "description": "A dictionary of permissions keyed by name (see 'List assignable permissions' API).",
+          "example": {
+            "read_course_content": {
+              "enabled": true,
+              "locked": false,
+              "readonly": false,
+              "explicit": true,
+              "prior_default": false
+            },
+            "read_course_list": {
+              "enabled": true,
+              "locked": true,
+              "readonly": true,
+              "explicit": false
+            },
+            "read_question_banks": {
+              "enabled": false,
+              "locked": true,
+              "readonly": false,
+              "explicit": true,
+              "prior_default": false
+            },
+            "read_reports": {
+              "enabled": true,
+              "locked": false,
+              "readonly": false,
+              "explicit": false
+            }
+          },
+          "type": "object",
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "$ref": "RolePermissions"
+          }
+        }
+      }
+    },
+    "Permission": {
+      "id": "Permission",
+      "description": "A permission that can be granted to a role",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "key": {
+          "description": "The API identifier for the permission",
+          "example": "manage_lti_add",
+          "type": "string"
+        },
+        "label": {
+          "description": "The human-readable label for the permission",
+          "example": "LTI - add",
+          "type": "string"
+        },
+        "group": {
+          "description": "The group this permission belongs to, if it is part of a granular permission group",
+          "example": "manage_lti",
+          "type": "string"
+        },
+        "group_label": {
+          "description": "The human-readable label for the group this permission belongs to",
+          "example": "Manage LTI",
+          "type": "string"
+        },
+        "available_to": {
+          "description": "The base role types this permission can be enabled for",
+          "example": [
+            "AccountAdmin",
+            "AccountMembership",
+            "TeacherEnrollment",
+            "TaEnrollment",
+            "DesignerEnrollment"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "true_for": {
+          "description": "The base role types this permission is enabled for by default",
+          "example": [
+            "AccountAdmin",
+            "TeacherEnrollment",
+            "TaEnrollment",
+            "DesignerEnrollment"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "PermissionHelpText": {
+      "id": "PermissionHelpText",
+      "description": "Information about a permission, including its purpose and considerations for use.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "details": {
+          "description": "Detailed explanations about what the permission does.",
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "example": [
+            {
+              "title": "Add External Tools",
+              "description": "Allows users to add external tools (LTI) to courses."
+            }
+          ]
+        },
+        "considerations": {
+          "description": "A list of considerations or warnings about using the permission.",
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "example": [
+            {
+              "title": "Security Risk",
+              "description": "Granting this permission may expose your system to security vulnerabilities."
+            }
+          ]
+        }
+      }
+    }
+  }
+}

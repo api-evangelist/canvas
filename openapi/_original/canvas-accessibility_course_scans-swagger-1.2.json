@@ -1,0 +1,39 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/accessibility_course_scans",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/users/{user_id}/educator_accessibility_course_scan",
+      "description": "Queues a background job that scans all a11y-enabled courses where the\nuser has an active teacher or designer enrollment. Idempotent — if a\nscan is already queued or running, the existing Progress is returned.\n\nRequires the educator_dashboard feature flag on the root account and\na11y_checker_account_statistics on site admin.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Trigger accessibility course scan",
+          "notes": "Queues a background job that scans all a11y-enabled courses where the\nuser has an active teacher or designer enrollment. Idempotent — if a\nscan is already queued or running, the existing Progress is returned.\n\nRequires the educator_dashboard feature flag on the root account and\na11y_checker_account_statistics on site admin.",
+          "nickname": "trigger_accessibility_course_scan",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "The ID of the user, or \"self\" for the current user.\nThe requesting user may only trigger a scan for themselves.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Progress"
+        }
+      ]
+    }
+  ],
+  "models": {}
+}

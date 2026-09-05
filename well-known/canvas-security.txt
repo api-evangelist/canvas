@@ -1,0 +1,17 @@
+# You can reach the Instructure security team here:
+Contact: mailto:security@instructure.com
+
+# Instructure's Vulnerabillity Disclosure Policy is available here:
+Policy: https://www.instructure.com/trust-center/vulnerability-disclosure
+
+# Our GPG key:
+Encryption: https://www.instructure.com/sites/default/files/file/2021-11/security%40instructure.com_.txt
+
+# Join Us:
+Hiring: https://www.instructure.com/about/careers
+
+Preferred-Languages: en
+
+Canonical: https://www.instructure.com/.well-known/security.txt
+
+Expires: 2027-01-01T00:00:00z

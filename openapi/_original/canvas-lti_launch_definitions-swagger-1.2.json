@@ -1,0 +1,198 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/lti_launch_definitions",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/courses/{course_id}/lti_apps/launch_definitions",
+      "description": "List all tools available in this context for the given placements, in the form of Launch Definitions.\nUsed primarily by the Canvas frontend. API users should consider using the External Tools API instead.\nThis endpoint is cached for 10 minutes!",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List LTI Launch Definitions",
+          "notes": "List all tools available in this context for the given placements, in the form of Launch Definitions.\nUsed primarily by the Canvas frontend. API users should consider using the External Tools API instead.\nThis endpoint is cached for 10 minutes!",
+          "nickname": "list_lti_launch_definitions_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "placements[Array]",
+              "description": "The placements to return launch definitions for. If not provided, an empty list will be returned.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "only_visible[Boolean]",
+              "description": "If true, only return launch definitions that are visible to the current user. Defaults to true.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_context_name[Boolean]",
+              "description": "If true, includes the deployment context name (account or course) of the tool definition in the response. This helps distinguish between tools with identical names deployed at different levels of the context hierarchy. Defaults to false.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_apps/launch_definitions",
+      "description": "List all tools available in this context for the given placements, in the form of Launch Definitions.\nUsed primarily by the Canvas frontend. API users should consider using the External Tools API instead.\nThis endpoint is cached for 10 minutes!",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List LTI Launch Definitions",
+          "notes": "List all tools available in this context for the given placements, in the form of Launch Definitions.\nUsed primarily by the Canvas frontend. API users should consider using the External Tools API instead.\nThis endpoint is cached for 10 minutes!",
+          "nickname": "list_lti_launch_definitions_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "placements[Array]",
+              "description": "The placements to return launch definitions for. If not provided, an empty list will be returned.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "only_visible[Boolean]",
+              "description": "If true, only return launch definitions that are visible to the current user. Defaults to true.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_context_name[Boolean]",
+              "description": "If true, includes the deployment context name (account or course) of the tool definition in the response. This helps distinguish between tools with identical names deployed at different levels of the context hierarchy. Defaults to false.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "Lti::LaunchDefinition": {
+      "id": "Lti::LaunchDefinition",
+      "description": "A bare-bones representation of an LTI tool used by Canvas to launch the tool",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "definition_type": {
+          "description": "The type of the launch definition. Always 'ContextExternalTool'",
+          "example": "ContextExternalTool",
+          "type": "string"
+        },
+        "definition_id": {
+          "description": "The Canvas ID of the tool",
+          "example": "123",
+          "type": "string"
+        },
+        "name": {
+          "description": "The display name of the tool for the given placement",
+          "example": "My Tool",
+          "type": "string"
+        },
+        "description": {
+          "description": "The description of the tool for the given placement.",
+          "example": "This is a tool that does things.",
+          "type": "string"
+        },
+        "url": {
+          "description": "The launch URL for the tool",
+          "example": "https://www.example.com/launch",
+          "type": "string"
+        },
+        "domain": {
+          "description": "The domain of the tool",
+          "example": "example.com",
+          "type": "string"
+        },
+        "placements": {
+          "description": "Placement-specific config for given placements",
+          "example": {
+            "assignment_selection": {
+              "type": "Lti::PlacementLaunchDefinition"
+            }
+          },
+          "type": "object"
+        },
+        "context_name": {
+          "description": "The name of the account or course where the tool is deployed. Only included if requested via include_context_name parameter.",
+          "example": "My Institution",
+          "type": "string"
+        }
+      }
+    },
+    "Lti::PlacementLaunchDefinition": {
+      "id": "Lti::PlacementLaunchDefinition",
+      "description": "A bare-bones LTI configuration for a specific placement",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "message_type": {
+          "description": "The LTI launch message type",
+          "example": "LtiResourceLinkRequest",
+          "type": "string"
+        },
+        "url": {
+          "description": "The launch URL for this placement",
+          "example": "https://www.example.com/launch?placement=assignment_selection",
+          "type": "string"
+        },
+        "title": {
+          "description": "The title of the tool for this placement",
+          "example": "My Tool (Assignment Selection)",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

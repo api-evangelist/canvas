@@ -1,16 +1,97 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/canvas-openapi.yml
+generated: '2026-09-05'
+method: searched
+source: openapi/canvas-courses-api-openapi.yml, openapi/canvas-lms-openapi.yml + Instructure OAuth2 documentation
+  (searched 2026-09-05)
 summary:
   types:
   - http
+  - oauth2
+  oauth2_flows:
+  - authorizationCode
 schemes:
 - name: bearerAuth
   type: http
   scheme: bearer
-  bearerFormat: JWT
-  description: |-
-    OAuth 2.0 access token. See
-    https://canvas.instructure.com/doc/api/file.oauth.html.
+  description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
   sources:
-  - openapi/canvas-openapi.yml
+  - openapi/canvas-courses-api-openapi.yml
+  - openapi/canvas-lms-openapi.yml
+- name: oauth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+    tokenUrl: https://canvas.instructure.com/login/oauth2/token
+    scopes: 0
+  description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+  sources:
+  - openapi/canvas-courses-api-openapi.yml
+  - openapi/canvas-lms-openapi.yml
+docs:
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth_endpoints
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.developer_keys
+- https://developerdocs.instructure.com/services/canvas/resources/api_token_scopes
+model: OAuth 2.0 (RFC 6749) authorization code, plus manually generated personal access tokens
+endpoints:
+  authorize:
+    method: GET
+    url: https://<canvas-host>/login/oauth2/auth
+    params:
+    - client_id
+    - response_type=code
+    - redirect_uri
+    - state
+    - scope
+    - purpose
+    - force_login
+    - unique_id
+    - prompt=none
+  token:
+    method: POST
+    url: https://<canvas-host>/login/oauth2/token
+    grant_types:
+    - authorization_code
+    - refresh_token
+    - client_credentials
+    note: client_credentials is used for LTI Advantage service tokens, signed with the tool's JWK — not for the
+      Canvas REST API.
+  logout:
+    method: DELETE
+    url: https://<canvas-host>/login/oauth2/token
+    note: Expires the access token. `expire_sessions=1` also ends the user's Canvas web sessions.
+  session_token:
+    method: GET
+    url: https://<canvas-host>/login/session_token
+    note: Exchanges an API token for a one-time URL that logs the user into the Canvas web UI.
+token_lifetime:
+  access_token: 1 hour (developer keys issued after Oct 2015)
+  refresh_token: long-lived
+  note: Applications MUST implement refresh; there is no long-lived access token for OAuth apps.
+manual_tokens:
+  where: /profile → Approved Integrations → New Access Token
+  shown_once: true
+  policy: Instructure's Canvas API Policy forbids asking another user to generate and hand over a token. Multi-user
+    applications must use OAuth. https://www.instructure.com/policies/canvas-api-policy
+developer_keys:
+  issued_by: the institution's Canvas admin (Site Admin on a self-hosted install)
+  scoping: Keys are scoped to the institution that issued them. A tool serving many institutions must store one
+    key per Canvas domain and pick it from the launch context (custom_canvas_api_domain).
+  enforce_scopes: Optional per key. When off, the key grants everything its user can do.
+  docs: https://developerdocs.instructure.com/services/canvas/oauth2/file.developer_keys
+scopes:
+  model: per-endpoint strings of the form url:<VERB>|/api/v1/<path>
+  see: scopes/canvas-scopes.yml
+  identity_only: /auth/userinfo returns the user's name and id and no access token.
+error_signals:
+  401_with_www_authenticate: token invalid, expired, or issued on a different Canvas host
+  401_without_www_authenticate: authenticated but not permitted
+  see: errors/canvas-problem-types.yml
+identity_federation:
+  note: 'Separately from API auth, Canvas federates END-USER login through the Authentication Providers resource:
+    SAML 2.0, CAS, LDAP and OpenID Connect.'
+  see: conformance/canvas-conformance.yml
+lti_advantage:
+  note: LTI 1.3 tools authenticate to Canvas services with a signed JWT client-credentials grant, per the 1EdTech
+    Security Framework — not with a Canvas API token.
+  docs: https://developerdocs.instructure.com/services/canvas/external-tools/lti/file.tools_intro

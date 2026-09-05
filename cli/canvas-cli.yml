@@ -1,0 +1,41 @@
+generated: '2026-09-05'
+method: searched
+source:
+- https://developerdocs.instructure.com/services/dap
+- https://pypi.org/project/instructure-dap-client/
+summary: Instructure ships no CLI for the Canvas LMS REST API. It does ship `dap`, the first-party command-line
+  client for the Data Access Platform (Canvas Data 2) — the bulk/analytics door onto the same Canvas data.
+clis:
+- name: dap
+  official: true
+  covers: Instructure Data Access Platform (Canvas Data 2)
+  install:
+  - manager: pip
+    command: pip install instructure-dap-client
+  - manager: pip
+    command: pip install "instructure-dap-client[postgresql]"
+    note: with a database driver for `dap initdb` / `dap syncdb`
+  package: packages/canvas-packages.yml#instructure-dap-client
+  version: 2.3.0
+  published: '2026-08-27'
+  docs: https://developerdocs.instructure.com/services/dap
+  auth: DAP_CLIENT_ID / DAP_CLIENT_SECRET environment variables against the DAP API
+  commands:
+  - command: dap snapshot
+    purpose: Download a full snapshot of a table.
+  - command: dap incremental
+    purpose: Download only the changes to a table within a given time range.
+  - command: dap initdb
+    purpose: Create and seed the table in a local database.
+  - command: dap syncdb
+    purpose: Keep a local database table in sync with DAP.
+  - command: dap dropdb
+    purpose: Drop a synced table from the local database.
+  - command: dap list
+    purpose: List the tables available in a namespace.
+  - command: dap schema
+    purpose: Print the JSON schema of a table.
+  command_source: https://developerdocs.instructure.com/services/dap — DAP CLI Reference
+  note: Command list read from the published DAP CLI reference index; flags are not reproduced here.
+rest_api_cli: null
+gap_to_raise_with_provider: No first-party CLI for the Canvas REST API itself.

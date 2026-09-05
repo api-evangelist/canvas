@@ -1,0 +1,150 @@
+generated: '2026-09-05'
+method: derived
+status: candidate
+source: openapi/canvas-lms-openapi.yml
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: oauth
+  verified: searched
+finding: Instructure ships NO MCP server for Canvas — not hosted, not stdio. Probes of https://mcp.instructure.com/mcp
+  (404), https://www.instructure.com/mcp (404) and https://canvas.instructure.com/mcp (503, maintenance) all missed,
+  and neither the developer documentation portal nor its llms.txt mentions MCP anywhere. What exists is a healthy
+  community ecosystem — DMontgomery40/mcp-canvas-lms, vishalsachdev/canvas-mcp, r-huijts/canvas-mcp and others —
+  none of them published or endorsed by Instructure. There is an open community thread asking Instructure for one
+  at https://community.instructure.com/en/discussion/666665/canvas-mcp.
+probes:
+- url: https://mcp.instructure.com/mcp
+  method: POST tools/list
+  status: 404
+- url: https://www.instructure.com/mcp
+  method: POST tools/list
+  status: 404
+- url: https://canvas.instructure.com/mcp
+  method: POST tools/list
+  status: 503
+  note: host was behind a Free-for-Teacher Platform Restoration maintenance page
+community_servers:
+- name: mcp-canvas-lms
+  repo: https://github.com/DMontgomery40/mcp-canvas-lms
+  official: false
+  tools: 54
+- name: canvas-mcp
+  repo: https://github.com/vishalsachdev/canvas-mcp
+  official: false
+  tools: 80+
+- name: canvas-mcp
+  repo: https://github.com/r-huijts/canvas-mcp
+  official: false
+server:
+  name: canvas
+  transport: null
+  url: null
+tool_count: 20
+tools:
+- name: list_courses
+  description: List your courses
+  category: Courses
+  source_operation: openapi/canvas-lms-openapi.yml#list_your_courses
+  http: GET /api/v1/courses
+- name: get_course
+  description: Get a single course
+  category: Courses
+  source_operation: openapi/canvas-lms-openapi.yml#get_single_course_courses
+  http: GET /api/v1/courses/{id}
+- name: list_course_users
+  description: List users in course
+  category: Courses
+  source_operation: openapi/canvas-lms-openapi.yml#list_users_in_course_users
+  http: GET /api/v1/courses/{course_id}/users
+- name: list_assignments
+  description: List assignments
+  category: Assignments
+  source_operation: openapi/canvas-lms-openapi.yml#list_assignments_assignments
+  http: GET /api/v1/courses/{course_id}/assignments
+- name: get_assignment
+  description: Get a single assignment
+  category: Assignments
+  source_operation: openapi/canvas-lms-openapi.yml#get_single_assignment
+  http: GET /api/v1/courses/{course_id}/assignments/{id}
+- name: list_submissions
+  description: List assignment submissions
+  category: Submissions
+  source_operation: openapi/canvas-lms-openapi.yml#list_assignment_submissions_courses
+  http: GET /api/v1/courses/{course_id}/assignments/{assignment_id}/submissions
+- name: get_submission
+  description: Get a single submission
+  category: Submissions
+  source_operation: openapi/canvas-lms-openapi.yml#get_single_submission_courses
+  http: GET /api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}
+- name: grade_submission
+  description: Grade or comment on a submission
+  category: Submissions
+  source_operation: openapi/canvas-lms-openapi.yml#grade_or_comment_on_submission_courses
+  http: PUT /api/v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}
+- name: list_enrollments
+  description: List enrollments
+  category: Enrollments
+  source_operation: openapi/canvas-lms-openapi.yml#list_enrollments_courses
+  http: GET /api/v1/courses/{course_id}/enrollments
+- name: list_modules
+  description: List modules
+  category: Modules
+  source_operation: openapi/canvas-lms-openapi.yml#list_modules
+  http: GET /api/v1/courses/{course_id}/modules
+- name: list_pages
+  description: List pages
+  category: Pages
+  source_operation: openapi/canvas-lms-openapi.yml#list_pages_courses
+  http: GET /api/v1/courses/{course_id}/pages
+- name: list_announcements
+  description: List announcements
+  category: Announcements
+  source_operation: openapi/canvas-lms-openapi.yml#list_announcements
+  http: GET /api/v1/announcements
+- name: list_quizzes
+  description: List quizzes in a course
+  category: Quizzes
+  source_operation: openapi/canvas-lms-openapi.yml#list_quizzes_in_course
+  http: GET /api/v1/courses/{course_id}/quizzes
+- name: get_user_profile
+  description: Get user profile
+  category: Users
+  source_operation: openapi/canvas-lms-openapi.yml#get_user_profile
+  http: GET /api/v1/users/{user_id}/profile
+- name: list_todo
+  description: List the TODO items
+  category: Users
+  source_operation: openapi/canvas-lms-openapi.yml#list_todo_items
+  http: GET /api/v1/users/self/todo
+- name: list_upcoming_events
+  description: List upcoming assignments, calendar events
+  category: Users
+  source_operation: openapi/canvas-lms-openapi.yml#list_upcoming_assignments_calendar_events
+  http: GET /api/v1/users/self/upcoming_events
+- name: list_calendar_events
+  description: List calendar events
+  category: Calendar Events
+  source_operation: openapi/canvas-lms-openapi.yml#list_calendar_events
+  http: GET /api/v1/calendar_events
+- name: list_discussion_topics
+  description: List discussion topics
+  category: Discussion Topics
+  source_operation: openapi/canvas-lms-openapi.yml#list_discussion_topics_courses
+  http: GET /api/v1/courses/{course_id}/discussion_topics
+- name: list_files
+  description: List files
+  category: Files
+  source_operation: openapi/canvas-lms-openapi.yml#list_files_courses
+  http: GET /api/v1/courses/{course_id}/files
+- name: get_course_gradebook_history
+  description: Days in gradebook history for this course
+  category: Gradebook History
+  source_operation: openapi/canvas-lms-openapi.yml#days_in_gradebook_history_for_this_course
+  http: GET /api/v1/courses/{course_id}/gradebook_history/days
+candidate_note: These are a proposed starter tool set, each bound 1:1 to a real operationId in the first-party contract.
+  They are NOT published by Instructure and no endpoint exists to call them. The full callable surface is 1,117
+  operations — see mcp/canvas-tool-crosswalk.yml.
+unbound_candidates: []

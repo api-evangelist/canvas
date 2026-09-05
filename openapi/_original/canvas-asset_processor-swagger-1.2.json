@@ -1,0 +1,255 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/asset_processor",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/lti/asset_processors/{asset_processor_id}/reports",
+      "description": "Creates a report for a given Canvas-managed asset (such as a submission\nattachment).\n\nReturns an HTTP 201 (Created) on success.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an Asset Report",
+          "notes": "Creates a report for a given Canvas-managed asset (such as a submission\nattachment).\n\nReturns an HTTP 201 (Created) on success.",
+          "nickname": "create_asset_report",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "asset_processor_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "assetId",
+              "description": "The UUID of the asset to which the report applies. Canvas will supply\nthis to the tool in the the `LtiAssetProcessorSubmissionNotice`.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "errorCode",
+              "description": "A machine-readable code indicating the cause of the failure, for reports\nwith a processingProgress value of `Failed`. The following standard error\ncodes are available, but tools may use their own (in which case the tool\nmay provide human-readable information in the `comment` field):\nUNSUPPORTED_ASSET_TYPE, ASSET_TOO_LARGE, ASSET_TOO_SMALL,\nEULA_NOT_ACCEPTED, DOWNLOAD_FAILED",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "indicationAlt",
+              "description": "Alternate text representing the meaning of the indicationColor for screen\nreaders or as a tooltip over the indication color.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "indicationColor",
+              "description": "A hex (#RRGGBB) color code the tool wishes to use indicating the outcome\nof an asset's report.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "priority",
+              "description": "A number from 0 (meaning \"good\" or \"success\") to 5 (meaning urgent or\ntime-critical notable features) indicating the tool's perceived priority\nof the report. If a priority is not known or applicable, the tool should\nuse the value 0.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "processingProgress",
+              "description": "Indicates the status of the report. Should be one of the following:\nProcessed, Processing, PendingManual, Failed, NotProcessed, NotReady.\nIf an unrecognized value is given, the value will be stored, but will\nbe treated by Canvas as `NotReady`.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "result",
+              "description": "A short string (16 characters or fewer) that briefly describes the\nsuccessful result of the processing. This should be provided if\nprocessingProgress is Processed, and not provided otherwise.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "timestamp",
+              "description": "An ISO8601 date time value with microsecond precision. Reports with newer\ntimestamps for the same asset and report type supersede\npreviously submitted reports with older (or equal) timestamps. Likewise,\nif the timestamp provided is older than the latest timestamp for an\nexisting report (of same asset and type), the new report will be\nignored and the endpoint will return an HTTP 409 (Conflict).",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "title",
+              "description": "A human-readable title for the report, to be displayed to the user.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "type",
+              "description": "An opaque value representing the type of report.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "visibleToOwner",
+              "description": "A boolean value indicates whether the indicator and report\nshould be visible to the user who owns the asset being reported on.\nIf no value is provided, the platform should assume a default value of false",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "the input arguments, as accepted and stored in the database."
+        }
+      ]
+    },
+    {
+      "path": "/lti/asset_processor_eulas/{context_external_tool_id}/deployment",
+      "description": "Provides a mechanism by which a platform can enable or disable the requirement\nfor users to accept a EULA within the scope of an entire deployment",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update Eula Deployment Configuration",
+          "notes": "Provides a mechanism by which a platform can enable or disable the requirement\nfor users to accept a EULA within the scope of an entire deployment",
+          "nickname": "update_eula_deployment_configuration",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "context_external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "eulaRequired",
+              "description": "A boolean value representing whether or not the EULA is required for the deployment.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "the input arguments as accepted and stored in the database"
+        }
+      ]
+    },
+    {
+      "path": "/lti/asset_processor_eulas/{context_external_tool_id}/user",
+      "description": "The EULA user acceptance service provides a mechanism\nby which a tool can notify a platform of whether or not a user has accepted a EULA.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an Eula Acceptance",
+          "notes": "The EULA user acceptance service provides a mechanism\nby which a tool can notify a platform of whether or not a user has accepted a EULA.",
+          "nickname": "create_eula_acceptance",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "context_external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "userId",
+              "description": "The userId represents the user who has accepted or declined the EULA,\n`lti_id` of the Canvas User.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "accepted",
+              "description": "A boolean value representing whether or not the user has accepted the EULA",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "timestamp",
+              "description": "The timestamp represents the time at which the user accepted or declined the EULA.\nThis timestamp must be formatted as an ISO 8601 date time.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "the input arguments as accepted and stored in the database"
+        }
+      ]
+    },
+    {
+      "path": "/lti/asset_processor_eulas/{context_external_tool_id}/user",
+      "description": "Remove the EULA acceptance status for all users within the current deployment.\nThis will allow a tool to reset the EULA acceptance status for all users,\nand force them to accept the EULA again in the case that the EULA has changed.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete Eula Acceptances for deployment",
+          "notes": "Remove the EULA acceptance status for all users within the current deployment.\nThis will allow a tool to reset the EULA acceptance status for all users,\nand force them to accept the EULA again in the case that the EULA has changed.",
+          "nickname": "delete_eula_acceptances_for_deployment",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "context_external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "204 No Content"
+        }
+      ]
+    }
+  ],
+  "models": {}
+}

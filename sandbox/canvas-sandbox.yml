@@ -1,0 +1,49 @@
+generated: '2026-09-05'
+method: searched
+source:
+- https://community.canvaslms.com/t5/Canvas-Releases/What-is-the-Canvas-beta-environment/ta-p/255260
+- https://www.instructure.com/canvas/free-for-teacher
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+summary: 'Canvas has no test-mode key prefix and no magic test values. Its test surface is whole separate INSTANCES:
+  every institution gets a beta and a test host derived from its production host, and anyone can self-provision
+  a Free-for-Teacher account. There are no test credit cards or fixtures because Canvas is not a payments API.'
+test_live_separation:
+  mechanism: separate hosts, not separate keys
+  note: There is no key prefix or mode flag. A token issued on one host is not valid on another — a token used against
+    the wrong Canvas host returns 401 with WWW-Authenticate.
+environments:
+- name: beta
+  host_pattern: https://<institution>.beta.instructure.com
+  api: https://<institution>.beta.instructure.com/api/v1
+  purpose: Preview the next release. New features land on the third Monday of each month.
+  data: Refreshed from production every Saturday — anything written here is overwritten weekly.
+  limits:
+  - Notifications are not sent (no course invitations, no report download emails).
+  - Students can sign in but cannot reach course content beyond the Dashboard.
+  docs: https://community.canvaslms.com/t5/Canvas-Releases/What-is-the-Canvas-beta-environment/ta-p/255260
+- name: test
+  host_pattern: https://<institution>.test.instructure.com
+  api: https://<institution>.test.instructure.com/api/v1
+  purpose: A stable copy of production for integration testing and training.
+  data: Refreshed from a production backup on Instructure's schedule.
+  docs: https://community.instructure.com/en/kb/articles/661605-how-do-i-access-the-canvas-test-environment-as-an-admin
+- name: free-for-teacher
+  host: https://canvas.instructure.com
+  api: https://canvas.instructure.com/api/v1
+  purpose: A free, self-serve Canvas account with the full REST and GraphQL surface — the closest thing to a public
+    sandbox.
+  signup: https://canvas.instructure.com/register
+  status_at_probe: HTTP 503 — "Free-for-Teacher Platform Restoration" on 2026-09-05
+  docs: https://www.instructure.com/canvas/free-for-teacher
+- name: local
+  host: self-hosted
+  purpose: Canvas LMS is AGPL-3.0 open source and can be run locally in Docker.
+  docs: https://github.com/instructure/canvas-lms
+credentials:
+  fastest_path: Generate a personal access token from /profile → Approved Integrations → New Access Token.
+  warning: Instructure's API Policy forbids asking any other user to hand you a manually generated token — multi-user
+    applications MUST use OAuth. https://www.instructure.com/policies/canvas-api-policy
+  oauth_keys: Developer keys are issued by the institution admin; on a self-hosted install, from the Site Admin
+    account.
+test_values: null
+test_values_note: None published. Canvas ships no magic identifiers, test cards or trigger fixtures.

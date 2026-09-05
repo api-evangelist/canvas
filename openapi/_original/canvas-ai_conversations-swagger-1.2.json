@@ -1,0 +1,453 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/ai_conversations",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}",
+      "description": "Get a specific conversation by ID (for teachers viewing student conversations)",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show conversation",
+          "notes": "Get a specific conversation by ID (for teachers viewing student conversations)",
+          "nickname": "show_conversation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with conversation details including messages"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations",
+      "description": "Get the active conversation for the current user and AI experience",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get active conversation",
+          "notes": "Get the active conversation for the current user and AI experience",
+          "nickname": "get_active_conversation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with id and messages array, or empty object if no active conversation"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations",
+      "description": "Initialize a new conversation with the AI experience",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create AI conversation",
+          "notes": "Initialize a new conversation with the AI experience",
+          "nickname": "create_ai_conversation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with conversation_id and initial messages array"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages",
+      "description": "Send a message to an existing conversation and get the AI response",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Post message to conversation",
+          "notes": "Send a message to an existing conversation and get the AI response",
+          "nickname": "post_message_to_conversation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "message",
+              "description": "The user's message to send to the AI",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with id and updated messages array"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}",
+      "description": "End the current conversation session",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete AI conversation",
+          "notes": "End the current conversation session",
+          "nickname": "delete_ai_conversation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Success message"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/evaluation",
+      "description": "Fetch the latest stored evaluation for a conversation from the\nllm-conversation service. Reads only — does not run the LLM and is not\nrate-limited. `evaluation` is null when none has been generated yet (llma\nreturns 200 + null, never 404, so this is distinguishable from an outage).\n`stale` is true when the AI experience was edited after the stored\nevaluation was generated.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get conversation evaluation",
+          "notes": "Fetch the latest stored evaluation for a conversation from the\nllm-conversation service. Reads only — does not run the LLM and is not\nrate-limited. `evaluation` is null when none has been generated yet (llma\nreturns 200 + null, never 404, so this is distinguishable from an outage).\n`stale` is true when the AI experience was edited after the stored\nevaluation was generated.",
+          "nickname": "get_conversation_evaluation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with { id, evaluation, stale }"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/evaluation",
+      "description": "Run the LLM to (re)generate an evaluation for a conversation and persist it\nin the llm-conversation service. Rate-limited. Also the Reset path — a fresh\nrun replaces any prior stored evaluation.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Generate conversation evaluation",
+          "notes": "Run the LLM to (re)generate an evaluation for a conversation and persist it\nin the llm-conversation service. Rate-limited. Also the Reset path — a fresh\nrun replaces any prior stored evaluation.",
+          "nickname": "generate_conversation_evaluation",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with { id, evaluation }"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages/{message_id}/feedback",
+      "description": "Submit a like or dislike vote on an AI-generated message.\n\nOwnership: load_conversation gates this action — only the conversation owner\nor a course manager reaches here. Sub-resource (message_id within the\nconversation) scoping is delegated to llma.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create feedback on a conversation message",
+          "notes": "Submit a like or dislike vote on an AI-generated message.\n\nOwnership: load_conversation gates this action — only the conversation owner\nor a course manager reaches here. Sub-resource (message_id within the\nconversation) scoping is delegated to llma.",
+          "nickname": "create_feedback_on_conversation_message",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "vote",
+              "description": "\"liked\" or \"disliked\"",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "message_id",
+              "description": "llm-conversation message UUID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "feedback_message",
+              "description": "optional text for dislike",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Hash with feedback record"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages/{message_id}/feedback/{feedback_id}",
+      "description": "Remove a previously submitted vote (toggling off like/dislike).\n\nOwnership: load_conversation gates this action — only the conversation owner\nor a course manager reaches here. Sub-resource (message_id, feedback_id within\nthe conversation) scoping is delegated to llma.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete feedback on a conversation message",
+          "notes": "Remove a previously submitted vote (toggling off like/dislike).\n\nOwnership: load_conversation gates this action — only the conversation owner\nor a course manager reaches here. Sub-resource (message_id, feedback_id within\nthe conversation) scoping is delegated to llma.",
+          "nickname": "delete_feedback_on_conversation_message",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "ai_experience_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "message_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "feedback_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{Object} Success response"
+        }
+      ]
+    }
+  ],
+  "models": {}
+}

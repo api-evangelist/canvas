@@ -1,0 +1,331 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/access_tokens",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/users/{user_id}/user_generated_tokens",
+      "description": "Returns a list of manually generated access tokens for the specified user.\nNote that the actual token values are only returned when the token is first created.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List access tokens for a user",
+          "notes": "Returns a list of manually generated access tokens for the specified user.\nNote that the actual token values are only returned when the token is first created.",
+          "nickname": "list_access_tokens_for_user",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "per_page",
+              "description": "The number of results to return per page. Defaults to 10. Maximum of 100.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Token"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/users/{user_id}/tokens/{id}",
+      "description": "The ID can be the actual database ID of the token, or the 'token_hint' value.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show an access token",
+          "notes": "The ID can be the actual database ID of the token, or the 'token_hint' value.",
+          "nickname": "show_access_token",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/users/{user_id}/tokens",
+      "description": "Create a new access token for the specified user.\nIf the user is not the current user, the token will be created as \"pending\",\nand must be activated by the user before it can be used.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an access token",
+          "notes": "Create a new access token for the specified user.\nIf the user is not the current user, the token will be created as \"pending\",\nand must be activated by the user before it can be used.",
+          "nickname": "create_access_token",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "token[purpose]",
+              "description": "The purpose of the token.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "token[expires_at]",
+              "description": "The time at which the token will expire.",
+              "type": "DateTime",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "token[scopes]",
+              "description": "The scopes to associate with the token.\nIgnored if the default developer key does not have the \"enable scopes\" option enabled.\nIn such cases, the token will inherit the user's permissions instead.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "$ref": "Array"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/users/{user_id}/tokens/{id}",
+      "description": "Update an existing access token.\n\nThe ID can be the actual database ID of the token, or the 'token_hint' value.\n\nRegenerating an expired token requires a new expiration date.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update an access token",
+          "notes": "Update an existing access token.\n\nThe ID can be the actual database ID of the token, or the 'token_hint' value.\n\nRegenerating an expired token requires a new expiration date.",
+          "nickname": "update_access_token",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "token[purpose]",
+              "description": "The purpose of the token.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "token[expires_at]",
+              "description": "The time at which the token will expire.",
+              "type": "DateTime",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "token[scopes]",
+              "description": "The scopes to associate with the token.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "$ref": "Array"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "token[regenerate]",
+              "description": "Regenerate the actual token.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/users/{user_id}/tokens/{id}",
+      "description": "The ID can be the actual database ID of the token, or the 'token_hint' value.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete an access token",
+          "notes": "The ID can be the actual database ID of the token, or the 'token_hint' value.",
+          "nickname": "delete_access_token",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "Token": {
+      "id": "Token",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The internal database ID of the token."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the token was created."
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "The time the token will permanently expire, or null if it does not permanently expire."
+        },
+        "workflow_state": {
+          "type": "string",
+          "description": "The current state of the token. One of 'active', 'pending', 'disabled', or 'deleted'."
+        },
+        "remember_access": {
+          "type": "boolean",
+          "description": "Whether the token should be remembered across sessions. Only applicable for OAuth tokens."
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The scopes associated with the token. If empty, there are no scope limitations."
+        },
+        "real_user_id": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "If the token was created while masquerading, this is the ID of the real user. Otherwise, null."
+        },
+        "token": {
+          "type": "string",
+          "description": "The actual access token. Only included when the token is first created."
+        },
+        "token_hint": {
+          "type": "string",
+          "description": "A short, unique string that can be used to look up the token."
+        },
+        "user_id": {
+          "type": "integer",
+          "description": "The ID of the user the token belongs to."
+        },
+        "purpose": {
+          "type": "string",
+          "description": "The purpose of the token."
+        },
+        "app_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "If the token was created by an OAuth application, this is the name of that application. Otherwise, null."
+        },
+        "can_manually_regenerate": {
+          "type": "boolean",
+          "description": "Whether the current user can manually regenerate this token."
+        }
+      }
+    }
+  }
+}

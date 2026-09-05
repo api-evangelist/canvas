@@ -1,0 +1,67 @@
+generated: '2026-09-05'
+method: searched
+source:
+- https://instructure.design/
+- https://github.com/instructure/instructure-ui
+- https://www.npmjs.com/package/@instructure/ui
+summary: Instructure publishes Instructure UI ("InstUI"), the accessible React design system Canvas itself is built
+  from, plus two Canvas-specific components extracted out of the Canvas LMS repo. These are client-side UI libraries,
+  not API SDKs — an LTI tool or a Canvas theme uses them to look and behave like Canvas.
+families:
+- family: Instructure UI (InstUI)
+  docs: https://instructure.design/
+  source_code: https://github.com/instructure/instructure-ui
+  version: 11.7.5
+  published: '2026-08-26'
+  loader:
+    registry: npm
+    meta_package: '@instructure/ui'
+    install: npm install @instructure/ui
+  note: A meta package re-exporting every UI component; individual packages (@instructure/ui-buttons, ui-forms,
+    ui-table, …) can be installed alone.
+  accessibility: WCAG-oriented; accessibility is the stated design goal of the library.
+  components:
+  - '@instructure/ui-buttons'
+  - '@instructure/ui-forms'
+  - '@instructure/ui-table'
+  - '@instructure/ui-overlays'
+  - '@instructure/ui-tabs'
+  - '@instructure/ui-tree-browser'
+  - '@instructure/ui-select'
+  - '@instructure/ui-icons'
+  components_note: Representative, not exhaustive — the full component index is at https://instructure.design/.
+- family: Canvas theme
+  docs: https://instructure.design/
+  loader:
+    registry: npm
+    package: '@instructure/canvas-theme'
+    install: npm install @instructure/canvas-theme
+  version: 11.7.5
+  published: '2026-08-26'
+  note: The Canvas LMS theme for InstUI — what makes an embedded tool visually match Canvas.
+- family: Canvas Rich Content Editor
+  loader:
+    registry: npm
+    package: '@instructure/canvas-rce'
+    install: npm install @instructure/canvas-rce
+  version: 8.1.0
+  published: '2026-05-06'
+  source_code: https://github.com/instructure/canvas-lms
+  note: Canvas's TinyMCE wrapper, published from the Canvas LMS repository.
+- family: Canvas media
+  loader:
+    registry: npm
+    package: '@instructure/canvas-media'
+    install: npm install @instructure/canvas-media
+  version: 5.1.0
+  published: '2026-05-06'
+  note: Upload / record / display media component, published from the Canvas LMS repository.
+embedded_surfaces:
+- name: LTI 1.3 tool placements
+  note: 'The real embedding contract for third parties is LTI, not a JS widget: a registered tool renders inside
+    Canvas at a placement (course navigation, editor button, assignment selection, homework submission, collaborations,
+    migration selection).'
+  docs: https://developerdocs.instructure.com/services/canvas/external-tools/lti/placements/file.placements_overview
+- name: LTI postMessage API
+  note: Browser postMessage channel between an embedded tool iframe and the Canvas page.
+  docs: https://developerdocs.instructure.com/services/canvas/external-tools/lti/file.lti_window_post_message

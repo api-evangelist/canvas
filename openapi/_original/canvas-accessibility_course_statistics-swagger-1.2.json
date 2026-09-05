@@ -1,0 +1,146 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/accessibility_course_statistics",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/users/{user_id}/educator_accessibility_course_statistics",
+      "description": "Returns per-course accessibility issue statistics for the current user's\nactive teacher and designer courses. Only courses where the accessibility\nchecker is enabled and whose workflow state is neither completed nor deleted\nare included. Only statistic records with workflow_state \"active\" are returned.\n\nRequires the educator_dashboard feature flag to be enabled on the root\naccount, and a11y_checker_account_statistics on site admin plus a11y_checker\non the account (i.e. a11y_checker_account_statistics? must be true).",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List accessibility course statistics",
+          "notes": "Returns per-course accessibility issue statistics for the current user's\nactive teacher and designer courses. Only courses where the accessibility\nchecker is enabled and whose workflow state is neither completed nor deleted\nare included. Only statistic records with workflow_state \"active\" are returned.\n\nRequires the educator_dashboard feature flag to be enabled on the root\naccount, and a11y_checker_account_statistics on site admin plus a11y_checker\non the account (i.e. a11y_checker_account_statistics? must be true).",
+          "nickname": "list_accessibility_course_statistics",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "The ID of the user, or \"self\" for the current user.\nThe requesting user may only retrieve their own statistics.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "enrollment_term_id",
+              "description": "When present, only include courses that belong to the given enrollment\nterm(s). Accepts a single term id or an array\n(enrollment_term_id[]=1&enrollment_term_id[]=2), and each value may be a\nterm id or SIS term id. Returns 404 if any given term does not exist in\nthis account.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "AccessibilityCourseStatistic"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/users/{user_id}/educator_accessibility_course_terms",
+      "description": "Returns the distinct enrollment terms that the current user's active teacher\nand designer courses belong to -- the same courses reported by the List\naccessibility course statistics endpoint. Use this to populate a term filter\nfor that endpoint. There is no \"all terms\" entry; \"all terms\" is represented\nby omitting the enrollment_term_id filter.\n\nRequires the same account settings and feature flags as the statistics\nendpoint.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List accessibility course statistic terms",
+          "notes": "Returns the distinct enrollment terms that the current user's active teacher\nand designer courses belong to -- the same courses reported by the List\naccessibility course statistics endpoint. Use this to populate a term filter\nfor that endpoint. There is no \"all terms\" entry; \"all terms\" is represented\nby omitting the enrollment_term_id filter.\n\nRequires the same account settings and feature flags as the statistics\nendpoint.",
+          "nickname": "list_accessibility_course_statistic_terms",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "description": "The ID of the user, or \"self\" for the current user.\nThe requesting user may only retrieve their own terms.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "EnrollmentTerm"
+          }
+        }
+      ]
+    }
+  ],
+  "models": {
+    "AccessibilityCourseStatistic": {
+      "id": "AccessibilityCourseStatistic",
+      "description": "Per-course accessibility issue counts for a user's active teacher/designer courses.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The ID of the accessibility course statistic record",
+          "example": 1,
+          "type": "integer"
+        },
+        "course_id": {
+          "description": "The ID of the course",
+          "example": 42,
+          "type": "integer"
+        },
+        "course_name": {
+          "description": "The name of the course",
+          "example": "Introduction to Biology",
+          "type": "string"
+        },
+        "course_code": {
+          "description": "The course code (short name) of the course",
+          "example": "BIO101",
+          "type": "string"
+        },
+        "published": {
+          "description": "Whether the course is published",
+          "example": true,
+          "type": "boolean"
+        },
+        "active_issue_count": {
+          "description": "The number of active accessibility issues in the course",
+          "example": 5,
+          "type": "integer"
+        },
+        "resolved_issue_count": {
+          "description": "The number of resolved accessibility issues in the course",
+          "example": 3,
+          "type": "integer"
+        },
+        "closed_issue_count": {
+          "description": "The number of closed accessibility issues in the course",
+          "example": 2,
+          "type": "integer"
+        },
+        "workflow_state": {
+          "description": "The workflow state of the statistic record",
+          "example": "active",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "The date and time the record was created",
+          "example": "2026-01-01T00:00:00Z",
+          "type": "datetime"
+        },
+        "updated_at": {
+          "description": "The date and time the record was last updated",
+          "example": "2026-01-02T00:00:00Z",
+          "type": "datetime"
+        }
+      }
+    }
+  }
+}

@@ -1,49 +1,290 @@
 openapi: 3.1.0
 info:
-  title: Canvas LMS REST API ( subset) Courses API
-  description: 'Canvas LMS REST API uses OAuth 2.0 bearer tokens. Endpoints live under
-
-    /api/v1/ on the institution''s Canvas host (e.g.
-
-    https://canvas.instructure.com/api/v1/...). Responses are JSON with
-
-    ISO 8601 timestamps, and list endpoints support Link-header pagination.
-
-
-    This specification is a best-effort, hand-authored subset covering the
-
-    Courses resource, modeled from the publicly documented Courses API
-
-    page (https://canvas.instructure.com/doc/api/courses.html). Canvas has
-
-    many additional resources — assignments, quizzes, submissions, users,
-
-    enrollments, files, etc. — that are not enumerated here. Refer to the
-
-    Canvas API documentation for the full surface area.
-
-    '
+  title: Canvas LMS Courses API
   version: v1
+  summary: The Courses resource of the Canvas LMS REST API, converted from the first-party Swagger 1.2 document Instructure publishes at https://canvas.instructure.com/doc/api/courses.json.
+  description: |-
+    Courses, course settings, course users, enrollment counts, course copy, blueprint associations, effective due dates, bulk course updates and course deletion.
+
+    PROVENANCE: mechanically converted from https://canvas.instructure.com/doc/api/courses.json (Swagger 1.2, first-party, fetched 2026-09-05, HTTP 200). The verbatim harvest is at openapi/_original/swagger-1.2/courses.json. Supersedes a hand-authored 25-operation subset now quarantined at openapi/_scaffold/canvas-openapi-scaffold.yml.
   contact:
     name: Instructure Canvas
     url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/courses.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/courses.json
+  source_url: https://canvas.instructure.com/doc/api/courses.json
+  fetched: '2026-09-05'
+  http_status: 200
 servers:
-- url: https://canvas.instructure.com/api/v1
-  description: Hosted Canvas instance (replace host for your institution).
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
 security:
 - bearerAuth: []
+- oauth2: []
 tags:
 - name: Courses
+  x-resource: courses
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/courses.html
 paths:
-  /courses:
+  /v1/accounts/{account_id}/courses:
+    post:
+      tags:
+      - Courses
+      operationId: create_new_course
+      summary: Create a new course
+      description: Create a new course
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: &id001
+              type: object
+              properties:
+                course[name]:
+                  type: string
+                  description: |-
+                    The name of the course. If omitted, the course will be named "Unnamed
+                    Course."
+                course[course_code]:
+                  type: string
+                  description: The course code for the course.
+                course[start_at]:
+                  type: string
+                  format: date-time
+                  description: |-
+                    Course start date in ISO8601 format, e.g. 2011-01-01T01:00Z
+                    This value is ignored unless 'restrict_enrollments_to_course_dates' is set to true.
+                course[end_at]:
+                  type: string
+                  format: date-time
+                  description: |-
+                    Course end date in ISO8601 format. e.g. 2011-01-01T01:00Z
+                    This value is ignored unless 'restrict_enrollments_to_course_dates' is set to true.
+                course[license]:
+                  type: string
+                  description: |-
+                    The name of the licensing. Should be one of the following abbreviations
+                    (a descriptive name is included in parenthesis for reference):
+                    - 'private' (Private Copyrighted)
+                    - 'cc_by_nc_nd' (CC Attribution Non-Commercial No Derivatives)
+                    - 'cc_by_nc_sa' (CC Attribution Non-Commercial Share Alike)
+                    - 'cc_by_nc' (CC Attribution Non-Commercial)
+                    - 'cc_by_nd' (CC Attribution No Derivatives)
+                    - 'cc_by_sa' (CC Attribution Share Alike)
+                    - 'cc_by' (CC Attribution)
+                    - 'public_domain' (Public Domain).
+                course[is_public]:
+                  type: boolean
+                  description: Set to true if course is public to both authenticated and unauthenticated users.
+                course[is_public_to_auth_users]:
+                  type: boolean
+                  description: Set to true if course is public only to authenticated users.
+                course[public_syllabus]:
+                  type: boolean
+                  description: Set to true to make the course syllabus public.
+                course[public_syllabus_to_auth]:
+                  type: boolean
+                  description: Set to true to make the course syllabus public for authenticated users.
+                course[public_description]:
+                  type: string
+                  description: A publicly visible description of the course.
+                course[allow_student_wiki_edits]:
+                  type: boolean
+                  description: If true, students will be able to modify the course wiki.
+                course[allow_wiki_comments]:
+                  type: boolean
+                  description: If true, course members will be able to comment on wiki pages.
+                course[allow_student_forum_attachments]:
+                  type: boolean
+                  description: If true, students can attach files to forum posts.
+                course[open_enrollment]:
+                  type: boolean
+                  description: Set to true if the course is open enrollment.
+                course[self_enrollment]:
+                  type: boolean
+                  description: Set to true if the course is self enrollment.
+                course[restrict_enrollments_to_course_dates]:
+                  type: boolean
+                  description: |-
+                    Set to true to restrict user enrollments to the start and end dates of the
+                    course. This value must be set to true
+                    in order to specify a course start date and/or end date.
+                course[term_id]:
+                  type: string
+                  description: The unique ID of the term to create to course in.
+                course[sis_course_id]:
+                  type: string
+                  description: The unique SIS identifier.
+                course[integration_id]:
+                  type: string
+                  description: The unique Integration identifier.
+                course[hide_final_grades]:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the totals in student grades summary will
+                    be hidden.
+                course[apply_assignment_group_weights]:
+                  type: boolean
+                  description: Set to true to weight final grade based on assignment groups percentages.
+                course[time_zone]:
+                  type: string
+                  description: |-
+                    The time zone for the course. Allowed time zones are
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.
+                offer:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the course will be available to students
+                    immediately.
+                enroll_me:
+                  type: boolean
+                  description: Set to true to enroll the current user as the teacher.
+                skip_course_template:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the template of the account will not be applied to this course
+                    It means copy_from_course_template will not be executed. This option is thought for a course copy.
+                course[default_view]:
+                  type: string
+                  enum:
+                  - feed
+                  - wiki
+                  - modules
+                  - syllabus
+                  - assignments
+                  description: |-
+                    The type of page that users will see when they first visit the course
+                    * 'feed' Recent Activity Dashboard
+                    * 'modules' Course Modules/Sections Page
+                    * 'assignments' Course Assignments List
+                    * 'syllabus' Course Syllabus Page
+                    other types may be added in the future
+                course[syllabus_body]:
+                  type: string
+                  description: The syllabus body for the course
+                course[grading_standard_id]:
+                  type: integer
+                  format: int64
+                  description: The grading standard id to set for the course.  If no value is provided for this argument the current grading_standard will be un-set from this course.
+                course[grade_passback_setting]:
+                  type: string
+                  description: Optional. The grade_passback_setting for the course. Only 'nightly_sync', 'disabled', and '' are allowed
+                course[course_format]:
+                  type: string
+                  description: Optional. Specifies the format of the course. (Should be 'on_campus', 'online', or 'blended')
+                course[post_manually]:
+                  type: boolean
+                  description: |-
+                    Default is false.
+                    When true, all grades in the course must be posted manually, and will not be automatically posted.
+                    When false, all grades in the course will be automatically posted.
+                enable_sis_reactivation:
+                  type: boolean
+                  description: When true, will first try to re-activate a deleted course with matching sis_course_id if possible.
+          application/x-www-form-urlencoded:
+            schema: *id001
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+    put:
+      tags:
+      - Courses
+      operationId: update_courses
+      summary: Update courses
+      description: |-
+        Update multiple courses in an account.  Operates asynchronously; use the {api:ProgressController#show progress endpoint}
+        to query the status of an operation.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: &id002
+              type: object
+              properties:
+                course_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of ids of courses to update. At most 500 courses may be updated in one call.
+                event:
+                  type: string
+                  enum:
+                  - offer
+                  - conclude
+                  - delete
+                  - undelete
+                  description: |-
+                    The action to take on each course.  Must be one of 'offer', 'conclude', 'delete', or 'undelete'.
+                    * 'offer' makes a course visible to students. This action is also called "publish" on the web site.
+                    * 'conclude' prevents future enrollments and makes a course read-only for all participants. The course still appears
+                      in prior-enrollment lists.
+                    * 'delete' completely removes the course from the web site (including course menus and prior-enrollment lists).
+                      All enrollments are deleted. Course content may be physically deleted at a future date.
+                    * 'undelete' attempts to recover a course that has been deleted. (Recovery is not guaranteed; please conclude
+                      rather than delete a course if there is any possibility the course will be used again.) The recovered course
+                      will be unpublished. Deleted enrollments will not be recovered.
+              required:
+              - course_ids
+              - event
+          application/x-www-form-urlencoded:
+            schema: *id002
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses:
     get:
       tags:
       - Courses
+      operationId: list_your_courses
       summary: List your courses
-      operationId: listCourses
+      description: Returns the paginated list of active courses for the current user.
       parameters:
-      - in: query
-        name: enrollment_type
+      - name: enrollment_type
+        in: query
         schema:
           type: string
           enum:
@@ -52,16 +293,185 @@ paths:
           - ta
           - observer
           - designer
-      - in: query
-        name: enrollment_state
+        required: false
+        description: |-
+          When set, only return courses where the user is enrolled as this type. For
+          example, set to "teacher" to return only courses where the user is
+          enrolled as a Teacher.  This argument is ignored if enrollment_role is given.
+      - name: enrollment_role
+        in: query
+        schema:
+          type: string
+        required: false
+        description: |-
+          Deprecated
+          When set, only return courses where the user is enrolled with the specified
+          course-level role.  This can be a role created with the
+          {api:RoleOverridesController#add_role Add Role API} or a base role type of
+          'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment', 'ObserverEnrollment',
+          or 'DesignerEnrollment'.
+      - name: enrollment_role_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: |-
+          When set, only return courses where the user is enrolled with the specified
+          course-level role.  This can be a role created with the
+          {api:RoleOverridesController#add_role Add Role API} or a built_in role type of
+          'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment', 'ObserverEnrollment',
+          or 'DesignerEnrollment'.
+      - name: enrollment_state
+        in: query
         schema:
           type: string
           enum:
           - active
           - invited_or_pending
           - completed
-      - in: query
-        name: state
+        required: false
+        description: |-
+          When set, only return courses where the user has an enrollment with the given state.
+          This will respect section/course/term date overrides.
+      - name: exclude_blueprint_courses
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: When set, only return courses that are not configured as blueprint courses.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - needs_grading_count
+            - syllabus_body
+            - syllabus_versions
+            - public_description
+            - total_scores
+            - current_grading_period_scores
+            - grading_periods
+            - term
+            - account
+            - course_progress
+            - sections
+            - storage_quota_used_mb
+            - total_students
+            - passback_status
+            - favorites
+            - teachers
+            - observed_users
+            - course_image
+            - banner_image
+            - concluded
+            - post_manually
+        required: false
+        description: |-
+          - "needs_grading_count": Optional information to include with each Course.
+            When needs_grading_count is given, and the current user has grading
+            rights, the total number of submissions needing grading for all
+            assignments is returned.
+          - "syllabus_body": Optional information to include with each Course.
+            When syllabus_body is given the user-generated html for the course
+            syllabus is returned.
+          - "public_description": Optional information to include with each Course.
+            When public_description is given the user-generated text for the course
+            public description is returned.
+          - "total_scores": Optional information to include with each Course.
+            When total_scores is given, any student enrollments will also
+            include the fields 'computed_current_score', 'computed_final_score',
+            'computed_current_grade', and 'computed_final_grade', as well as (if
+            the user has permission) 'unposted_current_score',
+            'unposted_final_score', 'unposted_current_grade', and
+            'unposted_final_grade' (see Enrollment documentation for more
+            information on these fields). This argument is ignored if the course is
+            configured to hide final grades.
+          - "current_grading_period_scores": Optional information to include with
+            each Course. When current_grading_period_scores is given and total_scores
+            is given, any student enrollments will also include the fields
+            'has_grading_periods',
+            'totals_for_all_grading_periods_option', 'current_grading_period_title',
+            'current_grading_period_id', current_period_computed_current_score',
+            'current_period_computed_final_score',
+            'current_period_computed_current_grade', and
+            'current_period_computed_final_grade', as well as (if the user has permission)
+            'current_period_unposted_current_score',
+            'current_period_unposted_final_score',
+            'current_period_unposted_current_grade', and
+            'current_period_unposted_final_grade' (see Enrollment documentation for
+            more information on these fields). In addition, when this argument is
+            passed, the course will have a 'has_grading_periods' attribute
+            on it. This argument is ignored if the total_scores argument is not
+            included. If the course is configured to hide final grades, the
+            following fields are not returned:
+            'totals_for_all_grading_periods_option',
+            'current_period_computed_current_score',
+            'current_period_computed_final_score',
+            'current_period_computed_current_grade',
+            'current_period_computed_final_grade',
+            'current_period_unposted_current_score',
+            'current_period_unposted_final_score',
+            'current_period_unposted_current_grade', and
+            'current_period_unposted_final_grade'
+          - "grading_periods": Optional information to include with each Course. When
+            grading_periods is given, a list of the grading periods associated with
+            each course is returned.
+          - "term": Optional information to include with each Course. When
+            term is given, the information for the enrollment term for each course
+            is returned.
+          - "account": Optional information to include with each Course. When
+            account is given, the account json for each course is returned.
+          - "course_progress": Optional information to include with each Course.
+            When course_progress is given, each course will include a
+            'course_progress' object with the fields: 'requirement_count', an integer
+            specifying the total number of requirements in the course,
+            'requirement_completed_count', an integer specifying the total number of
+            requirements in this course that have been completed, and
+            'next_requirement_url', a string url to the next requirement item, and
+            'completed_at', the date the course was completed (null if incomplete).
+            'next_requirement_url' will be null if all requirements have been
+            completed or the current module does not require sequential progress.
+            "course_progress" will return an error message if the course is not
+            module based or the user is not enrolled as a student in the course.
+          - "sections": Section enrollment information to include with each Course.
+            Returns an array of hashes containing the section ID (id), section name
+            (name), start and end dates (start_at, end_at), as well as the enrollment
+            type (enrollment_role, e.g. 'StudentEnrollment').
+          - "storage_quota_used_mb": The amount of storage space used by the files in this course
+          - "total_students": Optional information to include with each Course.
+            Returns an integer for the total amount of active and invited students.
+          - "passback_status": Include the grade passback_status
+          - "favorites": Optional information to include with each Course.
+            Indicates if the user has marked the course as a favorite course.
+          - "teachers": Teacher information to include with each Course.
+            Returns an array of hashes containing the {api:Users:UserDisplay UserDisplay} information
+            for each teacher in the course.
+          - "observed_users": Optional information to include with each Course.
+            Will include data for observed users if the current user has an
+            observer enrollment.
+          - "tabs": Optional information to include with each Course.
+            Will include the list of tabs configured for each course.  See the
+            {api:TabsController#index List available tabs API} for more information.
+          - "course_image": Optional information to include with each Course. Returns course
+            image url if a course image has been set.
+          - "banner_image": Optional information to include with each Course. Returns course
+            banner image url if the course is a Canvas for Elementary subject and a banner
+            image has been set.
+          - "concluded": Optional information to include with each Course. Indicates whether
+            the course has been concluded, taking course and term dates into account.
+          - "post_manually": Optional information to include with each Course. Returns true if
+            the course post policy is set to Manually post grades. Returns false if the the course
+            post policy is set to Automatically post grades.
+          - "syllabus_versions": Optional information to include with each Course.
+            Returns recent saved versions of the syllabus body. Requires the
+            syllabus_versioning feature flag and permission to manage course
+            content. Version numbers can be passed to the Restore course
+            syllabus version API.
+      - name: state
+        in: query
         schema:
           type: array
           items:
@@ -71,543 +481,1976 @@ paths:
             - available
             - completed
             - deleted
-      - in: query
-        name: include
+        required: false
+        description: |-
+          If set, only return courses that are in the given state(s).
+          By default, "available" is returned for students and observers, and
+          anything except "deleted", for all other enrollment types
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/users/{user_id}/courses:
+    get:
+      tags:
+      - Courses
+      operationId: list_courses_for_user
+      summary: List courses for a user
+      description: Returns a paginated list of active courses for this user. To view the course list for a user other than yourself, you must be either an observer of that user or an administrator.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
         schema:
           type: array
           items:
             type: string
+            enum:
+            - needs_grading_count
+            - syllabus_body
+            - syllabus_versions
+            - public_description
+            - total_scores
+            - current_grading_period_scores
+            - grading_periods
+            - term
+            - account
+            - course_progress
+            - sections
+            - storage_quota_used_mb
+            - total_students
+            - passback_status
+            - favorites
+            - teachers
+            - observed_users
+            - course_image
+            - banner_image
+            - concluded
+            - post_manually
+        required: false
+        description: |-
+          - "needs_grading_count": Optional information to include with each Course.
+            When needs_grading_count is given, and the current user has grading
+            rights, the total number of submissions needing grading for all
+            assignments is returned.
+          - "syllabus_body": Optional information to include with each Course.
+            When syllabus_body is given the user-generated html for the course
+            syllabus is returned.
+          - "public_description": Optional information to include with each Course.
+            When public_description is given the user-generated text for the course
+            public description is returned.
+          - "total_scores": Optional information to include with each Course.
+            When total_scores is given, any student enrollments will also
+            include the fields 'computed_current_score', 'computed_final_score',
+            'computed_current_grade', and 'computed_final_grade' (see Enrollment
+            documentation for more information on these fields). This argument
+            is ignored if the course is configured to hide final grades.
+          - "current_grading_period_scores": Optional information to include with
+            each Course. When current_grading_period_scores is given and total_scores
+            is given, any student enrollments will also include the fields
+            'has_grading_periods',
+            'totals_for_all_grading_periods_option', 'current_grading_period_title',
+            'current_grading_period_id', current_period_computed_current_score',
+            'current_period_computed_final_score',
+            'current_period_computed_current_grade', and
+            'current_period_computed_final_grade', as well as (if the user has permission)
+            'current_period_unposted_current_score',
+            'current_period_unposted_final_score',
+            'current_period_unposted_current_grade', and
+            'current_period_unposted_final_grade' (see Enrollment documentation for
+            more information on these fields). In addition, when this argument is
+            passed, the course will have a 'has_grading_periods' attribute
+            on it. This argument is ignored if the course is configured to hide final
+            grades or if the total_scores argument is not included.
+          - "grading_periods": Optional information to include with each Course. When
+            grading_periods is given, a list of the grading periods associated with
+            each course is returned.
+          - "term": Optional information to include with each Course. When
+            term is given, the information for the enrollment term for each course
+            is returned.
+          - "account": Optional information to include with each Course. When
+            account is given, the account json for each course is returned.
+          - "course_progress": Optional information to include with each Course.
+            When course_progress is given, each course will include a
+            'course_progress' object with the fields: 'requirement_count', an integer
+            specifying the total number of requirements in the course,
+            'requirement_completed_count', an integer specifying the total number of
+            requirements in this course that have been completed, and
+            'next_requirement_url', a string url to the next requirement item, and
+            'completed_at', the date the course was completed (null if incomplete).
+            'next_requirement_url' will be null if all requirements have been
+            completed or the current module does not require sequential progress.
+            "course_progress" will return an error message if the course is not
+            module based or the user is not enrolled as a student in the course.
+          - "sections": Section enrollment information to include with each Course.
+            Returns an array of hashes containing the section ID (id), section name
+            (name), start and end dates (start_at, end_at), as well as the enrollment
+            type (enrollment_role, e.g. 'StudentEnrollment').
+          - "storage_quota_used_mb": The amount of storage space used by the files in this course
+          - "total_students": Optional information to include with each Course.
+            Returns an integer for the total amount of active and invited students.
+          - "passback_status": Include the grade passback_status
+          - "favorites": Optional information to include with each Course.
+            Indicates if the user has marked the course as a favorite course.
+          - "teachers": Teacher information to include with each Course.
+            Returns an array of hashes containing the {api:Users:UserDisplay UserDisplay} information
+            for each teacher in the course.
+          - "observed_users": Optional information to include with each Course.
+            Will include data for observed users if the current user has an
+            observer enrollment.
+          - "tabs": Optional information to include with each Course.
+            Will include the list of tabs configured for each course.  See the
+            {api:TabsController#index List available tabs API} for more information.
+          - "course_image": Optional information to include with each Course. Returns course
+            image url if a course image has been set.
+          - "banner_image": Optional information to include with each Course. Returns course
+            banner image url if the course is a Canvas for Elementary subject and a banner
+            image has been set.
+          - "concluded": Optional information to include with each Course. Indicates whether
+            the course has been concluded, taking course and term dates into account.
+          - "post_manually": Optional information to include with each Course. Returns true if
+            the course post policy is set to "Manually". Returns false if the the course post
+            policy is set to "Automatically".
+          - "syllabus_versions": Optional information to include with each Course.
+            Returns recent saved versions of the syllabus body. Requires the
+            syllabus_versioning feature flag and permission to manage course
+            content. Version numbers can be passed to the Restore course
+            syllabus version API.
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - unpublished
+            - available
+            - completed
+            - deleted
+        required: false
+        description: |-
+          If set, only return courses that are in the given state(s).
+          By default, "available" is returned for students and observers, and
+          anything except "deleted", for all other enrollment types
+      - name: enrollment_state
+        in: query
+        schema:
+          type: string
+          enum:
+          - active
+          - invited_or_pending
+          - completed
+        required: false
+        description: |-
+          When set, only return courses where the user has an enrollment with the given state.
+          This will respect section/course/term date overrides.
+      - name: homeroom
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If set, only return homeroom courses.
+      - name: account_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: If set, only include courses associated with this account
       responses:
         '200':
-          $ref: '#/components/responses/CourseList'
-  /users/{user_id}/courses:
-    parameters:
-    - $ref: '#/components/parameters/UserId'
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/users/{user_id}/progress:
     get:
       tags:
       - Courses
-      summary: List courses for a user
+      operationId: get_user_progress
+      summary: Get user progress
+      description: |-
+        Return progress information for the user and course
+
+        You can supply +self+ as the user_id to query your own progress in a course. To query another user's progress,
+        you must be a teacher in the course, an administrator, or a linked observer of the user.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
       responses:
         '200':
-          $ref: '#/components/responses/CourseList'
-  /courses/{course_id}/users/{user_id}/progress:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    - $ref: '#/components/parameters/UserId'
-    get:
-      tags:
-      - Courses
-      summary: Get user progress in a course
-      responses:
-        '200':
-          $ref: '#/components/responses/CourseProgress'
-  /accounts/{account_id}/courses:
-    parameters:
-    - in: path
-      name: account_id
-      required: true
-      schema:
-        type: string
-    get:
-      tags:
-      - Courses
-      summary: List courses in an account
-      responses:
-        '200':
-          $ref: '#/components/responses/CourseList'
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseProgress'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/files:
     post:
       tags:
       - Courses
-      summary: Create a new course
-      requestBody:
+      operationId: upload_file
+      summary: Upload a file
+      description: |-
+        Upload a file to the course.
+
+        This API endpoint is the first step in uploading a file to a course.
+        See the {file:file.file_uploads.html File Upload Documentation} for details on
+        the file upload workflow.
+
+        Only those with the "Manage Files" permission on a course can upload files
+        to the course. By default, this is Teachers, TAs and Designers.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CourseCreate'
+        description: ID
       responses:
         '200':
-          $ref: '#/components/responses/Course'
-  /accounts/{account_id}/courses/{id}:
-    parameters:
-    - in: path
-      name: account_id
-      required: true
-      schema:
-        type: string
-    - in: path
-      name: id
-      required: true
-      schema:
-        type: string
-    put:
-      tags:
-      - Courses
-      summary: Update courses (bulk)
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{id}:
-    parameters:
-    - in: path
-      name: id
-      required: true
-      schema:
-        type: string
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/students:
     get:
       tags:
       - Courses
-      summary: Get a single course
+      operationId: list_students
+      summary: List students
+      description: |-
+        Returns the paginated list of students enrolled in this course.
+
+        DEPRECATED: Please use the {api:CoursesController#users course users} endpoint
+        and pass "student" as the enrollment_type.
       parameters:
-      - in: query
-        name: include
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/users:
+    get:
+      tags:
+      - Courses
+      operationId: list_users_in_course_users
+      summary: List users in course
+      description: Returns the paginated list of users in this course. And optionally the user's enrollments in the course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial name or full ID of the users to match and return in the results list.
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - username
+          - last_login
+          - email
+          - sis_id
+        required: false
+        description: When set, sort the results of the search based on the given field.
+      - name: enrollment_type
+        in: query
         schema:
           type: array
           items:
             type: string
+            enum:
+            - teacher
+            - student
+            - student_view
+            - ta
+            - observer
+            - designer
+        required: false
+        description: |-
+          When set, only return users where the user is enrolled as this type.
+          "student_view" implies include[]=test_student.
+          This argument is ignored if enrollment_role is given.
+      - name: enrollment_role
+        in: query
+        schema:
+          type: string
+        required: false
+        description: |-
+          Deprecated
+          When set, only return users enrolled with the specified course-level role.  This can be
+          a role created with the {api:RoleOverridesController#add_role Add Role API} or a
+          base role type of 'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment',
+          'ObserverEnrollment', or 'DesignerEnrollment'.
+      - name: enrollment_role_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: |-
+          When set, only return courses where the user is enrolled with the specified
+          course-level role.  This can be a role created with the
+          {api:RoleOverridesController#add_role Add Role API} or a built_in role id with type
+          'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment', 'ObserverEnrollment',
+          or 'DesignerEnrollment'.
+      - name: section_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: When set, only return users who are enrolled in the given section(s).
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - enrollments
+            - locked
+            - avatar_url
+            - test_student
+            - bio
+            - custom_links
+            - current_grading_period_scores
+            - uuid
+        required: false
+        description: |-
+          - "enrollments":
+          Optionally include with each Course the user's current and invited
+          enrollments. If the user is enrolled as a student, and the account has
+          permission to manage or view all grades, each enrollment will include a
+          'grades' key with 'current_score', 'final_score', 'current_grade' and
+          'final_grade' values.
+          - "locked": Optionally include whether an enrollment is locked.
+          - "avatar_url": Optionally include avatar_url.
+          - "bio": Optionally include each user's bio.
+          - "test_student": Optionally include the course's Test Student,
+          if present. Default is to not include Test Student.
+          - "custom_links": Optionally include plugin-supplied custom links for each student,
+          such as analytics information
+          - "current_grading_period_scores": if enrollments is included as
+          well as this directive, the scores returned in the enrollment
+          will be for the current grading period if there is one. A
+          'grading_period_id' value will also be included with the
+          scores. if grading_period_id is nil there is no current grading
+          period and the score is a total score.
+          - "uuid": Optionally include the users uuid
+      - name: user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: |-
+          If this parameter is given and it corresponds to a user in the course,
+          the +page+ parameter will be ignored and the page containing the specified user
+          will be returned instead.
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: |-
+          If included, the course users set will only include users with IDs
+          specified by the param. Note: this will not work in conjunction
+          with the "user_id" argument but multiple user_ids can be included.
+      - name: enrollment_state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - invited
+            - rejected
+            - completed
+            - inactive
+        required: false
+        description: |-
+          When set, only return users where the enrollment workflow state is of one of the given types.
+          "active" and "invited" enrollments are returned by default.
       responses:
         '200':
-          $ref: '#/components/responses/Course'
-    put:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/search_users:
+    get:
       tags:
       - Courses
-      summary: Update a course
+      operationId: list_users_in_course_search_users
+      summary: List users in course
+      description: Returns the paginated list of users in this course. And optionally the user's enrollments in the course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial name or full ID of the users to match and return in the results list.
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - username
+          - last_login
+          - email
+          - sis_id
+        required: false
+        description: When set, sort the results of the search based on the given field.
+      - name: enrollment_type
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - teacher
+            - student
+            - student_view
+            - ta
+            - observer
+            - designer
+        required: false
+        description: |-
+          When set, only return users where the user is enrolled as this type.
+          "student_view" implies include[]=test_student.
+          This argument is ignored if enrollment_role is given.
+      - name: enrollment_role
+        in: query
+        schema:
+          type: string
+        required: false
+        description: |-
+          Deprecated
+          When set, only return users enrolled with the specified course-level role.  This can be
+          a role created with the {api:RoleOverridesController#add_role Add Role API} or a
+          base role type of 'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment',
+          'ObserverEnrollment', or 'DesignerEnrollment'.
+      - name: enrollment_role_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: |-
+          When set, only return courses where the user is enrolled with the specified
+          course-level role.  This can be a role created with the
+          {api:RoleOverridesController#add_role Add Role API} or a built_in role id with type
+          'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment', 'ObserverEnrollment',
+          or 'DesignerEnrollment'.
+      - name: section_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: When set, only return users who are enrolled in the given section(s).
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - enrollments
+            - locked
+            - avatar_url
+            - test_student
+            - bio
+            - custom_links
+            - current_grading_period_scores
+            - uuid
+        required: false
+        description: |-
+          - "enrollments":
+          Optionally include with each Course the user's current and invited
+          enrollments. If the user is enrolled as a student, and the account has
+          permission to manage or view all grades, each enrollment will include a
+          'grades' key with 'current_score', 'final_score', 'current_grade' and
+          'final_grade' values.
+          - "locked": Optionally include whether an enrollment is locked.
+          - "avatar_url": Optionally include avatar_url.
+          - "bio": Optionally include each user's bio.
+          - "test_student": Optionally include the course's Test Student,
+          if present. Default is to not include Test Student.
+          - "custom_links": Optionally include plugin-supplied custom links for each student,
+          such as analytics information
+          - "current_grading_period_scores": if enrollments is included as
+          well as this directive, the scores returned in the enrollment
+          will be for the current grading period if there is one. A
+          'grading_period_id' value will also be included with the
+          scores. if grading_period_id is nil there is no current grading
+          period and the score is a total score.
+          - "uuid": Optionally include the users uuid
+      - name: user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: |-
+          If this parameter is given and it corresponds to a user in the course,
+          the +page+ parameter will be ignored and the page containing the specified user
+          will be returned instead.
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: |-
+          If included, the course users set will only include users with IDs
+          specified by the param. Note: this will not work in conjunction
+          with the "user_id" argument but multiple user_ids can be included.
+      - name: enrollment_state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - invited
+            - rejected
+            - completed
+            - inactive
+        required: false
+        description: |-
+          When set, only return users where the enrollment workflow state is of one of the given types.
+          "active" and "invited" enrollments are returned by default.
       responses:
         '200':
-          $ref: '#/components/responses/Course'
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/recent_students:
+    get:
+      tags:
+      - Courses
+      operationId: list_recently_logged_in_students
+      summary: List recently logged in students
+      description: |-
+        Returns the paginated list of users in this course, ordered by how recently they have
+        logged in. The records include the 'last_login' field which contains
+        a timestamp of the last time that user logged into canvas.  The querying
+        user must have the 'View usage reports' permission.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/users/{id}:
+    get:
+      tags:
+      - Courses
+      operationId: get_single_user
+      summary: Get single user
+      description: |-
+        Return information on a single user.
+
+        Accepts the same include[] parameters as the :users: action, and returns a
+        single user with the same fields as that action.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/content_share_users:
+    get:
+      tags:
+      - Courses
+      operationId: search_for_content_share_users
+      summary: Search for content share users
+      description: |-
+        Returns a paginated list of users you can share content with.  Requires the content share
+        feature and the user must have the manage content permission for the course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: true
+        description: Term used to find users.  Will search available share users with the search term in their name.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/preview_html:
+    post:
+      tags:
+      - Courses
+      operationId: preview_processed_html
+      summary: Preview processed html
+      description: Preview html content processed for this course
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: &id003
+              type: object
+              properties:
+                html:
+                  type: string
+                  description: The html content to process
+          application/x-www-form-urlencoded:
+            schema: *id003
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/activity_stream:
+    get:
+      tags:
+      - Courses
+      operationId: course_activity_stream
+      summary: Course activity stream
+      description: |-
+        Returns the current user's course-specific activity stream, paginated.
+
+        For full documentation, see the API documentation for the user activity
+        stream, in the user api.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/activity_stream/summary:
+    get:
+      tags:
+      - Courses
+      operationId: course_activity_stream_summary
+      summary: Course activity stream summary
+      description: |-
+        Returns a summary of the current user's course-specific activity stream.
+
+        For full documentation, see the API documentation for the user activity
+        stream summary, in the user api.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/todo:
+    get:
+      tags:
+      - Courses
+      operationId: course_todo_items
+      summary: Course TODO items
+      description: |-
+        Returns the current user's course-specific todo items.
+
+        For full documentation, see the API documentation for the user todo items, in the user api.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{id}:
     delete:
       tags:
       - Courses
-      summary: Delete or conclude a course
+      operationId: delete_conclude_course
+      summary: Delete/Conclude a course
+      description: Delete or conclude an existing course
       parameters:
-      - in: query
-        name: event
+      - name: id
+        in: path
+        schema:
+          type: string
         required: true
+        description: ID
+      - name: event
+        in: query
         schema:
           type: string
           enum:
           - delete
           - conclude
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/files:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: List course files
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-    post:
-      tags:
-      - Courses
-      summary: Upload a file to a course
-      requestBody:
         required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                size:
-                  type: integer
-                content_type:
-                  type: string
+        description: The action to take on the course.
       responses:
         '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/students:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
     get:
       tags:
       - Courses
-      summary: List students in a course (deprecated - use users)
-      responses:
-        '200':
-          $ref: '#/components/responses/UserList'
-  /courses/{course_id}/users:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: List users in a course
+      operationId: get_single_course_courses
+      summary: Get a single course
+      description: |-
+        Return information on a single course.
+
+        Accepts the same include[] parameters as the list action plus:
       parameters:
-      - in: query
-        name: enrollment_type
-        schema:
-          type: array
-          items:
-            type: string
-      - in: query
-        name: include
-        schema:
-          type: array
-          items:
-            type: string
-      responses:
-        '200':
-          $ref: '#/components/responses/UserList'
-  /courses/{course_id}/search_users:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: Search users in a course
-      parameters:
-      - in: query
-        name: search_term
+      - name: id
+        in: path
         schema:
           type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - needs_grading_count
+            - syllabus_body
+            - syllabus_versions
+            - public_description
+            - total_scores
+            - current_grading_period_scores
+            - term
+            - account
+            - course_progress
+            - sections
+            - storage_quota_used_mb
+            - total_students
+            - passback_status
+            - favorites
+            - teachers
+            - observed_users
+            - all_courses
+            - permissions
+            - course_image
+            - banner_image
+            - concluded
+            - lti_context_id
+            - post_manually
+        required: false
+        description: |-
+          - "all_courses": Also search recently deleted courses.
+          - "permissions": Include permissions the current user has
+            for the course.
+          - "observed_users": Include observed users in the enrollments
+          - "course_image": Include course image url if a course image has been set
+          - "banner_image": Include course banner image url if the course is a Canvas for
+            Elementary subject and a banner image has been set
+          - "concluded": Optional information to include with Course. Indicates whether
+            the course has been concluded, taking course and term dates into account.
+          - "lti_context_id": Include course LTI tool id.
+          - "post_manually": Include course post policy. If the post policy is manually post grades,
+            the value will be true. If the post policy is automatically post grades, the value will be false.
+          - "syllabus_versions": Optional information to include with each Course.
+            Returns recent saved versions of the syllabus body. Requires the
+            syllabus_versioning feature flag and permission to manage course
+            content. Version numbers can be passed to the Restore course
+            syllabus version API.
+      - name: teacher_limit
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: |-
+          The maximum number of teacher enrollments to show.
+          If the course contains more teachers than this, instead of giving the teacher
+          enrollments, the count of teachers will be given under a _teacher_count_ key.
       responses:
         '200':
-          $ref: '#/components/responses/UserList'
-  /courses/{course_id}/recent_students:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: List recently logged-in students
-      responses:
-        '200':
-          $ref: '#/components/responses/UserList'
-  /courses/{course_id}/users/{id}:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    - in: path
-      name: id
-      required: true
-      schema:
-        type: string
-    get:
-      tags:
-      - Courses
-      summary: Get a single user in a course
-      responses:
-        '200':
-          $ref: '#/components/responses/User'
-  /courses/{course_id}/content_share_users:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: List content share users for a course
-      responses:
-        '200':
-          $ref: '#/components/responses/UserList'
-  /courses/{course_id}/preview_html:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    post:
-      tags:
-      - Courses
-      summary: Preview HTML in a course context
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/activity_stream:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: Course activity stream
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/activity_stream/summary:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: Course activity stream summary
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/todo:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: Course TODO items
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/settings:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: Get course settings
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
     put:
       tags:
       - Courses
+      operationId: update_course
+      summary: Update a course
+      description: |-
+        Update an existing course.
+
+        Arguments are the same as Courses#create, with a few exceptions (enroll_me).
+
+        If a user has content management rights, but not full course editing rights, the only attribute
+        editable through this endpoint will be "syllabus_body"
+
+        If an account has set prevent_course_availability_editing_by_teachers, a teacher cannot change
+        +course[start_at]+, +course[conclude_at]+, or +course[restrict_enrollments_to_course_dates]+ here.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: &id004
+              type: object
+              properties:
+                course[account_id]:
+                  type: integer
+                  format: int64
+                  description: The unique ID of the account to move the course to.
+                course[name]:
+                  type: string
+                  description: |-
+                    The name of the course. If omitted, the course will be named "Unnamed
+                    Course."
+                course[course_code]:
+                  type: string
+                  description: The course code for the course.
+                course[start_at]:
+                  type: string
+                  format: date-time
+                  description: |-
+                    Course start date in ISO8601 format, e.g. 2011-01-01T01:00Z
+                    This value is ignored unless 'restrict_enrollments_to_course_dates' is set to true,
+                    or the course is already published.
+                course[end_at]:
+                  type: string
+                  format: date-time
+                  description: |-
+                    Course end date in ISO8601 format. e.g. 2011-01-01T01:00Z
+                    This value is ignored unless 'restrict_enrollments_to_course_dates' is set to true.
+                course[license]:
+                  type: string
+                  description: |-
+                    The name of the licensing. Should be one of the following abbreviations
+                    (a descriptive name is included in parenthesis for reference):
+                    - 'private' (Private Copyrighted)
+                    - 'cc_by_nc_nd' (CC Attribution Non-Commercial No Derivatives)
+                    - 'cc_by_nc_sa' (CC Attribution Non-Commercial Share Alike)
+                    - 'cc_by_nc' (CC Attribution Non-Commercial)
+                    - 'cc_by_nd' (CC Attribution No Derivatives)
+                    - 'cc_by_sa' (CC Attribution Share Alike)
+                    - 'cc_by' (CC Attribution)
+                    - 'public_domain' (Public Domain).
+                course[is_public]:
+                  type: boolean
+                  description: Set to true if course is public to both authenticated and unauthenticated users.
+                course[is_public_to_auth_users]:
+                  type: boolean
+                  description: Set to true if course is public only to authenticated users.
+                course[public_syllabus]:
+                  type: boolean
+                  description: Set to true to make the course syllabus public.
+                course[public_syllabus_to_auth]:
+                  type: boolean
+                  description: Set to true to make the course syllabus to public for authenticated users.
+                course[public_description]:
+                  type: string
+                  description: A publicly visible description of the course.
+                course[allow_student_wiki_edits]:
+                  type: boolean
+                  description: If true, students will be able to modify the course wiki.
+                course[allow_wiki_comments]:
+                  type: boolean
+                  description: If true, course members will be able to comment on wiki pages.
+                course[allow_student_forum_attachments]:
+                  type: boolean
+                  description: If true, students can attach files to forum posts.
+                course[open_enrollment]:
+                  type: boolean
+                  description: Set to true if the course is open enrollment.
+                course[self_enrollment]:
+                  type: boolean
+                  description: Set to true if the course is self enrollment.
+                course[restrict_enrollments_to_course_dates]:
+                  type: boolean
+                  description: |-
+                    Set to true to restrict user enrollments to the start and end dates of the
+                    course. Setting this value to false will
+                    remove the course end date (if it exists), as well as the course start date
+                    (if the course is unpublished).
+                course[term_id]:
+                  type: integer
+                  format: int64
+                  description: The unique ID of the term to create to course in.
+                course[sis_course_id]:
+                  type: string
+                  description: The unique SIS identifier.
+                course[integration_id]:
+                  type: string
+                  description: The unique Integration identifier.
+                course[hide_final_grades]:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the totals in student grades summary will
+                    be hidden.
+                course[time_zone]:
+                  type: string
+                  description: |-
+                    The time zone for the course. Allowed time zones are
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.
+                course[apply_assignment_group_weights]:
+                  type: boolean
+                  description: Set to true to weight final grade based on assignment groups percentages.
+                course[storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: |-
+                    Set the storage quota for the course, in megabytes. The caller must have
+                    the "Manage storage quotas" account permission.
+                offer:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the course will be available to students
+                    immediately.
+                course[event]:
+                  type: string
+                  enum:
+                  - claim
+                  - offer
+                  - conclude
+                  - delete
+                  - undelete
+                  description: |-
+                    The action to take on each course.
+                    * 'claim' makes a course no longer visible to students. This action is also called "unpublish" on the web site.
+                      A course cannot be unpublished if students have received graded submissions.
+                    * 'offer' makes a course visible to students. This action is also called "publish" on the web site.
+                    * 'conclude' prevents future enrollments and makes a course read-only for all participants. The course still appears
+                      in prior-enrollment lists.
+                    * 'delete' completely removes the course from the web site (including course menus and prior-enrollment lists).
+                      All enrollments are deleted. Course content may be physically deleted at a future date.
+                    * 'undelete' attempts to recover a course that has been deleted. This action requires account administrative rights.
+                      (Recovery is not guaranteed; please conclude rather than delete a course if there is any possibility the course
+                      will be used again.) The recovered course will be unpublished. Deleted enrollments will not be recovered.
+                course[default_view]:
+                  type: string
+                  enum:
+                  - feed
+                  - wiki
+                  - modules
+                  - syllabus
+                  - assignments
+                  description: |-
+                    The type of page that users will see when they first visit the course
+                    * 'feed' Recent Activity Dashboard
+                    * 'wiki' Wiki Front Page
+                    * 'modules' Course Modules/Sections Page
+                    * 'assignments' Course Assignments List
+                    * 'syllabus' Course Syllabus Page
+                    other types may be added in the future
+                course[syllabus_body]:
+                  type: string
+                  description: The syllabus body for the course
+                course[syllabus_course_summary]:
+                  type: boolean
+                  description: Optional. Indicates whether the Course Summary (consisting of the course's assignments and calendar events) is displayed on the syllabus page. Defaults to +true+.
+                course[grading_standard_id]:
+                  type: integer
+                  format: int64
+                  description: The grading standard id to set for the course.  If no value is provided for this argument the current grading_standard will be un-set from this course.
+                course[grade_passback_setting]:
+                  type: string
+                  description: Optional. The grade_passback_setting for the course. Only 'nightly_sync' and '' are allowed
+                course[course_format]:
+                  type: string
+                  description: Optional. Specifies the format of the course. (Should be either 'on_campus' or 'online')
+                course[image_id]:
+                  type: integer
+                  format: int64
+                  description: |-
+                    This is a file ID corresponding to an image file in the course that will
+                    be used as the course image.
+                    This will clear the course's image_url setting if set.  If you attempt
+                    to provide image_url and image_id in a request it will fail.
+                course[image_url]:
+                  type: string
+                  description: |-
+                    This is a URL to an image to be used as the course image.
+                    This will clear the course's image_id setting if set.  If you attempt
+                    to provide image_url and image_id in a request it will fail.
+                course[remove_image]:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the course image url and course image
+                    ID are both set to nil
+                course[remove_banner_image]:
+                  type: boolean
+                  description: |-
+                    If this option is set to true, the course banner image url and course
+                    banner image ID are both set to nil
+                course[blueprint]:
+                  type: boolean
+                  description: Sets the course as a blueprint course.
+                course[blueprint_restrictions]:
+                  type: string
+                  x-canvas-declared-type: BlueprintRestriction
+                  description: |-
+                    Sets a default set to apply to blueprint course objects when restricted,
+                    unless _use_blueprint_restrictions_by_object_type_ is enabled.
+                    See the {api:Blueprint_Courses:BlueprintRestriction Blueprint Restriction} documentation
+                course[use_blueprint_restrictions_by_object_type]:
+                  type: boolean
+                  description: |-
+                    When enabled, the _blueprint_restrictions_ parameter will be ignored in favor of
+                    the _blueprint_restrictions_by_object_type_ parameter
+                course[blueprint_restrictions_by_object_type]:
+                  type: string
+                  x-canvas-declared-type: multiple BlueprintRestrictions
+                  description: |-
+                    Allows setting multiple {api:Blueprint_Courses:BlueprintRestriction Blueprint Restriction}
+                    to apply to blueprint course objects of the matching type when restricted.
+                    The possible object types are "assignment", "attachment", "discussion_topic", "quiz" and "wiki_page".
+                    Example usage:
+                      course[blueprint_restrictions_by_object_type][assignment][content]=1
+                course[homeroom_course]:
+                  type: boolean
+                  description: |-
+                    Sets the course as a homeroom course. The setting takes effect only when the course is associated
+                    with a Canvas for Elementary-enabled account.
+                course[sync_enrollments_from_homeroom]:
+                  type: string
+                  description: |-
+                    Syncs enrollments from the homeroom that is set in homeroom_course_id. The setting only takes effect when the
+                    course is associated with a Canvas for Elementary-enabled account and sync_enrollments_from_homeroom is enabled.
+                course[homeroom_course_id]:
+                  type: string
+                  description: |-
+                    Sets the Homeroom Course id to be used with sync_enrollments_from_homeroom. The setting only takes effect when the
+                    course is associated with a Canvas for Elementary-enabled account and sync_enrollments_from_homeroom is enabled.
+                course[template]:
+                  type: boolean
+                  description: Enable or disable the course as a template that can be selected by an account
+                course[course_color]:
+                  type: string
+                  description: |-
+                    Sets a color in hex code format to be associated with the course. The setting takes effect only when the course
+                    is associated with a Canvas for Elementary-enabled account.
+                course[friendly_name]:
+                  type: string
+                  description: |-
+                    Set a friendly name for the course. If this is provided and the course is associated with a Canvas for
+                    Elementary account, it will be shown instead of the course name. This setting takes priority over
+                    course nicknames defined by individual users.
+                course[enable_course_paces]:
+                  type: boolean
+                  description: |-
+                    Enable or disable Course Pacing for the course. This setting only has an effect when the Course Pacing feature flag is
+                    enabled for the sub-account. Otherwise, Course Pacing are always disabled.
+                course[conditional_release]:
+                  type: boolean
+                  description: Enable or disable individual learning paths for students based on assessment
+                course[post_manually]:
+                  type: boolean
+                  description: |-
+                    When true, all grades in the course will be posted manually.
+                    When false, all grades in the course will be automatically posted.
+                    Use with caution as this setting will override any assignment level post policy.
+                override_sis_stickiness:
+                  type: boolean
+                  description: |-
+                    Default is true. If false, any fields containing “sticky” changes will not be updated.
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness
+          application/x-www-form-urlencoded:
+            schema: *id004
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/settings:
+    get:
+      tags:
+      - Courses
+      operationId: get_course_settings
+      summary: Get course settings
+      description: Returns some of a course's settings.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+    put:
+      tags:
+      - Courses
+      operationId: update_course_settings
       summary: Update course settings
+      description: 'Can update the following course settings:'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: &id005
+              type: object
+              properties:
+                allow_final_grade_override:
+                  type: boolean
+                  description: Let student final grades for a grading period or the total grades for the course be overridden
+                allow_student_discussion_topics:
+                  type: boolean
+                  description: Let students create discussion topics
+                allow_student_forum_attachments:
+                  type: boolean
+                  description: Let students attach files to discussions
+                allow_student_discussion_editing:
+                  type: boolean
+                  description: Let students edit or delete their own discussion replies
+                allow_student_organized_groups:
+                  type: boolean
+                  description: Let students organize their own groups
+                allow_student_discussion_reporting:
+                  type: boolean
+                  description: Let students report offensive discussion content
+                allow_student_anonymous_discussion_topics:
+                  type: boolean
+                  description: Let students create anonymous discussion topics
+                filter_speed_grader_by_student_group:
+                  type: boolean
+                  description: Filter SpeedGrader to only the selected student group
+                hide_final_grades:
+                  type: boolean
+                  description: Hide totals in student grades summary
+                hide_distribution_graphs:
+                  type: boolean
+                  description: Hide grade distribution graphs from students
+                hide_sections_on_course_users_page:
+                  type: boolean
+                  description: Disallow students from viewing students in sections they do not belong to
+                lock_all_announcements:
+                  type: boolean
+                  description: Disable comments on announcements
+                usage_rights_required:
+                  type: boolean
+                  description: Copyright and license information must be provided for files before they are published.
+                restrict_student_past_view:
+                  type: boolean
+                  description: Restrict students from viewing courses after end date
+                restrict_student_future_view:
+                  type: boolean
+                  description: Restrict students from viewing courses before start date
+                show_announcements_on_home_page:
+                  type: boolean
+                  description: |-
+                    Show the most recent announcements on the Course home page (if a Wiki, defaults to five announcements, configurable via home_page_announcement_limit).
+                    Canvas for Elementary subjects ignore this setting.
+                home_page_announcement_limit:
+                  type: integer
+                  format: int64
+                  description: Limit the number of announcements on the home page if enabled via show_announcements_on_home_page
+                syllabus_course_summary:
+                  type: boolean
+                  description: Show the course summary (list of assignments and calendar events) on the syllabus page. Default is true.
+                default_due_time:
+                  type: string
+                  description: |-
+                    Set the default due time for assignments. This is the time that will be pre-selected in the Canvas user interface
+                    when setting a due date for an assignment. It does not change when any existing assignment is due. It should be
+                    given in 24-hour HH:MM:SS format. The default is "23:59:59". Use "inherit" to inherit the account setting.
+                conditional_release:
+                  type: boolean
+                  description: Enable or disable individual learning paths for students based on assessment
+          application/x-www-form-urlencoded:
+            schema: *id005
       responses:
         '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/permissions:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/student_view_student:
     get:
       tags:
       - Courses
-      summary: Get course permissions
+      operationId: return_test_student_for_course
+      summary: Return test student for course
+      description: |-
+        Returns information for a test student in this course. Creates a test
+        student if one does not already exist for the course. The caller must have
+        permission to access the course's student view.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
       responses:
         '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/reset_content:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/accounts/{account_id}/courses/{id}:
+    get:
+      tags:
+      - Courses
+      operationId: get_single_course_accounts
+      summary: Get a single course
+      description: |-
+        Return information on a single course.
+
+        Accepts the same include[] parameters as the list action plus:
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - needs_grading_count
+            - syllabus_body
+            - syllabus_versions
+            - public_description
+            - total_scores
+            - current_grading_period_scores
+            - term
+            - account
+            - course_progress
+            - sections
+            - storage_quota_used_mb
+            - total_students
+            - passback_status
+            - favorites
+            - teachers
+            - observed_users
+            - all_courses
+            - permissions
+            - course_image
+            - banner_image
+            - concluded
+            - lti_context_id
+            - post_manually
+        required: false
+        description: |-
+          - "all_courses": Also search recently deleted courses.
+          - "permissions": Include permissions the current user has
+            for the course.
+          - "observed_users": Include observed users in the enrollments
+          - "course_image": Include course image url if a course image has been set
+          - "banner_image": Include course banner image url if the course is a Canvas for
+            Elementary subject and a banner image has been set
+          - "concluded": Optional information to include with Course. Indicates whether
+            the course has been concluded, taking course and term dates into account.
+          - "lti_context_id": Include course LTI tool id.
+          - "post_manually": Include course post policy. If the post policy is manually post grades,
+            the value will be true. If the post policy is automatically post grades, the value will be false.
+          - "syllabus_versions": Optional information to include with each Course.
+            Returns recent saved versions of the syllabus body. Requires the
+            syllabus_versioning feature flag and permission to manage course
+            content. Version numbers can be passed to the Restore course
+            syllabus version API.
+      - name: teacher_limit
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: |-
+          The maximum number of teacher enrollments to show.
+          If the course contains more teachers than this, instead of giving the teacher
+          enrollments, the count of teachers will be given under a _teacher_count_ key.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/reset_content:
     post:
       tags:
       - Courses
+      operationId: reset_course
       summary: Reset a course
+      description: |-
+        Deletes the current course, and creates a new equivalent course with
+        no content, but all sections and users moved over.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
       responses:
         '200':
-          $ref: '#/components/responses/Course'
-  /courses/{course_id}/effective_due_dates:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/effective_due_dates:
     get:
       tags:
       - Courses
+      operationId: get_effective_due_dates
       summary: Get effective due dates
+      description: |-
+        For each assignment in the course, returns each assigned student's ID
+        and their corresponding due date along with some grading period data.
+        Returns a collection with keys representing assignment IDs and values as a
+        collection containing keys representing student IDs and values representing
+        the student's effective due_at, the grading_period_id of which the due_at falls
+        in, and whether or not the grading period is closed (in_closed_grading_period)
+
+        The list of assignment IDs for which effective student due dates are
+        requested. If not provided, all assignments in the course will be used.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: no description
       responses:
         '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/course_copy:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/permissions:
+    get:
+      tags:
+      - Courses
+      operationId: permissions_courses
+      summary: Permissions
+      description: |-
+        Returns permission information for the calling user in the given course.
+        See also the {api:AccountsController#permissions Account} and
+        {api:GroupsController#permissions Group} counterparts.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: permissions
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: |-
+          List of permissions to check against the authenticated user.
+          Permission names are documented in the {api:RoleOverridesController#manageable_permissions List assignable permissions} endpoint.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/bulk_user_progress:
+    get:
+      tags:
+      - Courses
+      operationId: get_bulk_user_progress
+      summary: Get bulk user progress
+      description: |-
+        Returns progress information for all users enrolled in the given course.
+
+        You must be a user who has permission to view all grades in the course (such as a teacher or administrator).
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{id}/dismiss_migration_limitation_message:
     post:
       tags:
       - Courses
-      summary: Copy course content
+      operationId: remove_quiz_migration_alert
+      summary: Remove quiz migration alert
+      description: |-
+        Remove alert about the limitations of quiz migrations that is displayed
+        to a user in a course
+
+        you must be logged in to use this endpoint
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
       responses:
         '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/course_copy/{id}:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    - in: path
-      name: id
-      required: true
-      schema:
-        type: string
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/restore/{version_id}:
+    post:
+      tags:
+      - Courses
+      operationId: restore_course_syllabus_version
+      summary: Restore course syllabus version
+      description: |-
+        Restore a course's syllabus body to a previously saved version.
+        No other course content is affected.
+
+        Requires the syllabus_versioning feature flag to be enabled on the
+        account, and the caller must have permission to manage course content.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: version_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: |-
+          The version number to restore to. Available version numbers are
+          returned by the Get a single course API when include[]=syllabus_versions
+          is passed.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/course_copy/{id}:
     get:
       tags:
       - Courses
+      operationId: get_course_copy_status
       summary: Get course copy status
+      description: |-
+        DEPRECATED: Please use the {api:ContentMigrationsController#create Content Migrations API}
+
+        Retrieve the status of a course copy
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
       responses:
         '200':
-          $ref: '#/components/responses/Generic'
-  /courses/{course_id}/student_view_student:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
+  /v1/courses/{course_id}/course_copy:
+    post:
       tags:
       - Courses
-      summary: Get student view student
+      operationId: copy_course_content
+      summary: Copy course content
+      description: |-
+        DEPRECATED: Please use the {api:ContentMigrationsController#create Content Migrations API}
+
+        Copies content from one course into another. The default is to copy all course
+        content. You can control specific types to copy by using either the 'except' option
+        or the 'only' option.
+
+        The response is the same as the course copy status endpoint
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: &id006
+              type: object
+              properties:
+                source_course:
+                  type: string
+                  description: ID or SIS-ID of the course to copy the content from
+                except:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - course_settings
+                    - assignments
+                    - external_tools
+                    - files
+                    - topics
+                    - calendar_events
+                    - quizzes
+                    - wiki_pages
+                    - modules
+                    - outcomes
+                  description: |-
+                    A list of the course content types to exclude, all areas not listed will
+                    be copied.
+                only:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - course_settings
+                    - assignments
+                    - external_tools
+                    - files
+                    - topics
+                    - calendar_events
+                    - quizzes
+                    - wiki_pages
+                    - modules
+                    - outcomes
+                  description: |-
+                    A list of the course content types to copy, all areas not listed will not
+                    be copied.
+          application/x-www-form-urlencoded:
+            schema: *id006
       responses:
         '200':
-          $ref: '#/components/responses/User'
-  /courses/{course_id}/bulk_user_progress:
-    parameters:
-    - $ref: '#/components/parameters/CourseId'
-    get:
-      tags:
-      - Courses
-      summary: Get bulk user progress
-      responses:
-        '200':
-          $ref: '#/components/responses/Generic'
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/courses.html
 components:
   schemas:
-    Progress:
+    CourseProgress:
       type: object
       properties:
         requirement_count:
           type: integer
+          example: 10
+          description: total number of requirements from all modules
         requirement_completed_count:
           type: integer
+          example: 1
+          description: total number of requirements the user has completed from all modules
         next_requirement_url:
           type: string
-          nullable: true
+          example: http://localhost/courses/1/modules/items/2
+          description: url to next module item that has an unmet requirement. null if the user has completed the course or the current module does not require sequential progress
         completed_at:
           type: string
           format: date-time
-          nullable: true
-      additionalProperties: true
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        sortable_name:
-          type: string
-        short_name:
-          type: string
-        sis_user_id:
-          type: string
-          nullable: true
-        email:
-          type: string
-          format: email
-          nullable: true
-        login_id:
-          type: string
-      additionalProperties: true
-    CourseCreate:
-      type: object
-      properties:
-        course:
-          type: object
-          properties:
-            name:
-              type: string
-            course_code:
-              type: string
-            start_at:
-              type: string
-              format: date-time
-            end_at:
-              type: string
-              format: date-time
-            is_public:
-              type: boolean
-          additionalProperties: true
-        offer:
-          type: boolean
-        enroll_me:
-          type: boolean
+          example: '2013-06-01T00:00:00-06:00'
+          description: date the course was completed. null if the course has not been completed by this user
     Course:
       type: object
       properties:
         id:
           type: integer
-          format: int64
-        name:
+          example: 370663
+          description: the unique identifier for the course
+        sis_course_id:
           type: string
-        account_id:
-          type: integer
-          format: int64
+          description: the SIS identifier for the course, if defined. This field is only included if the user has permission to view SIS information.
         uuid:
           type: string
+          example: WvAHhY5FINzq5IyRIJybGeiXyFkG3SqHUPb7jZY5
+          description: the UUID of the course
+        integration_id:
+          type: string
+          description: the integration identifier for the course, if defined. This field is only included if the user has permission to view SIS information.
+        sis_import_id:
+          type: integer
+          example: 34
+          description: the unique identifier for the SIS import. This field is only included if the user has permission to manage SIS information.
+        name:
+          type: string
+          example: InstructureCon 2012
+          description: the full name of the course. If the requesting user has set a nickname for the course, the nickname will be shown here.
+        course_code:
+          type: string
+          example: INSTCON12
+          description: the course code
+        original_name:
+          type: string
+          example: InstructureCon-2012-01
+          description: the actual course name. This field is returned only if the requesting user has set a nickname for the course.
+        workflow_state:
+          type: string
+          example: available
+          description: 'the current state of the course, also known as ‘status’.  The value will be one of the following values: ''unpublished'', ''available'', ''completed'', or ''deleted''.  NOTE: When fetching a singular course that has a ''deleted'' workflow state value, an error will be returned with a message of ''The specified resource does not exist.'''
+        account_id:
+          type: integer
+          example: 81259
+          description: the account associated with the course
+        root_account_id:
+          type: integer
+          example: 81259
+          description: the root account associated with the course
+        enrollment_term_id:
+          type: integer
+          example: 34
+          description: the enrollment term associated with the course
+        grading_periods:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: GradingPeriod
+          description: A list of grading periods associated with the course
+        grading_standard_id:
+          type: integer
+          example: 25
+          description: the grading standard associated with the course
+        grade_passback_setting:
+          type: string
+          example: nightly_sync
+          description: the grade_passback_setting set on the course
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-05-01T00:00:00-06:00'
+          description: the date the course was created.
         start_at:
           type: string
           format: date-time
-          nullable: true
+          example: '2012-06-01T00:00:00-06:00'
+          description: the start date for the course, if applicable
         end_at:
           type: string
           format: date-time
-          nullable: true
-        course_code:
+          example: '2012-09-01T00:00:00-06:00'
+          description: the end date for the course, if applicable
+        locale:
           type: string
-        workflow_state:
-          type: string
-          enum:
-          - unpublished
-          - available
-          - completed
-          - deleted
-        enrollment_term_id:
+          example: en
+          description: the course-set locale, if applicable
+        enrollments:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: Enrollment
+          description: A list of enrollments linking the current user to the course. for student enrollments, grading information may be included if include[]=total_scores
+        total_students:
           type: integer
-          nullable: true
-        sis_course_id:
+          example: 32
+          description: 'optional: the total number of active and invited students in the course'
+        calendar:
           type: string
-          nullable: true
-        integration_id:
+          description: course calendar
+        default_view:
           type: string
-          nullable: true
-        public_syllabus:
+          example: feed
+          description: 'the type of page that users will see when they first visit the course - ''feed'': Recent Activity Dashboard - ''wiki'': Wiki Front Page - ''modules'': Course Modules/Sections Page - ''assignments'': Course Assignments List - ''syllabus'': Course Syllabus Page other types may be added in the future'
+        syllabus_body:
+          type: string
+          example: <p>syllabus html goes here</p>
+          description: 'optional: user-generated HTML for the course syllabus'
+        needs_grading_count:
+          type: integer
+          example: 17
+          description: 'optional: the number of submissions needing grading returned only if the current user has grading rights and include[]=needs_grading_count'
+        term:
+          type: string
+          description: 'optional: the enrollment term object for the course returned only if include[]=term'
+        course_progress:
+          type: string
+          description: 'optional: information on progress through the course returned only if include[]=course_progress'
+        apply_assignment_group_weights:
           type: boolean
-        storage_quota_mb:
-          type: integer
+          example: true
+          description: weight final grade based on assignment group percentages
+        permissions:
+          type: object
+          additionalProperties: true
+          example:
+            create_discussion_topic: true
+            create_announcement: true
+          description: 'optional: the permissions the user has for the course. returned only for a single course and include[]=permissions'
         is_public:
           type: boolean
-      additionalProperties: true
-    Generic:
-      type: object
-      additionalProperties: true
-  responses:
-    Course:
-      description: Single course.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Course'
-    User:
-      description: Single user.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/User'
-    UserList:
-      description: List of users.
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
-    CourseList:
-      description: List of courses.
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/Course'
-    Generic:
-      description: Generic JSON object response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Generic'
-    CourseProgress:
-      description: User progress in a course.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Progress'
-  parameters:
-    UserId:
-      in: path
-      name: user_id
-      required: true
-      schema:
-        type: string
-    CourseId:
-      in: path
-      name: course_id
-      required: true
-      schema:
-        type: string
+          example: true
+        is_public_to_auth_users:
+          type: boolean
+          example: true
+        public_syllabus:
+          type: boolean
+          example: true
+        public_syllabus_to_auth:
+          type: boolean
+          example: true
+        public_description:
+          type: string
+          example: Come one, come all to InstructureCon 2012!
+          description: 'optional: the public description of the course'
+        storage_quota_mb:
+          type: integer
+          example: 5
+        storage_quota_used_mb:
+          type: number
+          example: 5
+        hide_final_grades:
+          type: boolean
+          example: false
+        license:
+          type: string
+          example: Creative Commons
+        allow_student_assignment_edits:
+          type: boolean
+          example: false
+        allow_wiki_comments:
+          type: boolean
+          example: false
+        allow_student_forum_attachments:
+          type: boolean
+          example: false
+        open_enrollment:
+          type: boolean
+          example: true
+        self_enrollment:
+          type: boolean
+          example: false
+        restrict_enrollments_to_course_dates:
+          type: boolean
+          example: false
+        course_format:
+          type: string
+          example: online
+        access_restricted_by_date:
+          type: boolean
+          example: false
+          description: 'optional: this will be true if this user is currently prevented from viewing the course because of date restriction settings'
+        time_zone:
+          type: string
+          example: America/Denver
+          description: The course's IANA time zone name.
+        blueprint:
+          type: boolean
+          example: true
+          description: 'optional: whether the course is set as a Blueprint Course (blueprint fields require the Blueprint Courses feature)'
+        blueprint_restrictions:
+          type: object
+          additionalProperties: true
+          example:
+            content: true
+            points: true
+            due_dates: false
+            availability_dates: false
+          description: 'optional: Set of restrictions applied to all locked course objects'
+        blueprint_restrictions_by_object_type:
+          type: object
+          additionalProperties: true
+          example:
+            assignment:
+              content: true
+              points: true
+            wiki_page:
+              content: true
+          description: 'optional: Sets of restrictions differentiated by object type applied to locked course objects'
+        template:
+          type: boolean
+          example: true
+          description: 'optional: whether the course is set as a template (requires the Course Templates feature)'
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
-      description: 'OAuth 2.0 access token. See
-
-        https://canvas.instructure.com/doc/api/file.oauth.html.
-
-        '
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}

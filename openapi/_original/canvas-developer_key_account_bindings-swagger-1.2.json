@@ -1,0 +1,92 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/developer_key_account_bindings",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/accounts/{account_id}/developer_keys/{developer_key_id}/developer_key_account_bindings",
+      "description": "Create a new Developer Key Account Binding. The developer key specified\nin the request URL must be available in the requested account or the\nrequested account's account chain. If the binding already exists for the\nspecified account/key combination it will be updated.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create a Developer Key Account Binding",
+          "notes": "Create a new Developer Key Account Binding. The developer key specified\nin the request URL must be available in the requested account or the\nrequested account's account chain. If the binding already exists for the\nspecified account/key combination it will be updated.",
+          "nickname": "create_developer_key_account_binding",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "developer_key_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "workflow_state",
+              "description": "The workflow state for the binding. Must be one of \"on\", \"off\", or \"allow\".\nDefaults to \"off\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "DeveloperKeyAccountBinding"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "DeveloperKeyAccountBinding": {
+      "id": "DeveloperKeyAccountBinding",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The Canvas ID of the binding",
+          "example": "1",
+          "type": "number"
+        },
+        "account_id": {
+          "description": "The global Canvas ID of the account in the binding",
+          "example": "10000000000001",
+          "type": "number"
+        },
+        "developer_key_id": {
+          "description": "The global Canvas ID of the developer key in the binding",
+          "example": "10000000000008",
+          "type": "number"
+        },
+        "workflow_state": {
+          "description": "The workflow state of the binding. Will be one of 'on', 'off', or 'allow.'",
+          "example": "on",
+          "type": "number"
+        },
+        "account_owns_binding": {
+          "description": "True if the requested context owns the binding",
+          "example": "true",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

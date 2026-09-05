@@ -1,0 +1,480 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/lti_context_controls",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls",
+      "description": "List all LTI ContextControls for the given LTI Registration.\nThese controls are partitioned by LTI Deployment, and have added\ncalculated fields for display in the Canvas UI.\n\nThis endpoint is used to populate the Availability page for an LTI Registration\nand may not be useful for general API Usage. For listing all ContextControls\nfor a given Deployment, see the LTI Deployments - List Controls for Deployment endpoint.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List All Context Controls",
+          "notes": "List all LTI ContextControls for the given LTI Registration.\nThese controls are partitioned by LTI Deployment, and have added\ncalculated fields for display in the Canvas UI.\n\nThis endpoint is used to populate the Availability page for an LTI Registration\nand may not be useful for general API Usage. For listing all ContextControls\nfor a given Deployment, see the LTI Deployments - List Controls for Deployment endpoint.",
+          "nickname": "list_all_context_controls",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "Lti::Deployment"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/{id}",
+      "description": "Display details of the specified LTI ContextControl for the specified LTI registration in this context.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Show LTI Context Control",
+          "notes": "Display details of the specified LTI ContextControl for the specified LTI registration in this context.",
+          "nickname": "show_lti_context_control",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::ContextControl"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{current_account_id}/lti_registrations/{registration_id}/controls",
+      "description": "Create a new LTI ContextControl for the specified LTI registration in this context.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create LTI Context Control",
+          "notes": "Create a new LTI ContextControl for the specified LTI registration in this context.",
+          "nickname": "create_lti_context_control",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "current_account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "description": "The Canvas ID of the Account that owns this. One of account_id or course_id must be present. Can also be a string.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "course_id",
+              "description": "The Canvas ID of the Course that owns this. One of account_id or course_id must be present. Can also be a string.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "deployment_id",
+              "description": "The Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment.\nIf absent, this ContextControl will be associated with the Deployment of this Registration at the Root Account level.\nIf that is not present, this request will fail.",
+              "type": "integer",
+              "format": "int64",
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "available",
+              "description": "The state of this tool in this context. `true` shows the tool in this context and all contexts\nbelow it. `false` disables the tool for this context and all contexts below it. Defaults to true.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "A comment to add the to the change-log entry explaining why the changes were made.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::ContextControl"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/bulk",
+      "description": "Create up to 100 new LTI ContextControls for the specified LTI registration in this context.\nControl parameters are sent as a JSON array of objects, each with the same parameters as the Create LTI Context Control endpoint.\nNote that if a control already exists for the specified context and deployment, it will be updated instead of created.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Bulk Create LTI Context Controls",
+          "notes": "Create up to 100 new LTI ContextControls for the specified LTI registration in this context.\nControl parameters are sent as a JSON array of objects, each with the same parameters as the Create LTI Context Control endpoint.\nNote that if a control already exists for the specified context and deployment, it will be updated instead of created.",
+          "nickname": "bulk_create_lti_context_controls",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "A comment to add the to the change-log entry explaining why the changes were made.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "The Canvas ID of the Account that owns this. One of account_id or course_id must be present. Can also be a string.",
+              "type": "array",
+              "format": "int64",
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "course_id",
+              "description": "The Canvas ID of the Course that owns this. One of account_id or course_id must be present. Can also be a string.",
+              "type": "array",
+              "format": "int64",
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "deployment_id",
+              "description": "The Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment.\nIf absent, this ContextControl will be associated with the Deployment of this Registration at the Root Account level.\nIf that is not present, this request will fail.",
+              "type": "array",
+              "format": "int64",
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "available",
+              "description": "The state of this tool in this context. `true` shows the tool in this context and all contexts\nbelow it. `false` disables the tool for this context and all contexts below it. Defaults to true.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "boolean"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::ContextControl"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/{id}",
+      "description": "Changes the availability of a context control. This endpoint can only be used\nto change the availability of a context control; no other attributes about the\ncontrol (such as which course or account it belongs to) can be changed here.\nTo change those values, the control should be deleted and a new one created\ninstead.\n\nReturns the context control with its new availability value applied.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Modify a Context Control",
+          "notes": "Changes the availability of a context control. This endpoint can only be used\nto change the availability of a context control; no other attributes about the\ncontrol (such as which course or account it belongs to) can be changed here.\nTo change those values, the control should be deleted and a new one created\ninstead.\n\nReturns the context control with its new availability value applied.",
+          "nickname": "modify_context_control",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "available",
+              "description": "the new value for this control's availability",
+              "type": "boolean",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "comment",
+              "description": "A comment to add the to the change-log entry explaining why the changes were made.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::ContextControl"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/{id}",
+      "description": "Deletes a context control. Returns the control that is now deleted.\n\nNote: Deleting the \"primary\" control for a deployment (the control associated with the context\nwhere the deployment is installed) is not allowed and will return an error. This prevents\nsituations where a deployment cannot be managed from the Apps page.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete a Context Control",
+          "notes": "Deletes a context control. Returns the control that is now deleted.\n\nNote: Deleting the \"primary\" control for a deployment (the control associated with the context\nwhere the deployment is installed) is not allowed and will return an error. This prevents\nsituations where a deployment cannot be managed from the Apps page.",
+          "nickname": "delete_context_control",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "registration_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "Lti::ContextControl"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "Lti::ContextControl": {
+      "id": "Lti::ContextControl",
+      "description": "Represent availability of an LTI registration in a specific context",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "the Canvas ID of the Lti::ContextControl object",
+          "example": 2,
+          "type": "integer"
+        },
+        "course_id": {
+          "description": "the Canvas ID of the Course that owns this. one of this or account_id will always be present",
+          "example": 2,
+          "type": "integer"
+        },
+        "account_id": {
+          "description": "the Canvas ID of the Account that owns this. one of this or course_id will always be present",
+          "example": 2,
+          "type": "integer"
+        },
+        "deployment_id": {
+          "description": "the Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment",
+          "example": 2,
+          "type": "integer"
+        },
+        "available": {
+          "description": "The state of this tool in this context. `true` means the tool is available in this context and in all contexts below it.",
+          "example": true,
+          "type": "boolean"
+        },
+        "path": {
+          "description": "A representation of the account hierarchy for the context that owns this object. Used for checking availability during LTI operations.",
+          "example": "a1.a2.c3.",
+          "type": "string"
+        },
+        "display_path": {
+          "description": "For UI display. Names of the accounts in the context's hierarchy. Excludes the root, and the current account if context is an account.",
+          "example": [
+            "Sub Account",
+            "Other Account"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "context_name": {
+          "description": "For UI display. The name of the context this object is associated with",
+          "example": "My Course",
+          "type": "string"
+        },
+        "depth": {
+          "description": "For UI display. The depth of ContextControls for this particular deployment account chain, which can be different from the number of accounts in the chain.",
+          "example": 2,
+          "type": "integer"
+        },
+        "course_count": {
+          "description": "For UI display. The number of courses in this account and all nested subaccounts. 0 when context is a Course.",
+          "example": 402,
+          "type": "integer"
+        },
+        "child_control_count": {
+          "description": "For UI display. The number of controls for accounts below this one, including all nested subaccounts. 0 when context is a Course.",
+          "example": 42,
+          "type": "integer"
+        },
+        "subaccount_count": {
+          "description": "For UI display. The number of subaccounts for this account. Includes all nested subaccounts. 0 when context is a Course.",
+          "example": 42,
+          "type": "integer"
+        },
+        "workflow_state": {
+          "description": "The state of the object",
+          "example": "active",
+          "type": "string",
+          "enum": [
+            "active",
+            "deleted"
+          ]
+        },
+        "created_at": {
+          "description": "Timestamp of the object's creation",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "Timestamp of the object's last update",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "created_by": {
+          "description": "The user that created this object. Not always present.",
+          "example": {
+            "type": "User"
+          },
+          "type": "User",
+          "$ref": "User"
+        },
+        "updated_by": {
+          "description": "The user that last updated this object. Not always present.",
+          "example": {
+            "type": "User"
+          },
+          "type": "User",
+          "$ref": "User"
+        }
+      }
+    }
+  }
+}

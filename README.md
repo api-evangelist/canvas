@@ -159,7 +159,7 @@ Canvas supports Learning Tools Interoperability (LTI 1.1 and LTI 1.3 / Advantage
 - [Status Page](https://status.instructure.com/)
 - [Community](https://community.canvaslms.com/)
 - [Privacy Policy](https://www.instructure.com/policies/privacy)
-- [Terms of Service](https://www.instructure.com/policies/product-acceptable-use)
+- [Terms of Service](https://www.instructure.com/policies/acceptable-use)
 - [Integrations](https://www.instructure.com/partners)
 
 ## Maintainers

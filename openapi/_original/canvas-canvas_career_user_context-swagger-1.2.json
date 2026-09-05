@@ -1,0 +1,103 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/canvas_career_user_context",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/career/user_context",
+      "description": "Returns consolidated user context data for Journey, combining account\npermissions, career experience info, enrollment types, admin roles,\nand site admin status in a single response.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get career user context",
+          "notes": "Returns consolidated user context data for Journey, combining account\npermissions, career experience info, enrollment types, admin roles,\nand site admin status in a single response.",
+          "nickname": "get_career_user_context",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "description": "Canvas account ID for permission and subaccount admin checks. Defaults\nto the domain root account (\"self\"). Other fields (experience,\nenrollment_types, admin_roles, is_site_admin) always resolve against\nthe domain root.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "CareerUserContext"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "CareerUserContext": {
+      "id": "CareerUserContext",
+      "description": "",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "permissions": {
+          "description": "Account permission checks for the authenticated user.",
+          "type": "object"
+        },
+        "experience": {
+          "description": "Career experience summary including current app and available apps.",
+          "type": "object",
+          "properties": {
+            "current_app": {
+              "type": "string"
+            },
+            "available_apps": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "enrollment_types": {
+          "description": "Distinct enrollment types for the user (active, invited, and pending).",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "admin_roles": {
+          "description": "Admin roles on the domain root account.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "is_site_admin": {
+          "description": "Whether the user is a site admin.",
+          "type": "boolean"
+        },
+        "is_subaccount_admin": {
+          "description": "Whether the user admins a subaccount under the domain root. When account_id is provided, true only if the user can admin that specific account.",
+          "type": "boolean"
+        },
+        "is_root_account_admin": {
+          "description": "Whether the user is an admin on the domain root account or a site admin.",
+          "type": "boolean"
+        },
+        "is_root_account": {
+          "description": "Whether the resolved account (account_id, or the domain root when omitted) is itself a root account rather than a sub-account.",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

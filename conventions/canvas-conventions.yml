@@ -1,0 +1,170 @@
+generated: '2026-09-05'
+method: searched
+source:
+- https://developerdocs.instructure.com/services/canvas/basics/file.pagination
+- https://developerdocs.instructure.com/services/canvas/basics/file.throttling
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+- https://developerdocs.instructure.com/services/canvas/basics/file.masquerading
+- https://developerdocs.instructure.com/services/canvas/basics/file.object_ids
+- https://developerdocs.instructure.com/services/canvas/basics/file.compound_documents
+- https://developerdocs.instructure.com/services/canvas/basics/file.endpoint_attributes
+- https://developerdocs.instructure.com/services/canvas/basics/file.file_uploads
+- openapi/canvas-lms-openapi.yml
+api: Canvas LMS REST API
+authentication:
+  style: OAuth2 bearer token in the Authorization header
+  header: 'Authorization: Bearer <token>'
+  token_lifetime: 1 hour for developer keys issued after Oct 2015
+  refresh: Refresh tokens; POST /login/oauth2/token with grant_type=refresh_token
+  alternative: Manually generated personal access token (testing only; multi-user apps MUST use OAuth per the Canvas
+    API Policy)
+  unauthorized_signal: 401 with a WWW-Authenticate header distinguishes an expired/invalid token from a permissions
+    denial
+  docs: https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+  see: authentication/canvas-authentication.yml
+versioning:
+  style: uri-path
+  current: v1
+  base: https://<canvas-host>/api/v1
+  note: Canvas ships continuously and versions the API path only. Breaking changes are announced in the Community
+    change log rather than by a new path segment.
+  see: lifecycle/canvas-lifecycle.yml
+pagination:
+  style: link-header
+  spec: RFC 8288 / W3C Link header
+  default_page_size: 10
+  params:
+  - per_page
+  response:
+    header: Link
+    rels:
+    - current
+    - next
+    - prev
+    - first
+    - last
+  rules:
+  - Link URLs are opaque and absolute; do not construct them.
+  - rel="prev" is omitted on the first page; rel="last" may be omitted when the total is expensive to compute.
+  - Parse the Link header case-insensitively (RFC 9110 5.1).
+  - If authenticating with an access_token query parameter it is stripped from returned links and must be re-appended.
+  max_page_size: unspecified — always follow Link rather than assuming a ceiling
+  docs: https://developerdocs.instructure.com/services/canvas/basics/file.pagination
+idempotency:
+  supported: false
+  coverage: none
+  header: null
+  scope: []
+  note: Canvas documents no idempotency key, no request-replay protection, and no dedupe window anywhere in the
+    REST API. 566 of 1,117 operations are mutating and none of them accept an idempotency token. A retried POST
+    creates a second object. Agents must guard replay client-side (read-before-write, or a natural key such as sis_course_id
+    / sis_user_id via the SIS-ID addressing scheme below).
+  partial_mitigation: SIS-ID addressing (sis_course_id:, sis_user_id:, sis_section_id:) gives many resources a caller-controlled
+    natural key, which makes create-or-find idempotent in practice for SIS-provisioned objects only.
+  evidence: No Idempotency-Key parameter exists in any of the 144 first-party Swagger 1.2 resource documents.
+reversibility:
+  grade: documented
+  note: Canvas ships real reversal operations across the mutating surface, but publishes NO time window for any
+    of them. Nothing in the docs states how long a deleted object stays restorable. Graded `documented`, not `verified`,
+    for exactly that reason — do not infer a window.
+  surfaces:
+  - write: create_new_course / update_course_settings
+    reverse: delete_conclude_course
+    operationId: delete_conclude_course
+    semantics: Takes event=conclude (soft, reversible by unconcluding) or event=delete (soft-delete).
+    window: null
+  - write: delete a user from a root account
+    reverse: restore_deleted_user_from_root_account
+    operationId: restore_deleted_user_from_root_account
+    window: null
+  - write: delete an authentication provider
+    reverse: restore_deleted_authentication_provider
+    operationId: restore_deleted_authentication_provider
+    window: null
+  - write: delete an ePortfolio
+    reverse: restore_deleted_eportfolio
+    operationId: restore_deleted_eportfolio
+    window: null
+  - write: edit a wiki page
+    reverse: revert_to_revision_courses / revert_to_revision_groups
+    operationId: revert_to_revision_courses
+    semantics: Page revision history; revert to a prior revision id.
+    window: null
+  - write: edit a course syllabus
+    reverse: restore_course_syllabus_version
+    operationId: restore_course_syllabus_version
+    window: null
+  - write: a long-running job (course copy, content migration, SIS import)
+    reverse: cancel_progress / abort_sis_import
+    operationId: cancel_progress
+    semantics: Cancel while the Progress object is queued or running.
+    window: while the job is not yet completed
+  - write: enrol a user
+    reverse: conclude_deactivate_or_delete_enrollment
+    operationId: conclude_deactivate_or_delete_enrollment
+    semantics: task=conclude | delete | deactivate | inactivate — deactivate is reversible by re-enrolling.
+    window: null
+  irreversible:
+  - reset_course — replaces the course with a blank shell and returns a NEW course id; the old content is not recoverable
+    through the API.
+  - delete_access_token — the token value cannot be retrieved again once issued.
+dry_run_mode:
+  supported: partial
+  note: 'No global dry-run. SIS Imports are the one surface with a rehearsal mode: an import can be run and its
+    diff/errors inspected via the SIS Import Errors resource before workflow states are committed, and `restore_workflow_states_of_sis_imported_items`
+    rolls one back.'
+field_expansion:
+  style: include[] query parameter
+  note: Most list and show operations accept an `include[]` array naming extra associations to embed (e.g. include[]=term,
+    include[]=total_scores, include[]=needs_grading_count). There is no sparse-fieldset parameter — you cannot ask
+    for fewer fields, only for more. Use GraphQL when over-fetching matters.
+  compound_documents:
+    docs: https://developerdocs.instructure.com/services/canvas/basics/file.compound_documents
+    note: 'Some endpoints return a compound document: a top-level object plus sibling arrays of linked objects,
+      with `links` sub-objects carrying the ids.'
+identifiers:
+  style: 64-bit integers, safe to treat as opaque strings
+  sis_addressing: 'Most id path segments accept a qualified SIS id instead of a Canvas id: sis_course_id:, sis_user_id:,
+    sis_section_id:, sis_term_id:, sis_account_id:, sis_login_id:, sis_integration_id:, lti_context_id:, lti_user_id:,
+    hex: for values with awkward characters.'
+  docs: https://developerdocs.instructure.com/services/canvas/basics/file.object_ids
+request_body:
+  formats:
+  - application/x-www-form-urlencoded
+  - application/json
+  nesting: 'Bracket syntax for nested attributes: course[name], assignment[submission_types][].'
+  note: The first-party Swagger declares form parameters; Canvas also accepts a JSON body with the same names.
+acting_as_another_user:
+  param: as_user_id
+  style: query parameter on any request
+  requires: the Become another user permission on the account
+  docs: https://developerdocs.instructure.com/services/canvas/basics/file.masquerading
+html_link_annotations:
+  attributes:
+  - data-api-endpoint
+  - data-api-returntype
+  note: HTML fields returned by Canvas annotate internal links with the API URL and return type of the linked object.
+  docs: https://developerdocs.instructure.com/services/canvas/basics/file.endpoint_attributes
+file_uploads:
+  style: 'three-step: POST to get an upload token + target, POST the file to that target, follow the redirect to
+    confirm'
+  docs: https://developerdocs.instructure.com/services/canvas/basics/file.file_uploads
+rate_limit_signaling:
+  headers:
+  - X-Request-Cost
+  - X-Rate-Limit-Remaining
+  status: 429
+  see: rate-limits/canvas-rate-limits.yml
+error_envelope:
+  shape: '{"errors": [...]}'
+  see: errors/canvas-problem-types.yml
+  note: Canvas does not use RFC 9457 application/problem+json.
+timestamps:
+  format: ISO 8601 / RFC 3339
+  timezone: UTC in responses
+cross_links:
+  errors: errors/canvas-problem-types.yml
+  lifecycle: lifecycle/canvas-lifecycle.yml
+  authentication: authentication/canvas-authentication.yml
+  rate_limits: rate-limits/canvas-rate-limits.yml
+  scopes: scopes/canvas-scopes.yml

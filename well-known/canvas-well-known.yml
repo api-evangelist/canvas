@@ -1,0 +1,225 @@
+generated: '2026-09-05'
+method: probed
+source: live probe of 6 hosts x 15 named paths, 2026-09-05
+summary:
+  hosts_probed: 6
+  paths_probed: 15
+  documents_found: 1
+  found:
+  - /.well-known/security.txt on instructure.com and www.instructure.com (RFC 9116, 540 bytes)
+  absent:
+  - openid-configuration
+  - oauth-authorization-server
+  - oauth-protected-resource
+  - api-catalog
+  - ai-plugin.json
+  - ucp.json
+  - acp.json
+  - aauth-resource.json
+  - apis.json (/.well-known/, / and /apis.yml)
+  - agent-card.json
+  - agent.json
+  note: Canvas is multi-tenant and self-hostable, so /.well-known/ on canvas.instructure.com only ever describes
+    Instructure's own Free-for-Teacher instance, not the product. Instructure publishes an RFC 9116 security.txt
+    on its corporate domain and nothing else on this surface.
+hosts:
+- host: https://www.instructure.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: canvas-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control: passed
+  hit_count: 1
+- host: https://instructure.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: canvas-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control: passed
+  hit_count: 1
+- host: https://canvas.instructure.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 503
+  - path: /.well-known/openid-configuration
+    status: 503
+  - path: /.well-known/oauth-authorization-server
+    status: 503
+  - path: /.well-known/oauth-protected-resource
+    status: 503
+  - path: /.well-known/api-catalog
+    status: 503
+  - path: /.well-known/ai-plugin.json
+    status: 503
+  - path: /.well-known/ucp.json
+    status: 503
+  - path: /.well-known/acp.json
+    status: 503
+  - path: /.well-known/aauth-resource.json
+    status: 503
+  - path: /.well-known/apis.json
+    status: 503
+  - path: /apis.json
+    status: 503
+  - path: /apis.yml
+    status: 503
+  - path: /.well-known/agent-card.json
+    status: 503
+  - path: /.well-known/agent.json
+    status: 503
+  path_echo_control: passed
+  hit_count: 0
+  note: Every path returned HTTP 503 behind an Instructure "Free-for-Teacher Platform Restoration" maintenance page
+    on 2026-09-05. The host is NOT serving these documents as 404s — it is not serving anything except /doc/api/,
+    which returned 200. Re-probe when the instance is restored.
+- host: https://developerdocs.instructure.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control: passed
+  hit_count: 0
+- host: https://community.canvaslms.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control: passed
+  hit_count: 0
+- host: https://status.instructure.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: canvas-statuspage-security.txt
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control: passed
+  hit_count: 1
+  note: The security.txt served here is Atlassian Statuspage's, not Instructure's — the contacts and policy point
+    at atlassian.com. Saved for the record; it is NOT evidence of an Instructure surface.

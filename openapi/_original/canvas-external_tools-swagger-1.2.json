@@ -1,0 +1,1973 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/external_tools",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/courses/{course_id}/external_tools",
+      "description": "Returns the paginated list of external tools for the current context.\nSee the get request docs for a single tool for a list of properties on an external tool.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List external tools",
+          "notes": "Returns the paginated list of external tools for the current context.\nSee the get request docs for a single tool for a list of properties on an external tool.",
+          "nickname": "list_external_tools_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "search_term",
+              "description": "The partial name of the tools to match and return.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "selectable",
+              "description": "If true, then only tools that are meant to be selectable are returned.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_parents",
+              "description": "If true, then include tools installed in all accounts above the current context",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "placement",
+              "description": "The placement type to filter by.\n\nReturn all tools at the current context as well as all tools from the parent, and filter the tools list to only those with a placement of 'editor_button'",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "ContextExternalTool"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools",
+      "description": "Returns the paginated list of external tools for the current context.\nSee the get request docs for a single tool for a list of properties on an external tool.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List external tools",
+          "notes": "Returns the paginated list of external tools for the current context.\nSee the get request docs for a single tool for a list of properties on an external tool.",
+          "nickname": "list_external_tools_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "search_term",
+              "description": "The partial name of the tools to match and return.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "selectable",
+              "description": "If true, then only tools that are meant to be selectable are returned.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_parents",
+              "description": "If true, then include tools installed in all accounts above the current context",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "placement",
+              "description": "The placement type to filter by.\n\nReturn all tools at the current context as well as all tools from the parent, and filter the tools list to only those with a placement of 'editor_button'",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "ContextExternalTool"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/groups/{group_id}/external_tools",
+      "description": "Returns the paginated list of external tools for the current context.\nSee the get request docs for a single tool for a list of properties on an external tool.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "List external tools",
+          "notes": "Returns the paginated list of external tools for the current context.\nSee the get request docs for a single tool for a list of properties on an external tool.",
+          "nickname": "list_external_tools_groups",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "group_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "search_term",
+              "description": "The partial name of the tools to match and return.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "selectable",
+              "description": "If true, then only tools that are meant to be selectable are returned.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "include_parents",
+              "description": "If true, then include tools installed in all accounts above the current context",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "placement",
+              "description": "The placement type to filter by.\n\nReturn all tools at the current context as well as all tools from the parent, and filter the tools list to only those with a placement of 'editor_button'",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "array",
+          "items": {
+            "$ref": "ContextExternalTool"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/external_tools/sessionless_launch",
+      "description": "Returns a sessionless launch url for an external tool.\nPrefers the resource_link_lookup_uuid, but defaults to the other passed\n  parameters id, url, and launch_type\n\nNOTE: Either the resource_link_lookup_uuid, id, or url must be provided unless launch_type is assessment or module_item.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get a sessionless launch url for an external tool.",
+          "notes": "Returns a sessionless launch url for an external tool.\nPrefers the resource_link_lookup_uuid, but defaults to the other passed\n  parameters id, url, and launch_type\n\nNOTE: Either the resource_link_lookup_uuid, id, or url must be provided unless launch_type is assessment or module_item.",
+          "nickname": "get_sessionless_launch_url_for_external_tool_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "id",
+              "description": "The external id of the tool to launch.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "url",
+              "description": "The LTI launch url for the external tool.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "assignment_id",
+              "description": "The assignment id for an assignment launch. Required if launch_type is set to \"assessment\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "module_item_id",
+              "description": "The assignment id for a module item launch. Required if launch_type is set to \"module_item\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "launch_type",
+              "description": "The type of launch to perform on the external tool. Placement names (eg. \"course_navigation\")\ncan also be specified to use the custom launch url for that placement; if done, the tool id\nmust be provided.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "assessment",
+                "module_item"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "resource_link_lookup_uuid",
+              "description": "The identifier to lookup a resource link.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [
+            {
+              "name": "id",
+              "description": "The id for the external tool to be launched.",
+              "deprecated": false
+            },
+            {
+              "name": "name",
+              "description": "The name of the external tool to be launched.",
+              "deprecated": false
+            },
+            {
+              "name": "url",
+              "description": "The url to load to launch the external tool for the user.",
+              "deprecated": false
+            }
+          ],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/sessionless_launch",
+      "description": "Returns a sessionless launch url for an external tool.\nPrefers the resource_link_lookup_uuid, but defaults to the other passed\n  parameters id, url, and launch_type\n\nNOTE: Either the resource_link_lookup_uuid, id, or url must be provided unless launch_type is assessment or module_item.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get a sessionless launch url for an external tool.",
+          "notes": "Returns a sessionless launch url for an external tool.\nPrefers the resource_link_lookup_uuid, but defaults to the other passed\n  parameters id, url, and launch_type\n\nNOTE: Either the resource_link_lookup_uuid, id, or url must be provided unless launch_type is assessment or module_item.",
+          "nickname": "get_sessionless_launch_url_for_external_tool_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "id",
+              "description": "The external id of the tool to launch.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "url",
+              "description": "The LTI launch url for the external tool.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "assignment_id",
+              "description": "The assignment id for an assignment launch. Required if launch_type is set to \"assessment\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "module_item_id",
+              "description": "The assignment id for a module item launch. Required if launch_type is set to \"module_item\".",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "query",
+              "name": "launch_type",
+              "description": "The type of launch to perform on the external tool. Placement names (eg. \"course_navigation\")\ncan also be specified to use the custom launch url for that placement; if done, the tool id\nmust be provided.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "assessment",
+                "module_item"
+              ]
+            },
+            {
+              "paramType": "query",
+              "name": "resource_link_lookup_uuid",
+              "description": "The identifier to lookup a resource link.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [
+            {
+              "name": "id",
+              "description": "The id for the external tool to be launched.",
+              "deprecated": false
+            },
+            {
+              "name": "name",
+              "description": "The name of the external tool to be launched.",
+              "deprecated": false
+            },
+            {
+              "name": "url",
+              "description": "The url to load to launch the external tool for the user.",
+              "deprecated": false
+            }
+          ],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/external_tools/{external_tool_id}",
+      "description": "Returns the specified external tool.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get a single external tool",
+          "notes": "Returns the specified external tool.",
+          "nickname": "get_single_external_tool_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/{external_tool_id}",
+      "description": "Returns the specified external tool.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get a single external tool",
+          "notes": "Returns the specified external tool.",
+          "nickname": "get_single_external_tool_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/external_tools",
+      "description": "Create an external tool in the specified course/account.\nThe created tool will be returned, see the \"show\" endpoint for an example.\nIf a client ID is supplied canvas will attempt to create a context external\ntool using the LTI 1.3 standard.\n\nSee the <a href=\"file.lti_dev_key_config.html#placements-params\">Placements Documentation</a> for more information on what\nplacements are available, the possible fields, and their accepted values.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an external tool",
+          "notes": "Create an external tool in the specified course/account.\nThe created tool will be returned, see the \"show\" endpoint for an example.\nIf a client ID is supplied canvas will attempt to create a context external\ntool using the LTI 1.3 standard.\n\nSee the <a href=\"file.lti_dev_key_config.html#placements-params\">Placements Documentation</a> for more information on what\nplacements are available, the possible fields, and their accepted values.",
+          "nickname": "create_external_tool_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "client_id",
+              "description": "The client id is attached to the developer key.\nIf supplied all other parameters are unnecessary and will be ignored",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "description": "The name of the tool",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "privacy_level",
+              "description": "How much user information to send to the external tool.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "anonymous",
+                "name_only",
+                "email_only",
+                "public"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "consumer_key",
+              "description": "The consumer key for the external tool",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "shared_secret",
+              "description": "The shared secret with the external tool",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "A description of the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "url",
+              "description": "The url to match links against. Either \"url\" or \"domain\" should be set,\nnot both.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "domain",
+              "description": "The domain to match links against. Either \"url\" or \"domain\" should be\nset, not both.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "icon_url",
+              "description": "The url of the icon to show for this tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "text",
+              "description": "The default text to show for this tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "custom_fields[field_name]",
+              "description": "Custom fields that will be sent to the tool consumer; can be used\nmultiple times",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_rce_favorite",
+              "description": "(Deprecated in favor of {api:ExternalToolsController#mark_rce_favorite Mark tool to RCE Favorites} and\n{api:ExternalToolsController#unmark_rce_favorite Unmark tool from RCE Favorites})\nWhether this tool should appear in a preferred location in the RCE.\nThis only applies to tools in root account contexts that have an editor\nbutton placement.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "<placement_name>[<placement_configuration_key>]",
+              "description": "Set the <placement_configuration_key> value for a specific placement.",
+              "type": "variable",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "config_type",
+              "description": "Configuration can be passed in as Common Cartridge XML instead of using query\nparameters. If this value is \"by_url\" or \"by_xml\" then an XML\nconfiguration will be expected in either the \"config_xml\" or \"config_url\"\nparameter. Note that the name parameter overrides the tool name provided\nin the XML.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "by_url",
+                "by_xml"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "config_xml",
+              "description": "XML tool configuration, as specified in the Common Cartridge XML specification. This is\nrequired if \"config_type\" is set to \"by_xml\"",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "config_url",
+              "description": "URL where the server can retrieve an XML tool configuration, as specified\nin the Common Cartridge XML specification. This is required if \"config_type\" is set to\n\"by_url\"",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "not_selectable",
+              "description": "Default: false. If set to true, and if resource_selection is set to false,\nthe tool won't show up in the external tool\nselection UI in modules and assignments",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "oauth_compliant",
+              "description": "Default: false, if set to true LTI query params will not be copied to the\npost body.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "unified_tool_id",
+              "description": "The unique identifier for the tool in LearnPlatform",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools",
+      "description": "Create an external tool in the specified course/account.\nThe created tool will be returned, see the \"show\" endpoint for an example.\nIf a client ID is supplied canvas will attempt to create a context external\ntool using the LTI 1.3 standard.\n\nSee the <a href=\"file.lti_dev_key_config.html#placements-params\">Placements Documentation</a> for more information on what\nplacements are available, the possible fields, and their accepted values.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Create an external tool",
+          "notes": "Create an external tool in the specified course/account.\nThe created tool will be returned, see the \"show\" endpoint for an example.\nIf a client ID is supplied canvas will attempt to create a context external\ntool using the LTI 1.3 standard.\n\nSee the <a href=\"file.lti_dev_key_config.html#placements-params\">Placements Documentation</a> for more information on what\nplacements are available, the possible fields, and their accepted values.",
+          "nickname": "create_external_tool_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "client_id",
+              "description": "The client id is attached to the developer key.\nIf supplied all other parameters are unnecessary and will be ignored",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "description": "The name of the tool",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "privacy_level",
+              "description": "How much user information to send to the external tool.",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "enum": [
+                "anonymous",
+                "name_only",
+                "email_only",
+                "public"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "consumer_key",
+              "description": "The consumer key for the external tool",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "shared_secret",
+              "description": "The shared secret with the external tool",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "description": "A description of the tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "url",
+              "description": "The url to match links against. Either \"url\" or \"domain\" should be set,\nnot both.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "domain",
+              "description": "The domain to match links against. Either \"url\" or \"domain\" should be\nset, not both.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "icon_url",
+              "description": "The url of the icon to show for this tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "text",
+              "description": "The default text to show for this tool",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "custom_fields[field_name]",
+              "description": "Custom fields that will be sent to the tool consumer; can be used\nmultiple times",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_rce_favorite",
+              "description": "(Deprecated in favor of {api:ExternalToolsController#mark_rce_favorite Mark tool to RCE Favorites} and\n{api:ExternalToolsController#unmark_rce_favorite Unmark tool from RCE Favorites})\nWhether this tool should appear in a preferred location in the RCE.\nThis only applies to tools in root account contexts that have an editor\nbutton placement.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "<placement_name>[<placement_configuration_key>]",
+              "description": "Set the <placement_configuration_key> value for a specific placement.",
+              "type": "variable",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "config_type",
+              "description": "Configuration can be passed in as Common Cartridge XML instead of using query\nparameters. If this value is \"by_url\" or \"by_xml\" then an XML\nconfiguration will be expected in either the \"config_xml\" or \"config_url\"\nparameter. Note that the name parameter overrides the tool name provided\nin the XML.",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "enum": [
+                "by_url",
+                "by_xml"
+              ]
+            },
+            {
+              "paramType": "form",
+              "name": "config_xml",
+              "description": "XML tool configuration, as specified in the Common Cartridge XML specification. This is\nrequired if \"config_type\" is set to \"by_xml\"",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "config_url",
+              "description": "URL where the server can retrieve an XML tool configuration, as specified\nin the Common Cartridge XML specification. This is required if \"config_type\" is set to\n\"by_url\"",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "not_selectable",
+              "description": "Default: false. If set to true, and if resource_selection is set to false,\nthe tool won't show up in the external tool\nselection UI in modules and assignments",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "oauth_compliant",
+              "description": "Default: false, if set to true LTI query params will not be copied to the\npost body.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            },
+            {
+              "paramType": "form",
+              "name": "unified_tool_id",
+              "description": "The unique identifier for the tool in LearnPlatform",
+              "type": "string",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/external_tools/{external_tool_id}",
+      "description": "Update the specified external tool. Uses same parameters as create. Returns the updated tool.\n\nNOTE: Any updates made to LTI 1.3 tools with this API will be overridden if any changes are\nmade to the tool's associated LTI Registration/Developer Key configuration. In almost all cases,\nchanges should be made to the tool's associated LTI Registration configuration, not individual tools.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Edit an external tool",
+          "notes": "Update the specified external tool. Uses same parameters as create. Returns the updated tool.\n\nNOTE: Any updates made to LTI 1.3 tools with this API will be overridden if any changes are\nmade to the tool's associated LTI Registration/Developer Key configuration. In almost all cases,\nchanges should be made to the tool's associated LTI Registration configuration, not individual tools.",
+          "nickname": "edit_external_tool_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/{external_tool_id}",
+      "description": "Update the specified external tool. Uses same parameters as create. Returns the updated tool.\n\nNOTE: Any updates made to LTI 1.3 tools with this API will be overridden if any changes are\nmade to the tool's associated LTI Registration/Developer Key configuration. In almost all cases,\nchanges should be made to the tool's associated LTI Registration configuration, not individual tools.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Edit an external tool",
+          "notes": "Update the specified external tool. Uses same parameters as create. Returns the updated tool.\n\nNOTE: Any updates made to LTI 1.3 tools with this API will be overridden if any changes are\nmade to the tool's associated LTI Registration/Developer Key configuration. In almost all cases,\nchanges should be made to the tool's associated LTI Registration configuration, not individual tools.",
+          "nickname": "edit_external_tool_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/external_tools/{external_tool_id}",
+      "description": "Remove the specified external tool",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete an external tool",
+          "notes": "Remove the specified external tool",
+          "nickname": "delete_external_tool_courses",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/{external_tool_id}",
+      "description": "Remove the specified external tool",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Delete an external tool",
+          "notes": "Remove the specified external tool",
+          "nickname": "delete_external_tool_accounts",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "external_tool_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "ContextExternalTool"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/rce_favorites/{id}",
+      "description": "Mark the specified editor_button external tool as a favorite in the RCE editor\nfor courses in the given account and its subaccounts (if the subaccounts\nhaven't set their own RCE Favorites). This places the tool in a preferred location\nin the RCE. Cannot mark more than 2 tools as RCE Favorites.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Mark tool as RCE Favorite",
+          "notes": "Mark the specified editor_button external tool as a favorite in the RCE editor\nfor courses in the given account and its subaccounts (if the subaccounts\nhaven't set their own RCE Favorites). This places the tool in a preferred location\nin the RCE. Cannot mark more than 2 tools as RCE Favorites.",
+          "nickname": "mark_tool_as_rce_favorite",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/rce_favorites/{id}",
+      "description": "Unmark the specified external tool as a favorite in the RCE editor\nfor the given account. The tool will remain available but will no longer\nappear in the preferred favorites location.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Unmark tool as RCE Favorite",
+          "notes": "Unmark the specified external tool as a favorite in the RCE editor\nfor the given account. The tool will remain available but will no longer\nappear in the preferred favorites location.",
+          "nickname": "unmark_tool_as_rce_favorite",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/top_nav_favorites/{id}",
+      "description": "Adds a dedicated button in Top Navigation for the specified tool for the given account.\nCannot set more than 2 top_navigation Favorites.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Add tool to Top Navigation Favorites",
+          "notes": "Adds a dedicated button in Top Navigation for the specified tool for the given account.\nCannot set more than 2 top_navigation Favorites.",
+          "nickname": "add_tool_to_top_navigation_favorites",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/accounts/{account_id}/external_tools/top_nav_favorites/{id}",
+      "description": "Removes the dedicated button in Top Navigation for the specified tool for the given account.",
+      "operations": [
+        {
+          "method": "DELETE",
+          "summary": "Remove tool from Top Navigation Favorites",
+          "notes": "Removes the dedicated button in Top Navigation for the specified tool for the given account.",
+          "nickname": "remove_tool_from_top_navigation_favorites",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/external_tools/visible_course_nav_tools",
+      "description": "Get a list of external tools with the course_navigation placement that have not been hidden in\ncourse settings and whose visibility settings apply to the requesting user. These tools are the\nsame that appear in the course navigation.\n\nThe response format is the same as for List external tools, but with additional context_id and\ncontext_name fields on each element in the array.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get visible course navigation tools",
+          "notes": "Get a list of external tools with the course_navigation placement that have not been hidden in\ncourse settings and whose visibility settings apply to the requesting user. These tools are the\nsame that appear in the course navigation.\n\nThe response format is the same as for List external tools, but with additional context_id and\ncontext_name fields on each element in the array.",
+          "nickname": "get_visible_course_navigation_tools",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "context_codes",
+              "description": "List of context_codes to retrieve visible course nav tools for (for example, +course_123+). Only\ncourses are presently supported.",
+              "type": "array",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "response_fields": [
+            {
+              "name": "context_id",
+              "description": "The unique identifier of the associated context",
+              "deprecated": false
+            },
+            {
+              "name": "context_name",
+              "description": "The name of the associated context",
+              "deprecated": false
+            }
+          ],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    },
+    {
+      "path": "/v1/courses/{course_id}/external_tools/visible_course_nav_tools",
+      "description": "Get a list of external tools with the course_navigation placement that have not been hidden in\ncourse settings and whose visibility settings apply to the requesting user. These tools are the\nsame that appear in the course navigation.\n\nThe response format is the same as Get visible course navigation tools.",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get visible course navigation tools for a single course",
+          "notes": "Get a list of external tools with the course_navigation placement that have not been hidden in\ncourse settings and whose visibility settings apply to the requesting user. These tools are the\nsame that appear in the course navigation.\n\nThe response format is the same as Get visible course navigation tools.",
+          "nickname": "get_visible_course_navigation_tools_for_single_course",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "course_id",
+              "description": "ID",
+              "type": "string",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "void"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "ContextExternalTool": {
+      "id": "ContextExternalTool",
+      "description": "An external tool configured for a specific context",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The unique identifier for the external tool",
+          "example": 37,
+          "type": "integer"
+        },
+        "name": {
+          "description": "The name of the external tool",
+          "example": "Basic 1.1 tool",
+          "type": "string"
+        },
+        "description": {
+          "description": "A description of the external tool",
+          "example": "Basic LTI 1.1 Tool",
+          "type": "string"
+        },
+        "url": {
+          "description": "The launch URL for the external tool",
+          "example": "http://example.com/launch",
+          "type": "string"
+        },
+        "domain": {
+          "description": "The domain to match links against. Note that this doesn't contain the protocol.",
+          "example": "example.com",
+          "type": "string"
+        },
+        "consumer_key": {
+          "description": "The consumer key used by the tool (The associated shared secret is not returned)",
+          "example": "key",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "Timestamp of the tool's creation",
+          "example": "2037-07-21T13:29:31Z",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "Timestamp of the tool's last update",
+          "example": "2037-07-28T19:38:31Z",
+          "type": "string"
+        },
+        "privacy_level": {
+          "description": "How much user information to send to the external tool",
+          "example": "anonymous",
+          "type": "string",
+          "enum": [
+            "anonymous",
+            "name_only",
+            "email_only",
+            "public"
+          ]
+        },
+        "custom_fields": {
+          "description": "Custom fields that will be sent to the tool consumer",
+          "example": {
+            "key": "value"
+          },
+          "type": "object"
+        },
+        "workflow_state": {
+          "description": "The current state of the external tool",
+          "example": "public",
+          "type": "string",
+          "enum": [
+            "public",
+            "anonymous",
+            "deleted"
+          ]
+        },
+        "is_rce_favorite": {
+          "description": "Boolean determining whether this tool should be in a preferred location in the RCE. Only present if the tool can be an RCE favorite.",
+          "example": false,
+          "type": "boolean"
+        },
+        "is_top_nav_favorite": {
+          "description": "Boolean determining whether this tool should have a dedicated button in Top Navigation. Only present if the tool can be a top nav favorite.",
+          "example": false,
+          "type": "boolean"
+        },
+        "selection_width": {
+          "description": "The pixel width of the iFrame that the tool will be rendered in",
+          "example": 500,
+          "type": "integer"
+        },
+        "selection_height": {
+          "description": "The pixel height of the iFrame that the tool will be rendered in",
+          "example": 500,
+          "type": "integer"
+        },
+        "icon_url": {
+          "description": "The URL for the tool icon",
+          "example": "https://example.com/icon.png",
+          "type": "string"
+        },
+        "not_selectable": {
+          "description": "Whether the tool is not selectable from assignment and modules",
+          "example": false,
+          "type": "boolean"
+        },
+        "version": {
+          "description": "The LTI version of the tool",
+          "example": "1.1",
+          "type": "string",
+          "enum": [
+            "1.1",
+            "1.3"
+          ]
+        },
+        "unified_tool_id": {
+          "description": "The unique identifier for the tool in LearnPlatform",
+          "example": null,
+          "type": "string"
+        },
+        "developer_key_id": {
+          "description": "The developer key id associated with this tool. Only present for LTI 1.3 tools.",
+          "example": 123,
+          "type": "integer"
+        },
+        "lti_registration_id": {
+          "description": "The LTI registration id associated with this tool. Only present for LTI 1.3 tools.",
+          "example": 456,
+          "type": "integer"
+        },
+        "deployment_id": {
+          "description": "The unique identifier for the deployment of the tool",
+          "example": "37:b82229c6e10bcb87beb1f1b287faee560ddc3109",
+          "type": "string"
+        },
+        "allow_membership_service_access": {
+          "description": "Whether the tool can access the membership service. Only present if the feature is enabled.",
+          "example": false,
+          "type": "boolean"
+        },
+        "prefer_sis_email": {
+          "description": "Whether to send the SIS email address in launches",
+          "example": false,
+          "type": "boolean"
+        },
+        "estimated_duration": {
+          "description": "The estimated duration for completing this tool. Only present for horizon courses when the tool has an estimated duration.",
+          "$ref": "EstimatedDuration"
+        },
+        "account_navigation": {
+          "description": "Configuration for account navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "analytics_hub": {
+          "description": "Configuration for analytics hub placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "assignment_edit": {
+          "description": "Configuration for assignment edit placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "assignment_group_menu": {
+          "description": "Configuration for assignment group menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "assignment_index_menu": {
+          "description": "Configuration for assignment index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "assignment_menu": {
+          "description": "Configuration for assignment menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "assignment_selection": {
+          "description": "Configuration for assignment selection placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "assignment_view": {
+          "description": "Configuration for assignment view placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "collaboration": {
+          "description": "Configuration for collaboration placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "conference_selection": {
+          "description": "Configuration for conference selection placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "course_assignments_menu": {
+          "description": "Configuration for course assignments menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "course_home_sub_navigation": {
+          "description": "Configuration for course home sub navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "course_navigation": {
+          "description": "Configuration for course navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "course_settings_sub_navigation": {
+          "description": "Configuration for course settings sub navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "discussion_topic_index_menu": {
+          "description": "Configuration for discussion topic index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "discussion_topic_menu": {
+          "description": "Configuration for discussion topic menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "editor_button": {
+          "description": "Configuration for editor button placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "file_index_menu": {
+          "description": "Configuration for file index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "file_menu": {
+          "description": "Configuration for file menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "global_navigation": {
+          "description": "Configuration for global navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "homework_submission": {
+          "description": "Configuration for homework submission placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "link_selection": {
+          "description": "Configuration for link selection placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "migration_selection": {
+          "description": "Configuration for migration selection placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "module_group_menu": {
+          "description": "Configuration for module group menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "module_index_menu": {
+          "description": "Configuration for module index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "module_index_menu_modal": {
+          "description": "Configuration for module index menu modal placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "module_menu_modal": {
+          "description": "Configuration for module menu modal placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "module_menu": {
+          "description": "Configuration for module menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "page_index_menu": {
+          "description": "Configuration for page index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "page_menu": {
+          "description": "Configuration for page menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "post_grades": {
+          "description": "Configuration for post grades (sync grades) placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "quiz_index_menu": {
+          "description": "Configuration for quiz index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "quiz_menu": {
+          "description": "Configuration for quiz menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "resource_selection": {
+          "description": "Configuration for resource selection placement. Null if not configured for this placement. This placement is deprecated.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "similarity_detection": {
+          "description": "Configuration for similarity detection placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "student_context_card": {
+          "description": "Configuration for student context card placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "submission_type_selection": {
+          "description": "Configuration for submission type selection placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "tool_configuration": {
+          "description": "Configuration for tool configuration placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "top_navigation": {
+          "description": "Configuration for top navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "user_navigation": {
+          "description": "Configuration for user navigation placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "wiki_index_menu": {
+          "description": "Configuration for wiki index menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "wiki_page_menu": {
+          "description": "Configuration for wiki page menu placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "ActivityAssetProcessor": {
+          "description": "Configuration for activity asset processor placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "ActivityAssetProcessorContribution": {
+          "description": "Configuration for activity asset processor contribution placement. Null if not configured for this placement.",
+          "example": {
+            "type": "ContextExternalToolPlacement"
+          },
+          "$ref": "ContextExternalToolPlacement"
+        },
+        "message_settings": {
+          "description": "Configuration for placementless message types (currently only LtiEulaRequest).",
+          "type": "array",
+          "items": {
+            "$ref": "ContextExternalToolMessageSettings"
+          },
+          "example": [
+            {
+              "type": "LtiEulaRequest",
+              "enabled": true,
+              "target_link_uri": "https://example.com/eula",
+              "custom_fields": {
+                "agreement_version": "2.1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ContextExternalToolPlacement": {
+      "id": "ContextExternalToolPlacement",
+      "description": "Configuration for a specific placement of an external tool. If null, no configuration is present.",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "enabled": {
+          "description": "Whether this placement is enabled",
+          "example": true,
+          "type": "boolean"
+        },
+        "url": {
+          "description": "The launch URL for this specific placement. Overrides the tool's default URL. For LTI 1.1 tools only.",
+          "example": "http://example.com/launch?placement=course_navigation",
+          "type": "string"
+        },
+        "target_link_uri": {
+          "description": "The launch URL for this specific placement. Overrides the tool's default target_link_uri. For LTI 1.3 tools only.",
+          "example": "http://example.com/launch?placement=course_navigation",
+          "type": "string"
+        },
+        "text": {
+          "description": "The text/label to display for this placement. Overridable by 'labels' in placement configuration.",
+          "example": "Course Navigation Tool",
+          "type": "string"
+        },
+        "label": {
+          "description": "The localized label for this placement. This is the resolved text after applying internationalization.",
+          "example": "Course Navigation Tool",
+          "type": "string"
+        },
+        "labels": {
+          "description": "Internationalization labels for this placement. Keys are locale codes, values are localized text.",
+          "example": {
+            "en": "Course Navigation",
+            "es": "Navegación del Curso"
+          },
+          "type": "object"
+        },
+        "message_type": {
+          "description": "The LTI message type for this placement. Not all placements support all message types.",
+          "example": "LtiResourceLinkRequest",
+          "type": "string",
+          "enum": [
+            "basic_lti_request",
+            "ContentItemSelectionRequest",
+            "LtiResourceLinkRequest",
+            "LtiDeepLinkingRequest"
+          ]
+        },
+        "selection_width": {
+          "description": "The width of the iframe or popup for this placement",
+          "example": 500,
+          "type": "integer"
+        },
+        "selection_height": {
+          "description": "The height of the iframe or popup for this placement",
+          "example": 500,
+          "type": "integer"
+        },
+        "launch_width": {
+          "description": "The width of the launch window. Not standard everywhere yet.",
+          "example": 800,
+          "type": "integer"
+        },
+        "launch_height": {
+          "description": "The height of the launch window. Not standard everywhere yet.",
+          "example": 600,
+          "type": "integer"
+        },
+        "icon_url": {
+          "description": "The URL of the icon for this placement",
+          "example": "https://example.com/icon.png",
+          "type": "string"
+        },
+        "canvas_icon_class": {
+          "description": "The Canvas icon class to use for this placement instead of an icon URL",
+          "example": "icon-lti",
+          "type": "string"
+        },
+        "allow_fullscreen": {
+          "description": "Whether to allow fullscreen mode for this placement (top_navigation placement only)",
+          "example": true,
+          "type": "boolean"
+        },
+        "custom_fields": {
+          "description": "Custom fields to be sent with this placement's launch. Merged with tool-level custom fields.",
+          "example": {
+            "placement_id": "course_nav",
+            "special_param": "value"
+          },
+          "type": "object"
+        },
+        "visibility": {
+          "description": "Controls who can see this placement",
+          "example": "members",
+          "type": "string",
+          "enum": [
+            "public",
+            "members",
+            "admins"
+          ]
+        },
+        "required_permissions": {
+          "description": "Comma-separated list of Canvas permissions required to launch from this placement. The user must have all permissions in order to launch the tool.",
+          "example": "manage_course_content_edit,manage_course_content_read",
+          "type": "string"
+        },
+        "default": {
+          "description": "Default display state for navigation placements. Only applies to account_navigation and course_navigation placements.",
+          "example": "disabled",
+          "type": "string",
+          "enum": [
+            "enabled",
+            "disabled"
+          ]
+        },
+        "display_type": {
+          "description": "The layout type to use when launching the tool. For global_navigation and analytics_hub, defaults to 'full_width'.",
+          "example": "full_width_in_context",
+          "type": "string",
+          "enum": [
+            "default",
+            "full_width",
+            "full_width_in_context",
+            "full_width_with_nav",
+            "in_nav_context",
+            "borderless"
+          ]
+        },
+        "windowTarget": {
+          "description": "When set to '_blank', opens placement in a new tab. Only '_blank' is supported.",
+          "example": "_blank",
+          "type": "string",
+          "enum": [
+            "_blank"
+          ]
+        },
+        "accept_media_types": {
+          "description": "Comma-separated list of media types that the tool can accept. Only valid for file_menu placement.",
+          "example": "image/*,video/*",
+          "type": "string"
+        },
+        "use_tray": {
+          "description": "If true, the tool will be launched in the tray. Only used by the editor_button placement.",
+          "example": true,
+          "type": "boolean"
+        },
+        "icon_svg_path_64": {
+          "description": "An SVG path to use instead of an icon_url. Only valid for global_navigation placement.",
+          "example": "M100,37L70.1,10.5v176H37...",
+          "type": "string"
+        },
+        "root_account_only": {
+          "description": "Whether this placement should only be available at the root account level. Only applies to account_navigation placement.",
+          "example": false,
+          "type": "boolean"
+        },
+        "description": {
+          "description": "A description of this placement. Only valid for submission_type_selection placement. Maximum length of 255 characters.",
+          "example": "Submit your work using our external tool",
+          "type": "string"
+        },
+        "require_resource_selection": {
+          "description": "Whether resource selection is required for this placement. Only valid for submission_type_selection placement.",
+          "example": true,
+          "type": "boolean"
+        },
+        "prefer_sis_email": {
+          "description": "If true, the tool will send the SIS email in the lis_person_contact_email_primary launch property. LTI 1.1 only.",
+          "example": false,
+          "type": "boolean"
+        },
+        "oauth_compliant": {
+          "description": "If true, query parameters from the launch URL will not be copied to the POST body. LTI 1.1 only.",
+          "example": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "ContextExternalToolMessageSettings": {
+      "id": "ContextExternalToolMessageSettings",
+      "description": "Configuration for a placementless message type (message type that doesn't belong to a specific placement)",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "type": {
+          "description": "The message type identifier (e.g., 'LtiEulaRequest')",
+          "example": "LtiEulaRequest",
+          "type": "string"
+        },
+        "enabled": {
+          "description": "Whether this message type is enabled",
+          "example": true,
+          "type": "boolean"
+        },
+        "target_link_uri": {
+          "description": "The target URI for launching this message type",
+          "example": "https://example.com/eula",
+          "type": "string"
+        },
+        "custom_fields": {
+          "description": "Custom fields specific to this message type.",
+          "example": {
+            "key": "value"
+          },
+          "type": "object"
+        }
+      }
+    },
+    "EstimatedDuration": {
+      "id": "EstimatedDuration",
+      "description": "An estimated duration for completing a learning activity",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "id": {
+          "description": "The unique identifier for the estimated duration",
+          "example": 123,
+          "type": "integer"
+        },
+        "duration": {
+          "description": "The estimated duration in ISO 8601 format",
+          "example": "PT30M",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "Timestamp of when the estimated duration was created",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "Timestamp of when the estimated duration was last updated",
+          "example": "2024-01-01T00:00:00Z",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

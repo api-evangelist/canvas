@@ -1,0 +1,284 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/discovery_pages",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/v1/discovery_pages",
+      "description": "Get the discovery page configuration for the domain root account.\n\nReturns labels exactly as stored, with no HTML-escaping applied.\nCallers are responsible for escaping on render (the admin React UI\ndoes this via JSX auto-escaping).",
+      "operations": [
+        {
+          "method": "GET",
+          "summary": "Get Discovery Page",
+          "notes": "Get the discovery page configuration for the domain root account.\n\nReturns labels exactly as stored, with no HTML-escaping applied.\nCallers are responsible for escaping on render (the admin React UI\ndoes this via JSX auto-escaping).",
+          "nickname": "get_discovery_page",
+          "parameters": [],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "DiscoveryPage"
+        }
+      ]
+    },
+    {
+      "path": "/v1/discovery_pages",
+      "description": "Update or create the discovery page configuration for the domain root account.\nThis is a full replacement - provide the complete configuration including\nprimary, secondary, and active fields. Any fields omitted will be removed.",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update Discovery Page",
+          "notes": "Update or create the discovery page configuration for the domain root account.\nThis is a full replacement - provide the complete configuration including\nprimary, secondary, and active fields. Any fields omitted will be removed.",
+          "nickname": "update_discovery_page",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "discovery_page[primary][authentication_provider_id]",
+              "description": "The ID of an active authentication provider for this account.",
+              "type": "array",
+              "format": "int64",
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[primary][label]",
+              "description": "The display label for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[primary][icon]",
+              "description": "Icon key for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[secondary][authentication_provider_id]",
+              "description": "The ID of an active authentication provider for this account.",
+              "type": "array",
+              "format": "int64",
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[secondary][label]",
+              "description": "The display label for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[secondary][icon]",
+              "description": "Icon key for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[active]",
+              "description": "Whether the discovery page is enabled. Defaults to false if not provided.",
+              "type": "boolean",
+              "format": null,
+              "required": false,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "DiscoveryPage"
+        }
+      ]
+    },
+    {
+      "path": "/v1/discovery_pages/token",
+      "description": "Returns a short-lived RS256-signed JWT containing the discovery page\nbutton link configuration, suitable for sending to the identity service\npreview iframe via postMessage.\n\nA discovery_page configuration must be provided in the request body.\nOmitting it returns a 400 Bad Request.",
+      "operations": [
+        {
+          "method": "POST",
+          "summary": "Generate Discovery Page Preview Token",
+          "notes": "Returns a short-lived RS256-signed JWT containing the discovery page\nbutton link configuration, suitable for sending to the identity service\npreview iframe via postMessage.\n\nA discovery_page configuration must be provided in the request body.\nOmitting it returns a 400 Bad Request.",
+          "nickname": "generate_discovery_page_preview_token",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "discovery_page[primary][authentication_provider_id]",
+              "description": "The ID of an active authentication provider for this account.",
+              "type": "array",
+              "format": "int64",
+              "required": true,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[primary][label]",
+              "description": "The display label for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[primary][icon]",
+              "description": "Icon key for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[secondary][authentication_provider_id]",
+              "description": "The ID of an active authentication provider for this account.",
+              "type": "array",
+              "format": "int64",
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "integer"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[secondary][label]",
+              "description": "The display label for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "discovery_page[secondary][icon]",
+              "description": "Icon key for this authentication provider button.",
+              "type": "array",
+              "format": null,
+              "required": false,
+              "deprecated": false,
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "{ \"token\": \"eyJ...\" }"
+        }
+      ]
+    }
+  ],
+  "models": {
+    "DiscoveryPage": {
+      "id": "DiscoveryPage",
+      "description": "Configuration for the login discovery page",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "primary": {
+          "description": "Primary authentication provider buttons displayed prominently",
+          "type": "array",
+          "items": {
+            "$ref": "DiscoveryPageEntry"
+          }
+        },
+        "secondary": {
+          "description": "Secondary authentication provider buttons displayed less prominently",
+          "type": "array",
+          "items": {
+            "$ref": "DiscoveryPageEntry"
+          }
+        },
+        "active": {
+          "description": "Whether the discovery page is enabled",
+          "type": "boolean"
+        }
+      }
+    },
+    "DiscoveryPageEntry": {
+      "id": "DiscoveryPageEntry",
+      "description": "A single authentication provider entry on the discovery page",
+      "required": [],
+      "deprecated": false,
+      "deprecation_description": null,
+      "properties": {
+        "authentication_provider_id": {
+          "description": "The ID of the authentication provider",
+          "example": 1,
+          "type": "integer"
+        },
+        "label": {
+          "description": "The display label for this provider button",
+          "example": "Students",
+          "type": "string"
+        },
+        "icon": {
+          "description": "Icon key for this provider button",
+          "example": "google",
+          "type": "string",
+          "enum": [
+            "apple",
+            "auth0",
+            "classlink",
+            "default",
+            "facebook",
+            "github",
+            "google",
+            "linkedin",
+            "microsoft",
+            "okta",
+            "onelogin",
+            "ping"
+          ]
+        }
+      }
+    }
+  }
+}

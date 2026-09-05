@@ -6,8 +6,17 @@ artifacts:
   agentic-access/canvas-agentic-access.yml:
     method: generated
     evidence: declared in the artifact
+  asyncapi/canvas-live-events-webhooks.yml:
+    method: searched
+    evidence: declared in the artifact
   authentication/canvas-authentication.yml:
-    method: derived
+    method: searched
+    evidence: declared in the artifact
+  changelog/canvas-changelog.yml:
+    method: searched
+    evidence: declared in the artifact
+  cli/canvas-cli.yml:
+    method: searched
     evidence: declared in the artifact
   collections/canvas-courses-api.opencollection.json:
     method: derived
@@ -21,76 +30,28 @@ artifacts:
   collections/canvas.postman_collection.json:
     method: derived
     evidence: openapi/canvas
+  components/canvas-components.yml:
+    method: searched
+    evidence: declared in the artifact
+  conformance/canvas-conformance.yml:
+    method: searched
+    evidence: declared in the artifact
+  conventions/canvas-conventions.yml:
+    method: searched
+    evidence: declared in the artifact
+  data-model/canvas-data-model.yml:
+    method: derived
+    evidence: declared in the artifact
+  errors/canvas-problem-types.yml:
+    method: searched
+    evidence: declared in the artifact
   finops/canvas-finops.yml:
     method: generated
     evidence: declared in the artifact
   graphql/canvas-graphql.md:
     method: unknown
     evidence: no authorship recorded
-  kin/checks-2026-08-28T221322.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-23T094130.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-23T182523.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-26T223651.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-27T083119.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-27T190208.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T115055.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T170848.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T172558.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T192327.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T200725.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T133250.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T151044.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T162206.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T202106.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-01T163141.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-01T163302.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-01T171935.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-03T113057.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-03T161012.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-04T083143.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-05T153418.yml:
+  kin/checks-2026-09-05T072335.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-08-06T210741.yml:
@@ -174,14 +135,530 @@ artifacts:
   kin/score-2026-08-28T221322.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
-  openapi/canvas-courses-api-openapi.yml:
+  kin/score-2026-08-29T213958.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-29T230545.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-30T203505.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-30T220315.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-31T223420.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-01T063623.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-01T210448.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-01T222808.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-02T211804.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-02T224043.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-03T161828.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-03T174231.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-04T062714.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-04T212454.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-04T224856.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-05T055819.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-05T072335.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  lifecycle/canvas-lifecycle.yml:
+    method: searched
+    evidence: declared in the artifact
+  llms/canvas-llms.txt:
     method: unknown
     evidence: no authorship recorded
+  mcp/canvas-mcp.yml:
+    method: derived
+    evidence: declared in the artifact
+  mcp/canvas-tool-crosswalk.yml:
+    method: derived
+    evidence: declared in the artifact
+  openapi/_original/canvas-access_tokens-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-accessibility_course_scans-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-accessibility_course_statistics-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-account_calendars-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-account_domain_lookups-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-account_notifications-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-account_reports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-accounts-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-accounts_(lti)-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-admins-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-ai_conversations-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-ai_experiences-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-analytics-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-announcement_external_feeds-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-announcements-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-api_token_scopes-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-appointment_groups-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-assessment_question_banks-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-asset_processor-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-assignment_extensions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-assignment_groups-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-assignments-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-authentication_providers-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-authentications_log-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-blackout_dates-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-block_editor_template-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-blueprint_courses-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-bookmarks-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-brand_configs-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-calendar_events-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-canvas-api-docs-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-canvas_career_experiences-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-canvas_career_user_context-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-collaborations-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-comm_messages-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-communication_channels-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-conferences-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-content_exports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-content_migrations-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-content_security_policy_settings-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-content_shares-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-conversations-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-course_audit_log-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-course_pace-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-course_quiz_extensions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-course_reports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-courses-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-custom_gradebook_columns-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-developer_key_account_bindings-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-developer_keys-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-discovery_pages-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-discussion_topics-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-e_portfolios-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-e_pub_exports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-enrollment_terms-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-enrollments-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-error_reports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-external_tools-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-favorites-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-feature_flags-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-files-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-grade_change_log-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-gradebook_history-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-grading_period_sets-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-grading_periods-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-grading_standards-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-graph_ql-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-group_categories-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-groups-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-history-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-inst_access_tokens-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-jw_ts-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-late_policy-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-learning_object_dates-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-line_items-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-live_assessments-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-logins-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-lti_context_controls-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-lti_launch_definitions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-lti_registrations-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-lti_resource_links-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-media_objects-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-moderated_grading-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-modules-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-names_and_role-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-new_quiz_items-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-new_quizzes-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-new_quizzes_accommodations-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-new_quizzes_reports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-notice_handlers-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-notification_preferences-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-originality_reports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-outcome_groups-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-outcome_imports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-outcome_results-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-outcomes-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-pages-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-peer_reviews-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-plagiarism_detection_platform_assignments-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-plagiarism_detection_platform_users-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-plagiarism_detection_submissions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-planner-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-poll_choices-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-poll_sessions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-poll_submissions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-polls-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-portfolio_notifications-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-proficiency_ratings-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-progress-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-public_jwk-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_assignment_overrides-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_extensions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_ip_filters-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_question_groups-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_questions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_reports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_statistics-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_submission_events-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_submission_files-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_submission_questions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_submission_user_list-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quiz_submissions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-quizzes-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-result-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-roles-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-rubrics-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-sandboxes-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-score-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-search-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-sections-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-services-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-shared_brand_configs-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-sis_import_errors-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-sis_imports-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-sis_integration-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-smart_search-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-study_assist-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-submission_comments-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-submissions-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-tabs-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-temporary_enrollment_pairings-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-user_observees-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-users-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-webhooks_subscriptions_for_plagiarism_platform-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/_original/canvas-what_if_grades-swagger-1.2.json:
+    method: harvested
+    evidence: fetched from the provider as-is; byte-identical to the source
+  openapi/canvas-courses-api-openapi.yml:
+    method: derived
+    evidence: declared in the artifact
+  openapi/canvas-lms-openapi.yml:
+    method: derived
+    evidence: declared in the artifact
+  overlays/canvas-canvas-courses-api-overlay.yaml:
+    method: unknown
+    evidence: no authorship recorded
+  overlays/canvas-canvas-lms-overlay.yaml:
+    method: unknown
+    evidence: no authorship recorded
+  packages/canvas-packages.yml:
+    method: searched
+    evidence: declared in the artifact
   plans/canvas-plans-pricing.yml:
-    method: generated
+    method: searched
     evidence: declared in the artifact
   rate-limits/canvas-rate-limits.yml:
-    method: generated
+    method: searched
+    evidence: declared in the artifact
+  sandbox/canvas-sandbox.yml:
+    method: searched
+    evidence: declared in the artifact
+  scopes/canvas-scopes.yml:
+    method: searched
     evidence: declared in the artifact
   security/canvas-domain-security.yml:
     method: unknown
@@ -192,3 +669,30 @@ artifacts:
   security/canvas-vulnerability-disclosure.yml:
     method: searched
     evidence: declared in the artifact
+  skills/_index.yml:
+    method: generated
+    evidence: declared in the artifact
+  skills/canvas-grade-and-return-work.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/canvas-provision-course-and-enroll.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/canvas-read-course-content.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/canvas-register-an-lti-tool.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/canvas-sync-roster-via-sis-import.md:
+    method: generated
+    evidence: declared in the artifact
+  well-known/canvas-security.txt:
+    method: unknown
+    evidence: no authorship recorded
+  well-known/canvas-statuspage-security.txt:
+    method: unknown
+    evidence: no authorship recorded
+  well-known/canvas-well-known.yml:
+    method: unknown
+    evidence: no authorship recorded

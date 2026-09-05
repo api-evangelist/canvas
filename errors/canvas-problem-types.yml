@@ -1,0 +1,49 @@
+generated: '2026-09-05'
+method: searched
+source:
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+- https://developerdocs.instructure.com/services/canvas/basics/file.throttling
+- https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth_endpoints
+format: canvas-errors-array
+rfc9457: false
+note: Canvas publishes NO error-code reference. There is no error registry, no problem-type URIs, and no application/problem+json.
+  The first-party Swagger 1.2 documents carry zero responseMessages across all 1,118 operations, so nothing can
+  be derived from the contract either. The entries below are the error behaviours Instructure states explicitly
+  in prose, each with the page that states it. This is a real gap to raise with the provider, not an omission on
+  our side.
+envelope:
+  shape: '{"errors": [ { "message": "..." } ]}'
+  variants:
+  - '{"errors": {"<field>": [{"message": "...", "attribute": "..."}]}} on validation failures'
+  - '{"status": "...", "errors": [...]} on some authorization failures'
+  note: Observed shape as documented in prose and in the Canvas source; Canvas does not specify it formally.
+problems:
+- status: 401
+  title: Unauthorized — token invalid, expired, or issued for a different Canvas domain
+  signal: A WWW-Authenticate response header is present.
+  remediation: Re-run the OAuth flow. If the app stores one token across multiple Canvas domains, a 401 with WWW-Authenticate
+    can also mean the token was issued on a different Canvas host — re-run the flow on the correct host; retrying
+    on the wrong one will never succeed.
+  source: https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+- status: 401
+  title: Forbidden — authenticated but lacking permission
+  signal: No WWW-Authenticate header. This is how a permissions denial is distinguished from an auth failure.
+  remediation: Check the user's role and the developer key scopes; do not re-run the OAuth flow.
+  source: https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth
+- status: 429
+  title: Rate Limit Exceeded
+  canvas_label: 429 Forbidden (Rate Limit Exceeded)
+  signal: X-Rate-Limit-Remaining is at or near zero; X-Request-Cost shows what the last request cost.
+  remediation: Back off and retry later. No Retry-After is sent. Reduce concurrency — parallel requests carry a
+    pre-flight penalty. Older/self-hosted Canvas returns 403 for the same condition; handle both.
+  source: https://developerdocs.instructure.com/services/canvas/basics/file.throttling
+- status: 400
+  title: OAuth2 error response
+  signal: Redirect back to redirect_uri carries error and error_description query parameters instead of code (e.g.
+    error=access_denied).
+  remediation: Surface error_description to the user; do not retry automatically.
+  source: https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth_endpoints
+gaps_to_raise_with_provider:
+- No published error-code registry or error reference page.
+- No responseMessages in any of the 144 published Swagger 1.2 documents — no 4xx/5xx is described in the contract.
+- The throttling status code is documented as 429 on developerdocs and 403 on the canvas.instructure.com mirror.

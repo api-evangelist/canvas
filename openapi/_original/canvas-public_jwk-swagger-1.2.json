@@ -1,0 +1,39 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://canvas.instructure.com/api",
+  "resourcePath": "/public_jwk",
+  "produces": [
+    "application/json"
+  ],
+  "apis": [
+    {
+      "path": "/lti/developer_key/update_public_jwk",
+      "description": "Rotate the public key in jwk format when using lti services",
+      "operations": [
+        {
+          "method": "PUT",
+          "summary": "Update Public JWK",
+          "notes": "Rotate the public key in jwk format when using lti services",
+          "nickname": "update_public_jwk",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "public_jwk",
+              "description": "The new public jwk that will be set to the tools current public jwk.",
+              "type": "json",
+              "format": null,
+              "required": true,
+              "deprecated": false
+            }
+          ],
+          "response_fields": [],
+          "deprecated": false,
+          "deprecation_description": "",
+          "type": "DeveloperKey"
+        }
+      ]
+    }
+  ],
+  "models": {}
+}
