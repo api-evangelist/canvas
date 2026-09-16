@@ -61,70 +61,12 @@ created: '2025-01-14'
 modified: '2026-09-05'
 specificationVersion: '0.23'
 apis:
-- aid: canvas:canvas-lms-rest-api
-  name: Canvas LMS REST API
-  description: The Canvas LMS REST API provides programmatic access to courses, assignments, quizzes, grades, users,
-    enrollments, accounts, discussions, files, modules, rubrics, submissions, SIS imports, and account administration.
-    It uses OAuth 2.0 access tokens and returns JSON with ISO 8601 timestamps, supporting pagination, request throttling,
-    masquerading, and compound documents.
-  humanURL: https://canvas.instructure.com/doc/api/
-  tags:
-  - Education
-  - LMS
-  - REST
-  properties:
-  - type: Documentation
-    url: https://canvas.instructure.com/doc/api/
-  - type: Authentication
-    url: https://canvas.instructure.com/doc/api/file.oauth.html
-  - type: Pagination
-    url: https://canvas.instructure.com/doc/api/file.pagination.html
-  - type: GitHubRepository
-    url: https://github.com/instructure/canvas-lms
-  - type: OpenAPI
-    url: openapi/canvas-lms-openapi.yml
-  - type: APIReference
-    url: https://canvas.instructure.com/doc/api/
-  - type: Swagger
-    url: https://canvas.instructure.com/doc/api/api-docs.json
-  - type: RateLimits
-    url: rate-limits/canvas-rate-limits.yml
-  - type: OAuthScopes
-    url: scopes/canvas-scopes.yml
-  - type: ErrorCatalog
-    url: errors/canvas-problem-types.yml
-  - type: DataModel
-    url: data-model/canvas-data-model.yml
-  - type: AgentSkill
-    url: skills/_index.yml
-  x-features:
-  - OAuth 2.0 authentication with access tokens
-  - JSON responses with ISO 8601 timestamps
-  - 64-bit integer IDs and string ID support
-  - Form-encoded and JSON request bodies
-  - Pagination for large result sets
-  - Request throttling and quota controls
-  - Masquerading for acting on behalf of users
-  - Compound documents for linked resources
-  - File upload workflows
-  - SIS imports and roster sync
-  - Live event streams via Canvas Data services
-  - Caliper event format compatibility
-  - xAPI statement support
-  x-use-cases:
-  - Building custom student dashboards or mobile apps
-  - Automating course provisioning and enrollment via SIS imports
-  - Syncing grades and assignments to external gradebooks
-  - Analytics and learning-event data pipelines
-  - Integrating third-party tools through LTI
-  - Bulk content migration between courses or institutions
-  - Institutional reporting and audit-log extraction
-  baseURL: https://canvas.instructure.com/api/v1
 - aid: canvas:canvas-lms-graphql-api
   name: Canvas LMS GraphQL API
-  description: The Canvas LMS GraphQL API is an alternative to the REST API that lets clients request exactly the
-    fields they need across Canvas resources in a single request. It is well suited for dashboards and aggregated
-    views that otherwise require many REST round-trips.
+  description: >-
+    The Canvas LMS GraphQL API is an alternative to the REST API that lets clients request exactly the
+    fields they need across Canvas resources in a single request. It is well suited for dashboards and
+    aggregated views that otherwise require many REST round-trips.
   humanURL: https://canvas.instructure.com/doc/api/file.graphql.html
   tags:
   - Education
@@ -147,8 +89,10 @@ apis:
   baseURL: https://canvas.instructure.com/api/graphql
 - aid: canvas:canvas-lti-integrations
   name: Canvas LTI Integrations
-  description: Canvas supports Learning Tools Interoperability (LTI 1.1 and LTI 1.3 / Advantage) for embedding external
-    tools, assignments, and content into courses with deep linking, grade passback, and names-and-roles service.
+  description: >-
+    Canvas supports Learning Tools Interoperability (LTI 1.1 and LTI 1.3 / Advantage) for embedding external
+    tools, assignments, and content into courses with deep linking, grade passback, and names-and-roles
+    service.
   humanURL: https://canvas.instructure.com/doc/api/file.tools_intro.html
   tags:
   - Education
@@ -172,9 +116,11 @@ apis:
   baseURL: https://canvas.instructure.com/api/lti
 - aid: canvas:canvas-courses-api
   name: Canvas Courses API
-  description: The Courses resource of the Canvas LMS REST API — 31 operations covering course creation, settings,
-    users and enrollment counts, course copy, blueprint associations, effective due dates, bulk course updates,
-    conclude/delete and course reset. Split from the first-party contract Instructure publishes at https://canvas.instructure.com/doc/api/courses.json.
+  description: >-
+    The Courses resource of the Canvas LMS REST API — 31 operations covering course creation, settings,
+    users and enrollment counts, course copy, blueprint associations, effective due dates, bulk course
+    updates, conclude/delete and course reset. Split from the first-party contract Instructure publishes
+    at https://canvas.instructure.com/doc/api/courses.json.
   humanURL: https://canvas.instructure.com/doc/api/
   tags:
   - Courses
@@ -186,6 +132,4291 @@ apis:
   - type: Swagger
     url: https://canvas.instructure.com/doc/api/courses.json
   baseURL: https://canvas.instructure.com/api/v1
+- aid: canvas:canvas-access-tokens-api
+  name: Canvas Access Tokens API
+  description: The Access Tokens API from Canvas — 3 operation(s) for access tokens.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Access Tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-access-tokens-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-accessibility-course-scans-api
+  name: Canvas Accessibility Course Scans API
+  description: >-
+    The Accessibility Course Scans API from Canvas — 1 operation(s) for accessibility course scans.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Accessibility Course Scans
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-accessibility-course-scans-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-accessibility-course-statistics-api
+  name: Canvas Accessibility Course Statistics API
+  description: >-
+    The Accessibility Course Statistics API from Canvas — 2 operation(s) for accessibility course statistics.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Accessibility Course Statistics
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-accessibility-course-statistics-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-account-calendars-api
+  name: Canvas Account Calendars API
+  description: The Account Calendars API from Canvas — 4 operation(s) for account calendars.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Account Calendars
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-account-calendars-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-account-domain-lookups-api
+  name: Canvas Account Domain Lookups API
+  description: The Account Domain Lookups API from Canvas — 1 operation(s) for account domain lookups.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Account Domain Lookups
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-account-domain-lookups-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-account-notifications-api
+  name: Canvas Account Notifications API
+  description: The Account Notifications API from Canvas — 2 operation(s) for account notifications.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Account Notifications
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-account-notifications-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-account-reports-api
+  name: Canvas Account Reports API
+  description: The Account Reports API from Canvas — 4 operation(s) for account reports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Account Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-account-reports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-accounts-api
+  name: Canvas Accounts API
+  description: The Accounts API from Canvas — 19 operation(s) for accounts.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-accounts-lti-api
+  name: Canvas Accounts (Lti) API
+  description: The Accounts (Lti) API from Canvas — 1 operation(s) for accounts (lti).
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Accounts (Lti)
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-accounts-lti-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-admins-api
+  name: Canvas Admins API
+  description: The Admins API from Canvas — 3 operation(s) for admins.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Admins
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-admins-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-ai-conversations-api
+  name: Canvas Ai Conversations API
+  description: The Ai Conversations API from Canvas — 6 operation(s) for ai conversations.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Ai Conversations
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-ai-conversations-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-ai-experiences-api
+  name: Canvas Ai Experiences API
+  description: The Ai Experiences API from Canvas — 6 operation(s) for ai experiences.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Ai Experiences
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-ai-experiences-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-analytics-api
+  name: Canvas Analytics API
+  description: The Analytics API from Canvas — 18 operation(s) for analytics.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Analytics
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-analytics-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-announcement-external-feeds-api
+  name: Canvas Announcement External Feeds API
+  description: >-
+    The Announcement External Feeds API from Canvas — 4 operation(s) for announcement external feeds.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Announcement External Feeds
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-announcement-external-feeds-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-announcements-api
+  name: Canvas Announcements API
+  description: The Announcements API from Canvas — 1 operation(s) for announcements.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Announcements
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-announcements-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-api-token-scopes-api
+  name: Canvas Api Token Scopes API
+  description: The Api Token Scopes API from Canvas — 1 operation(s) for api token scopes.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Api Token Scopes
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-api-token-scopes-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-appointment-groups-api
+  name: Canvas Appointment Groups API
+  description: The Appointment Groups API from Canvas — 5 operation(s) for appointment groups.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Appointment Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-appointment-groups-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-assessment-question-banks-api
+  name: Canvas Assessment Question Banks API
+  description: >-
+    The Assessment Question Banks API from Canvas — 3 operation(s) for assessment question banks.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Assessment Question Banks
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-assessment-question-banks-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-asset-processor-api
+  name: Canvas Asset Processor API
+  description: The Asset Processor API from Canvas — 3 operation(s) for asset processor.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Asset Processor
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-asset-processor-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-assignment-extensions-api
+  name: Canvas Assignment Extensions API
+  description: The Assignment Extensions API from Canvas — 1 operation(s) for assignment extensions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Assignment Extensions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-assignment-extensions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-assignment-groups-api
+  name: Canvas Assignment Groups API
+  description: The Assignment Groups API from Canvas — 2 operation(s) for assignment groups.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Assignment Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-assignment-groups-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-assignments-api
+  name: Canvas Assignments API
+  description: The Assignments API from Canvas — 12 operation(s) for assignments.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Assignments
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-assignments-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-authentication-providers-api
+  name: Canvas Authentication Providers API
+  description: >-
+    The Authentication Providers API from Canvas — 5 operation(s) for authentication providers.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Authentication Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-authentication-providers-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-authentications-log-api
+  name: Canvas Authentications Log API
+  description: The Authentications Log API from Canvas — 3 operation(s) for authentications log.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Authentications Log
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-authentications-log-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-blackout-dates-api
+  name: Canvas Blackout Dates API
+  description: The Blackout Dates API from Canvas — 6 operation(s) for blackout dates.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Blackout Dates
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-blackout-dates-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-block-editor-template-api
+  name: Canvas Block Editor Template API
+  description: The Block Editor Template API from Canvas — 1 operation(s) for block editor template.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Block Editor Template
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-block-editor-template-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-blueprint-courses-api
+  name: Canvas Blueprint Courses API
+  description: The Blueprint Courses API from Canvas — 12 operation(s) for blueprint courses.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Blueprint Courses
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-blueprint-courses-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-bookmarks-api
+  name: Canvas Bookmarks API
+  description: The Bookmarks API from Canvas — 2 operation(s) for bookmarks.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Bookmarks
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-bookmarks-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-brand-configs-api
+  name: Canvas Brand Configs API
+  description: The Brand Configs API from Canvas — 3 operation(s) for brand configs.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Brand Configs
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-brand-configs-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-calendar-events-api
+  name: Canvas Calendar Events API
+  description: The Calendar Events API from Canvas — 8 operation(s) for calendar events.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Calendar Events
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-calendar-events-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-canvas-career-experiences-api
+  name: Canvas Canvas Career Experiences API
+  description: >-
+    The Canvas Career Experiences API from Canvas — 4 operation(s) for canvas career experiences.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Canvas Career Experiences
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-canvas-career-experiences-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-canvas-career-user-context-api
+  name: Canvas Canvas Career User Context API
+  description: >-
+    The Canvas Career User Context API from Canvas — 1 operation(s) for canvas career user context.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Canvas Career User Context
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-canvas-career-user-context-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-collaborations-api
+  name: Canvas Collaborations API
+  description: The Collaborations API from Canvas — 5 operation(s) for collaborations.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Collaborations
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-collaborations-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-comm-messages-api
+  name: Canvas Comm Messages API
+  description: The Comm Messages API from Canvas — 1 operation(s) for comm messages.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Comm Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-comm-messages-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-communication-channels-api
+  name: Canvas Communication Channels API
+  description: The Communication Channels API from Canvas — 4 operation(s) for communication channels.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Communication Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-communication-channels-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-conferences-api
+  name: Canvas Conferences API
+  description: The Conferences API from Canvas — 3 operation(s) for conferences.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Conferences
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-conferences-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-content-exports-api
+  name: Canvas Content Exports API
+  description: The Content Exports API from Canvas — 6 operation(s) for content exports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Content Exports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-content-exports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-content-migrations-api
+  name: Canvas Content Migrations API
+  description: The Content Migrations API from Canvas — 25 operation(s) for content migrations.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Content Migrations
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-content-migrations-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-content-security-policy-settings-api
+  name: Canvas Content Security Policy Settings API
+  description: >-
+    The Content Security Policy Settings API from Canvas — 5 operation(s) for content security policy
+    settings.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Content Security Policy Settings
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-content-security-policy-settings-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-content-shares-api
+  name: Canvas Content Shares API
+  description: The Content Shares API from Canvas — 6 operation(s) for content shares.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Content Shares
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-content-shares-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-conversations-api
+  name: Canvas Conversations API
+  description: The Conversations API from Canvas — 8 operation(s) for conversations.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Conversations
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-conversations-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-course-audit-log-api
+  name: Canvas Course Audit Log API
+  description: The Course Audit Log API from Canvas — 2 operation(s) for course audit log.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Course Audit Log
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-course-audit-log-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-course-pace-api
+  name: Canvas Course Pace API
+  description: The Course Pace API from Canvas — 2 operation(s) for course pace.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Course Pace
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-course-pace-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-course-quiz-extensions-api
+  name: Canvas Course Quiz Extensions API
+  description: The Course Quiz Extensions API from Canvas — 1 operation(s) for course quiz extensions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Course Quiz Extensions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-course-quiz-extensions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-course-reports-api
+  name: Canvas Course Reports API
+  description: The Course Reports API from Canvas — 2 operation(s) for course reports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Course Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-course-reports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-custom-gradebook-columns-api
+  name: Canvas Custom Gradebook Columns API
+  description: >-
+    The Custom Gradebook Columns API from Canvas — 6 operation(s) for custom gradebook columns.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Custom Gradebook Columns
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-custom-gradebook-columns-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-developer-key-account-bindings-api
+  name: Canvas Developer Key Account Bindings API
+  description: >-
+    The Developer Key Account Bindings API from Canvas — 1 operation(s) for developer key account bindings.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Developer Key Account Bindings
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-developer-key-account-bindings-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-developer-keys-api
+  name: Canvas Developer Keys API
+  description: The Developer Keys API from Canvas — 3 operation(s) for developer keys.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Developer Keys
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-developer-keys-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-discovery-pages-api
+  name: Canvas Discovery Pages API
+  description: The Discovery Pages API from Canvas — 2 operation(s) for discovery pages.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Discovery Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-discovery-pages-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-discussion-topics-api
+  name: Canvas Discussion Topics API
+  description: The Discussion Topics API from Canvas — 36 operation(s) for discussion topics.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Discussion Topics
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-discussion-topics-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-e-portfolios-api
+  name: Canvas E Portfolios API
+  description: The E Portfolios API from Canvas — 5 operation(s) for e portfolios.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - E Portfolios
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-e-portfolios-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-e-pub-exports-api
+  name: Canvas E Pub Exports API
+  description: The E Pub Exports API from Canvas — 3 operation(s) for e pub exports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - E Pub Exports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-e-pub-exports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-enrollment-terms-api
+  name: Canvas Enrollment Terms API
+  description: The Enrollment Terms API from Canvas — 2 operation(s) for enrollment terms.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Enrollment Terms
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-enrollment-terms-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-enrollments-api
+  name: Canvas Enrollments API
+  description: The Enrollments API from Canvas — 12 operation(s) for enrollments.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Enrollments
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-enrollments-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-error-reports-api
+  name: Canvas Error Reports API
+  description: The Error Reports API from Canvas — 1 operation(s) for error reports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Error Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-error-reports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-external-tools-api
+  name: Canvas External Tools API
+  description: The External Tools API from Canvas — 11 operation(s) for external tools.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - External Tools
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-external-tools-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-favorites-api
+  name: Canvas Favorites API
+  description: The Favorites API from Canvas — 4 operation(s) for favorites.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Favorites
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-favorites-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-feature-flags-api
+  name: Canvas Feature Flags API
+  description: The Feature Flags API from Canvas — 10 operation(s) for feature flags.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Feature Flags
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-feature-flags-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-files-api
+  name: Canvas Files API
+  description: The Files API from Canvas — 43 operation(s) for files.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Files
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-files-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-grade-change-log-api
+  name: Canvas Grade Change Log API
+  description: The Grade Change Log API from Canvas — 5 operation(s) for grade change log.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Grade Change Log
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-grade-change-log-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-gradebook-history-api
+  name: Canvas Gradebook History API
+  description: The Gradebook History API from Canvas — 4 operation(s) for gradebook history.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Gradebook History
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-gradebook-history-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-grading-period-sets-api
+  name: Canvas Grading Period Sets API
+  description: The Grading Period Sets API from Canvas — 2 operation(s) for grading period sets.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Grading Period Sets
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-grading-period-sets-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-grading-periods-api
+  name: Canvas Grading Periods API
+  description: The Grading Periods API from Canvas — 6 operation(s) for grading periods.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Grading Periods
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-grading-periods-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-grading-standards-api
+  name: Canvas Grading Standards API
+  description: The Grading Standards API from Canvas — 4 operation(s) for grading standards.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Grading Standards
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-grading-standards-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-group-categories-api
+  name: Canvas Group Categories API
+  description: The Group Categories API from Canvas — 12 operation(s) for group categories.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Group Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-group-categories-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-groups-api
+  name: Canvas Groups API
+  description: The Groups API from Canvas — 17 operation(s) for groups.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-groups-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-history-api
+  name: Canvas History API
+  description: The History API from Canvas — 1 operation(s) for history.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - History
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-history-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-inst-access-tokens-api
+  name: Canvas Inst Access Tokens API
+  description: The Inst Access Tokens API from Canvas — 1 operation(s) for inst access tokens.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Inst Access Tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-inst-access-tokens-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-jw-ts-api
+  name: Canvas Jw Ts API
+  description: The Jw Ts API from Canvas — 2 operation(s) for jw ts.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Jw Ts
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-jw-ts-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-late-policy-api
+  name: Canvas Late Policy API
+  description: The Late Policy API from Canvas — 1 operation(s) for late policy.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Late Policy
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-late-policy-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-learning-object-dates-api
+  name: Canvas Learning Object Dates API
+  description: The Learning Object Dates API from Canvas — 6 operation(s) for learning object dates.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Learning Object Dates
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-learning-object-dates-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-line-items-api
+  name: Canvas Line Items API
+  description: The Line Items API from Canvas — 2 operation(s) for line items.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Line Items
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-line-items-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-live-assessments-api
+  name: Canvas Live Assessments API
+  description: The Live Assessments API from Canvas — 2 operation(s) for live assessments.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Live Assessments
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-live-assessments-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-logins-api
+  name: Canvas Logins API
+  description: The Logins API from Canvas — 5 operation(s) for logins.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Logins
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-logins-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-lti-context-controls-api
+  name: Canvas Lti Context Controls API
+  description: The Lti Context Controls API from Canvas — 4 operation(s) for lti context controls.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Lti Context Controls
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-lti-context-controls-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-lti-launch-definitions-api
+  name: Canvas Lti Launch Definitions API
+  description: The Lti Launch Definitions API from Canvas — 2 operation(s) for lti launch definitions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Lti Launch Definitions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-lti-launch-definitions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-lti-registrations-api
+  name: Canvas Lti Registrations API
+  description: The Lti Registrations API from Canvas — 28 operation(s) for lti registrations.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Lti Registrations
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-lti-registrations-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-lti-resource-links-api
+  name: Canvas Lti Resource Links API
+  description: The Lti Resource Links API from Canvas — 3 operation(s) for lti resource links.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Lti Resource Links
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-lti-resource-links-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-media-objects-api
+  name: Canvas Media Objects API
+  description: The Media Objects API from Canvas — 10 operation(s) for media objects.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Media Objects
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-media-objects-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-moderated-grading-api
+  name: Canvas Moderated Grading API
+  description: The Moderated Grading API from Canvas — 7 operation(s) for moderated grading.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Moderated Grading
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-moderated-grading-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-modules-api
+  name: Canvas Modules API
+  description: The Modules API from Canvas — 10 operation(s) for modules.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Modules
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-modules-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-names-and-role-api
+  name: Canvas Names And Role API
+  description: The Names And Role API from Canvas — 2 operation(s) for names and role.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Names And Role
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-names-and-role-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-new-quiz-items-api
+  name: Canvas New Quiz Items API
+  description: The New Quiz Items API from Canvas — 3 operation(s) for new quiz items.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - New Quiz Items
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-new-quiz-items-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-new-quizzes-accommodations-api
+  name: Canvas New Quizzes Accommodations API
+  description: >-
+    The New Quizzes Accommodations API from Canvas — 2 operation(s) for new quizzes accommodations.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - New Quizzes Accommodations
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-new-quizzes-accommodations-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-new-quizzes-api
+  name: Canvas New Quizzes API
+  description: The New Quizzes API from Canvas — 2 operation(s) for new quizzes.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - New Quizzes
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-new-quizzes-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-new-quizzes-reports-api
+  name: Canvas New Quizzes Reports API
+  description: The New Quizzes Reports API from Canvas — 1 operation(s) for new quizzes reports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - New Quizzes Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-new-quizzes-reports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-notice-handlers-api
+  name: Canvas Notice Handlers API
+  description: The Notice Handlers API from Canvas — 1 operation(s) for notice handlers.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Notice Handlers
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-notice-handlers-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-notification-preferences-api
+  name: Canvas Notification Preferences API
+  description: >-
+    The Notification Preferences API from Canvas — 10 operation(s) for notification preferences.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Notification Preferences
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-notification-preferences-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-originality-reports-api
+  name: Canvas Originality Reports API
+  description: The Originality Reports API from Canvas — 3 operation(s) for originality reports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Originality Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-originality-reports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-outcome-groups-api
+  name: Canvas Outcome Groups API
+  description: The Outcome Groups API from Canvas — 22 operation(s) for outcome groups.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Outcome Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-outcome-groups-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-outcome-imports-api
+  name: Canvas Outcome Imports API
+  description: The Outcome Imports API from Canvas — 6 operation(s) for outcome imports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Outcome Imports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-outcome-imports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-outcome-results-api
+  name: Canvas Outcome Results API
+  description: The Outcome Results API from Canvas — 6 operation(s) for outcome results.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Outcome Results
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-outcome-results-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-outcomes-api
+  name: Canvas Outcomes API
+  description: The Outcomes API from Canvas — 2 operation(s) for outcomes.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Outcomes
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-outcomes-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-pages-api
+  name: Canvas Pages API
+  description: The Pages API from Canvas — 13 operation(s) for pages.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-pages-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-peer-reviews-api
+  name: Canvas Peer Reviews API
+  description: The Peer Reviews API from Canvas — 5 operation(s) for peer reviews.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Peer Reviews
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-peer-reviews-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-plagiarism-detection-platform-assignments-api
+  name: Canvas Plagiarism Detection Platform Assignments API
+  description: >-
+    The Plagiarism Detection Platform Assignments API from Canvas — 1 operation(s) for plagiarism detection
+    platform assignments.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Plagiarism Detection Platform Assignments
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-plagiarism-detection-platform-assignments-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-plagiarism-detection-platform-users-api
+  name: Canvas Plagiarism Detection Platform Users API
+  description: >-
+    The Plagiarism Detection Platform Users API from Canvas — 2 operation(s) for plagiarism detection
+    platform users.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Plagiarism Detection Platform Users
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-plagiarism-detection-platform-users-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-plagiarism-detection-submissions-api
+  name: Canvas Plagiarism Detection Submissions API
+  description: >-
+    The Plagiarism Detection Submissions API from Canvas — 2 operation(s) for plagiarism detection submissions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Plagiarism Detection Submissions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-plagiarism-detection-submissions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-planner-api
+  name: Canvas Planner API
+  description: The Planner API from Canvas — 6 operation(s) for planner.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Planner
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-planner-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-poll-choices-api
+  name: Canvas Poll Choices API
+  description: The Poll Choices API from Canvas — 2 operation(s) for poll choices.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Poll Choices
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-poll-choices-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-poll-sessions-api
+  name: Canvas Poll Sessions API
+  description: The Poll Sessions API from Canvas — 6 operation(s) for poll sessions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Poll Sessions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-poll-sessions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-poll-submissions-api
+  name: Canvas Poll Submissions API
+  description: The Poll Submissions API from Canvas — 2 operation(s) for poll submissions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Poll Submissions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-poll-submissions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-polls-api
+  name: Canvas Polls API
+  description: The Polls API from Canvas — 2 operation(s) for polls.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Polls
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-polls-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-portfolio-notifications-api
+  name: Canvas Portfolio Notifications API
+  description: >-
+    The Portfolio Notifications API from Canvas — 1 operation(s) for portfolio notifications.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Portfolio Notifications
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-portfolio-notifications-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-proficiency-ratings-api
+  name: Canvas Proficiency Ratings API
+  description: The Proficiency Ratings API from Canvas — 2 operation(s) for proficiency ratings.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Proficiency Ratings
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-proficiency-ratings-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-progress-api
+  name: Canvas Progress API
+  description: The Progress API from Canvas — 3 operation(s) for progress.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Progress
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-progress-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-public-jwk-api
+  name: Canvas Public Jwk API
+  description: The Public Jwk API from Canvas — 1 operation(s) for public jwk.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Public Jwk
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-public-jwk-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-assignment-overrides-api
+  name: Canvas Quiz Assignment Overrides API
+  description: >-
+    The Quiz Assignment Overrides API from Canvas — 2 operation(s) for quiz assignment overrides.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Assignment Overrides
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-assignment-overrides-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-extensions-api
+  name: Canvas Quiz Extensions API
+  description: The Quiz Extensions API from Canvas — 1 operation(s) for quiz extensions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Extensions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-extensions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-ip-filters-api
+  name: Canvas Quiz Ip Filters API
+  description: The Quiz Ip Filters API from Canvas — 1 operation(s) for quiz ip filters.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Ip Filters
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-ip-filters-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-question-groups-api
+  name: Canvas Quiz Question Groups API
+  description: The Quiz Question Groups API from Canvas — 3 operation(s) for quiz question groups.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Question Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-question-groups-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-questions-api
+  name: Canvas Quiz Questions API
+  description: The Quiz Questions API from Canvas — 2 operation(s) for quiz questions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Questions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-questions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-reports-api
+  name: Canvas Quiz Reports API
+  description: The Quiz Reports API from Canvas — 2 operation(s) for quiz reports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-reports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-statistics-api
+  name: Canvas Quiz Statistics API
+  description: The Quiz Statistics API from Canvas — 1 operation(s) for quiz statistics.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Statistics
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-statistics-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-submission-events-api
+  name: Canvas Quiz Submission Events API
+  description: The Quiz Submission Events API from Canvas — 1 operation(s) for quiz submission events.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Submission Events
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-submission-events-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-submission-files-api
+  name: Canvas Quiz Submission Files API
+  description: The Quiz Submission Files API from Canvas — 1 operation(s) for quiz submission files.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Submission Files
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-submission-files-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-submission-questions-api
+  name: Canvas Quiz Submission Questions API
+  description: >-
+    The Quiz Submission Questions API from Canvas — 4 operation(s) for quiz submission questions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Submission Questions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-submission-questions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-submission-user-list-api
+  name: Canvas Quiz Submission User List API
+  description: >-
+    The Quiz Submission User List API from Canvas — 1 operation(s) for quiz submission user list.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Submission User List
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-submission-user-list-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quiz-submissions-api
+  name: Canvas Quiz Submissions API
+  description: The Quiz Submissions API from Canvas — 5 operation(s) for quiz submissions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quiz Submissions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quiz-submissions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-quizzes-api
+  name: Canvas Quizzes API
+  description: The Quizzes API from Canvas — 4 operation(s) for quizzes.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Quizzes
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-quizzes-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-result-api
+  name: Canvas Result API
+  description: The Result API from Canvas — 2 operation(s) for result.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Result
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-result-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-roles-api
+  name: Canvas Roles API
+  description: The Roles API from Canvas — 6 operation(s) for roles.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-roles-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-rubrics-api
+  name: Canvas Rubrics API
+  description: The Rubrics API from Canvas — 15 operation(s) for rubrics.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Rubrics
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-rubrics-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-sandboxes-api
+  name: Canvas Sandboxes API
+  description: The Sandboxes API from Canvas — 1 operation(s) for sandboxes.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Sandboxes
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-sandboxes-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-score-api
+  name: Canvas Score API
+  description: The Score API from Canvas — 1 operation(s) for score.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Score
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-score-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-search-api
+  name: Canvas Search API
+  description: The Search API from Canvas — 3 operation(s) for search.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-search-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-sections-api
+  name: Canvas Sections API
+  description: The Sections API from Canvas — 6 operation(s) for sections.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Sections
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-sections-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-services-api
+  name: Canvas Services API
+  description: The Services API from Canvas — 2 operation(s) for services.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Services
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-services-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-shared-brand-configs-api
+  name: Canvas Shared Brand Configs API
+  description: The Shared Brand Configs API from Canvas — 3 operation(s) for shared brand configs.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Shared Brand Configs
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-shared-brand-configs-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-sis-import-errors-api
+  name: Canvas Sis Import Errors API
+  description: The Sis Import Errors API from Canvas — 2 operation(s) for sis import errors.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Sis Import Errors
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-sis-import-errors-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-sis-imports-api
+  name: Canvas Sis Imports API
+  description: The Sis Imports API from Canvas — 6 operation(s) for sis imports.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Sis Imports
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-sis-imports-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-sis-integration-api
+  name: Canvas Sis Integration API
+  description: The Sis Integration API from Canvas — 3 operation(s) for sis integration.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Sis Integration
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-sis-integration-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-smart-search-api
+  name: Canvas Smart Search API
+  description: The Smart Search API from Canvas — 1 operation(s) for smart search.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Smart Search
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-smart-search-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-study-assist-api
+  name: Canvas Study Assist API
+  description: The Study Assist API from Canvas — 1 operation(s) for study assist.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Study Assist
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-study-assist-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-submission-comments-api
+  name: Canvas Submission Comments API
+  description: The Submission Comments API from Canvas — 3 operation(s) for submission comments.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Submission Comments
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-submission-comments-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-submissions-api
+  name: Canvas Submissions API
+  description: The Submissions API from Canvas — 32 operation(s) for submissions.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Submissions
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-submissions-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-tabs-api
+  name: Canvas Tabs API
+  description: The Tabs API from Canvas — 5 operation(s) for tabs.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Tabs
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-tabs-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-temporary-enrollment-pairings-api
+  name: Canvas Temporary Enrollment Pairings API
+  description: >-
+    The Temporary Enrollment Pairings API from Canvas — 3 operation(s) for temporary enrollment pairings.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Temporary Enrollment Pairings
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-temporary-enrollment-pairings-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-user-observees-api
+  name: Canvas User Observees API
+  description: The User Observees API from Canvas — 5 operation(s) for user observees.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - User Observees
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-user-observees-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-users-api
+  name: Canvas Users API
+  description: The Users API from Canvas — 38 operation(s) for users.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-users-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-webhooks-subscriptions-for-plagiarism-platform-api
+  name: Canvas Webhooks Subscriptions For Plagiarism Platform API
+  description: >-
+    The Webhooks Subscriptions For Plagiarism Platform API from Canvas — 2 operation(s) for webhooks subscriptions
+    for plagiarism platform.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - Webhooks Subscriptions For Plagiarism Platform
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-webhooks-subscriptions-for-plagiarism-platform-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-what-if-grades-api
+  name: Canvas What If Grades API
+  description: The What If Grades API from Canvas — 2 operation(s) for what if grades.
+  humanURL: https://canvas.instructure.com/doc/api/
+  baseURL: https://canvas.instructure.com/api/v1
+  tags:
+  - What If Grades
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-what-if-grades-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
 common:
 - type: OAuthScopes
   url: scopes/canvas-scopes.yml
