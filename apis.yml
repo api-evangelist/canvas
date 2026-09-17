@@ -2183,36 +2183,6 @@ apis:
     url: errors/canvas-problem-types.yml
   - type: DataModel
     url: data-model/canvas-data-model.yml
-- aid: canvas:canvas-jw-ts-api
-  name: Canvas Jw Ts API
-  description: The Jw Ts API from Canvas — 2 operation(s) for jw ts.
-  humanURL: https://canvas.instructure.com/doc/api/
-  baseURL: https://canvas.instructure.com/api/v1
-  tags:
-  - Jw Ts
-  properties:
-  - type: OpenAPI
-    url: openapi/canvas-jw-ts-api-openapi.yml
-  - type: Documentation
-    url: https://canvas.instructure.com/doc/api/
-  - type: Authentication
-    url: https://canvas.instructure.com/doc/api/file.oauth.html
-  - type: Pagination
-    url: https://canvas.instructure.com/doc/api/file.pagination.html
-  - type: GitHubRepository
-    url: https://github.com/instructure/canvas-lms
-  - type: APIReference
-    url: https://canvas.instructure.com/doc/api/
-  - type: Swagger
-    url: https://canvas.instructure.com/doc/api/api-docs.json
-  - type: RateLimits
-    url: rate-limits/canvas-rate-limits.yml
-  - type: OAuthScopes
-    url: scopes/canvas-scopes.yml
-  - type: ErrorCatalog
-    url: errors/canvas-problem-types.yml
-  - type: DataModel
-    url: data-model/canvas-data-model.yml
 - aid: canvas:canvas-late-policy-api
   name: Canvas Late Policy API
   description: The Late Policy API from Canvas — 1 operation(s) for late policy.
@@ -4397,6 +4367,36 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/canvas-what-if-grades-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-jwts-api
+  name: Canvas JW Ts API
+  description: The JWTs API from Canvas — 2 operation(s) for jwts.
+  humanURL: https://canvas.instructure.com/doc/api/file.graphql.html
+  baseURL: https://canvas.instructure.com/api/graphql
+  tags:
+  - JWTs
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-jwts-api-openapi.yml
   - type: Documentation
     url: https://canvas.instructure.com/doc/api/
   - type: Authentication
