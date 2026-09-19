@@ -48,8 +48,8 @@ tags:
 - LTI
 - Open-Source
 - REST
-- Canvas
 tags_raw:
+- Canvas
 - Education
 - EdTech
 - GraphQL
@@ -351,6 +351,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -1740,6 +1742,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - Enrollment
+  tags_raw:
   - Enrollments
   properties:
   - type: OpenAPI
@@ -1890,6 +1894,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -2100,6 +2106,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - Group
+  tags_raw:
   - Groups
   properties:
   - type: OpenAPI
@@ -3821,6 +3829,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - Sandbox
+  tags_raw:
   - Sandboxes
   properties:
   - type: OpenAPI
@@ -4061,6 +4071,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - SIS Integration
+  tags_raw:
   - Sis Integration
   properties:
   - type: OpenAPI
@@ -4302,6 +4314,8 @@ apis:
   humanURL: https://canvas.instructure.com/doc/api/
   baseURL: https://canvas.instructure.com/api/v1
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
