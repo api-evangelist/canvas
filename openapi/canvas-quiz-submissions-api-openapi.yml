@@ -1,0 +1,509 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Quiz Submissions API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Quiz Submissions
+  x-resource: quiz_submissions
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+paths:
+  /v1/courses/{course_id}/quizzes/{quiz_id}/submissions:
+    get:
+      tags:
+      - Quiz Submissions
+      operationId: get_all_quiz_submissions
+      summary: Get all quiz submissions
+      description: 'Get a list of all submissions for this quiz. Users who can view or manage
+
+        grades for a course will have submissions from multiple users returned. A
+
+        user who can only submit will have only their own submissions returned. When
+
+        a user has an in-progress submission, only that submission is returned. When
+
+        there isn''t an in-progress quiz_submission, all completed submissions,
+
+        including previous attempts, are returned.
+
+
+        200 OK response code is returned if the request was successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission
+            - quiz
+            - user
+        required: false
+        description: Associations to include with the quiz submission.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+    post:
+      tags:
+      - Quiz Submissions
+      operationId: create_quiz_submission_start_quiz_taking_session
+      summary: Create the quiz submission (start a quiz-taking session)
+      description: 'Start taking a Quiz by creating a QuizSubmission which you can use to answer
+
+        questions and submit your answers.
+
+
+        Responses
+
+
+        * 200 OK if the request was successful
+
+        * 400 Bad Request if the quiz is locked
+
+        * 403 Forbidden if an invalid access code is specified
+
+        * 403 Forbidden if the Quiz''s IP filter restriction does not pass
+
+        * 409 Conflict if a QuizSubmission already exists for this user and quiz'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+                preview:
+                  type: boolean
+                  description: 'Whether this should be a preview QuizSubmission and not count towards
+
+                    the user''s course record. Teachers only.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+                preview:
+                  type: boolean
+                  description: 'Whether this should be a preview QuizSubmission and not count towards
+
+                    the user''s course record. Teachers only.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/submission:
+    get:
+      tags:
+      - Quiz Submissions
+      operationId: get_quiz_submission
+      summary: Get the quiz submission
+      description: 'Get the submission for this quiz for the current user.
+
+
+        200 OK response code is returned if the request was successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission
+            - quiz
+            - user
+        required: false
+        description: Associations to include with the quiz submission.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}:
+    get:
+      tags:
+      - Quiz Submissions
+      operationId: get_single_quiz_submission
+      summary: Get a single quiz submission
+      description: 'Get a single quiz submission.
+
+
+        200 OK response code is returned if the request was successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission
+            - quiz
+            - user
+        required: false
+        description: Associations to include with the quiz submission.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+    put:
+      tags:
+      - Quiz Submissions
+      operationId: update_student_question_scores_and_comments
+      summary: Update student question scores and comments
+      description: 'Update the amount of points a student has scored for questions they''ve
+
+        answered, provide comments for the student about their answer(s), or simply
+
+        fudge the total score by a specific amount of points.
+
+
+        Responses
+
+
+        * 200 OK if the request was successful
+
+        * 403 Forbidden if you are not a teacher in this course
+
+        * 400 Bad Request if the attempt parameter is missing or invalid
+
+        * 400 Bad Request if the specified QS attempt is not yet complete'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz_submissions[attempt]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The attempt number of the quiz submission that should be updated. This
+
+                    attempt MUST be already completed.'
+                quiz_submissions[fudge_points]:
+                  type: array
+                  items:
+                    type: number
+                  description: Amount of positive or negative points to fudge the total score by.
+                quiz_submissions[questions]:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  description: 'A set of scores and comments for each question answered by the student.
+
+                    The keys are the question IDs, and the values are hashes of `score` and
+
+                    `comment` entries. See {Appendix: Manual Scoring} for more on this
+
+                    parameter.'
+              required:
+              - quiz_submissions[attempt]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz_submissions[attempt]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The attempt number of the quiz submission that should be updated. This
+
+                    attempt MUST be already completed.'
+                quiz_submissions[fudge_points]:
+                  type: array
+                  items:
+                    type: number
+                  description: Amount of positive or negative points to fudge the total score by.
+                quiz_submissions[questions]:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  description: 'A set of scores and comments for each question answered by the student.
+
+                    The keys are the question IDs, and the values are hashes of `score` and
+
+                    `comment` entries. See {Appendix: Manual Scoring} for more on this
+
+                    parameter.'
+              required:
+              - quiz_submissions[attempt]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}/complete:
+    post:
+      tags:
+      - Quiz Submissions
+      operationId: complete_quiz_submission_turn_it_in
+      summary: Complete the quiz submission (turn it in)
+      description: 'Complete the quiz submission by marking it as complete and grading it. When
+
+        the quiz submission has been marked as complete, no further modifications
+
+        will be allowed.
+
+
+        Responses
+
+
+        * 200 OK if the request was successful
+
+        * 403 Forbidden if an invalid access code is specified
+
+        * 403 Forbidden if the Quiz''s IP filter restriction does not pass
+
+        * 403 Forbidden if an invalid token is specified
+
+        * 400 Bad Request if the QS is already complete
+
+        * 400 Bad Request if the attempt parameter is missing
+
+        * 400 Bad Request if the attempt parameter is not the latest attempt'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission that should be completed. Note
+
+                    that this must be the latest attempt index, as earlier attempts can not
+
+                    be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when this Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+              required:
+              - attempt
+              - validation_token
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission that should be completed. Note
+
+                    that this must be the latest attempt index, as earlier attempts can not
+
+                    be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when this Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+              required:
+              - attempt
+              - validation_token
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/submissions/{id}/time:
+    get:
+      tags:
+      - Quiz Submissions
+      operationId: get_current_quiz_submission_times
+      summary: Get current quiz submission times
+      description: 'Get the current timing data for the quiz attempt, both the end_at timestamp
+
+        and the time_left parameter.
+
+
+        Responses
+
+
+        * 200 OK if the request was successful'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submissions.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

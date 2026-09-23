@@ -1,0 +1,1598 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST External Tools API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: External Tools
+  x-resource: external_tools
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/external_tools.html
+paths:
+  /v1/courses/{course_id}/external_tools:
+    get:
+      tags:
+      - External Tools
+      operationId: list_external_tools_courses
+      summary: List external tools
+      description: 'Returns the paginated list of external tools for the current context.
+
+        See the get request docs for a single tool for a list of properties on an external tool.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial name of the tools to match and return.
+      - name: selectable
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, then only tools that are meant to be selectable are returned.
+      - name: include_parents
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, then include tools installed in all accounts above the current context
+      - name: placement
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The placement type to filter by.
+
+
+          Return all tools at the current context as well as all tools from the parent, and filter the tools list to only those with a placement of ''editor_button'''
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    post:
+      tags:
+      - External Tools
+      operationId: create_external_tool_courses
+      summary: Create an external tool
+      description: 'Create an external tool in the specified course/account.
+
+        The created tool will be returned, see the "show" endpoint for an example.
+
+        If a client ID is supplied canvas will attempt to create a context external
+
+        tool using the LTI 1.3 standard.
+
+
+        See the Placements Documentation for more information on what
+
+        placements are available, the possible fields, and their accepted values.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: 'The client id is attached to the developer key.
+
+                    If supplied all other parameters are unnecessary and will be ignored'
+                name:
+                  type: string
+                  description: The name of the tool
+                privacy_level:
+                  type: string
+                  enum:
+                  - anonymous
+                  - name_only
+                  - email_only
+                  - public
+                  description: How much user information to send to the external tool.
+                consumer_key:
+                  type: string
+                  description: The consumer key for the external tool
+                shared_secret:
+                  type: string
+                  description: The shared secret with the external tool
+                description:
+                  type: string
+                  description: A description of the tool
+                url:
+                  type: string
+                  description: 'The url to match links against. Either "url" or "domain" should be set,
+
+                    not both.'
+                domain:
+                  type: string
+                  description: 'The domain to match links against. Either "url" or "domain" should be
+
+                    set, not both.'
+                icon_url:
+                  type: string
+                  description: The url of the icon to show for this tool
+                text:
+                  type: string
+                  description: The default text to show for this tool
+                custom_fields[field_name]:
+                  type: string
+                  description: 'Custom fields that will be sent to the tool consumer; can be used
+
+                    multiple times'
+                is_rce_favorite:
+                  type: boolean
+                  description: '(Deprecated in favor of {api:ExternalToolsController#mark_rce_favorite Mark tool to RCE Favorites} and
+
+                    {api:ExternalToolsController#unmark_rce_favorite Unmark tool from RCE Favorites})
+
+                    Whether this tool should appear in a preferred location in the RCE.
+
+                    This only applies to tools in root account contexts that have an editor
+
+                    button placement.'
+                <placement_name>[<placement_configuration_key>]:
+                  type: string
+                  x-canvas-declared-type: variable
+                  description: Set the <placement_configuration_key> value for a specific placement.
+                config_type:
+                  type: string
+                  enum:
+                  - by_url
+                  - by_xml
+                  description: 'Configuration can be passed in as Common Cartridge XML instead of using query
+
+                    parameters. If this value is "by_url" or "by_xml" then an XML
+
+                    configuration will be expected in either the "config_xml" or "config_url"
+
+                    parameter. Note that the name parameter overrides the tool name provided
+
+                    in the XML.'
+                config_xml:
+                  type: string
+                  description: 'XML tool configuration, as specified in the Common Cartridge XML specification. This is
+
+                    required if "config_type" is set to "by_xml"'
+                config_url:
+                  type: string
+                  description: 'URL where the server can retrieve an XML tool configuration, as specified
+
+                    in the Common Cartridge XML specification. This is required if "config_type" is set to
+
+                    "by_url"'
+                not_selectable:
+                  type: boolean
+                  description: 'Default: false. If set to true, and if resource_selection is set to false,
+
+                    the tool won''t show up in the external tool
+
+                    selection UI in modules and assignments'
+                oauth_compliant:
+                  type: boolean
+                  description: 'Default: false, if set to true LTI query params will not be copied to the
+
+                    post body.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool in LearnPlatform
+              required:
+              - client_id
+              - name
+              - privacy_level
+              - consumer_key
+              - shared_secret
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: 'The client id is attached to the developer key.
+
+                    If supplied all other parameters are unnecessary and will be ignored'
+                name:
+                  type: string
+                  description: The name of the tool
+                privacy_level:
+                  type: string
+                  enum:
+                  - anonymous
+                  - name_only
+                  - email_only
+                  - public
+                  description: How much user information to send to the external tool.
+                consumer_key:
+                  type: string
+                  description: The consumer key for the external tool
+                shared_secret:
+                  type: string
+                  description: The shared secret with the external tool
+                description:
+                  type: string
+                  description: A description of the tool
+                url:
+                  type: string
+                  description: 'The url to match links against. Either "url" or "domain" should be set,
+
+                    not both.'
+                domain:
+                  type: string
+                  description: 'The domain to match links against. Either "url" or "domain" should be
+
+                    set, not both.'
+                icon_url:
+                  type: string
+                  description: The url of the icon to show for this tool
+                text:
+                  type: string
+                  description: The default text to show for this tool
+                custom_fields[field_name]:
+                  type: string
+                  description: 'Custom fields that will be sent to the tool consumer; can be used
+
+                    multiple times'
+                is_rce_favorite:
+                  type: boolean
+                  description: '(Deprecated in favor of {api:ExternalToolsController#mark_rce_favorite Mark tool to RCE Favorites} and
+
+                    {api:ExternalToolsController#unmark_rce_favorite Unmark tool from RCE Favorites})
+
+                    Whether this tool should appear in a preferred location in the RCE.
+
+                    This only applies to tools in root account contexts that have an editor
+
+                    button placement.'
+                <placement_name>[<placement_configuration_key>]:
+                  type: string
+                  x-canvas-declared-type: variable
+                  description: Set the <placement_configuration_key> value for a specific placement.
+                config_type:
+                  type: string
+                  enum:
+                  - by_url
+                  - by_xml
+                  description: 'Configuration can be passed in as Common Cartridge XML instead of using query
+
+                    parameters. If this value is "by_url" or "by_xml" then an XML
+
+                    configuration will be expected in either the "config_xml" or "config_url"
+
+                    parameter. Note that the name parameter overrides the tool name provided
+
+                    in the XML.'
+                config_xml:
+                  type: string
+                  description: 'XML tool configuration, as specified in the Common Cartridge XML specification. This is
+
+                    required if "config_type" is set to "by_xml"'
+                config_url:
+                  type: string
+                  description: 'URL where the server can retrieve an XML tool configuration, as specified
+
+                    in the Common Cartridge XML specification. This is required if "config_type" is set to
+
+                    "by_url"'
+                not_selectable:
+                  type: boolean
+                  description: 'Default: false. If set to true, and if resource_selection is set to false,
+
+                    the tool won''t show up in the external tool
+
+                    selection UI in modules and assignments'
+                oauth_compliant:
+                  type: boolean
+                  description: 'Default: false, if set to true LTI query params will not be copied to the
+
+                    post body.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool in LearnPlatform
+              required:
+              - client_id
+              - name
+              - privacy_level
+              - consumer_key
+              - shared_secret
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/accounts/{account_id}/external_tools:
+    get:
+      tags:
+      - External Tools
+      operationId: list_external_tools_accounts
+      summary: List external tools
+      description: 'Returns the paginated list of external tools for the current context.
+
+        See the get request docs for a single tool for a list of properties on an external tool.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial name of the tools to match and return.
+      - name: selectable
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, then only tools that are meant to be selectable are returned.
+      - name: include_parents
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, then include tools installed in all accounts above the current context
+      - name: placement
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The placement type to filter by.
+
+
+          Return all tools at the current context as well as all tools from the parent, and filter the tools list to only those with a placement of ''editor_button'''
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    post:
+      tags:
+      - External Tools
+      operationId: create_external_tool_accounts
+      summary: Create an external tool
+      description: 'Create an external tool in the specified course/account.
+
+        The created tool will be returned, see the "show" endpoint for an example.
+
+        If a client ID is supplied canvas will attempt to create a context external
+
+        tool using the LTI 1.3 standard.
+
+
+        See the Placements Documentation for more information on what
+
+        placements are available, the possible fields, and their accepted values.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: 'The client id is attached to the developer key.
+
+                    If supplied all other parameters are unnecessary and will be ignored'
+                name:
+                  type: string
+                  description: The name of the tool
+                privacy_level:
+                  type: string
+                  enum:
+                  - anonymous
+                  - name_only
+                  - email_only
+                  - public
+                  description: How much user information to send to the external tool.
+                consumer_key:
+                  type: string
+                  description: The consumer key for the external tool
+                shared_secret:
+                  type: string
+                  description: The shared secret with the external tool
+                description:
+                  type: string
+                  description: A description of the tool
+                url:
+                  type: string
+                  description: 'The url to match links against. Either "url" or "domain" should be set,
+
+                    not both.'
+                domain:
+                  type: string
+                  description: 'The domain to match links against. Either "url" or "domain" should be
+
+                    set, not both.'
+                icon_url:
+                  type: string
+                  description: The url of the icon to show for this tool
+                text:
+                  type: string
+                  description: The default text to show for this tool
+                custom_fields[field_name]:
+                  type: string
+                  description: 'Custom fields that will be sent to the tool consumer; can be used
+
+                    multiple times'
+                is_rce_favorite:
+                  type: boolean
+                  description: '(Deprecated in favor of {api:ExternalToolsController#mark_rce_favorite Mark tool to RCE Favorites} and
+
+                    {api:ExternalToolsController#unmark_rce_favorite Unmark tool from RCE Favorites})
+
+                    Whether this tool should appear in a preferred location in the RCE.
+
+                    This only applies to tools in root account contexts that have an editor
+
+                    button placement.'
+                <placement_name>[<placement_configuration_key>]:
+                  type: string
+                  x-canvas-declared-type: variable
+                  description: Set the <placement_configuration_key> value for a specific placement.
+                config_type:
+                  type: string
+                  enum:
+                  - by_url
+                  - by_xml
+                  description: 'Configuration can be passed in as Common Cartridge XML instead of using query
+
+                    parameters. If this value is "by_url" or "by_xml" then an XML
+
+                    configuration will be expected in either the "config_xml" or "config_url"
+
+                    parameter. Note that the name parameter overrides the tool name provided
+
+                    in the XML.'
+                config_xml:
+                  type: string
+                  description: 'XML tool configuration, as specified in the Common Cartridge XML specification. This is
+
+                    required if "config_type" is set to "by_xml"'
+                config_url:
+                  type: string
+                  description: 'URL where the server can retrieve an XML tool configuration, as specified
+
+                    in the Common Cartridge XML specification. This is required if "config_type" is set to
+
+                    "by_url"'
+                not_selectable:
+                  type: boolean
+                  description: 'Default: false. If set to true, and if resource_selection is set to false,
+
+                    the tool won''t show up in the external tool
+
+                    selection UI in modules and assignments'
+                oauth_compliant:
+                  type: boolean
+                  description: 'Default: false, if set to true LTI query params will not be copied to the
+
+                    post body.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool in LearnPlatform
+              required:
+              - client_id
+              - name
+              - privacy_level
+              - consumer_key
+              - shared_secret
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: 'The client id is attached to the developer key.
+
+                    If supplied all other parameters are unnecessary and will be ignored'
+                name:
+                  type: string
+                  description: The name of the tool
+                privacy_level:
+                  type: string
+                  enum:
+                  - anonymous
+                  - name_only
+                  - email_only
+                  - public
+                  description: How much user information to send to the external tool.
+                consumer_key:
+                  type: string
+                  description: The consumer key for the external tool
+                shared_secret:
+                  type: string
+                  description: The shared secret with the external tool
+                description:
+                  type: string
+                  description: A description of the tool
+                url:
+                  type: string
+                  description: 'The url to match links against. Either "url" or "domain" should be set,
+
+                    not both.'
+                domain:
+                  type: string
+                  description: 'The domain to match links against. Either "url" or "domain" should be
+
+                    set, not both.'
+                icon_url:
+                  type: string
+                  description: The url of the icon to show for this tool
+                text:
+                  type: string
+                  description: The default text to show for this tool
+                custom_fields[field_name]:
+                  type: string
+                  description: 'Custom fields that will be sent to the tool consumer; can be used
+
+                    multiple times'
+                is_rce_favorite:
+                  type: boolean
+                  description: '(Deprecated in favor of {api:ExternalToolsController#mark_rce_favorite Mark tool to RCE Favorites} and
+
+                    {api:ExternalToolsController#unmark_rce_favorite Unmark tool from RCE Favorites})
+
+                    Whether this tool should appear in a preferred location in the RCE.
+
+                    This only applies to tools in root account contexts that have an editor
+
+                    button placement.'
+                <placement_name>[<placement_configuration_key>]:
+                  type: string
+                  x-canvas-declared-type: variable
+                  description: Set the <placement_configuration_key> value for a specific placement.
+                config_type:
+                  type: string
+                  enum:
+                  - by_url
+                  - by_xml
+                  description: 'Configuration can be passed in as Common Cartridge XML instead of using query
+
+                    parameters. If this value is "by_url" or "by_xml" then an XML
+
+                    configuration will be expected in either the "config_xml" or "config_url"
+
+                    parameter. Note that the name parameter overrides the tool name provided
+
+                    in the XML.'
+                config_xml:
+                  type: string
+                  description: 'XML tool configuration, as specified in the Common Cartridge XML specification. This is
+
+                    required if "config_type" is set to "by_xml"'
+                config_url:
+                  type: string
+                  description: 'URL where the server can retrieve an XML tool configuration, as specified
+
+                    in the Common Cartridge XML specification. This is required if "config_type" is set to
+
+                    "by_url"'
+                not_selectable:
+                  type: boolean
+                  description: 'Default: false. If set to true, and if resource_selection is set to false,
+
+                    the tool won''t show up in the external tool
+
+                    selection UI in modules and assignments'
+                oauth_compliant:
+                  type: boolean
+                  description: 'Default: false, if set to true LTI query params will not be copied to the
+
+                    post body.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool in LearnPlatform
+              required:
+              - client_id
+              - name
+              - privacy_level
+              - consumer_key
+              - shared_secret
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/groups/{group_id}/external_tools:
+    get:
+      tags:
+      - External Tools
+      operationId: list_external_tools_groups
+      summary: List external tools
+      description: 'Returns the paginated list of external tools for the current context.
+
+        See the get request docs for a single tool for a list of properties on an external tool.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial name of the tools to match and return.
+      - name: selectable
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, then only tools that are meant to be selectable are returned.
+      - name: include_parents
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, then include tools installed in all accounts above the current context
+      - name: placement
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The placement type to filter by.
+
+
+          Return all tools at the current context as well as all tools from the parent, and filter the tools list to only those with a placement of ''editor_button'''
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/courses/{course_id}/external_tools/sessionless_launch:
+    get:
+      tags:
+      - External Tools
+      operationId: get_sessionless_launch_url_for_external_tool_courses
+      summary: Get a sessionless launch url for an external tool
+      description: 'Returns a sessionless launch url for an external tool.
+
+        Prefers the resource_link_lookup_uuid, but defaults to the other passed
+
+        parameters id, url, and launch_type
+
+
+        NOTE: Either the resource_link_lookup_uuid, id, or url must be provided unless launch_type is assessment or module_item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The external id of the tool to launch.
+      - name: url
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The LTI launch url for the external tool.
+      - name: assignment_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The assignment id for an assignment launch. Required if launch_type is set to "assessment".
+      - name: module_item_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The assignment id for a module item launch. Required if launch_type is set to "module_item".
+      - name: launch_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - assessment
+          - module_item
+        required: false
+        description: 'The type of launch to perform on the external tool. Placement names (eg. "course_navigation")
+
+          can also be specified to use the custom launch url for that placement; if done, the tool id
+
+          must be provided.'
+      - name: resource_link_lookup_uuid
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The identifier to lookup a resource link.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/accounts/{account_id}/external_tools/sessionless_launch:
+    get:
+      tags:
+      - External Tools
+      operationId: get_sessionless_launch_url_for_external_tool_accounts
+      summary: Get a sessionless launch url for an external tool
+      description: 'Returns a sessionless launch url for an external tool.
+
+        Prefers the resource_link_lookup_uuid, but defaults to the other passed
+
+        parameters id, url, and launch_type
+
+
+        NOTE: Either the resource_link_lookup_uuid, id, or url must be provided unless launch_type is assessment or module_item.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The external id of the tool to launch.
+      - name: url
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The LTI launch url for the external tool.
+      - name: assignment_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The assignment id for an assignment launch. Required if launch_type is set to "assessment".
+      - name: module_item_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The assignment id for a module item launch. Required if launch_type is set to "module_item".
+      - name: launch_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - assessment
+          - module_item
+        required: false
+        description: 'The type of launch to perform on the external tool. Placement names (eg. "course_navigation")
+
+          can also be specified to use the custom launch url for that placement; if done, the tool id
+
+          must be provided.'
+      - name: resource_link_lookup_uuid
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The identifier to lookup a resource link.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/courses/{course_id}/external_tools/{external_tool_id}:
+    get:
+      tags:
+      - External Tools
+      operationId: get_single_external_tool_courses
+      summary: Get a single external tool
+      description: Returns the specified external tool.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    put:
+      tags:
+      - External Tools
+      operationId: edit_external_tool_courses
+      summary: Edit an external tool
+      description: 'Update the specified external tool. Uses same parameters as create. Returns the updated tool.
+
+
+        NOTE: Any updates made to LTI 1.3 tools with this API will be overridden if any changes are
+
+        made to the tool''s associated LTI Registration/Developer Key configuration. In almost all cases,
+
+        changes should be made to the tool''s associated LTI Registration configuration, not individual tools.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    delete:
+      tags:
+      - External Tools
+      operationId: delete_external_tool_courses
+      summary: Delete an external tool
+      description: Remove the specified external tool
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/accounts/{account_id}/external_tools/{external_tool_id}:
+    get:
+      tags:
+      - External Tools
+      operationId: get_single_external_tool_accounts
+      summary: Get a single external tool
+      description: Returns the specified external tool.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    put:
+      tags:
+      - External Tools
+      operationId: edit_external_tool_accounts
+      summary: Edit an external tool
+      description: 'Update the specified external tool. Uses same parameters as create. Returns the updated tool.
+
+
+        NOTE: Any updates made to LTI 1.3 tools with this API will be overridden if any changes are
+
+        made to the tool''s associated LTI Registration/Developer Key configuration. In almost all cases,
+
+        changes should be made to the tool''s associated LTI Registration configuration, not individual tools.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    delete:
+      tags:
+      - External Tools
+      operationId: delete_external_tool_accounts
+      summary: Delete an external tool
+      description: Remove the specified external tool
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextExternalTool'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/accounts/{account_id}/external_tools/rce_favorites/{id}:
+    post:
+      tags:
+      - External Tools
+      operationId: mark_tool_as_rce_favorite
+      summary: Mark tool as RCE Favorite
+      description: 'Mark the specified editor_button external tool as a favorite in the RCE editor
+
+        for courses in the given account and its subaccounts (if the subaccounts
+
+        haven''t set their own RCE Favorites). This places the tool in a preferred location
+
+        in the RCE. Cannot mark more than 2 tools as RCE Favorites.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    delete:
+      tags:
+      - External Tools
+      operationId: unmark_tool_as_rce_favorite
+      summary: Unmark tool as RCE Favorite
+      description: 'Unmark the specified external tool as a favorite in the RCE editor
+
+        for the given account. The tool will remain available but will no longer
+
+        appear in the preferred favorites location.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/accounts/{account_id}/external_tools/top_nav_favorites/{id}:
+    post:
+      tags:
+      - External Tools
+      operationId: add_tool_to_top_navigation_favorites
+      summary: Add tool to Top Navigation Favorites
+      description: 'Adds a dedicated button in Top Navigation for the specified tool for the given account.
+
+        Cannot set more than 2 top_navigation Favorites.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+    delete:
+      tags:
+      - External Tools
+      operationId: remove_tool_from_top_navigation_favorites
+      summary: Remove tool from Top Navigation Favorites
+      description: Removes the dedicated button in Top Navigation for the specified tool for the given account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/external_tools/visible_course_nav_tools:
+    get:
+      tags:
+      - External Tools
+      operationId: get_visible_course_navigation_tools
+      summary: Get visible course navigation tools
+      description: 'Get a list of external tools with the course_navigation placement that have not been hidden in
+
+        course settings and whose visibility settings apply to the requesting user. These tools are the
+
+        same that appear in the course navigation.
+
+
+        The response format is the same as for List external tools, but with additional context_id and
+
+        context_name fields on each element in the array.'
+      parameters:
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: true
+        description: 'List of context_codes to retrieve visible course nav tools for (for example, +course_123+). Only
+
+          courses are presently supported.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+  /v1/courses/{course_id}/external_tools/visible_course_nav_tools:
+    get:
+      tags:
+      - External Tools
+      operationId: get_visible_course_navigation_tools_for_single_course
+      summary: Get visible course navigation tools for a single course
+      description: 'Get a list of external tools with the course_navigation placement that have not been hidden in
+
+        course settings and whose visibility settings apply to the requesting user. These tools are the
+
+        same that appear in the course navigation.
+
+
+        The response format is the same as Get visible course navigation tools.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/external_tools.html
+components:
+  schemas:
+    ContextExternalToolMessageSettings:
+      type: object
+      properties:
+        type:
+          type: string
+          example: LtiEulaRequest
+          description: The message type identifier (e.g., 'LtiEulaRequest')
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this message type is enabled
+        target_link_uri:
+          type: string
+          example: https://example.com/eula
+          description: The target URI for launching this message type
+        custom_fields:
+          type: object
+          additionalProperties: true
+          example:
+            key: value
+          description: Custom fields specific to this message type.
+      description: Configuration for a placementless message type (message type that doesn't belong to a specific placement)
+    ContextExternalTool:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 37
+          description: The unique identifier for the external tool
+        name:
+          type: string
+          example: Basic 1.1 tool
+          description: The name of the external tool
+        description:
+          type: string
+          example: Basic LTI 1.1 Tool
+          description: A description of the external tool
+        url:
+          type: string
+          example: http://example.com/launch
+          description: The launch URL for the external tool
+        domain:
+          type: string
+          example: example.com
+          description: The domain to match links against. Note that this doesn't contain the protocol.
+        consumer_key:
+          type: string
+          example: key
+          description: The consumer key used by the tool (The associated shared secret is not returned)
+        created_at:
+          type: string
+          example: '2037-07-21T13:29:31Z'
+          description: Timestamp of the tool's creation
+        updated_at:
+          type: string
+          example: '2037-07-28T19:38:31Z'
+          description: Timestamp of the tool's last update
+        privacy_level:
+          type: string
+          example: anonymous
+          description: How much user information to send to the external tool
+          enum:
+          - anonymous
+          - name_only
+          - email_only
+          - public
+        custom_fields:
+          type: object
+          additionalProperties: true
+          example:
+            key: value
+          description: Custom fields that will be sent to the tool consumer
+        workflow_state:
+          type: string
+          example: public
+          description: The current state of the external tool
+          enum:
+          - public
+          - anonymous
+          - deleted
+        is_rce_favorite:
+          type: boolean
+          example: false
+          description: Boolean determining whether this tool should be in a preferred location in the RCE. Only present if the tool can be an RCE favorite.
+        is_top_nav_favorite:
+          type: boolean
+          example: false
+          description: Boolean determining whether this tool should have a dedicated button in Top Navigation. Only present if the tool can be a top nav favorite.
+        selection_width:
+          type: integer
+          example: 500
+          description: The pixel width of the iFrame that the tool will be rendered in
+        selection_height:
+          type: integer
+          example: 500
+          description: The pixel height of the iFrame that the tool will be rendered in
+        icon_url:
+          type: string
+          example: https://example.com/icon.png
+          description: The URL for the tool icon
+        not_selectable:
+          type: boolean
+          example: false
+          description: Whether the tool is not selectable from assignment and modules
+        version:
+          type: string
+          example: '1.1'
+          description: The LTI version of the tool
+          enum:
+          - '1.1'
+          - '1.3'
+        unified_tool_id:
+          type: string
+          description: The unique identifier for the tool in LearnPlatform
+        developer_key_id:
+          type: integer
+          example: 123
+          description: The developer key id associated with this tool. Only present for LTI 1.3 tools.
+        lti_registration_id:
+          type: integer
+          example: 456
+          description: The LTI registration id associated with this tool. Only present for LTI 1.3 tools.
+        deployment_id:
+          type: string
+          example: 37:b82229c6e10bcb87beb1f1b287faee560ddc3109
+          description: The unique identifier for the deployment of the tool
+        allow_membership_service_access:
+          type: boolean
+          example: false
+          description: Whether the tool can access the membership service. Only present if the feature is enabled.
+        prefer_sis_email:
+          type: boolean
+          example: false
+          description: Whether to send the SIS email address in launches
+        estimated_duration:
+          type: string
+          description: The estimated duration for completing this tool. Only present for horizon courses when the tool has an estimated duration.
+        account_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for account navigation placement. Null if not configured for this placement.
+        analytics_hub:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for analytics hub placement. Null if not configured for this placement.
+        assignment_edit:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for assignment edit placement. Null if not configured for this placement.
+        assignment_group_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for assignment group menu placement. Null if not configured for this placement.
+        assignment_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for assignment index menu placement. Null if not configured for this placement.
+        assignment_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for assignment menu placement. Null if not configured for this placement.
+        assignment_selection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for assignment selection placement. Null if not configured for this placement.
+        assignment_view:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for assignment view placement. Null if not configured for this placement.
+        collaboration:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for collaboration placement. Null if not configured for this placement.
+        conference_selection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for conference selection placement. Null if not configured for this placement.
+        course_assignments_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for course assignments menu placement. Null if not configured for this placement.
+        course_home_sub_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for course home sub navigation placement. Null if not configured for this placement.
+        course_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for course navigation placement. Null if not configured for this placement.
+        course_settings_sub_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for course settings sub navigation placement. Null if not configured for this placement.
+        discussion_topic_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for discussion topic index menu placement. Null if not configured for this placement.
+        discussion_topic_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for discussion topic menu placement. Null if not configured for this placement.
+        editor_button:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for editor button placement. Null if not configured for this placement.
+        file_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for file index menu placement. Null if not configured for this placement.
+        file_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for file menu placement. Null if not configured for this placement.
+        global_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for global navigation placement. Null if not configured for this placement.
+        homework_submission:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for homework submission placement. Null if not configured for this placement.
+        link_selection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for link selection placement. Null if not configured for this placement.
+        migration_selection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for migration selection placement. Null if not configured for this placement.
+        module_group_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for module group menu placement. Null if not configured for this placement.
+        module_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for module index menu placement. Null if not configured for this placement.
+        module_index_menu_modal:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for module index menu modal placement. Null if not configured for this placement.
+        module_menu_modal:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for module menu modal placement. Null if not configured for this placement.
+        module_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for module menu placement. Null if not configured for this placement.
+        page_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for page index menu placement. Null if not configured for this placement.
+        page_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for page menu placement. Null if not configured for this placement.
+        post_grades:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for post grades (sync grades) placement. Null if not configured for this placement.
+        quiz_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for quiz index menu placement. Null if not configured for this placement.
+        quiz_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for quiz menu placement. Null if not configured for this placement.
+        resource_selection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for resource selection placement. Null if not configured for this placement. This placement is deprecated.
+        similarity_detection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for similarity detection placement. Null if not configured for this placement.
+        student_context_card:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for student context card placement. Null if not configured for this placement.
+        submission_type_selection:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for submission type selection placement. Null if not configured for this placement.
+        tool_configuration:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for tool configuration placement. Null if not configured for this placement.
+        top_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for top navigation placement. Null if not configured for this placement.
+        user_navigation:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for user navigation placement. Null if not configured for this placement.
+        wiki_index_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for wiki index menu placement. Null if not configured for this placement.
+        wiki_page_menu:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for wiki page menu placement. Null if not configured for this placement.
+        ActivityAssetProcessor:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for activity asset processor placement. Null if not configured for this placement.
+        ActivityAssetProcessorContribution:
+          type: string
+          example:
+            type: ContextExternalToolPlacement
+          description: Configuration for activity asset processor contribution placement. Null if not configured for this placement.
+        message_settings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContextExternalToolMessageSettings'
+          example:
+          - type: LtiEulaRequest
+            enabled: true
+            target_link_uri: https://example.com/eula
+            custom_fields:
+              agreement_version: '2.1'
+          description: Configuration for placementless message types (currently only LtiEulaRequest).
+      description: An external tool configured for a specific context
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,959 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST New Quizzes API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: New Quizzes
+  x-resource: new_quizzes
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/new_quizzes.html
+paths:
+  /quiz/v1/courses/{course_id}/quizzes/{assignment_id}:
+    get:
+      tags:
+      - New Quizzes
+      operationId: get_new_quiz
+      summary: Get a new quiz
+      description: Get details about a single new quiz.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewQuiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes.html
+    patch:
+      tags:
+      - New Quizzes
+      operationId: update_single_quiz
+      summary: Update a single quiz
+      description: Update a single quiz for the course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz[title]:
+                  type: string
+                  description: The title of the quiz.
+                quiz[assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: The ID of the quiz's assignment group.
+                quiz[points_possible]:
+                  type: number
+                  description: The total point value given to the quiz. Must be positive.
+                quiz[due_at]:
+                  type: string
+                  format: date-time
+                  description: When the quiz is due.
+                quiz[lock_at]:
+                  type: string
+                  format: date-time
+                  description: When to lock the quiz.
+                quiz[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: When to unlock the quiz.
+                quiz[grading_type]:
+                  type: string
+                  enum:
+                  - pass_fail
+                  - percent
+                  - letter_grade
+                  - gpa_scale
+                  - points
+                  description: The type of grading the assignment receives.
+                quiz[instructions]:
+                  type: string
+                  description: Instructions for the quiz.
+                quiz[quiz_settings][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: 'Specifies which type of Calculator a student can use during Quiz taking.
+
+                    Should be null if no calculator is allowed.'
+                quiz[quiz_settings][filter_ip_address]:
+                  type: boolean
+                  description: Whether IP filtering is needed. Must be true for filters to take effect.
+                quiz[quiz_settings][filters][ips]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Specifies ranges of IP addresses where the quiz can be taken from. Each range is an array like
+
+                    [start address, end address], or null if there''s no restriction.
+
+                    Specifies the range of IP addresses where the quiz can be taken from. Should be null if there''s no restriction.'
+                quiz[quiz_settings][multiple_attempts][multiple_attempts_enabled]:
+                  type: boolean
+                  description: Whether multiple attempts for this quiz is true.
+                quiz[quiz_settings][multiple_attempts][attempt_limit]:
+                  type: boolean
+                  description: Whether there is an attempt limit.  Only set if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][max_attempts]:
+                  type: integer
+                  minimum: 1
+                  description: 'The allowed attempts a student can take. If null, the allowed attempts are unlimited. Only used if
+
+                    attempt_limit is true.'
+                quiz[quiz_settings][multiple_attempts][score_to_keep]:
+                  type: string
+                  enum:
+                  - average
+                  - first
+                  - highest
+                  - latest
+                  description: Whichever score to keep for the attempts. Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period]:
+                  type: boolean
+                  description: Whether there is a cooling period. Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: 'Required waiting period in seconds between attempts. If null, there is no required time.  Only used if
+
+                    cooling_period is true.'
+                quiz[quiz_settings][one_at_a_time_type]:
+                  type: string
+                  enum:
+                  - none
+                  - question
+                  description: Specifies the settings for questions to display when quiz taking.
+                quiz[quiz_settings][allow_backtracking]:
+                  type: boolean
+                  description: Whether to allow user to return to previous questions when 'one_at_a_time_type' is set to 'question'.
+                quiz[quiz_settings][result_view_settings][result_view_restricted]:
+                  type: boolean
+                  description: Whether the results view is restricted for students.  Must be true for any student restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_points_awarded]:
+                  type: boolean
+                  description: Whether points are shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_points_possible]:
+                  type: boolean
+                  description: Whether points possible is shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_items]:
+                  type: boolean
+                  description: Whether to show items in the results view.  Must be true for any items restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_item_response]:
+                  type: boolean
+                  description: 'Whether item response is shown.  Only set if display_items is true.  Must be true for
+
+                    display_item_response_qualifier, show_item_responses_at, hide_item_responses_at, and
+
+                    display_item_response_correctness to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - once_per_attempt
+                  - after_last_attempt
+                  - once_after_last_attempt
+                  description: Specifies after which attempts student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][show_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][hide_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be hidden from them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness]:
+                  type: boolean
+                  description: 'Whether item correctness is shown.  Only set if display_item_response is true.  Must be true for
+
+                    display_item_response_correctness_qualifier, show_item_response_correctness_at, hide_item_response_correctness_at
+
+                    and display_item_correct_answer to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - after_last_attempt
+                  description: Specifies after which attempts student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][show_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][hide_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be hidden from them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_correct_answer]:
+                  type: boolean
+                  description: Whether correct answer is shown.  Only set if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_feedback]:
+                  type: boolean
+                  description: Whether Item feedback is shown.  Only set if display_items is true.
+                quiz[quiz_settings][shuffle_answers]:
+                  type: boolean
+                  description: Whether answers should be shuffled for students.
+                quiz[quiz_settings][shuffle_questions]:
+                  type: boolean
+                  description: Whether questions should be shuffled for students.
+                quiz[quiz_settings][require_student_access_code]:
+                  type: boolean
+                  description: Whether an access code is needed to take the quiz.
+                quiz[quiz_settings][student_access_code]:
+                  type: string
+                  description: Access code to restrict quiz access. Should be null if no restriction.
+                quiz[quiz_settings][has_time_limit]:
+                  type: boolean
+                  description: Whether there is a time limit for the quiz.
+                quiz[quiz_settings][session_time_limit_in_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: Limit the time a student can work on the quiz. Should be null if no restriction.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz[title]:
+                  type: string
+                  description: The title of the quiz.
+                quiz[assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: The ID of the quiz's assignment group.
+                quiz[points_possible]:
+                  type: number
+                  description: The total point value given to the quiz. Must be positive.
+                quiz[due_at]:
+                  type: string
+                  format: date-time
+                  description: When the quiz is due.
+                quiz[lock_at]:
+                  type: string
+                  format: date-time
+                  description: When to lock the quiz.
+                quiz[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: When to unlock the quiz.
+                quiz[grading_type]:
+                  type: string
+                  enum:
+                  - pass_fail
+                  - percent
+                  - letter_grade
+                  - gpa_scale
+                  - points
+                  description: The type of grading the assignment receives.
+                quiz[instructions]:
+                  type: string
+                  description: Instructions for the quiz.
+                quiz[quiz_settings][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: 'Specifies which type of Calculator a student can use during Quiz taking.
+
+                    Should be null if no calculator is allowed.'
+                quiz[quiz_settings][filter_ip_address]:
+                  type: boolean
+                  description: Whether IP filtering is needed. Must be true for filters to take effect.
+                quiz[quiz_settings][filters][ips]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Specifies ranges of IP addresses where the quiz can be taken from. Each range is an array like
+
+                    [start address, end address], or null if there''s no restriction.
+
+                    Specifies the range of IP addresses where the quiz can be taken from. Should be null if there''s no restriction.'
+                quiz[quiz_settings][multiple_attempts][multiple_attempts_enabled]:
+                  type: boolean
+                  description: Whether multiple attempts for this quiz is true.
+                quiz[quiz_settings][multiple_attempts][attempt_limit]:
+                  type: boolean
+                  description: Whether there is an attempt limit.  Only set if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][max_attempts]:
+                  type: integer
+                  minimum: 1
+                  description: 'The allowed attempts a student can take. If null, the allowed attempts are unlimited. Only used if
+
+                    attempt_limit is true.'
+                quiz[quiz_settings][multiple_attempts][score_to_keep]:
+                  type: string
+                  enum:
+                  - average
+                  - first
+                  - highest
+                  - latest
+                  description: Whichever score to keep for the attempts. Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period]:
+                  type: boolean
+                  description: Whether there is a cooling period. Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: 'Required waiting period in seconds between attempts. If null, there is no required time.  Only used if
+
+                    cooling_period is true.'
+                quiz[quiz_settings][one_at_a_time_type]:
+                  type: string
+                  enum:
+                  - none
+                  - question
+                  description: Specifies the settings for questions to display when quiz taking.
+                quiz[quiz_settings][allow_backtracking]:
+                  type: boolean
+                  description: Whether to allow user to return to previous questions when 'one_at_a_time_type' is set to 'question'.
+                quiz[quiz_settings][result_view_settings][result_view_restricted]:
+                  type: boolean
+                  description: Whether the results view is restricted for students.  Must be true for any student restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_points_awarded]:
+                  type: boolean
+                  description: Whether points are shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_points_possible]:
+                  type: boolean
+                  description: Whether points possible is shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_items]:
+                  type: boolean
+                  description: Whether to show items in the results view.  Must be true for any items restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_item_response]:
+                  type: boolean
+                  description: 'Whether item response is shown.  Only set if display_items is true.  Must be true for
+
+                    display_item_response_qualifier, show_item_responses_at, hide_item_responses_at, and
+
+                    display_item_response_correctness to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - once_per_attempt
+                  - after_last_attempt
+                  - once_after_last_attempt
+                  description: Specifies after which attempts student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][show_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][hide_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be hidden from them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness]:
+                  type: boolean
+                  description: 'Whether item correctness is shown.  Only set if display_item_response is true.  Must be true for
+
+                    display_item_response_correctness_qualifier, show_item_response_correctness_at, hide_item_response_correctness_at
+
+                    and display_item_correct_answer to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - after_last_attempt
+                  description: Specifies after which attempts student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][show_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][hide_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be hidden from them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_correct_answer]:
+                  type: boolean
+                  description: Whether correct answer is shown.  Only set if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_feedback]:
+                  type: boolean
+                  description: Whether Item feedback is shown.  Only set if display_items is true.
+                quiz[quiz_settings][shuffle_answers]:
+                  type: boolean
+                  description: Whether answers should be shuffled for students.
+                quiz[quiz_settings][shuffle_questions]:
+                  type: boolean
+                  description: Whether questions should be shuffled for students.
+                quiz[quiz_settings][require_student_access_code]:
+                  type: boolean
+                  description: Whether an access code is needed to take the quiz.
+                quiz[quiz_settings][student_access_code]:
+                  type: string
+                  description: Access code to restrict quiz access. Should be null if no restriction.
+                quiz[quiz_settings][has_time_limit]:
+                  type: boolean
+                  description: Whether there is a time limit for the quiz.
+                quiz[quiz_settings][session_time_limit_in_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: Limit the time a student can work on the quiz. Should be null if no restriction.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewQuiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes.html
+    delete:
+      tags:
+      - New Quizzes
+      operationId: delete_new_quiz
+      summary: Delete a new quiz
+      description: Delete a single new quiz.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewQuiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes.html
+  /quiz/v1/courses/{course_id}/quizzes:
+    get:
+      tags:
+      - New Quizzes
+      operationId: list_new_quizzes
+      summary: List new quizzes
+      description: Get a list of new quizzes.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewQuiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes.html
+    post:
+      tags:
+      - New Quizzes
+      operationId: create_new_quiz
+      summary: Create a new quiz
+      description: Create a new quiz for the course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz[title]:
+                  type: string
+                  description: The title of the quiz.
+                quiz[assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: The ID of the quiz's assignment group.
+                quiz[points_possible]:
+                  type: number
+                  description: The total point value given to the quiz. Must be positive.
+                quiz[due_at]:
+                  type: string
+                  format: date-time
+                  description: When the quiz is due.
+                quiz[lock_at]:
+                  type: string
+                  format: date-time
+                  description: When to lock the quiz.
+                quiz[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: When to unlock the quiz.
+                quiz[grading_type]:
+                  type: string
+                  enum:
+                  - pass_fail
+                  - percent
+                  - letter_grade
+                  - gpa_scale
+                  - points
+                  description: The type of grading the assignment receives.
+                quiz[instructions]:
+                  type: string
+                  description: Instructions for the quiz.
+                quiz[quiz_settings][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: 'Specifies which type of Calculator a student can use during Quiz taking.
+
+                    Should be null if no calculator is allowed.'
+                quiz[quiz_settings][filter_ip_address]:
+                  type: boolean
+                  description: Whether IP filtering is needed.  Must be true for filters to take effect.
+                quiz[quiz_settings][filters][ips]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Specifies ranges of IP addresses where the quiz can be taken from. Each range is an array like
+
+                    [start address, end address], or null if there''s no restriction.'
+                quiz[quiz_settings][multiple_attempts][multiple_attempts_enabled]:
+                  type: boolean
+                  description: Whether multiple attempts for this quiz is true.
+                quiz[quiz_settings][multiple_attempts][attempt_limit]:
+                  type: boolean
+                  description: Whether there is an attempt limit.  Only set if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][max_attempts]:
+                  type: integer
+                  minimum: 1
+                  description: 'The allowed attempts a student can take. If null, the allowed attempts are unlimited.  Only used if
+
+                    attempt_limit is true.'
+                quiz[quiz_settings][multiple_attempts][score_to_keep]:
+                  type: string
+                  enum:
+                  - average
+                  - first
+                  - highest
+                  - latest
+                  description: Whichever score to keep for the attempts.  Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period]:
+                  type: boolean
+                  description: Whether there is a cooling (waiting) period.  Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: 'Required waiting period in seconds between attempts. If null, there is no required time. Only used if
+
+                    cooling_period is true'
+                quiz[quiz_settings][one_at_a_time_type]:
+                  type: string
+                  enum:
+                  - none
+                  - question
+                  description: Specifies the settings for questions to display when quiz taking.
+                quiz[quiz_settings][allow_backtracking]:
+                  type: boolean
+                  description: Whether to allow user to return to previous questions when 'one_at_a_time_type' is set to 'question'.
+                quiz[quiz_settings][result_view_settings][result_view_restricted]:
+                  type: boolean
+                  description: Whether the results view is restricted for students.  Must be true for any student restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_points_awarded]:
+                  type: boolean
+                  description: Whether points are shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_points_possible]:
+                  type: boolean
+                  description: Whether points possible is shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_items]:
+                  type: boolean
+                  description: Whether to show items in the results view.  Must be true for any items restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_item_response]:
+                  type: boolean
+                  description: 'Whether item response is shown.  Only set if display_items is true.  Must be true for
+
+                    display_item_response_qualifier, show_item_responses_at, hide_item_responses_at, and
+
+                    display_item_response_correctness to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - once_per_attempt
+                  - after_last_attempt
+                  - once_after_last_attempt
+                  description: Specifies after which attempts student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][show_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][hide_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be hidden from them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness]:
+                  type: boolean
+                  description: 'Whether item correctness is shown.  Only set if display_item_response is true.  Must be true for
+
+                    display_item_response_correctness_qualifier, show_item_response_correctness_at, hide_item_response_correctness_at
+
+                    and display_item_correct_answer to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - after_last_attempt
+                  description: Specifies after which attempts student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][show_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][hide_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be hidden from them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_correct_answer]:
+                  type: boolean
+                  description: Whether correct answer is shown.  Only set if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_feedback]:
+                  type: boolean
+                  description: Whether Item feedback is shown.  Only set if display_items is true.
+                quiz[quiz_settings][shuffle_answers]:
+                  type: boolean
+                  description: Whether answers should be shuffled for students.
+                quiz[quiz_settings][shuffle_questions]:
+                  type: boolean
+                  description: Whether questions should be shuffled for students.
+                quiz[quiz_settings][require_student_access_code]:
+                  type: boolean
+                  description: Whether an access code is needed to take the quiz.
+                quiz[quiz_settings][student_access_code]:
+                  type: string
+                  description: Access code to restrict quiz access. Should be null if no restriction.
+                quiz[quiz_settings][has_time_limit]:
+                  type: boolean
+                  description: Whether there is a time limit for the quiz.
+                quiz[quiz_settings][session_time_limit_in_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: Limit the time a student can work on the quiz. Should be null if no restriction.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz[title]:
+                  type: string
+                  description: The title of the quiz.
+                quiz[assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: The ID of the quiz's assignment group.
+                quiz[points_possible]:
+                  type: number
+                  description: The total point value given to the quiz. Must be positive.
+                quiz[due_at]:
+                  type: string
+                  format: date-time
+                  description: When the quiz is due.
+                quiz[lock_at]:
+                  type: string
+                  format: date-time
+                  description: When to lock the quiz.
+                quiz[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: When to unlock the quiz.
+                quiz[grading_type]:
+                  type: string
+                  enum:
+                  - pass_fail
+                  - percent
+                  - letter_grade
+                  - gpa_scale
+                  - points
+                  description: The type of grading the assignment receives.
+                quiz[instructions]:
+                  type: string
+                  description: Instructions for the quiz.
+                quiz[quiz_settings][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: 'Specifies which type of Calculator a student can use during Quiz taking.
+
+                    Should be null if no calculator is allowed.'
+                quiz[quiz_settings][filter_ip_address]:
+                  type: boolean
+                  description: Whether IP filtering is needed.  Must be true for filters to take effect.
+                quiz[quiz_settings][filters][ips]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Specifies ranges of IP addresses where the quiz can be taken from. Each range is an array like
+
+                    [start address, end address], or null if there''s no restriction.'
+                quiz[quiz_settings][multiple_attempts][multiple_attempts_enabled]:
+                  type: boolean
+                  description: Whether multiple attempts for this quiz is true.
+                quiz[quiz_settings][multiple_attempts][attempt_limit]:
+                  type: boolean
+                  description: Whether there is an attempt limit.  Only set if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][max_attempts]:
+                  type: integer
+                  minimum: 1
+                  description: 'The allowed attempts a student can take. If null, the allowed attempts are unlimited.  Only used if
+
+                    attempt_limit is true.'
+                quiz[quiz_settings][multiple_attempts][score_to_keep]:
+                  type: string
+                  enum:
+                  - average
+                  - first
+                  - highest
+                  - latest
+                  description: Whichever score to keep for the attempts.  Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period]:
+                  type: boolean
+                  description: Whether there is a cooling (waiting) period.  Only used if multiple_attempts_enabled is true.
+                quiz[quiz_settings][multiple_attempts][cooling_period_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: 'Required waiting period in seconds between attempts. If null, there is no required time. Only used if
+
+                    cooling_period is true'
+                quiz[quiz_settings][one_at_a_time_type]:
+                  type: string
+                  enum:
+                  - none
+                  - question
+                  description: Specifies the settings for questions to display when quiz taking.
+                quiz[quiz_settings][allow_backtracking]:
+                  type: boolean
+                  description: Whether to allow user to return to previous questions when 'one_at_a_time_type' is set to 'question'.
+                quiz[quiz_settings][result_view_settings][result_view_restricted]:
+                  type: boolean
+                  description: Whether the results view is restricted for students.  Must be true for any student restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_points_awarded]:
+                  type: boolean
+                  description: Whether points are shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_points_possible]:
+                  type: boolean
+                  description: Whether points possible is shown. Must set result_view_restricted to true to use this parameter.
+                quiz[quiz_settings][result_view_settings][display_items]:
+                  type: boolean
+                  description: Whether to show items in the results view.  Must be true for any items restrictions to be set.
+                quiz[quiz_settings][result_view_settings][display_item_response]:
+                  type: boolean
+                  description: 'Whether item response is shown.  Only set if display_items is true.  Must be true for
+
+                    display_item_response_qualifier, show_item_responses_at, hide_item_responses_at, and
+
+                    display_item_response_correctness to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - once_per_attempt
+                  - after_last_attempt
+                  - once_after_last_attempt
+                  description: Specifies after which attempts student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][show_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be shown to them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][hide_item_responses_at]:
+                  type: string
+                  format: date-time
+                  description: When student responses should be hidden from them. Only used if display_item_response is true.
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness]:
+                  type: boolean
+                  description: 'Whether item correctness is shown.  Only set if display_item_response is true.  Must be true for
+
+                    display_item_response_correctness_qualifier, show_item_response_correctness_at, hide_item_response_correctness_at
+
+                    and display_item_correct_answer to be set.'
+                quiz[quiz_settings][result_view_settings][display_item_response_correctness_qualifier]:
+                  type: string
+                  enum:
+                  - always
+                  - after_last_attempt
+                  description: Specifies after which attempts student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][show_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be shown to them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][hide_item_response_correctness_at]:
+                  type: string
+                  format: date-time
+                  description: When student response correctness should be hidden from them. Only used if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_correct_answer]:
+                  type: boolean
+                  description: Whether correct answer is shown.  Only set if display_item_response_correctness is true.
+                quiz[quiz_settings][result_view_settings][display_item_feedback]:
+                  type: boolean
+                  description: Whether Item feedback is shown.  Only set if display_items is true.
+                quiz[quiz_settings][shuffle_answers]:
+                  type: boolean
+                  description: Whether answers should be shuffled for students.
+                quiz[quiz_settings][shuffle_questions]:
+                  type: boolean
+                  description: Whether questions should be shuffled for students.
+                quiz[quiz_settings][require_student_access_code]:
+                  type: boolean
+                  description: Whether an access code is needed to take the quiz.
+                quiz[quiz_settings][student_access_code]:
+                  type: string
+                  description: Access code to restrict quiz access. Should be null if no restriction.
+                quiz[quiz_settings][has_time_limit]:
+                  type: boolean
+                  description: Whether there is a time limit for the quiz.
+                quiz[quiz_settings][session_time_limit_in_seconds]:
+                  type: integer
+                  minimum: 1
+                  description: Limit the time a student can work on the quiz. Should be null if no restriction.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewQuiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes.html
+components:
+  schemas:
+    NewQuiz:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '5'
+          description: the ID of the quiz
+        title:
+          type: string
+          example: Hamlet Act 3 Quiz
+          description: the title of the quiz
+        instructions:
+          type: string
+          example: <p>Welcome to the final exam for...</p>
+          description: the quiz's instructions
+        assignment_group_id:
+          type: string
+          example: '3'
+          description: the ID of the quiz's assignment group
+        points_possible:
+          type: integer
+          example: 20
+          description: The total point value given to the quiz
+        due_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: when the quiz is due
+        lock_at:
+          type: string
+          format: date-time
+          description: when to lock the quiz
+        unlock_at:
+          type: string
+          format: date-time
+          example: '2013-01-21T23:59:00-07:00'
+          description: when to unlock the quiz
+        published:
+          type: boolean
+          example: true
+          description: whether the quiz has a published or unpublished draft state
+        grading_type:
+          type: string
+          example: points
+          description: the type of grading the assignment receives ('pass_fail', 'percent', 'letter_grade', 'gpa_scale', or 'points')
+        quiz_settings:
+          type: string
+          description: additional quiz settings (see QuizSettings)
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

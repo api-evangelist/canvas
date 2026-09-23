@@ -1,0 +1,1290 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Calendar Events API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Calendar Events
+  x-resource: calendar_events
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/calendar_events.html
+paths:
+  /v1/calendar_events:
+    get:
+      tags:
+      - Calendar Events
+      operationId: list_calendar_events
+      summary: List calendar events
+      description: Retrieve the paginated list of calendar events or assignments for the current user
+      parameters:
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - event
+          - assignment
+          - sub_assignment
+        required: false
+        description: Defaults to "event"
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return events since the start_date (inclusive).
+
+          Defaults to today. The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return events before the end_date (inclusive).
+
+          Defaults to start_date. The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.
+
+          If end_date is the same as start_date, then only events on that day are
+
+          returned.'
+      - name: undated
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false (dated events only).
+
+          If true, only return undated events and ignore start_date and end_date.'
+      - name: all_events
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false (uses start_date, end_date, and undated criteria).
+
+          If true, all events are returned, ignoring start_date, end_date, and undated criteria.'
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of context codes of courses, groups, users, or accounts whose events you want to see.
+
+          If not specified, defaults to the current user (i.e personal calendar,
+
+          no course/group events). Limited to 10 context codes, additional ones are
+
+          ignored. The format of this field is the context type, followed by an
+
+          underscore, followed by the context id. For example: course_42'
+      - name: excludes
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: Array of attributes to exclude. Possible values are "description", "child_events" and "assignment"
+      - name: includes
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: Array of optional attributes to include. Possible values are "web_conference" and "series_natural_language"
+      - name: important_dates
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false.
+
+          If true, only events with important dates set to true will be returned.'
+      - name: blackout_date
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false.
+
+          If true, only events with blackout date set to true will be returned.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalendarEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+    post:
+      tags:
+      - Calendar Events
+      operationId: create_calendar_event
+      summary: Create a calendar event
+      description: Create and return a new calendar event
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                calendar_event[context_code]:
+                  type: string
+                  description: 'Context code of the course, group, user, or account whose calendar
+
+                    this event should be added to.'
+                calendar_event[title]:
+                  type: string
+                  description: Short title for the calendar event.
+                calendar_event[description]:
+                  type: string
+                  description: Longer HTML description of the event.
+                calendar_event[start_at]:
+                  type: string
+                  format: date-time
+                  description: Start date/time of the event.
+                calendar_event[end_at]:
+                  type: string
+                  format: date-time
+                  description: End date/time of the event.
+                calendar_event[location_name]:
+                  type: string
+                  description: Location name of the event.
+                calendar_event[location_address]:
+                  type: string
+                  description: Location address
+                calendar_event[time_zone_edited]:
+                  type: string
+                  description: 'Time zone of the user editing the event. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                calendar_event[all_day]:
+                  type: boolean
+                  description: When true event is considered to span the whole day and times are ignored.
+                calendar_event[child_event_data][X][start_at]:
+                  type: string
+                  format: date-time
+                  description: 'Section-level start time(s) if this is a course event. X can be any
+
+                    identifier, provided that it is consistent across the start_at, end_at
+
+                    and context_code'
+                calendar_event[child_event_data][X][end_at]:
+                  type: string
+                  format: date-time
+                  description: Section-level end time(s) if this is a course event.
+                calendar_event[child_event_data][X][context_code]:
+                  type: string
+                  description: Context code(s) corresponding to the section-level start and end time(s).
+                calendar_event[duplicate][count]:
+                  type: number
+                  description: Number of times to copy/duplicate the event.  Count cannot exceed 200.
+                calendar_event[duplicate][interval]:
+                  type: number
+                  description: Defaults to 1 if duplicate `count` is set.  The interval between the duplicated events.
+                calendar_event[duplicate][frequency]:
+                  type: string
+                  enum:
+                  - daily
+                  - weekly
+                  - monthly
+                  description: Defaults to "weekly".  The frequency at which to duplicate the event
+                calendar_event[duplicate][append_iterator]:
+                  type: boolean
+                  description: 'Defaults to false.  If set to `true`, an increasing counter number will be appended to the event title
+
+                    when the event is duplicated.  (e.g. Event 1, Event 2, Event 3, etc)'
+                calendar_event[rrule]:
+                  type: string
+                  description: 'The recurrence rule to create a series of recurring events.
+
+                    Its value is the {https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html iCalendar RRULE}
+
+                    defining how the event repeats. Unending series not supported.'
+                calendar_event[blackout_date]:
+                  type: boolean
+                  description: 'If the blackout_date is true, this event represents a holiday or some
+
+                    other special day that does not count in course pacing.'
+              required:
+              - calendar_event[context_code]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                calendar_event[context_code]:
+                  type: string
+                  description: 'Context code of the course, group, user, or account whose calendar
+
+                    this event should be added to.'
+                calendar_event[title]:
+                  type: string
+                  description: Short title for the calendar event.
+                calendar_event[description]:
+                  type: string
+                  description: Longer HTML description of the event.
+                calendar_event[start_at]:
+                  type: string
+                  format: date-time
+                  description: Start date/time of the event.
+                calendar_event[end_at]:
+                  type: string
+                  format: date-time
+                  description: End date/time of the event.
+                calendar_event[location_name]:
+                  type: string
+                  description: Location name of the event.
+                calendar_event[location_address]:
+                  type: string
+                  description: Location address
+                calendar_event[time_zone_edited]:
+                  type: string
+                  description: 'Time zone of the user editing the event. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                calendar_event[all_day]:
+                  type: boolean
+                  description: When true event is considered to span the whole day and times are ignored.
+                calendar_event[child_event_data][X][start_at]:
+                  type: string
+                  format: date-time
+                  description: 'Section-level start time(s) if this is a course event. X can be any
+
+                    identifier, provided that it is consistent across the start_at, end_at
+
+                    and context_code'
+                calendar_event[child_event_data][X][end_at]:
+                  type: string
+                  format: date-time
+                  description: Section-level end time(s) if this is a course event.
+                calendar_event[child_event_data][X][context_code]:
+                  type: string
+                  description: Context code(s) corresponding to the section-level start and end time(s).
+                calendar_event[duplicate][count]:
+                  type: number
+                  description: Number of times to copy/duplicate the event.  Count cannot exceed 200.
+                calendar_event[duplicate][interval]:
+                  type: number
+                  description: Defaults to 1 if duplicate `count` is set.  The interval between the duplicated events.
+                calendar_event[duplicate][frequency]:
+                  type: string
+                  enum:
+                  - daily
+                  - weekly
+                  - monthly
+                  description: Defaults to "weekly".  The frequency at which to duplicate the event
+                calendar_event[duplicate][append_iterator]:
+                  type: boolean
+                  description: 'Defaults to false.  If set to `true`, an increasing counter number will be appended to the event title
+
+                    when the event is duplicated.  (e.g. Event 1, Event 2, Event 3, etc)'
+                calendar_event[rrule]:
+                  type: string
+                  description: 'The recurrence rule to create a series of recurring events.
+
+                    Its value is the {https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html iCalendar RRULE}
+
+                    defining how the event repeats. Unending series not supported.'
+                calendar_event[blackout_date]:
+                  type: boolean
+                  description: 'If the blackout_date is true, this event represents a holiday or some
+
+                    other special day that does not count in course pacing.'
+              required:
+              - calendar_event[context_code]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/users/{user_id}/calendar_events:
+    get:
+      tags:
+      - Calendar Events
+      operationId: list_calendar_events_for_user
+      summary: List calendar events for a user
+      description: 'Retrieve the paginated list of calendar events or assignments for the specified user.
+
+        To view calendar events for a user other than yourself,
+
+        you must either be an observer of that user or an administrator.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - event
+          - assignment
+        required: false
+        description: Defaults to "event"
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return events since the start_date (inclusive).
+
+          Defaults to today. The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return events before the end_date (inclusive).
+
+          Defaults to start_date. The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.
+
+          If end_date is the same as start_date, then only events on that day are
+
+          returned.'
+      - name: undated
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false (dated events only).
+
+          If true, only return undated events and ignore start_date and end_date.'
+      - name: all_events
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false (uses start_date, end_date, and undated criteria).
+
+          If true, all events are returned, ignoring start_date, end_date, and undated criteria.'
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of context codes of courses, groups, users, or accounts whose events you want to see.
+
+          If not specified, defaults to the current user (i.e personal calendar,
+
+          no course/group events). Limited to 10 context codes, additional ones are
+
+          ignored. The format of this field is the context type, followed by an
+
+          underscore, followed by the context id. For example: course_42'
+      - name: excludes
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: Array of attributes to exclude. Possible values are "description", "child_events" and "assignment"
+      - name: submission_types
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: 'When type is "assignment", specifies the allowable submission types for returned assignments.
+
+          Ignored if type is not "assignment" or if exclude_submission_types is provided.'
+      - name: exclude_submission_types
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: 'When type is "assignment", specifies the submission types to be excluded from the returned
+
+          assignments. Ignored if type is not "assignment".'
+      - name: includes
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: Array of optional attributes to include. Possible values are "web_conference" and "series_natural_language"
+      - name: important_dates
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false
+
+          If true, only events with important dates set to true will be returned.'
+      - name: blackout_date
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Defaults to false
+
+          If true, only events with blackout date set to true will be returned.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalendarEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/calendar_events/{id}:
+    get:
+      tags:
+      - Calendar Events
+      operationId: get_single_calendar_event_or_assignment
+      summary: Get a single calendar event or assignment
+      description: Returns detailed information about a specific calendar event or assignment.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+    put:
+      tags:
+      - Calendar Events
+      operationId: update_calendar_event
+      summary: Update a calendar event
+      description: Update and return a calendar event
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                calendar_event[context_code]:
+                  type: string
+                  description: 'Context code of the course, group, user, or account to move this event to.
+
+                    Scheduler appointments and events with section-specific times cannot be moved between calendars.'
+                calendar_event[title]:
+                  type: string
+                  description: Short title for the calendar event.
+                calendar_event[description]:
+                  type: string
+                  description: Longer HTML description of the event.
+                calendar_event[start_at]:
+                  type: string
+                  format: date-time
+                  description: Start date/time of the event.
+                calendar_event[end_at]:
+                  type: string
+                  format: date-time
+                  description: End date/time of the event.
+                calendar_event[location_name]:
+                  type: string
+                  description: Location name of the event.
+                calendar_event[location_address]:
+                  type: string
+                  description: Location address
+                calendar_event[time_zone_edited]:
+                  type: string
+                  description: 'Time zone of the user editing the event. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                calendar_event[all_day]:
+                  type: boolean
+                  description: When true event is considered to span the whole day and times are ignored.
+                calendar_event[child_event_data][X][start_at]:
+                  type: string
+                  format: date-time
+                  description: 'Section-level start time(s) if this is a course event. X can be any
+
+                    identifier, provided that it is consistent across the start_at, end_at
+
+                    and context_code'
+                calendar_event[child_event_data][X][end_at]:
+                  type: string
+                  format: date-time
+                  description: Section-level end time(s) if this is a course event.
+                calendar_event[child_event_data][X][context_code]:
+                  type: string
+                  description: Context code(s) corresponding to the section-level start and end time(s).
+                calendar_event[rrule]:
+                  type: string
+                  description: 'Valid if the event whose ID is in the URL is part of a series.
+
+                    This defines the shape of the recurring event series after it''s updated.
+
+                    Its value is the iCalendar RRULE. Unending series are not supported.'
+                which:
+                  type: string
+                  enum:
+                  - one
+                  - all
+                  - following
+                  description: 'Valid if the event whose ID is in the URL is part of a series.
+
+                    Update just the event whose ID is in in the URL, all events
+
+                    in the series, or the given event and all those following.
+
+                    Some updates may create a new series. For example, changing the start time
+
+                    of this and all following events from the middle of a series.'
+                calendar_event[blackout_date]:
+                  type: boolean
+                  description: 'If the blackout_date is true, this event represents a holiday or some
+
+                    other special day that does not count in course pacing.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                calendar_event[context_code]:
+                  type: string
+                  description: 'Context code of the course, group, user, or account to move this event to.
+
+                    Scheduler appointments and events with section-specific times cannot be moved between calendars.'
+                calendar_event[title]:
+                  type: string
+                  description: Short title for the calendar event.
+                calendar_event[description]:
+                  type: string
+                  description: Longer HTML description of the event.
+                calendar_event[start_at]:
+                  type: string
+                  format: date-time
+                  description: Start date/time of the event.
+                calendar_event[end_at]:
+                  type: string
+                  format: date-time
+                  description: End date/time of the event.
+                calendar_event[location_name]:
+                  type: string
+                  description: Location name of the event.
+                calendar_event[location_address]:
+                  type: string
+                  description: Location address
+                calendar_event[time_zone_edited]:
+                  type: string
+                  description: 'Time zone of the user editing the event. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                calendar_event[all_day]:
+                  type: boolean
+                  description: When true event is considered to span the whole day and times are ignored.
+                calendar_event[child_event_data][X][start_at]:
+                  type: string
+                  format: date-time
+                  description: 'Section-level start time(s) if this is a course event. X can be any
+
+                    identifier, provided that it is consistent across the start_at, end_at
+
+                    and context_code'
+                calendar_event[child_event_data][X][end_at]:
+                  type: string
+                  format: date-time
+                  description: Section-level end time(s) if this is a course event.
+                calendar_event[child_event_data][X][context_code]:
+                  type: string
+                  description: Context code(s) corresponding to the section-level start and end time(s).
+                calendar_event[rrule]:
+                  type: string
+                  description: 'Valid if the event whose ID is in the URL is part of a series.
+
+                    This defines the shape of the recurring event series after it''s updated.
+
+                    Its value is the iCalendar RRULE. Unending series are not supported.'
+                which:
+                  type: string
+                  enum:
+                  - one
+                  - all
+                  - following
+                  description: 'Valid if the event whose ID is in the URL is part of a series.
+
+                    Update just the event whose ID is in in the URL, all events
+
+                    in the series, or the given event and all those following.
+
+                    Some updates may create a new series. For example, changing the start time
+
+                    of this and all following events from the middle of a series.'
+                calendar_event[blackout_date]:
+                  type: boolean
+                  description: 'If the blackout_date is true, this event represents a holiday or some
+
+                    other special day that does not count in course pacing.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+    delete:
+      tags:
+      - Calendar Events
+      operationId: delete_calendar_event
+      summary: Delete a calendar event
+      description: Delete an event from the calendar and return the deleted event
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: cancel_reason
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Reason for deleting/canceling the event.
+      - name: which
+        in: query
+        schema:
+          type: string
+          enum:
+          - one
+          - all
+          - following
+        required: false
+        description: 'Valid if the event whose ID is in the URL is part of a series.
+
+          Delete just the event whose ID is in in the URL, all events
+
+          in the series, or the given event and all those following.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/calendar_events/{id}/reservations:
+    post:
+      tags:
+      - Calendar Events
+      operationId: reserve_time_slot
+      summary: Reserve a time slot
+      description: Reserves a particular time slot and return the new reservation
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                participant_id:
+                  type: string
+                  description: 'User or group id for whom you are making the reservation (depends on the
+
+                    participant type). Defaults to the current user (or user''s candidate group).'
+                comments:
+                  type: string
+                  description: Comments to associate with this reservation
+                cancel_existing:
+                  type: boolean
+                  description: 'Defaults to false. If true, cancel any previous reservation(s) for this
+
+                    participant and appointment group.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                participant_id:
+                  type: string
+                  description: 'User or group id for whom you are making the reservation (depends on the
+
+                    participant type). Defaults to the current user (or user''s candidate group).'
+                comments:
+                  type: string
+                  description: Comments to associate with this reservation
+                cancel_existing:
+                  type: boolean
+                  description: 'Defaults to false. If true, cancel any previous reservation(s) for this
+
+                    participant and appointment group.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/calendar_events/{id}/reservations/{participant_id}:
+    post:
+      tags:
+      - Calendar Events
+      operationId: reserve_time_slot_participant_id
+      summary: Reserve a time slot
+      description: Reserves a particular time slot and return the new reservation
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: participant_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: 'User or group id for whom you are making the reservation (depends on the
+
+          participant type). Defaults to the current user (or user''s candidate group).'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comments:
+                  type: string
+                  description: Comments to associate with this reservation
+                cancel_existing:
+                  type: boolean
+                  description: 'Defaults to false. If true, cancel any previous reservation(s) for this
+
+                    participant and appointment group.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comments:
+                  type: string
+                  description: Comments to associate with this reservation
+                cancel_existing:
+                  type: boolean
+                  description: 'Defaults to false. If true, cancel any previous reservation(s) for this
+
+                    participant and appointment group.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/calendar_events/save_enabled_account_calendars:
+    post:
+      tags:
+      - Calendar Events
+      operationId: save_enabled_account_calendars
+      summary: Save enabled account calendars
+      description: Creates and updates the enabled_account_calendars and mark_feature_as_seen user preferences
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mark_feature_as_seen:
+                  type: boolean
+                  description: Flag to mark account calendars feature as seen
+                enabled_account_calendars:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: An array of account Ids to remember in the calendars list of the user
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                mark_feature_as_seen:
+                  type: boolean
+                  description: Flag to mark account calendars feature as seen
+                enabled_account_calendars:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: An array of account Ids to remember in the calendars list of the user
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/courses/{course_id}/calendar_events/timetable:
+    post:
+      tags:
+      - Calendar Events
+      operationId: set_course_timetable
+      summary: Set a course timetable
+      description: 'Creates and updates "timetable" events for a course.
+
+        Can automaticaly generate a series of calendar events based on simple schedules
+
+        (e.g. "Monday and Wednesday at 2:00pm" )
+
+
+        Existing timetable events for the course and course sections
+
+        will be updated if they still are part of the timetable.
+
+        Otherwise, they will be deleted.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timetables[course_section_id]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'An array of timetable objects for the course section specified by course_section_id.
+
+                    If course_section_id is set to "all", events will be created for the entire course.'
+                timetables[course_section_id][weekdays]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'A comma-separated list of abbreviated weekdays
+
+                    (Mon-Monday, Tue-Tuesday, Wed-Wednesday, Thu-Thursday, Fri-Friday, Sat-Saturday, Sun-Sunday)'
+                timetables[course_section_id][start_time]:
+                  type: array
+                  items:
+                    type: string
+                  description: Time to start each event at (e.g. "9:00 am")
+                timetables[course_section_id][end_time]:
+                  type: array
+                  items:
+                    type: string
+                  description: Time to end each event at (e.g. "9:00 am")
+                timetables[course_section_id][location_name]:
+                  type: array
+                  items:
+                    type: string
+                  description: A location name to set for each event
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                timetables[course_section_id]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'An array of timetable objects for the course section specified by course_section_id.
+
+                    If course_section_id is set to "all", events will be created for the entire course.'
+                timetables[course_section_id][weekdays]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'A comma-separated list of abbreviated weekdays
+
+                    (Mon-Monday, Tue-Tuesday, Wed-Wednesday, Thu-Thursday, Fri-Friday, Sat-Saturday, Sun-Sunday)'
+                timetables[course_section_id][start_time]:
+                  type: array
+                  items:
+                    type: string
+                  description: Time to start each event at (e.g. "9:00 am")
+                timetables[course_section_id][end_time]:
+                  type: array
+                  items:
+                    type: string
+                  description: Time to end each event at (e.g. "9:00 am")
+                timetables[course_section_id][location_name]:
+                  type: array
+                  items:
+                    type: string
+                  description: A location name to set for each event
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+    get:
+      tags:
+      - Calendar Events
+      operationId: get_course_timetable
+      summary: Get course timetable
+      description: 'Returns the last timetable set by the
+
+        {api:CalendarEventsApiController#set_course_timetable Set a course timetable} endpoint'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+  /v1/courses/{course_id}/calendar_events/timetable_events:
+    post:
+      tags:
+      - Calendar Events
+      operationId: create_or_update_events_directly_for_course_timetable
+      summary: Create or update events directly for a course timetable
+      description: 'Creates and updates "timetable" events for a course or course section.
+
+        Similar to {api:CalendarEventsApiController#set_course_timetable setting a course timetable},
+
+        but instead of generating a list of events based on a timetable schedule,
+
+        this endpoint expects a complete list of events.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_section_id:
+                  type: string
+                  description: 'Events will be created for the course section specified by course_section_id.
+
+                    If not present, events will be created for the entire course.'
+                events:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: An array of event objects to use.
+                events[start_at]:
+                  type: array
+                  items:
+                    type: string
+                    format: date-time
+                  description: Start time for the event
+                events[end_at]:
+                  type: array
+                  items:
+                    type: string
+                    format: date-time
+                  description: End time for the event
+                events[location_name]:
+                  type: array
+                  items:
+                    type: string
+                  description: Location name for the event
+                events[code]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'A unique identifier that can be used to update the event at a later time
+
+                    If one is not specified, an identifier will be generated based on the start and end times'
+                events[title]:
+                  type: array
+                  items:
+                    type: string
+                  description: Title for the meeting. If not present, will default to the associated course's name
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                course_section_id:
+                  type: string
+                  description: 'Events will be created for the course section specified by course_section_id.
+
+                    If not present, events will be created for the entire course.'
+                events:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: An array of event objects to use.
+                events[start_at]:
+                  type: array
+                  items:
+                    type: string
+                    format: date-time
+                  description: Start time for the event
+                events[end_at]:
+                  type: array
+                  items:
+                    type: string
+                    format: date-time
+                  description: End time for the event
+                events[location_name]:
+                  type: array
+                  items:
+                    type: string
+                  description: Location name for the event
+                events[code]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'A unique identifier that can be used to update the event at a later time
+
+                    If one is not specified, an identifier will be generated based on the start and end times'
+                events[title]:
+                  type: array
+                  items:
+                    type: string
+                  description: Title for the meeting. If not present, will default to the associated course's name
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/calendar_events.html
+components:
+  schemas:
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 234
+          description: The ID of the calendar event
+        title:
+          type: string
+          example: Paintball Fight!
+          description: The title of the calendar event
+        start_at:
+          type: string
+          format: date-time
+          example: '2012-07-19T15:00:00-06:00'
+          description: The start timestamp of the event
+        end_at:
+          type: string
+          format: date-time
+          example: '2012-07-19T16:00:00-06:00'
+          description: The end timestamp of the event
+        description:
+          type: string
+          example: <b>It's that time again!</b>
+          description: The HTML description of the event
+        location_name:
+          type: string
+          example: Greendale Community College
+          description: The location name of the event
+        location_address:
+          type: string
+          example: Greendale, Colorado
+          description: The address where the event is taking place
+        context_code:
+          type: string
+          example: course_123
+          description: the context code of the calendar this event belongs to (course, group, user, or account)
+        effective_context_code:
+          type: string
+          description: if specified, it indicates which calendar this event should be displayed on. for example, a section-level event would have the course's context code here, while the section's context code would be returned above)
+        context_name:
+          type: string
+          example: Chemistry 101
+          description: the context name of the calendar this event belongs to (course, user or group)
+        all_context_codes:
+          type: string
+          example: course_123,course_456
+          description: a comma-separated list of all calendar contexts this event is part of
+        workflow_state:
+          type: string
+          example: active
+          description: Current state of the event ('active', 'locked' or 'deleted') 'locked' indicates that start_at/end_at cannot be changed (though the event could be deleted). Normally only reservations or time slots with reservations are locked (see the Appointment Groups API)
+        hidden:
+          type: boolean
+          example: false
+          description: Whether this event should be displayed on the calendar. Only true for course-level events with section-level child events.
+        parent_event_id:
+          type: integer
+          description: Normally null. If this is a reservation (see the Appointment Groups API), the id will indicate the time slot it is for. If this is a section-level event, this will be the course-level parent event.
+        child_events_count:
+          type: integer
+          example: 0
+          description: The number of child_events. See child_events (and parent_event_id)
+        child_events:
+          type: array
+          items:
+            type: integer
+          description: Included by default, but may be excluded (see include[] option). If this is a time slot (see the Appointment Groups API) this will be a list of any reservations. If this is a course-level event, this will be a list of section-level events (if any)
+        url:
+          type: string
+          example: https://example.com/api/v1/calendar_events/234
+          description: URL for this calendar event (to update, delete, etc.)
+        html_url:
+          type: string
+          example: https://example.com/calendar?event_id=234&include_contexts=course_123
+          description: URL for a user to view this event
+        all_day_date:
+          type: string
+          format: date-time
+          example: '2012-07-19'
+          description: The date of this event
+        all_day:
+          type: boolean
+          example: false
+          description: Boolean indicating whether this is an all-day event (midnight to midnight)
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-07-12T10:55:20-06:00'
+          description: When the calendar event was created
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-07-12T10:55:20-06:00'
+          description: When the calendar event was last updated
+        appointment_group_id:
+          type: integer
+          description: Various Appointment-Group-related fields.These fields are only pertinent to time slots (appointments) and reservations of those time slots. See the Appointment Groups API. The id of the appointment group
+        appointment_group_url:
+          type: string
+          description: The API URL of the appointment group
+        own_reservation:
+          type: boolean
+          example: false
+          description: If the event is a reservation, this a boolean indicating whether it is the current user's reservation, or someone else's
+        reserve_url:
+          type: string
+          description: If the event is a time slot, the API URL for reserving it
+        reserved:
+          type: boolean
+          example: false
+          description: If the event is a time slot, a boolean indicating whether the user has already made a reservation for it
+        participant_type:
+          type: string
+          example: User
+          description: 'The type of participant to sign up for a slot: ''User'' or ''Group'''
+        participants_per_appointment:
+          type: integer
+          description: If the event is a time slot, this is the participant limit
+        available_slots:
+          type: integer
+          description: If the event is a time slot and it has a participant limit, an integer indicating how many slots are available
+        user:
+          type: string
+          description: If the event is a user-level reservation, this will contain the user participant JSON (refer to the Users API).
+        group:
+          type: string
+          description: If the event is a group-level reservation, this will contain the group participant JSON (refer to the Groups API).
+        important_dates:
+          type: boolean
+          example: true
+          description: Boolean indicating whether this has important dates.
+        series_uuid:
+          type: string
+          x-canvas-declared-type: uuid
+          description: Identifies the recurring event series this event may belong to.
+        rrule:
+          type: string
+          description: An iCalendar RRULE for defining how events in a recurring event series repeat.
+        series_head:
+          type: boolean
+          description: Boolean indicating if is the first event in the series of recurring events.
+        series_natural_language:
+          type: string
+          example: Daily 5 times
+          description: A natural language expression of how events occur in the series.
+        blackout_date:
+          type: boolean
+          example: true
+          description: Boolean indicating whether this has blackout date.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

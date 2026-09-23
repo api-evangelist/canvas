@@ -1,0 +1,2218 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Lti Registrations API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Lti Registrations
+  x-resource: lti_registrations
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/lti_registrations.html
+paths:
+  /v1/accounts/{account_id}/lti_registrations:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: list_lti_registrations_in_account_lti_registrations
+      summary: List LTI Registrations in an account
+      description: 'Returns all LTI registrations in the specified account.
+
+        Includes registrations created in this account, those set to ''allow'' from a
+
+        parent root account (like Site Admin) and ''on'' for this account,
+
+        and those enabled ''on'' at the parent root account level.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The number of registrations to return per page. Defaults to 15.
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The page number to return. Defaults to 1.
+      - name: sort
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The field to sort by. Choices are: name, nickname, lti_version, installed,
+
+          installed_by, updated_by, updated, and on. Defaults to installed.'
+      - name: dir
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: The order to sort the given column by. Defaults to desc.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of additional data to include. Always includes [account_binding].
+
+
+          "account_binding":: the registration''s binding to the given account
+
+          "configuration":: the registration''s Canvas-style tool configuration, without any overlays applied.
+
+          "overlaid_configuration":: the registration''s Canvas-style tool configuration, with all overlays applied.
+
+          "overlay":: the registration''s admin-defined configuration overlay'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListLtiRegistrationsResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    post:
+      tags:
+      - Lti Registrations
+      operationId: create_lti_registration_lti_registrations
+      summary: Create an LTI Registration
+      description: 'Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account
+
+        binding.
+
+        To install/create using Dynamic Registration, please use the
+
+        {file:file.registration.html Dynamic Registration API}.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool. If one isn't provided, it will be inferred from the configuration's title.
+                admin_nickname:
+                  type: string
+                  description: A friendly nickname set by admins to override the tool name
+                vendor:
+                  type: string
+                  description: The vendor of the tool
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Required, Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool, used for analytics. If not provided, one will be generated.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary).
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations. Defaults to "off".'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool. If one isn't provided, it will be inferred from the configuration's title.
+                admin_nickname:
+                  type: string
+                  description: A friendly nickname set by admins to override the tool name
+                vendor:
+                  type: string
+                  description: The vendor of the tool
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Required, Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool, used for analytics. If not provided, one will be generated.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary).
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations. Defaults to "off".'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: list_lti_registrations_in_account_apps
+      summary: List LTI Registrations in an account
+      description: 'Returns all LTI registrations in the specified account.
+
+        Includes registrations created in this account, those set to ''allow'' from a
+
+        parent root account (like Site Admin) and ''on'' for this account,
+
+        and those enabled ''on'' at the parent root account level.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The number of registrations to return per page. Defaults to 15.
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The page number to return. Defaults to 1.
+      - name: sort
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The field to sort by. Choices are: name, nickname, lti_version, installed,
+
+          installed_by, updated_by, updated, and on. Defaults to installed.'
+      - name: dir
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: The order to sort the given column by. Defaults to desc.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of additional data to include. Always includes [account_binding].
+
+
+          "account_binding":: the registration''s binding to the given account
+
+          "configuration":: the registration''s Canvas-style tool configuration, without any overlays applied.
+
+          "overlaid_configuration":: the registration''s Canvas-style tool configuration, with all overlays applied.
+
+          "overlay":: the registration''s admin-defined configuration overlay'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListLtiRegistrationsResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    post:
+      tags:
+      - Lti Registrations
+      operationId: create_lti_registration_apps
+      summary: Create an LTI Registration
+      description: 'Create a new LTI Registration, as well as an associated Tool Configuration, Developer Key, and Registration Account
+
+        binding.
+
+        To install/create using Dynamic Registration, please use the
+
+        {file:file.registration.html Dynamic Registration API}.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool. If one isn't provided, it will be inferred from the configuration's title.
+                admin_nickname:
+                  type: string
+                  description: A friendly nickname set by admins to override the tool name
+                vendor:
+                  type: string
+                  description: The vendor of the tool
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Required, Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool, used for analytics. If not provided, one will be generated.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary).
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations. Defaults to "off".'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool. If one isn't provided, it will be inferred from the configuration's title.
+                admin_nickname:
+                  type: string
+                  description: A friendly nickname set by admins to override the tool name
+                vendor:
+                  type: string
+                  description: The vendor of the tool
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Required, Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration.'
+                unified_tool_id:
+                  type: string
+                  description: The unique identifier for the tool, used for analytics. If not provided, one will be generated.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary).
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations. Defaults to "off".'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: show_lti_registration_lti_registrations
+      summary: Show an LTI Registration
+      description: 'Return details about the specified LTI registration, including the
+
+        configuration and account binding.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of additional data to include. Always includes [account_binding configuration].
+
+
+          "account_binding":: the registration''s binding to the given account
+
+          "configuration":: the registration''s Canvas-style tool configuration, without any overlays applied.
+
+          "overlaid_configuration":: the registration''s Canvas-style tool configuration, with all overlays applied.
+
+          "overlaid_legacy_configuration":: the registration''s legacy-style configuration, with all overlays applied.
+
+          "overlay":: the registration''s admin-defined configuration overlay
+
+          "overlay_versions":: the registration''s overlay''s edit history'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    put:
+      tags:
+      - Lti Registrations
+      operationId: update_lti_registration_lti_registrations
+      summary: Update an LTI Registration
+      description: 'Update the specified LTI registration with the provided parameters. Note that updating the base tool configuration
+
+        of a registration that is associated with a Dynamic Registration will return a 422. All other fields can be updated
+
+        freely.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool
+                admin_nickname:
+                  type: string
+                  description: The admin-configured friendly display name for the registration
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool. Note that updating the base tool configuration of a registration associated with a Dynamic Registration is not allowed.'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration. Note that updating the overlay of a registration associated with a Dynamic Registration IS allowed.'
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary) and will be deprecated soon.
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations.'
+                comment:
+                  type: string
+                  description: A comment explaining why this change was made. Cannot exceed 2000 characters.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool
+                admin_nickname:
+                  type: string
+                  description: The admin-configured friendly display name for the registration
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool. Note that updating the base tool configuration of a registration associated with a Dynamic Registration is not allowed.'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration. Note that updating the overlay of a registration associated with a Dynamic Registration IS allowed.'
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary) and will be deprecated soon.
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations.'
+                comment:
+                  type: string
+                  description: A comment explaining why this change was made. Cannot exceed 2000 characters.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    delete:
+      tags:
+      - Lti Registrations
+      operationId: delete_lti_registration_lti_registrations
+      summary: Delete an LTI Registration
+      description: Remove the specified LTI registration
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: show_lti_registration_apps
+      summary: Show an LTI Registration
+      description: 'Return details about the specified LTI registration, including the
+
+        configuration and account binding.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of additional data to include. Always includes [account_binding configuration].
+
+
+          "account_binding":: the registration''s binding to the given account
+
+          "configuration":: the registration''s Canvas-style tool configuration, without any overlays applied.
+
+          "overlaid_configuration":: the registration''s Canvas-style tool configuration, with all overlays applied.
+
+          "overlaid_legacy_configuration":: the registration''s legacy-style configuration, with all overlays applied.
+
+          "overlay":: the registration''s admin-defined configuration overlay
+
+          "overlay_versions":: the registration''s overlay''s edit history'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    put:
+      tags:
+      - Lti Registrations
+      operationId: update_lti_registration_apps
+      summary: Update an LTI Registration
+      description: 'Update the specified LTI registration with the provided parameters. Note that updating the base tool configuration
+
+        of a registration that is associated with a Dynamic Registration will return a 422. All other fields can be updated
+
+        freely.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool
+                admin_nickname:
+                  type: string
+                  description: The admin-configured friendly display name for the registration
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool. Note that updating the base tool configuration of a registration associated with a Dynamic Registration is not allowed.'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration. Note that updating the overlay of a registration associated with a Dynamic Registration IS allowed.'
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary) and will be deprecated soon.
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations.'
+                comment:
+                  type: string
+                  description: A comment explaining why this change was made. Cannot exceed 2000 characters.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the tool
+                admin_nickname:
+                  type: string
+                  description: The admin-configured friendly display name for the registration
+                description:
+                  type: string
+                  description: A description of the tool. Cannot exceed 2048 bytes.
+                configuration:
+                  type: string
+                  description: '[Lti::ToolConfiguration | Lti::LegacyConfiguration] The LTI 1.3 configuration for the tool. Note that updating the base tool configuration of a registration associated with a Dynamic Registration is not allowed.'
+                overlay:
+                  type: string
+                  description: '[Lti::Overlay] The overlay configuration for the tool. Overrides values in the base configuration. Note that updating the overlay of a registration associated with a Dynamic Registration IS allowed.'
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  - allow
+                  - active
+                  - inactive
+                  description: '"on"/"off"/"allow" set the account binding state directly (binding vocabulary) and will be deprecated soon.
+
+                    "active"/"inactive" set the registration state directly (registration vocabulary).
+
+                    All five values update both the binding and the registration to equivalent states.
+
+                    "allow" is only valid for Site Admin registrations.'
+                comment:
+                  type: string
+                  description: A comment explaining why this change was made. Cannot exceed 2000 characters.
+                lock_deploying:
+                  type: boolean
+                  description: When true, no new deployments of this registration can be created.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    delete:
+      tags:
+      - Lti Registrations
+      operationId: delete_lti_registration_apps
+      summary: Delete an LTI Registration
+      description: Remove the specified LTI registration
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registration_by_client_id/{client_id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: show_lti_registration_via_client_id_lti_registration_by_client_id
+      summary: Show an LTI Registration (via the client_id)
+      description: 'Returns details about the specified LTI registration, including the
+
+        configuration and account binding.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: client_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/app_by_client_id/{client_id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: show_lti_registration_via_client_id_app_by_client_id
+      summary: Show an LTI Registration (via the client_id)
+      description: 'Returns details about the specified LTI registration, including the
+
+        configuration and account binding.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: client_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/by_utid/{utid}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_by_unified_tool_id_lti_registrations
+      summary: Get LTI Registration by Unified Tool ID
+      description: 'Returns an LTI registration by looking up its unified_tool_id.
+
+        Searches both manual configurations and IMS registrations.
+
+        Only returns registrations that are active and accessible from the
+
+        current account (owned by account, Site Admin, or has binding).'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: utid
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/by_utid/{utid}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_by_unified_tool_id_apps
+      summary: Get LTI Registration by Unified Tool ID
+      description: 'Returns an LTI registration by looking up its unified_tool_id.
+
+        Searches both manual configurations and IMS registrations.
+
+        Only returns registrations that are active and accessible from the
+
+        current account (owned by account, Site Admin, or has binding).'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: utid
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/install_status/{client_id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: check_lti_registration_install_status_lti_registrations
+      summary: Check LTI Registration Install Status
+      description: 'Returns the local installation status for a Site Admin LTI registration.
+
+        If the developer key''s registration is in Site Admin, returns the local copy
+
+        in the current account (if installed). If the registration is already in the
+
+        current account, returns it directly.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: client_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/install_status/{client_id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: check_lti_registration_install_status_apps
+      summary: Check LTI Registration Install Status
+      description: 'Returns the local installation status for a Site Admin LTI registration.
+
+        If the developer key''s registration is in Site Admin, returns the local copy
+
+        in the current account (if installed). If the registration is already in the
+
+        current account, returns it directly.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: client_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/reset:
+    put:
+      tags:
+      - Lti Registrations
+      operationId: reset_lti_registration_to_defaults_lti_registrations
+      summary: Reset an LTI Registration to Defaults
+      description: 'Reset the specified LTI registration to its default settings in this context. This removes all customizations
+
+        that were present in the overlay associated with this context.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/reset:
+    put:
+      tags:
+      - Lti Registrations
+      operationId: reset_lti_registration_to_defaults_apps
+      summary: Reset an LTI Registration to Defaults
+      description: 'Reset the specified LTI registration to its default settings in this context. This removes all customizations
+
+        that were present in the overlay associated with this context.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/bind:
+    post:
+      tags:
+      - Lti Registrations
+      operationId: bind_lti_registration_to_root_account_lti_registrations
+      summary: Bind an LTI Registration to a Root Account
+      description: 'Enable or disable the specified LTI registration for the specified root account.
+
+        To enable an inherited registration (eg from Site Admin), pass the registration''s global ID.
+
+
+        Only allowed for root accounts.
+
+
+        Specifics for centrally-managed/federated consortia:
+
+        Child root accounts may not bind inherited registrations.
+
+        For parent root account, binding also applies to all child root accounts.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  description: The desired state for this registration/account binding.
+              required:
+              - workflow_state
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  description: The desired state for this registration/account binding.
+              required:
+              - workflow_state
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__RegistrationAccountBinding'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    delete:
+      tags:
+      - Lti Registrations
+      operationId: remove_inherited_lti_registration_lti_registrations
+      summary: Remove an Inherited LTI Registration
+      description: 'Deletes the account binding for this registration, effectively removing it from the account.
+
+
+        Only available when the lti_deactivate_registrations feature flag is enabled.
+
+        Only valid for inherited (Site Admin) registrations — use destroy for registrations owned by this account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__RegistrationAccountBinding'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/bind:
+    post:
+      tags:
+      - Lti Registrations
+      operationId: bind_lti_registration_to_root_account_apps
+      summary: Bind an LTI Registration to a Root Account
+      description: 'Enable or disable the specified LTI registration for the specified root account.
+
+        To enable an inherited registration (eg from Site Admin), pass the registration''s global ID.
+
+
+        Only allowed for root accounts.
+
+
+        Specifics for centrally-managed/federated consortia:
+
+        Child root accounts may not bind inherited registrations.
+
+        For parent root account, binding also applies to all child root accounts.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  description: The desired state for this registration/account binding.
+              required:
+              - workflow_state
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - 'on'
+                  - 'off'
+                  description: The desired state for this registration/account binding.
+              required:
+              - workflow_state
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__RegistrationAccountBinding'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+    delete:
+      tags:
+      - Lti Registrations
+      operationId: remove_inherited_lti_registration_apps
+      summary: Remove an Inherited LTI Registration
+      description: 'Deletes the account binding for this registration, effectively removing it from the account.
+
+
+        Only available when the lti_deactivate_registrations feature flag is enabled.
+
+        Only valid for inherited (Site Admin) registrations — use destroy for registrations owned by this account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__RegistrationAccountBinding'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/install_from_template:
+    post:
+      tags:
+      - Lti Registrations
+      operationId: install_lti_registration_from_template_lti_registrations
+      summary: Install an LTI Registration from a Template
+      description: 'This endpoint installs a local copy of a "template" LTI registration from Site Admin into the specified account.
+
+        The local copy can then be customized for the account without affecting the template registration.
+
+
+        Only allowed for root accounts and for registrations from Site Admin marked as templates.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/install_from_template:
+    post:
+      tags:
+      - Lti Registrations
+      operationId: install_lti_registration_from_template_apps
+      summary: Install an LTI Registration from a Template
+      description: 'This endpoint installs a local copy of a "template" LTI registration from Site Admin into the specified account.
+
+        The local copy can then be customized for the account without affecting the template registration.
+
+
+        Only allowed for root accounts and for registrations from Site Admin marked as templates.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{registration_id}/deployments/{deployment_id}/context_search:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: search_for_accounts_and_courses_lti_registrations
+      summary: Search for Accounts and Courses
+      description: 'This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.
+
+
+        Search for accounts and courses that match the search term on name, SIS id, or course code.
+
+        Returns all matching accounts and courses, including those nested in sub-accounts.
+
+        Returns bare-bones data about each account and course, and only up to 20 of each.
+
+        Used to populate the search dropdowns when managing LTI registration availability.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: deployment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: only_children_of
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Account ID. If provided, only searches within this account and only returns direct children of this account.
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: String to search for in account names, SIS ids, or course codes.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextSearchResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{registration_id}/deployments/{deployment_id}/context_search:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: search_for_accounts_and_courses_apps
+      summary: Search for Accounts and Courses
+      description: 'This is a utility endpoint used by the Canvas Apps UI and may not serve general use cases.
+
+
+        Search for accounts and courses that match the search term on name, SIS id, or course code.
+
+        Returns all matching accounts and courses, including those nested in sub-accounts.
+
+        Returns bare-bones data about each account and course, and only up to 20 of each.
+
+        Used to populate the search dropdowns when managing LTI registration availability.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: deployment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: only_children_of
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Account ID. If provided, only searches within this account and only returns direct children of this account.
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: String to search for in account names, SIS ids, or course codes.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContextSearchResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/overlay_history:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_overlay_history_lti_registrations
+      summary: Get LTI Registration Overlay History
+      description: Returns the overlay history items for the specified LTI registration.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The maximum number of history items to return. Defaults to 10. Maximum allowed is 100.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lti__OverlayVersion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/overlay_history:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_overlay_history_apps
+      summary: Get LTI Registration Overlay History
+      description: Returns the overlay history items for the specified LTI registration.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The maximum number of history items to return. Defaults to 10. Maximum allowed is 100.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lti__OverlayVersion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/history:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_history_lti_registrations
+      summary: Get LTI Registration History
+      description: 'Returns the history entries for the specified LTI registration.
+
+        This endpoint provides comprehensive change tracking for all fields associated
+
+        with the registration, including registration fields, developer key changes,
+
+        internal configuration changes, and overlay changes. Supports pagination using the `page` and `per_page` parameters.
+
+        The default page size is 10.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Lti::RegistrationHistoryEntry
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/history:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_history_apps
+      summary: Get LTI Registration History
+      description: 'Returns the history entries for the specified LTI registration.
+
+        This endpoint provides comprehensive change tracking for all fields associated
+
+        with the registration, including registration fields, developer key changes,
+
+        internal configuration changes, and overlay changes. Supports pagination using the `page` and `per_page` parameters.
+
+        The default page size is 10.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Lti::RegistrationHistoryEntry
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/update_requests/{update_request_id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_update_request_lti_registrations
+      summary: Get LTI Registration Update Request
+      description: Retrieves details about a specific registration update request.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration.
+      - name: update_request_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration update request to retrieve.
+      - name: include
+        in: query
+        schema:
+          type: string
+          enum:
+          - String] Array of additional information to include [configuration
+          - lti_registration
+        required: false
+        description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Lti::RegistrationUpdateRequest
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/update_requests/{update_request_id}:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_lti_registration_update_request_apps
+      summary: Get LTI Registration Update Request
+      description: Retrieves details about a specific registration update request.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration.
+      - name: update_request_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration update request to retrieve.
+      - name: include
+        in: query
+        schema:
+          type: string
+          enum:
+          - String] Array of additional information to include [configuration
+          - lti_registration
+        required: false
+        description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Lti::RegistrationUpdateRequest
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/latest_update_request:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_latest_lti_registration_update_request_lti_registrations
+      summary: Get Latest LTI Registration Update Request
+      description: 'Retrieves the most recent update request for a registration, regardless of its status.
+
+        Returns 404 if there are no update requests for this registration.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Lti::RegistrationUpdateRequest
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/latest_update_request:
+    get:
+      tags:
+      - Lti Registrations
+      operationId: get_latest_lti_registration_update_request_apps
+      summary: Get Latest LTI Registration Update Request
+      description: 'Retrieves the most recent update request for a registration, regardless of its status.
+
+        Returns 404 if there are no update requests for this registration.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Lti::RegistrationUpdateRequest
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/lti_registrations/{id}/update_requests/{update_request_id}/apply:
+    put:
+      tags:
+      - Lti Registrations
+      operationId: apply_lti_registration_update_requst_lti_registrations
+      summary: Apply LTI Registration Update Requst
+      description: 'Applies a registration update request to an existing registration,
+
+        replacing the existing configuration and overlay with the new values.
+
+        If the request is rejected, marks it as rejected without applying changes.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration to update.
+      - name: update_request_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration update request to apply.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+                  description: Whether to accept (true) or reject (false) the registration update request.
+                overlay:
+                  type: string
+                  x-canvas-declared-type: LtiConfigurationOverlay
+                  description: Optional overlay data to apply on top of the new configuration.
+                comment:
+                  type: string
+                  description: Optional comment explaining the reason for applying this update.
+              required:
+              - accepted
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+                  description: Whether to accept (true) or reject (false) the registration update request.
+                overlay:
+                  type: string
+                  x-canvas-declared-type: LtiConfigurationOverlay
+                  description: Optional overlay data to apply on top of the new configuration.
+                comment:
+                  type: string
+                  description: Optional comment explaining the reason for applying this update.
+              required:
+              - accepted
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+  /v1/accounts/{account_id}/apps/{id}/update_requests/{update_request_id}/apply:
+    put:
+      tags:
+      - Lti Registrations
+      operationId: apply_lti_registration_update_requst_apps
+      summary: Apply LTI Registration Update Requst
+      description: 'Applies a registration update request to an existing registration,
+
+        replacing the existing configuration and overlay with the new values.
+
+        If the request is rejected, marks it as rejected without applying changes.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration to update.
+      - name: update_request_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the registration update request to apply.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+                  description: Whether to accept (true) or reject (false) the registration update request.
+                overlay:
+                  type: string
+                  x-canvas-declared-type: LtiConfigurationOverlay
+                  description: Optional overlay data to apply on top of the new configuration.
+                comment:
+                  type: string
+                  description: Optional comment explaining the reason for applying this update.
+              required:
+              - accepted
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                accepted:
+                  type: boolean
+                  description: Whether to accept (true) or reject (false) the registration update request.
+                overlay:
+                  type: string
+                  x-canvas-declared-type: LtiConfigurationOverlay
+                  description: Optional overlay data to apply on top of the new configuration.
+                comment:
+                  type: string
+                  description: Optional comment explaining the reason for applying this update.
+              required:
+              - accepted
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__Registration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_registrations.html
+components:
+  schemas:
+    ContextSearchResponse:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchableAccount'
+          example:
+          - $ref: Account
+          description: Accounts that match the search query. Limited to 100.
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchableCourse'
+          example:
+          - $ref: Course
+          description: Courses that match the search query. Limited to 100.
+      description: The response for the Search Accounts and Courses API endpoint
+    SearchableCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+          description: The Canvas DB ID
+        name:
+          type: string
+          example: A Course
+          description: The course name
+        sis_id:
+          type: string
+          example: sis-course-1
+          description: The SIS ID of the course, if any. Only present if user can read or manage SIS.
+        display_path:
+          type: array
+          items:
+            type: string
+          example:
+          - Sub Account
+          description: Names of the accounts in this course's account hierarchy, excluding the root.
+        course_code:
+          type: string
+          example: COURSE-101
+          description: The course code
+      description: A minimal representation of a Course for Canvas Apps search purposes
+    Lti__RegistrationAccountBinding:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+          description: the Canvas ID of the Lti::RegistrationAccountBinding object
+        account_id:
+          type: integer
+          example: 1
+          description: The Canvas id of the account
+        root_account_id:
+          type: integer
+          example: 1
+          description: The Canvas id of the root account
+        registration_id:
+          type: integer
+          example: 2
+          description: The Canvas id of the Lti::Registration
+        workflow_state:
+          type: string
+          example: 'on'
+          description: The state of the binding (on, off, allow, deleted)
+          enum:
+          - 'on'
+          - 'off'
+          - allow
+          - deleted
+        created_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the binding's creation
+        updated_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the binding's last update
+        created_by:
+          type: string
+          example:
+            type: User
+          description: The user that created this binding
+        updated_by:
+          type: string
+          example:
+            type: User
+          description: The user that last updated this binding
+      description: A binding between an LTI registration and an account, defining the registration's availability in that account
+    SearchableAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+          description: The Canvas DB ID
+        name:
+          type: string
+          example: An Account
+          description: The account name
+        sis_id:
+          type: string
+          example: sis-account-1
+          description: The SIS ID of the account, if any. Only present if user can read or manage SIS.
+        display_path:
+          type: array
+          items:
+            type: string
+          example:
+          - Sub Account
+          description: Names of the accounts in this account's hierarchy, excluding the root and this account.
+      description: A minimal representation of an Account for Canvas Apps search purposes
+    Lti__Registration:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+          description: the Canvas ID of the Lti::Registration object
+        name:
+          type: string
+          example: My LTI Tool
+          description: Tool-provided registration name
+        admin_nickname:
+          type: string
+          example: My LTI Tool (Campus A)
+          description: Admin-configured friendly display name
+        icon_url:
+          type: string
+          example: https://mytool.com/icon.png
+          description: Tool-provided URL to the tool's icon
+        vendor:
+          type: string
+          example: My Tool LLC
+          description: Tool-provided name of the tool vendor
+        account_id:
+          type: integer
+          example: 1
+          description: The Canvas id of the account that owns this registration
+        internal_service:
+          type: boolean
+          example: false
+          description: Flag indicating if registration is internally-owned
+        lock_deploying:
+          type: boolean
+          example: false
+          description: Flag indicating if registration is locked for deployment
+        inherited:
+          type: boolean
+          example: false
+          description: Flag indicating if registration is owned by this account, or inherited from Site Admin
+        template_registration_id:
+          type: integer
+          example: 1
+          description: The Canvas ID of the template registration, if this registration is inherited from a template
+        lti_version:
+          type: string
+          example: '1.3'
+          description: LTI version of the registration, either 1.1 or 1.3
+        dynamic_registration:
+          type: boolean
+          example: false
+          description: Flag indicating if registration was created using LTI Dynamic Registration. Only present if lti_version is 1.3
+        workflow_state:
+          type: string
+          example: active
+          description: The state of the registration
+          enum:
+          - active
+          - deleted
+        created_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the registration's creation
+        updated_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the registration's last update
+        created_by:
+          type: string
+          x-canvas-declared-type: string|User
+          example:
+            type: User
+          description: The user that created this registration. Not always present. If a string, this registration was created by Instructure.
+        updated_by:
+          type: string
+          x-canvas-declared-type: string|User
+          example:
+            type: User
+          description: The user that last updated this registration. Not always present. If a string, this registration was last updated by Instructure.
+        root_account_id:
+          type: integer
+          example: 1
+          description: The Canvas id of the root account
+        account_binding:
+          type: string
+          example:
+            type: Lti::RegistrationAccountBinding
+          description: The binding for this registration and this account
+        configuration:
+          type: string
+          example:
+            type: Lti::ToolConfiguration
+          description: The Canvas-style tool configuration for this registration
+      description: A registration of an LTI tool in Canvas
+    ListLtiRegistrationsResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 1
+          description: The total number of LTI registrations across all pages
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lti__Registration'
+          example:
+          - $ref: Lti::Registration
+          description: The paginated list of LTI::Registrations
+      description: The response for the List LTI Registrations API endpoint
+    Lti__OverlayVersion:
+      type: object
+      properties:
+        root_account_id:
+          type: integer
+          example: 1
+          description: The Canvas id of the root account
+        created_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the version's creation
+        updated_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the version's last update
+        caused_by_reset:
+          type: boolean
+          example: false
+          description: Whether or not this change was caused by a reset of the tool's configuration
+        created_by:
+          type: string
+          x-canvas-declared-type: string|User
+          example:
+            type: User
+          description: The user that created this version. If a string, this registration was created by Instructure.
+        diff:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+          example:
+          - - +
+            - disabled_placements[0]
+            - top_navigation
+          description: A list of changes made in this version compared to the previous version
+        lti_overlay_id:
+          type: integer
+          example: 1
+          description: The id of the overlay this version is for
+        account_id:
+          type: integer
+          example: 1
+          description: The id of the account this version is for
+      description: A single version of a tool's configuration overlay
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

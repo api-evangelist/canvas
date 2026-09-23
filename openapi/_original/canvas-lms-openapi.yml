@@ -1,3 +1,5 @@
+# x-archived-from: canvas-lms-openapi.yml
+# x-archived-on: 2026-09-16
 openapi: 3.1.0
 info:
   title: Canvas LMS REST API

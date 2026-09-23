@@ -1,0 +1,136 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Developer Key Account Bindings API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Developer Key Account Bindings
+  x-resource: developer_key_account_bindings
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/developer_key_account_bindings.html
+paths:
+  /v1/accounts/{account_id}/developer_keys/{developer_key_id}/developer_key_account_bindings:
+    post:
+      tags:
+      - Developer Key Account Bindings
+      operationId: create_developer_key_account_binding
+      summary: Create a Developer Key Account Binding
+      description: 'Create a new Developer Key Account Binding. The developer key specified
+
+        in the request URL must be available in the requested account or the
+
+        requested account''s account chain. If the binding already exists for the
+
+        specified account/key combination it will be updated.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: developer_key_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  description: 'The workflow state for the binding. Must be one of "on", "off", or "allow".
+
+                    Defaults to "off".'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  description: 'The workflow state for the binding. Must be one of "on", "off", or "allow".
+
+                    Defaults to "off".'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeveloperKeyAccountBinding'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/developer_key_account_bindings.html
+components:
+  schemas:
+    DeveloperKeyAccountBinding:
+      type: object
+      properties:
+        id:
+          type: number
+          example: '1'
+          description: The Canvas ID of the binding
+        account_id:
+          type: number
+          example: '10000000000001'
+          description: The global Canvas ID of the account in the binding
+        developer_key_id:
+          type: number
+          example: '10000000000008'
+          description: The global Canvas ID of the developer key in the binding
+        workflow_state:
+          type: number
+          example: 'on'
+          description: The workflow state of the binding. Will be one of 'on', 'off', or 'allow.'
+        account_owns_binding:
+          type: boolean
+          example: 'true'
+          description: True if the requested context owns the binding
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,563 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST New Quiz Items API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: New Quiz Items
+  x-resource: new_quiz_items
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+paths:
+  /quiz/v1/courses/{course_id}/quizzes/{assignment_id}/items/{item_id}:
+    get:
+      tags:
+      - New Quiz Items
+      operationId: get_quiz_item
+      summary: Get a quiz item
+      description: Get details about a single item in a new quiz.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      - name: item_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the item associated with the quiz.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+    patch:
+      tags:
+      - New Quiz Items
+      operationId: update_quiz_item
+      summary: Update a quiz item
+      description: Update a single quiz item in a new quiz. Only +QuestionItem+ types can be updated.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      - name: item_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the item associated with the quiz.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of the item within the quiz.
+                item[points_possible]:
+                  type: number
+                  description: The number of points available to score on this item. Must be positive.
+                item[entry_type]:
+                  type: string
+                  enum:
+                  - Item
+                  description: The type of the item.
+                item[entry][title]:
+                  type: string
+                  description: The question title.
+                item[entry][item_body]:
+                  type: string
+                  description: The question stem (rich content).
+                item[entry][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: Type of calculator the user will have access to during the question.
+                item[entry][feedback][neutral]:
+                  type: string
+                  description: General feedback to show regardless of answer (rich content).
+                item[entry][feedback][correct]:
+                  type: string
+                  description: Feedback to show if the question is answered correctly (rich content).
+                item[entry][feedback][incorrect]:
+                  type: string
+                  description: Feedback to show if the question is answered incorrectly (rich content).
+                item[entry][interaction_type_slug]:
+                  type: string
+                  description: 'The type of question. One of ''multi-answer'', ''matching'', ''categorization'', ''file-upload'', ''formula'', ''ordering'', ''rich-fill-blank'',
+
+                    ''hot-spot'', ''choice'', ''numeric'', ''true-false'', or ''essay''. See {Appendix: Question Types} for more info about each type.'
+                item[entry][interaction_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains the question data. See {Appendix: Question Types} for more info about this field.'
+                item[entry][properties]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains additional properties for some question types. See {Appendix: Question Types} for more info about this field.'
+                item[entry][scoring_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that describes how to score the question. See {Appendix: Question Types} for more info about this field.'
+                item[entry][answer_feedback]:
+                  type: object
+                  additionalProperties: true
+                  description: Feedback provided for each answer (rich content, only available on 'choice' question types).
+                item[entry][scoring_algorithm]:
+                  type: string
+                  description: 'The algorithm used to score the question. See {Appendix: Question Types} for more info about this field.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of the item within the quiz.
+                item[points_possible]:
+                  type: number
+                  description: The number of points available to score on this item. Must be positive.
+                item[entry_type]:
+                  type: string
+                  enum:
+                  - Item
+                  description: The type of the item.
+                item[entry][title]:
+                  type: string
+                  description: The question title.
+                item[entry][item_body]:
+                  type: string
+                  description: The question stem (rich content).
+                item[entry][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: Type of calculator the user will have access to during the question.
+                item[entry][feedback][neutral]:
+                  type: string
+                  description: General feedback to show regardless of answer (rich content).
+                item[entry][feedback][correct]:
+                  type: string
+                  description: Feedback to show if the question is answered correctly (rich content).
+                item[entry][feedback][incorrect]:
+                  type: string
+                  description: Feedback to show if the question is answered incorrectly (rich content).
+                item[entry][interaction_type_slug]:
+                  type: string
+                  description: 'The type of question. One of ''multi-answer'', ''matching'', ''categorization'', ''file-upload'', ''formula'', ''ordering'', ''rich-fill-blank'',
+
+                    ''hot-spot'', ''choice'', ''numeric'', ''true-false'', or ''essay''. See {Appendix: Question Types} for more info about each type.'
+                item[entry][interaction_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains the question data. See {Appendix: Question Types} for more info about this field.'
+                item[entry][properties]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains additional properties for some question types. See {Appendix: Question Types} for more info about this field.'
+                item[entry][scoring_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that describes how to score the question. See {Appendix: Question Types} for more info about this field.'
+                item[entry][answer_feedback]:
+                  type: object
+                  additionalProperties: true
+                  description: Feedback provided for each answer (rich content, only available on 'choice' question types).
+                item[entry][scoring_algorithm]:
+                  type: string
+                  description: 'The algorithm used to score the question. See {Appendix: Question Types} for more info about this field.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+    delete:
+      tags:
+      - New Quiz Items
+      operationId: delete_quiz_item
+      summary: Delete a quiz item
+      description: Delete a single quiz item in a new quiz.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      - name: item_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the item associated with the quiz.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+  /quiz/v1/courses/{course_id}/quizzes/{assignment_id}/items:
+    get:
+      tags:
+      - New Quiz Items
+      operationId: list_quiz_items
+      summary: List quiz items
+      description: Get a list of items in a new quiz.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+    post:
+      tags:
+      - New Quiz Items
+      operationId: create_quiz_item
+      summary: Create a quiz item
+      description: Create a quiz item in a new quiz. Only +QuestionItem+ types can be created.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the assignment associated with the quiz.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of the item within the quiz.
+                item[points_possible]:
+                  type: number
+                  description: The number of points available to score on this item. Must be positive.
+                item[entry_type]:
+                  type: string
+                  enum:
+                  - Item
+                  description: The type of the item.
+                item[entry][title]:
+                  type: string
+                  description: The question title.
+                item[entry][item_body]:
+                  type: string
+                  description: The question stem (rich content).
+                item[entry][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: Type of calculator the user will have access to during the question.
+                item[entry][feedback][neutral]:
+                  type: string
+                  description: General feedback to show regardless of answer (rich content).
+                item[entry][feedback][correct]:
+                  type: string
+                  description: Feedback to show if the question is answered correctly (rich content).
+                item[entry][feedback][incorrect]:
+                  type: string
+                  description: Feedback to show if the question is answered incorrectly (rich content).
+                item[entry][interaction_type_slug]:
+                  type: string
+                  description: 'The type of question. One of ''multi-answer'', ''matching'', ''categorization'', ''file-upload'', ''formula'', ''ordering'', ''rich-fill-blank'', ''hot-spot'', ''choice'', ''numeric'', ''true-false'', or ''essay''. See {Appendix: Question Types} for more info about each type.'
+                item[entry][interaction_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains the question data. See {Appendix: Question Types} for more info about this field.'
+                item[entry][properties]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains additional properties for some question types. See {Appendix: Question Types} for more info about this field.'
+                item[entry][scoring_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that describes how to score the question. See {Appendix: Question Types} for more info about this field.'
+                item[entry][answer_feedback]:
+                  type: object
+                  additionalProperties: true
+                  description: Feedback provided for each answer (rich content, only available on 'choice' question types).
+                item[entry][scoring_algorithm]:
+                  type: string
+                  description: 'The algorithm used to score the question. See {Appendix: Question Types} for more info about this field.'
+              required:
+              - item[entry_type]
+              - item[entry][item_body]
+              - item[entry][interaction_type_slug]
+              - item[entry][interaction_data]
+              - item[entry][scoring_data]
+              - item[entry][scoring_algorithm]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of the item within the quiz.
+                item[points_possible]:
+                  type: number
+                  description: The number of points available to score on this item. Must be positive.
+                item[entry_type]:
+                  type: string
+                  enum:
+                  - Item
+                  description: The type of the item.
+                item[entry][title]:
+                  type: string
+                  description: The question title.
+                item[entry][item_body]:
+                  type: string
+                  description: The question stem (rich content).
+                item[entry][calculator_type]:
+                  type: string
+                  enum:
+                  - none
+                  - basic
+                  - scientific
+                  description: Type of calculator the user will have access to during the question.
+                item[entry][feedback][neutral]:
+                  type: string
+                  description: General feedback to show regardless of answer (rich content).
+                item[entry][feedback][correct]:
+                  type: string
+                  description: Feedback to show if the question is answered correctly (rich content).
+                item[entry][feedback][incorrect]:
+                  type: string
+                  description: Feedback to show if the question is answered incorrectly (rich content).
+                item[entry][interaction_type_slug]:
+                  type: string
+                  description: 'The type of question. One of ''multi-answer'', ''matching'', ''categorization'', ''file-upload'', ''formula'', ''ordering'', ''rich-fill-blank'', ''hot-spot'', ''choice'', ''numeric'', ''true-false'', or ''essay''. See {Appendix: Question Types} for more info about each type.'
+                item[entry][interaction_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains the question data. See {Appendix: Question Types} for more info about this field.'
+                item[entry][properties]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that contains additional properties for some question types. See {Appendix: Question Types} for more info about this field.'
+                item[entry][scoring_data]:
+                  type: object
+                  additionalProperties: true
+                  description: 'An object that describes how to score the question. See {Appendix: Question Types} for more info about this field.'
+                item[entry][answer_feedback]:
+                  type: object
+                  additionalProperties: true
+                  description: Feedback provided for each answer (rich content, only available on 'choice' question types).
+                item[entry][scoring_algorithm]:
+                  type: string
+                  description: 'The algorithm used to score the question. See {Appendix: Question Types} for more info about this field.'
+              required:
+              - item[entry_type]
+              - item[entry][item_body]
+              - item[entry][interaction_type_slug]
+              - item[entry][interaction_data]
+              - item[entry][scoring_data]
+              - item[entry][scoring_algorithm]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+  /quiz/v1/courses/{course_id}/quizzes/{assignment_id}/items/media_upload_url:
+    get:
+      tags:
+      - New Quiz Items
+      operationId: get_items_media_upload_url
+      summary: Get items media_upload_url
+      description: 'Get a url for uploading media for use in hot-spot question types. See the hot-spot
+
+        question type in the {Appendix: Question Types} for more details about using this endpoint.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: no description
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quiz_items.html
+components:
+  schemas:
+    QuizItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '35'
+          description: the ID of the quiz item
+        position:
+          type: integer
+          example: 2
+          description: the position of the item within the quiz. The first item in a quiz is given position 1.
+        points_possible:
+          type: number
+          example: 10.0
+          description: the number of points available to score on this item
+        entry_type:
+          type: string
+          example: Item
+          description: the type of the item. One of 'Item', 'Stimulus', 'BankEntry', or 'Bank'.
+        entry_editable:
+          type: boolean
+          example: true
+          description: whether the current user can edit the item -- used internally, no need to set
+        stimulus_quiz_entry_id:
+          type: string
+          example: '3'
+          description: the ID of the stimulus that this item is associated with. null if not associated with any stimuli.
+        status:
+          type: string
+          example: mutable
+          description: status of the item. one of 'mutable' or 'immutable'.  Used internally, no need to set
+        properties:
+          type: string
+          description: additional properties for the item (currently only populated by items with a BankItem entry)
+        entry:
+          type: string
+          description: "the specific data associated with the quiz item.  These items can be either a\n       QuestionItem, StimulusItem, BankEntryItem, or BankItem, depending on entry_type, and are defined\n       separately"
+      description: Individual items within a quiz, whether they're questions, stimuli, banked content, or question banks.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

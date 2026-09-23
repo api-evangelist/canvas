@@ -1,0 +1,804 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Roles API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Roles
+  x-resource: roles
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/roles.html
+paths:
+  /v1/accounts/{account_id}/roles:
+    get:
+      tags:
+      - Roles
+      operationId: list_roles
+      summary: List roles
+      description: A paginated list of the roles available to an account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The id of the account to retrieve roles for.
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - inactive
+        required: false
+        description: 'Filter by role state. If this argument is omitted, only ''active'' roles are
+
+          returned.'
+      - name: show_inherited
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is true, all roles inherited from parent accounts will
+
+          be included.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+    post:
+      tags:
+      - Roles
+      operationId: create_new_role
+      summary: Create a new role
+      description: Create a new course-level or account-level role.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label for the role.
+                role:
+                  type: string
+                  description: Deprecated alias for label.
+                base_role_type:
+                  type: string
+                  enum:
+                  - AccountMembership
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Specifies the role type that will be used as a base
+
+                    for the permissions granted to this role.
+
+
+                    Defaults to ''AccountMembership'' if absent'
+                permissions[<X>][explicit]:
+                  type: boolean
+                  description: no description
+                permissions[<X>][enabled]:
+                  type: boolean
+                  description: 'If explicit is 1 and enabled is 1, permission <X> will be explicitly
+
+                    granted to this role. If explicit is 1 and enabled has any other value
+
+                    (typically 0), permission <X> will be explicitly denied to this role. If
+
+                    explicit is any other value (typically 0) or absent, or if enabled is
+
+                    absent, the value for permission <X> will be inherited from upstream.
+
+                    Ignored if permission <X> is locked upstream (in an ancestor account).
+
+
+                    May occur multiple times with unique values for <X>. Recognized
+
+                    permission names for <X> can be found on the
+
+                    {file:file.permissions.html Permissions list page}.
+
+
+                    Some of these permissions are applicable only for roles on the site admin
+
+                    account, on a root account, or for course-level roles with a particular base role type;
+
+                    if a specified permission is inapplicable, it will be ignored.
+
+
+                    Additional permissions may exist based on installed plugins.
+
+
+                    A comprehensive list of all permissions are available:
+
+
+                    Course Permissions PDF: http://bit.ly/cnvs-course-permissions
+
+
+                    Account Permissions PDF: http://bit.ly/cnvs-acct-permissions'
+                permissions[<X>][locked]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> will be locked downstream (new roles in
+
+                    subaccounts cannot override the setting). For any other value, permission
+
+                    <X> is left unlocked. Ignored if permission <X> is already locked
+
+                    upstream. May occur multiple times with unique values for <X>.'
+                permissions[<X>][applies_to_self]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> applies to the account this role is in.
+
+                    The default value is 1. Must be true if applies_to_descendants is false.
+
+                    This value is only returned if enabled is true.'
+                permissions[<X>][applies_to_descendants]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> cascades down to sub accounts of the
+
+                    account this role is in. The default value is 1.  Must be true if
+
+                    applies_to_self is false.This value is only returned if enabled is true.'
+              required:
+              - label
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label for the role.
+                role:
+                  type: string
+                  description: Deprecated alias for label.
+                base_role_type:
+                  type: string
+                  enum:
+                  - AccountMembership
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Specifies the role type that will be used as a base
+
+                    for the permissions granted to this role.
+
+
+                    Defaults to ''AccountMembership'' if absent'
+                permissions[<X>][explicit]:
+                  type: boolean
+                  description: no description
+                permissions[<X>][enabled]:
+                  type: boolean
+                  description: 'If explicit is 1 and enabled is 1, permission <X> will be explicitly
+
+                    granted to this role. If explicit is 1 and enabled has any other value
+
+                    (typically 0), permission <X> will be explicitly denied to this role. If
+
+                    explicit is any other value (typically 0) or absent, or if enabled is
+
+                    absent, the value for permission <X> will be inherited from upstream.
+
+                    Ignored if permission <X> is locked upstream (in an ancestor account).
+
+
+                    May occur multiple times with unique values for <X>. Recognized
+
+                    permission names for <X> can be found on the
+
+                    {file:file.permissions.html Permissions list page}.
+
+
+                    Some of these permissions are applicable only for roles on the site admin
+
+                    account, on a root account, or for course-level roles with a particular base role type;
+
+                    if a specified permission is inapplicable, it will be ignored.
+
+
+                    Additional permissions may exist based on installed plugins.
+
+
+                    A comprehensive list of all permissions are available:
+
+
+                    Course Permissions PDF: http://bit.ly/cnvs-course-permissions
+
+
+                    Account Permissions PDF: http://bit.ly/cnvs-acct-permissions'
+                permissions[<X>][locked]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> will be locked downstream (new roles in
+
+                    subaccounts cannot override the setting). For any other value, permission
+
+                    <X> is left unlocked. Ignored if permission <X> is already locked
+
+                    upstream. May occur multiple times with unique values for <X>.'
+                permissions[<X>][applies_to_self]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> applies to the account this role is in.
+
+                    The default value is 1. Must be true if applies_to_descendants is false.
+
+                    This value is only returned if enabled is true.'
+                permissions[<X>][applies_to_descendants]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> cascades down to sub accounts of the
+
+                    account this role is in. The default value is 1.  Must be true if
+
+                    applies_to_self is false.This value is only returned if enabled is true.'
+              required:
+              - label
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+  /v1/accounts/{account_id}/roles/{id}:
+    get:
+      tags:
+      - Roles
+      operationId: get_single_role
+      summary: Get a single role
+      description: Retrieve information about a single role
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The id of the account containing the role
+      - name: role_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The unique identifier for the role
+      - name: role
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The name for the role
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+    delete:
+      tags:
+      - Roles
+      operationId: deactivate_role
+      summary: Deactivate a role
+      description: 'Deactivates a custom role. This hides it in the user interface and prevents it
+
+        from being assigned to new users. Existing users assigned to the role will
+
+        continue to function with the same permissions they had previously.
+
+        Built-in roles cannot be deactivated.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: role_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The unique identifier for the role
+      - name: role
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The name for the role
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+    put:
+      tags:
+      - Roles
+      operationId: update_role
+      summary: Update a role
+      description: 'Update permissions for an existing role.
+
+
+        Recognized roles are:
+
+        * TeacherEnrollment
+
+        * StudentEnrollment
+
+        * TaEnrollment
+
+        * ObserverEnrollment
+
+        * DesignerEnrollment
+
+        * AccountAdmin
+
+        * Any previously created custom role'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: The label for the role. Can only change the label of a custom role that belongs directly to the account.
+                permissions[<X>][explicit]:
+                  type: boolean
+                  description: no description
+                permissions[<X>][enabled]:
+                  type: boolean
+                  description: 'These arguments are described in the documentation for the
+
+                    {api:RoleOverridesController#add_role add_role method}.
+
+                    The list of available permissions can be found on the
+
+                    {file:file.permissions.html Permissions list page}.'
+                permissions[<X>][applies_to_self]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> applies to the account this role is in.
+
+                    The default value is 1. Must be true if applies_to_descendants is false.
+
+                    This value is only returned if enabled is true.'
+                permissions[<X>][applies_to_descendants]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> cascades down to sub accounts of the
+
+                    account this role is in. The default value is 1.  Must be true if
+
+                    applies_to_self is false.This value is only returned if enabled is true.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: The label for the role. Can only change the label of a custom role that belongs directly to the account.
+                permissions[<X>][explicit]:
+                  type: boolean
+                  description: no description
+                permissions[<X>][enabled]:
+                  type: boolean
+                  description: 'These arguments are described in the documentation for the
+
+                    {api:RoleOverridesController#add_role add_role method}.
+
+                    The list of available permissions can be found on the
+
+                    {file:file.permissions.html Permissions list page}.'
+                permissions[<X>][applies_to_self]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> applies to the account this role is in.
+
+                    The default value is 1. Must be true if applies_to_descendants is false.
+
+                    This value is only returned if enabled is true.'
+                permissions[<X>][applies_to_descendants]:
+                  type: boolean
+                  description: 'If the value is 1, permission <X> cascades down to sub accounts of the
+
+                    account this role is in. The default value is 1.  Must be true if
+
+                    applies_to_self is false.This value is only returned if enabled is true.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+  /v1/accounts/{account_id}/roles/{id}/activate:
+    post:
+      tags:
+      - Roles
+      operationId: activate_role
+      summary: Activate a role
+      description: Re-activates an inactive role (allowing it to be assigned to new users)
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role_id:
+                  type: integer
+                  format: int64
+                  description: The unique identifier for the role
+                role:
+                  type: string
+                  x-canvas-declared-type: Deprecated
+                  description: The name for the role
+              required:
+              - role_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                role_id:
+                  type: integer
+                  format: int64
+                  description: The unique identifier for the role
+                role:
+                  type: string
+                  x-canvas-declared-type: Deprecated
+                  description: The name for the role
+              required:
+              - role_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+  /v1/accounts/{account_id}/roles/permissions:
+    get:
+      tags:
+      - Roles
+      operationId: list_assignable_permissions
+      summary: List assignable permissions
+      description: 'List all permissions that can be granted to roles in the given account.
+
+
+        This returns largely the same information documented on the {file:file.permissions.html Permissions list page},
+
+        with a few caveats:
+
+        * Permission labels and group labels returned by this API are localized (the same text visible in the web UI).
+
+        * This API includes permissions added by plugins.
+
+        * This API excludes permissions that are disabled in or otherwise do not apply to the given account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: If provided, return only permissions whose key, label, group, or group_label match the search string.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+  /v1/permissions/{context_type}/{permission}/help:
+    get:
+      tags:
+      - Roles
+      operationId: get_help_text_for_permissions
+      summary: Get help text for permissions
+      description: 'these actions access only static (but localized) information about permissions,
+
+        but require a logged-in user to mitigate possible abuse
+
+        Retrieve information about what Canvas permissions do and considerations for their use.'
+      parameters:
+      - name: context_type
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: permission
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionHelpText'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+  /v1/permissions/groups:
+    get:
+      tags:
+      - Roles
+      operationId: retrieve_permission_groups
+      summary: Retrieve permission groups
+      description: 'Retrieve information about groups of granular permissions
+
+
+        The return value is a dictionary of permission group keys to objects
+
+        containing +label+ and +subtitle+ keys.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/roles.html
+components:
+  schemas:
+    PermissionHelpText:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - title: Add External Tools
+            description: Allows users to add external tools (LTI) to courses.
+          description: Detailed explanations about what the permission does.
+        considerations:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - title: Security Risk
+            description: Granting this permission may expose your system to security vulnerabilities.
+          description: A list of considerations or warnings about using the permission.
+      description: Information about a permission, including its purpose and considerations for use.
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The id of the role
+        label:
+          type: string
+          example: New Role
+          description: The label of the role.
+        role:
+          type: string
+          example: New Role
+          description: The label of the role. (Deprecated alias for 'label')
+        base_role_type:
+          type: string
+          example: AccountMembership
+          description: The role type that is being used as a base for this role. For account-level roles, this is 'AccountMembership'. For course-level roles, it is an enrollment type.
+        is_account_role:
+          type: boolean
+          example: true
+          description: Whether this role applies to account memberships (i.e., not linked to an enrollment in a course).
+        account:
+          type: object
+          additionalProperties: true
+          example:
+            id: 1019
+            name: CGNU
+            parent_account_id: 73
+            root_account_id: 1
+            sis_account_id: cgnu
+          description: JSON representation of the account the role is defined in.
+        workflow_state:
+          type: string
+          example: active
+          description: 'The state of the role: ''active'', ''inactive'', or ''built_in'''
+        created_at:
+          type: string
+          format: date-time
+          example: '2020-12-01T16:20:00-06:00'
+          description: The date and time the role was created.
+        last_updated_at:
+          type: string
+          format: date-time
+          example: '2023-10-31T23:59:00-06:00'
+          description: The date and time the role was last updated.
+        permissions:
+          type: object
+          additionalProperties: true
+          example:
+            read_course_content:
+              enabled: true
+              locked: false
+              readonly: false
+              explicit: true
+              prior_default: false
+            read_course_list:
+              enabled: true
+              locked: true
+              readonly: true
+              explicit: false
+            read_question_banks:
+              enabled: false
+              locked: true
+              readonly: false
+              explicit: true
+              prior_default: false
+            read_reports:
+              enabled: true
+              locked: false
+              readonly: false
+              explicit: false
+          description: A dictionary of permissions keyed by name (see 'List assignable permissions' API).
+    Permission:
+      type: object
+      properties:
+        key:
+          type: string
+          example: manage_lti_add
+          description: The API identifier for the permission
+        label:
+          type: string
+          example: LTI - add
+          description: The human-readable label for the permission
+        group:
+          type: string
+          example: manage_lti
+          description: The group this permission belongs to, if it is part of a granular permission group
+        group_label:
+          type: string
+          example: Manage LTI
+          description: The human-readable label for the group this permission belongs to
+        available_to:
+          type: array
+          items:
+            type: string
+          example:
+          - AccountAdmin
+          - AccountMembership
+          - TeacherEnrollment
+          - TaEnrollment
+          - DesignerEnrollment
+          description: The base role types this permission can be enabled for
+        true_for:
+          type: array
+          items:
+            type: string
+          example:
+          - AccountAdmin
+          - TeacherEnrollment
+          - TaEnrollment
+          - DesignerEnrollment
+          description: The base role types this permission is enabled for by default
+      description: A permission that can be granted to a role
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

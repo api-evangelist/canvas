@@ -1,0 +1,414 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Authentication Providers API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Authentication Providers
+  x-resource: authentication_providers
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/authentication_providers.html
+paths:
+  /v1/accounts/{account_id}/authentication_providers:
+    get:
+      tags:
+      - Authentication Providers
+      operationId: list_authentication_providers
+      summary: List authentication providers
+      description: Returns a paginated list of authentication providers
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthenticationProvider'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+    post:
+      tags:
+      - Authentication Providers
+      operationId: add_authentication_provider
+      summary: Add authentication provider
+      description: Add external authentication provider(s) for the account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationProvider'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+  /v1/accounts/{account_id}/authentication_providers/{id}:
+    get:
+      tags:
+      - Authentication Providers
+      operationId: get_authentication_provider
+      summary: Get authentication provider
+      description: Get the specified authentication provider
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationProvider'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+    put:
+      tags:
+      - Authentication Providers
+      operationId: update_authentication_provider
+      summary: Update authentication provider
+      description: 'Update an authentication provider using the same options as the
+
+        {api:AuthenticationProvidersController#create Add authentication provider} endpoint.
+
+        You cannot update an existing provider to a new authentication type.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationProvider'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+    delete:
+      tags:
+      - Authentication Providers
+      operationId: delete_authentication_provider
+      summary: Delete authentication provider
+      description: Delete the config
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+  /v1/accounts/{account_id}/authentication_providers/{id}/restore:
+    put:
+      tags:
+      - Authentication Providers
+      operationId: restore_deleted_authentication_provider
+      summary: Restore a deleted authentication provider
+      description: 'Restore an authentication provider back to active that was previously deleted. Only
+
+        available to admins who can manage_authentication_provider for given root account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationProvider'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+  /v1/accounts/{account_id}/sso_settings:
+    get:
+      tags:
+      - Authentication Providers
+      operationId: show_account_auth_settings
+      summary: Show account auth settings
+      description: 'The way to get the current state of each account level setting
+
+        that''s relevant to Single Sign On configuration
+
+
+        You can list the current state of each setting with "update_sso_settings"'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SSOSettings'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+    put:
+      tags:
+      - Authentication Providers
+      operationId: update_account_auth_settings
+      summary: Update account auth settings
+      description: 'For various cases of mixed SSO configurations, you may need to set some
+
+        configuration at the account level to handle the particulars of your
+
+        setup.
+
+
+        This endpoint accepts a PUT request to set several possible account
+
+        settings. All setting are optional on each request, any that are not
+
+        provided at all are simply retained as is. Any that provide the key but
+
+        a null-ish value (blank string, null, undefined) will be UN-set.
+
+
+        You can list the current state of each setting with "show_sso_settings"'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SSOSettings'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+  /v1/accounts/{account_id}/authentication_providers/force_password_reset:
+    post:
+      tags:
+      - Authentication Providers
+      operationId: force_password_reset
+      summary: Force password reset
+      description: 'Enqueues a job to set the must_reset_password flag on all active Canvas
+
+        login pseudonyms for the account. Affected users will be required to
+
+        change their password on next login. Only available for accounts that have
+
+        Canvas authentication enabled.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/authentication_providers.html
+components:
+  schemas:
+    SSOSettings:
+      type: object
+      properties:
+        login_handle_name:
+          type: string
+          example: Username
+          description: The label used for unique login identifiers.
+        change_password_url:
+          type: string
+          example: https://example.com/reset_password
+          description: The url to redirect users to for password resets. Leave blank for default Canvas behavior
+        auth_discovery_url:
+          type: string
+          example: https://example.com/which_account
+          description: If a discovery url is set, canvas will forward all users to that URL when they need to be authenticated. That page will need to then help the user figure out where they need to go to log in. If no discovery url is configured, the first configuration will be used to attempt to authenticate the user.
+        unknown_user_url:
+          type: string
+          example: https://example.com/register_for_canvas
+          description: If an unknown user url is set, Canvas will forward to that url when a service authenticates a user, but that user does not exist in Canvas. The default behavior is to present an error.
+        login_help_url:
+          type: string
+          example: https://example.com/login-help
+          description: A login help URL shown as a 'Trouble logging in?' link on the login page and in failed login messages. Falls back to the global setting if not set.
+        saml_entity_id:
+          type: string
+          example: http://example.com/saml2
+          description: The SAML Service Provider entity ID Canvas presents to your IdP. May be a URL or a URN. Defaults to <host>/saml2 if not set. Only settable by site admins, and only returned when a SAML provider is configured.
+      description: Settings that are applicable across an account's authentication configuration, even if there are multiple individual providers
+    AuthenticationProvider:
+      type: object
+      properties:
+        identifier_format:
+          type: string
+          example: urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          description: Valid for SAML providers.
+        auth_type:
+          type: string
+          example: saml
+          description: Valid for all providers.
+        id:
+          type: integer
+          example: 1649
+          description: Valid for all providers.
+        log_out_url:
+          type: string
+          example: http://example.com/saml1/slo
+          description: Valid for SAML providers.
+        log_in_url:
+          type: string
+          example: http://example.com/saml1/sli
+          description: Valid for SAML and CAS providers.
+        certificate_fingerprint:
+          type: string
+          example: '111222'
+          description: Valid for SAML providers.
+        requested_authn_context:
+          type: string
+          description: Valid for SAML providers.
+        auth_host:
+          type: string
+          example: 127.0.0.1
+          description: Valid for LDAP providers.
+        auth_filter:
+          type: string
+          example: filter1
+          description: Valid for LDAP providers.
+        auth_over_tls:
+          type: integer
+          description: Valid for LDAP providers.
+        auth_base:
+          type: string
+          description: Valid for LDAP and CAS providers.
+        auth_username:
+          type: string
+          example: username1
+          description: Valid for LDAP providers.
+        auth_port:
+          type: integer
+          description: Valid for LDAP providers.
+        position:
+          type: integer
+          example: 1
+          description: Valid for all providers.
+        idp_entity_id:
+          type: string
+          example: http://example.com/saml1
+          description: Valid for SAML providers.
+        login_attribute:
+          type: string
+          example: nameid
+          description: Valid for SAML providers.
+        sig_alg:
+          type: string
+          example: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          description: Valid for SAML providers.
+        jit_provisioning:
+          type: boolean
+          description: Just In Time provisioning. Valid for all providers except Canvas (which has the similar in concept self_registration setting).
+        federated_attributes:
+          type: string
+        mfa_required:
+          type: boolean
+          description: If multi-factor authentication is required when logging in with this authentication provider. The account must not have MFA disabled.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,185 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST New Quizzes Reports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: New Quizzes Reports
+  x-resource: new_quizzes_reports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/new_quizzes_reports.html
+paths:
+  /quiz/v1/courses/{course_id}/quizzes/{assignment_id}/reports:
+    post:
+      tags:
+      - New Quizzes Reports
+      operationId: create_quiz_report
+      summary: Create a quiz report
+      description: 'Generate a new report for this quiz. Returns a progress object that can be used to track
+
+        the progress of the report generation.
+
+
+        *Responses*
+
+
+        * 400 Bad Request if the specified report type or format is invalid
+
+        * 409 Conflict if a quiz report of the specified type is already being
+
+        generated'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz_report[report_type]:
+                  type: string
+                  enum:
+                  - student_analysis
+                  - item_analysis
+                  description: The type of report to be generated.
+                quiz_report[format]:
+                  type: string
+                  enum:
+                  - csv
+                  - json
+                  description: The format of report to be generated.
+              required:
+              - quiz_report[report_type]
+              - quiz_report[format]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz_report[report_type]:
+                  type: string
+                  enum:
+                  - student_analysis
+                  - item_analysis
+                  description: The type of report to be generated.
+                quiz_report[format]:
+                  type: string
+                  enum:
+                  - csv
+                  - json
+                  description: The format of report to be generated.
+              required:
+              - quiz_report[report_type]
+              - quiz_report[format]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress__new_quizzes_reports'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes_reports.html
+components:
+  schemas:
+    Progress__new_quizzes_reports:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the Progress object
+        context_id:
+          type: integer
+          example: 1
+          description: the context owning the job.
+        context_type:
+          type: string
+          example: Assignment
+        user_id:
+          type: integer
+          example: 123
+          description: the id of the user who started the job
+        completion:
+          type: integer
+          example: 100
+          description: percent completed
+        workflow_state:
+          type: string
+          example: completed
+          description: the state of the job one of 'queued', 'running', 'completed', 'failed'
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-01-15T15:00:00Z'
+          description: the time the job was created
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-01-15T15:04:00Z'
+          description: the time the job was last updated
+        results:
+          type: object
+          additionalProperties: true
+          example:
+            url: https://canvas.example.edu/api/assignments/1/files/2/download
+          description: for successfully completed jobs, this is a JSON object containing url of the report and other details
+        url:
+          type: string
+          example: https://canvas.example.edu/api/v1/progress/1
+          description: url where a progress update can be retrieved
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

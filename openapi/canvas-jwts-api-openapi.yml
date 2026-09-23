@@ -1,0 +1,194 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Jw Ts API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: JWTs
+  x-resource: jw_ts
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/jw_ts.html
+paths:
+  /v1/jwts:
+    post:
+      tags:
+      - JWTs
+      operationId: create_jwt
+      summary: Create JWT
+      description: 'Create a unique JWT for use with other Canvas services
+
+
+        Generates a different JWT each time it''s called. Each JWT expires
+
+        after a short window (1 hour)'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflows:
+                  type: array
+                  items:
+                    type: string
+                  description: Adds additional data to the JWT to be used by the consuming service workflow
+                context_type:
+                  type: string
+                  enum:
+                  - Course
+                  - User
+                  - Account
+                  description: The type of the context to generate the JWT for, in case the workflow requires it. Case insensitive.
+                context_id:
+                  type: integer
+                  format: int64
+                  description: The id of the context to generate the JWT for, in case the workflow requires it.
+                context_uuid:
+                  type: string
+                  description: 'The uuid of the context to generate the JWT for, in case the workflow requires it. Note that context_id
+
+                    and context_uuid are mutually exclusive. If both are provided, an error will be returned.'
+                canvas_audience:
+                  type: boolean
+                  description: 'Defaults to true. If false, the JWT will be signed, but not encrypted, for use in downstream services. The
+
+                    default encrypted behaviour can be used to talk to Canvas itself.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflows:
+                  type: array
+                  items:
+                    type: string
+                  description: Adds additional data to the JWT to be used by the consuming service workflow
+                context_type:
+                  type: string
+                  enum:
+                  - Course
+                  - User
+                  - Account
+                  description: The type of the context to generate the JWT for, in case the workflow requires it. Case insensitive.
+                context_id:
+                  type: integer
+                  format: int64
+                  description: The id of the context to generate the JWT for, in case the workflow requires it.
+                context_uuid:
+                  type: string
+                  description: 'The uuid of the context to generate the JWT for, in case the workflow requires it. Note that context_id
+
+                    and context_uuid are mutually exclusive. If both are provided, an error will be returned.'
+                canvas_audience:
+                  type: boolean
+                  description: 'Defaults to true. If false, the JWT will be signed, but not encrypted, for use in downstream services. The
+
+                    default encrypted behaviour can be used to talk to Canvas itself.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/jw_ts.html
+  /v1/jwts/refresh:
+    post:
+      tags:
+      - JWTs
+      operationId: refresh_jwt
+      summary: Refresh JWT
+      description: 'Refresh a JWT for use with other canvas services
+
+
+        Generates a different JWT each time it''s called, each one expires
+
+        after a short window (1 hour).'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jwt:
+                  type: string
+                  description: 'An existing JWT token to be refreshed. The new token will have
+
+                    the same context and workflows as the existing token.'
+              required:
+              - jwt
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                jwt:
+                  type: string
+                  description: 'An existing JWT token to be refreshed. The new token will have
+
+                    the same context and workflows as the existing token.'
+              required:
+              - jwt
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWT'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/jw_ts.html
+components:
+  schemas:
+    JWT:
+      type: object
+      properties:
+        token:
+          type: string
+          example: ZXlKaGJHY2lPaUprYVhJaUxDSmxibU1pT2lKQk1qVTJSME5OSW4wLi5QbnAzS1QzLUJkZ3lQZHgtLm5JT0pOV01iZmdtQ0g3WWtybjhLeHlMbW13cl9yZExXTXF3Y0IwbXkzZDd3V1NDd0JYQkV0UTRtTVNJSVRrX0FJcG0zSU1DeThMcW5NdzA0ckdHVTkweDB3MmNJbjdHeWxOUXdveU5ZZ3UwOEN4TkZteUpCeW5FVktrdU05QlRyZXZ3Y1ZTN2hvaC1WZHRqM19PR3duRm5yUVgwSFhFVFc4R28tUGxoQVUtUnhKT0pNakx1OUxYd2NDUzZsaW9ZMno5NVU3T0hLSGNpaDBmSGVjN2FzekVJT3g4NExUeHlReGxYU3BtbFZ5LVNuYWdfbVJUeU5yNHNsMmlDWFcwSzZCNDhpWHJ1clJVVm1LUkVlVTl4ZVVJcTJPaWNpSHpfemJ0X3FrMjhkdzRyajZXRnBHSlZPNWcwTlUzVHlSWk5qdHg1S2NrTjVSQjZ1X2FzWTBScjhTY2VhNFk3Y2JFX01wcm54cFZTNDFIekVVSVRNdzVMTk1GLVpQZy52LVVDTkVJYk8zQ09EVEhPRnFXLUFR
+          description: The signed, encrypted, base64 encoded JWT
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

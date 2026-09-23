@@ -1,0 +1,127 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST What If Grades API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: What If Grades
+  x-resource: what_if_grades
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/what_if_grades.html
+paths:
+  /v1/submissions/{id}/what_if_grades:
+    put:
+      tags:
+      - What If Grades
+      operationId: update_submission_s_what_if_score_and_calculate_grades
+      summary: Update a submission's what-if score and calculate grades
+      description: 'Enter a what if score for a submission and receive the calculated grades
+
+        Grade calculation is a costly operation, so this API should be used sparingly'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_entered_score:
+                  type: number
+                  description: The score the student wants to test
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                student_entered_score:
+                  type: number
+                  description: The score the student wants to test
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: '{"grades": Grades, "submission": Submission}'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/what_if_grades.html
+  /v1/courses/{course_id}/what_if_grades/reset:
+    put:
+      tags:
+      - What If Grades
+      operationId: reset_what_if_scores_for_current_user_for_entire_course_and_recalculate_grades
+      summary: Reset the what-if scores for the current user for an entire course and…
+      description: Resets all what-if scores for a student in a course and recalculates grades.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: '{"grades": Grades}'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/what_if_grades.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

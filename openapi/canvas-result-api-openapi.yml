@@ -1,0 +1,155 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Result API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Result
+  x-resource: result
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/result.html
+paths:
+  /lti/courses/{course_id}/line_items/{line_item_id}/results:
+    get:
+      tags:
+      - Result
+      operationId: show_collection_of_results
+      summary: Show a collection of Results
+      description: 'Show existing Results of a line item. Can be used to retrieve a specific student''s
+
+        result by adding the user_id (defined as the lti_user_id or the Canvas user_id) as
+
+        a query parameter (i.e. user_id=1000). If user_id is included, it will return only
+
+        one Result in the collection if the result exists, otherwise it will be empty. May
+
+        also limit number of results by adding the limit query param (i.e. limit=100)'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result__result'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/result.html
+  /lti/courses/{course_id}/line_items/{line_item_id}/results/{id}:
+    get:
+      tags:
+      - Result
+      operationId: show_result
+      summary: Show a Result
+      description: Show existing Result of a line item.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result__result'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/result.html
+components:
+  schemas:
+    Result__result:
+      type: object
+      properties:
+        id:
+          type: string
+          example: http://institution.canvas.com/api/lti/courses/5/line_items/2/results/1
+          description: The fully qualified URL for showing the Result
+        userId:
+          type: string
+          example: 50 | 'abcasdf'
+          description: The lti_user_id or the Canvas user_id
+        resultScore:
+          type: number
+          example: '50'
+          description: The score of the result as defined by Canvas, scaled to the resultMaximum
+        resultMaximum:
+          type: number
+          example: '50'
+          description: Maximum possible score for this result; 1 is the default value and will be assumed if not specified otherwise. Minimum value of 0 required.
+        comment:
+          type: string
+          description: Comment visible to the student about the result.
+        scoreOf:
+          type: string
+          example: http://institution.canvas.com/api/lti/courses/5/line_items/2
+          description: URL of the line item this belongs to
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

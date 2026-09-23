@@ -1,0 +1,124 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Canvas Career User Context API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Canvas Career User Context
+  x-resource: canvas_career_user_context
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/canvas_career_user_context.html
+paths:
+  /v1/career/user_context:
+    get:
+      tags:
+      - Canvas Career User Context
+      operationId: get_career_user_context
+      summary: Get career user context
+      description: 'Returns consolidated user context data for Journey, combining account
+
+        permissions, career experience info, enrollment types, admin roles,
+
+        and site admin status in a single response.'
+      parameters:
+      - name: account_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Canvas account ID for permission and subaccount admin checks. Defaults
+
+          to the domain root account ("self"). Other fields (experience,
+
+          enrollment_types, admin_roles, is_site_admin) always resolve against
+
+          the domain root.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CareerUserContext'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/canvas_career_user_context.html
+components:
+  schemas:
+    CareerUserContext:
+      type: object
+      properties:
+        permissions:
+          type: object
+          additionalProperties: true
+          description: Account permission checks for the authenticated user.
+        experience:
+          type: object
+          additionalProperties: true
+          description: Career experience summary including current app and available apps.
+        enrollment_types:
+          type: array
+          items:
+            type: string
+          description: Distinct enrollment types for the user (active, invited, and pending).
+        admin_roles:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: Admin roles on the domain root account.
+        is_site_admin:
+          type: boolean
+          description: Whether the user is a site admin.
+        is_subaccount_admin:
+          type: boolean
+          description: Whether the user admins a subaccount under the domain root. When account_id is provided, true only if the user can admin that specific account.
+        is_root_account_admin:
+          type: boolean
+          description: Whether the user is an admin on the domain root account or a site admin.
+        is_root_account:
+          type: boolean
+          description: Whether the resolved account (account_id, or the domain root when omitted) is itself a root account rather than a sub-account.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,354 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST E Portfolios API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: E Portfolios
+  x-resource: e_portfolios
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/e_portfolios.html
+paths:
+  /v1/users/{user_id}/eportfolios:
+    get:
+      tags:
+      - E Portfolios
+      operationId: get_all_eportfolios_for_user
+      summary: Get all ePortfolios for a User
+      description: Get a list of all ePortfolios for the specified user.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - deleted
+        required: false
+        description: 'deleted:: Include deleted ePortfolios. Only available to admins who can
+
+          moderate_user_content.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ePortfolio'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+    put:
+      tags:
+      - E Portfolios
+      operationId: moderate_all_eportfolios_for_user
+      summary: Moderate all ePortfolios for a User
+      description: 'Update the spam_status for all active eportfolios of a user. Only available to
+
+        admins who can moderate_user_content.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                spam_status:
+                  type: string
+                  enum:
+                  - marked_as_spam
+                  - marked_as_safe
+                  description: The spam status for all the ePortfolios
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                spam_status:
+                  type: string
+                  enum:
+                  - marked_as_spam
+                  - marked_as_safe
+                  description: The spam status for all the ePortfolios
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+  /v1/eportfolios/{id}:
+    get:
+      tags:
+      - E Portfolios
+      operationId: get_eportfolio
+      summary: Get an ePortfolio
+      description: Get details for a single ePortfolio.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ePortfolio'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+    delete:
+      tags:
+      - E Portfolios
+      operationId: delete_eportfolio
+      summary: Delete an ePortfolio
+      description: Mark an ePortfolio as deleted.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ePortfolio'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+  /v1/eportfolios/{eportfolio_id}/pages:
+    get:
+      tags:
+      - E Portfolios
+      operationId: get_eportfolio_pages
+      summary: Get ePortfolio Pages
+      description: Get details for the pages of an ePortfolio
+      parameters:
+      - name: eportfolio_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ePortfolioPage'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+  /v1/eportfolios/{eportfolio_id}/moderate:
+    put:
+      tags:
+      - E Portfolios
+      operationId: moderate_eportfolio
+      summary: Moderate an ePortfolio
+      description: 'Update the spam_status of an eportfolio. Only available to admins who can
+
+        moderate_user_content.'
+      parameters:
+      - name: eportfolio_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                spam_status:
+                  type: string
+                  enum:
+                  - marked_as_spam
+                  - marked_as_safe
+                  description: The spam status for the ePortfolio
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                spam_status:
+                  type: string
+                  enum:
+                  - marked_as_spam
+                  - marked_as_safe
+                  description: The spam status for the ePortfolio
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ePortfolio'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+  /v1/eportfolios/{eportfolio_id}/restore:
+    put:
+      tags:
+      - E Portfolios
+      operationId: restore_deleted_eportfolio
+      summary: Restore a deleted ePortfolio
+      description: 'Restore an ePortfolio back to active that was previously deleted. Only
+
+        available to admins who can moderate_user_content.'
+      parameters:
+      - name: eportfolio_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ePortfolio'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_portfolios.html
+components:
+  schemas:
+    ePortfolioPage:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The database ID of the ePortfolio
+        eportfolio_id:
+          type: integer
+          example: 1
+          description: The ePortfolio ID to which the entry belongs
+        position:
+          type: integer
+          example: 1
+          description: The positional order of the entry in the list
+        name:
+          type: string
+          example: My Academic Journey
+          description: The name of the ePortfolio
+        content:
+          type: string
+          example: A long time ago...
+          description: The user entered content of the entry
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The creation timestamp for the ePortfolio
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The timestamp of the last time any of the ePortfolio attributes changed
+    ePortfolio:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The database ID of the ePortfolio
+        user_id:
+          type: integer
+          example: 1
+          description: The user ID to which the ePortfolio belongs
+        name:
+          type: string
+          example: My Academic Journey
+          description: The name of the ePortfolio
+        public:
+          type: boolean
+          example: true
+          description: Whether or not the ePortfolio is visible without authentication
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The creation timestamp for the ePortfolio
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The timestamp of the last time any of the ePortfolio attributes changed
+        workflow_state:
+          type: string
+          example: active
+          description: The state of the ePortfolio. Either 'active' or 'deleted'
+        deleted_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The timestamp when the ePortfolio was deleted, or else null
+        spam_status:
+          type: string
+          description: "A flag indicating whether the ePortfolio has been\n      flagged or moderated as spam. One of 'flagged_as_possible_spam',\n      'marked_as_safe', 'marked_as_spam', or null"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,1803 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Enrollments API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Enrollments
+  x-resource: enrollments
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/enrollments.html
+paths:
+  /v1/courses/{course_id}/enrollments:
+    get:
+      tags:
+      - Enrollments
+      operationId: list_enrollments_courses
+      summary: List enrollments
+      description: 'Depending on the URL given, return a paginated list of either (1) all of
+
+        the enrollments in a course, (2) all of the enrollments in a section or (3)
+
+        all of a user''s enrollments. This includes student, teacher, TA, and
+
+        observer enrollments.
+
+
+        If a user has multiple enrollments in a context (e.g. as a teacher
+
+        and a student or in multiple course sections), each enrollment will be
+
+        listed separately.
+
+
+        note: Currently, only a root level admin user can return other users'' enrollments.
+
+        A user can, however, return his/her own enrollments.
+
+
+        Enrollments scoped to a course context will include inactive states by default
+
+        if the caller has account admin authorization and the state[] parameter is omitted.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of enrollment types to return. Accepted values are
+
+          ''StudentEnrollment'', ''TeacherEnrollment'', ''TaEnrollment'',
+
+          ''DesignerEnrollment'', and ''ObserverEnrollment.'' If omitted, all enrollment
+
+          types are returned. This argument is ignored if `role` is given.'
+      - name: role
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of enrollment roles to return. Accepted values include course-level
+
+          roles created by the {api:RoleOverridesController#add_role Add Role API}
+
+          as well as the base enrollment types accepted by the `type` argument above.'
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - invited
+            - creation_pending
+            - deleted
+            - rejected
+            - completed
+            - inactive
+            - current_and_invited
+            - current_and_future
+            - current_future_and_restricted
+            - current_and_concluded
+        required: false
+        description: 'Filter by enrollment state. If omitted, ''active'' and ''invited'' enrollments
+
+          are returned. The following synthetic states are supported only when
+
+          querying a user''s enrollments (either via user_id argument or via user
+
+          enrollments endpoint): +current_and_invited+, +current_and_future+, +current_future_and_restricted+, +current_and_concluded+'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - avatar_url
+            - group_ids
+            - locked
+            - observed_users
+            - can_be_removed
+            - uuid
+            - current_points
+        required: false
+        description: 'Array of additional information to include on the enrollment or user records.
+
+          "avatar_url" and "group_ids" will be returned on the user record. If "current_points"
+
+          is specified, the fields "current_points" and (if the caller has
+
+          permissions to manage grades) "unposted_current_points" will be included
+
+          in the "grades" hash for student enrollments.'
+      - name: user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Filter by user_id (only valid for course or section enrollment
+
+          queries). If set to the current user''s id, this is a way to
+
+          determine if the user has any enrollments in the course or section,
+
+          independent of whether the user has permission to view other people
+
+          on the roster.'
+      - name: grading_period_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Return grades for the given grading_period.  If this parameter is not
+
+          specified, the returned grades will be for the whole course.'
+      - name: enrollment_term_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Returns only enrollments for the specified enrollment term. This parameter
+
+          only applies to the user enrollments path. May pass the ID from the
+
+          enrollment terms api or the SIS id prepended with ''sis_term_id:''.'
+      - name: sis_account_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments for the specified SIS account ID(s). Does not
+
+          look into sub_accounts. May pass in array or string.'
+      - name: sis_course_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments matching the specified SIS course ID(s).
+
+          May pass in array or string.'
+      - name: sis_section_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only section enrollments matching the specified SIS section ID(s).
+
+          May pass in array or string.'
+      - name: sis_user_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments for the specified SIS user ID(s). May pass in
+
+          array or string.'
+      - name: created_for_sis_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: boolean
+        required: false
+        description: 'If sis_user_id is present and created_for_sis_id is true, Returns only
+
+          enrollments for the specified SIS ID(s).
+
+          If a user has two sis_id''s, one enrollment may be created using one of the
+
+          two ids. This would limit the enrollments returned from the endpoint to
+
+          enrollments that were created from a sis_import with that sis_user_id'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+    post:
+      tags:
+      - Enrollments
+      operationId: enroll_user_courses
+      summary: Enroll a user
+      description: Create a new user enrollment for a course or section.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enrollment[start_at]:
+                  type: string
+                  format: date-time
+                  description: The start time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[end_at]:
+                  type: string
+                  format: date-time
+                  description: The end time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[user_id]:
+                  type: string
+                  description: The ID of the user to be enrolled in the course.
+                enrollment[type]:
+                  type: string
+                  enum:
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Enroll the user as a student, teacher, TA, observer, or designer. If no
+
+                    value is given, the type will be inferred by +enrollment[role]+ if supplied,
+
+                    otherwise ''StudentEnrollment'' will be used.'
+                enrollment[role]:
+                  type: string
+                  x-canvas-declared-type: Deprecated
+                  description: Assigns a custom course-level role to the user.
+                enrollment[role_id]:
+                  type: integer
+                  format: int64
+                  description: Assigns a custom course-level role to the user.
+                enrollment[enrollment_state]:
+                  type: string
+                  enum:
+                  - active
+                  - invited
+                  - inactive
+                  description: 'If set to ''active,'' student will be immediately enrolled in the course.
+
+                    Otherwise they will be required to accept a course invitation. Default is
+
+                    ''invited.''.
+
+
+                    If set to ''inactive'', student will be listed in the course roster for
+
+                    teachers, but will not be able to participate in the course until
+
+                    their enrollment is activated.'
+                enrollment[course_section_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course section to enroll the student in. If the
+
+                    section-specific URL is used, this argument is redundant and will be
+
+                    ignored.'
+                enrollment[limit_privileges_to_course_section]:
+                  type: boolean
+                  description: "If set, the enrollment will only allow the user to see and interact with\nusers enrolled in the section given by course_section_id.\n* For teachers and TAs, this includes grading privileges.\n* Section-limited students will not see any users (including teachers\n  and TAs) not enrolled in their sections.\n* Users may have other enrollments that grant privileges to\n  multiple sections in the same course."
+                enrollment[notify]:
+                  type: boolean
+                  description: 'If true, a notification will be sent to the enrolled user.
+
+                    Notifications are not sent by default.'
+                enrollment[self_enrollment_code]:
+                  type: string
+                  description: 'If the current user is not allowed to manage enrollments in this
+
+                    course, but the course allows self-enrollment, the user can self-
+
+                    enroll as a student in the default section by passing in a valid
+
+                    code. When self-enrolling, the user_id must be ''self''. The
+
+                    enrollment_state will be set to ''active'' and all other arguments
+
+                    will be ignored.'
+                enrollment[self_enrolled]:
+                  type: boolean
+                  description: 'If true, marks the enrollment as a self-enrollment, which gives
+
+                    students the ability to drop the course if desired. Defaults to false.'
+                enrollment[associated_user_id]:
+                  type: integer
+                  format: int64
+                  description: 'For an observer enrollment, the ID of a student to observe.
+
+                    This is a one-off operation; to automatically observe all a
+
+                    student''s enrollments (for example, as a parent), please use
+
+                    the {api:UserObserveesController#create User Observees API}.'
+                enrollment[sis_user_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (sis_user_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                enrollment[integration_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (integration_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                root_account:
+                  type: string
+                  description: 'The domain of the account to search for the user. Will be a no-op
+
+                    unless the sis_user_id or integration_id parameter is also included.'
+              required:
+              - enrollment[user_id]
+              - enrollment[type]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                enrollment[start_at]:
+                  type: string
+                  format: date-time
+                  description: The start time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[end_at]:
+                  type: string
+                  format: date-time
+                  description: The end time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[user_id]:
+                  type: string
+                  description: The ID of the user to be enrolled in the course.
+                enrollment[type]:
+                  type: string
+                  enum:
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Enroll the user as a student, teacher, TA, observer, or designer. If no
+
+                    value is given, the type will be inferred by +enrollment[role]+ if supplied,
+
+                    otherwise ''StudentEnrollment'' will be used.'
+                enrollment[role]:
+                  type: string
+                  x-canvas-declared-type: Deprecated
+                  description: Assigns a custom course-level role to the user.
+                enrollment[role_id]:
+                  type: integer
+                  format: int64
+                  description: Assigns a custom course-level role to the user.
+                enrollment[enrollment_state]:
+                  type: string
+                  enum:
+                  - active
+                  - invited
+                  - inactive
+                  description: 'If set to ''active,'' student will be immediately enrolled in the course.
+
+                    Otherwise they will be required to accept a course invitation. Default is
+
+                    ''invited.''.
+
+
+                    If set to ''inactive'', student will be listed in the course roster for
+
+                    teachers, but will not be able to participate in the course until
+
+                    their enrollment is activated.'
+                enrollment[course_section_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course section to enroll the student in. If the
+
+                    section-specific URL is used, this argument is redundant and will be
+
+                    ignored.'
+                enrollment[limit_privileges_to_course_section]:
+                  type: boolean
+                  description: "If set, the enrollment will only allow the user to see and interact with\nusers enrolled in the section given by course_section_id.\n* For teachers and TAs, this includes grading privileges.\n* Section-limited students will not see any users (including teachers\n  and TAs) not enrolled in their sections.\n* Users may have other enrollments that grant privileges to\n  multiple sections in the same course."
+                enrollment[notify]:
+                  type: boolean
+                  description: 'If true, a notification will be sent to the enrolled user.
+
+                    Notifications are not sent by default.'
+                enrollment[self_enrollment_code]:
+                  type: string
+                  description: 'If the current user is not allowed to manage enrollments in this
+
+                    course, but the course allows self-enrollment, the user can self-
+
+                    enroll as a student in the default section by passing in a valid
+
+                    code. When self-enrolling, the user_id must be ''self''. The
+
+                    enrollment_state will be set to ''active'' and all other arguments
+
+                    will be ignored.'
+                enrollment[self_enrolled]:
+                  type: boolean
+                  description: 'If true, marks the enrollment as a self-enrollment, which gives
+
+                    students the ability to drop the course if desired. Defaults to false.'
+                enrollment[associated_user_id]:
+                  type: integer
+                  format: int64
+                  description: 'For an observer enrollment, the ID of a student to observe.
+
+                    This is a one-off operation; to automatically observe all a
+
+                    student''s enrollments (for example, as a parent), please use
+
+                    the {api:UserObserveesController#create User Observees API}.'
+                enrollment[sis_user_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (sis_user_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                enrollment[integration_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (integration_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                root_account:
+                  type: string
+                  description: 'The domain of the account to search for the user. Will be a no-op
+
+                    unless the sis_user_id or integration_id parameter is also included.'
+              required:
+              - enrollment[user_id]
+              - enrollment[type]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/sections/{section_id}/enrollments:
+    get:
+      tags:
+      - Enrollments
+      operationId: list_enrollments_sections
+      summary: List enrollments
+      description: 'Depending on the URL given, return a paginated list of either (1) all of
+
+        the enrollments in a course, (2) all of the enrollments in a section or (3)
+
+        all of a user''s enrollments. This includes student, teacher, TA, and
+
+        observer enrollments.
+
+
+        If a user has multiple enrollments in a context (e.g. as a teacher
+
+        and a student or in multiple course sections), each enrollment will be
+
+        listed separately.
+
+
+        note: Currently, only a root level admin user can return other users'' enrollments.
+
+        A user can, however, return his/her own enrollments.
+
+
+        Enrollments scoped to a course context will include inactive states by default
+
+        if the caller has account admin authorization and the state[] parameter is omitted.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of enrollment types to return. Accepted values are
+
+          ''StudentEnrollment'', ''TeacherEnrollment'', ''TaEnrollment'',
+
+          ''DesignerEnrollment'', and ''ObserverEnrollment.'' If omitted, all enrollment
+
+          types are returned. This argument is ignored if `role` is given.'
+      - name: role
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of enrollment roles to return. Accepted values include course-level
+
+          roles created by the {api:RoleOverridesController#add_role Add Role API}
+
+          as well as the base enrollment types accepted by the `type` argument above.'
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - invited
+            - creation_pending
+            - deleted
+            - rejected
+            - completed
+            - inactive
+            - current_and_invited
+            - current_and_future
+            - current_future_and_restricted
+            - current_and_concluded
+        required: false
+        description: 'Filter by enrollment state. If omitted, ''active'' and ''invited'' enrollments
+
+          are returned. The following synthetic states are supported only when
+
+          querying a user''s enrollments (either via user_id argument or via user
+
+          enrollments endpoint): +current_and_invited+, +current_and_future+, +current_future_and_restricted+, +current_and_concluded+'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - avatar_url
+            - group_ids
+            - locked
+            - observed_users
+            - can_be_removed
+            - uuid
+            - current_points
+        required: false
+        description: 'Array of additional information to include on the enrollment or user records.
+
+          "avatar_url" and "group_ids" will be returned on the user record. If "current_points"
+
+          is specified, the fields "current_points" and (if the caller has
+
+          permissions to manage grades) "unposted_current_points" will be included
+
+          in the "grades" hash for student enrollments.'
+      - name: user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Filter by user_id (only valid for course or section enrollment
+
+          queries). If set to the current user''s id, this is a way to
+
+          determine if the user has any enrollments in the course or section,
+
+          independent of whether the user has permission to view other people
+
+          on the roster.'
+      - name: grading_period_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Return grades for the given grading_period.  If this parameter is not
+
+          specified, the returned grades will be for the whole course.'
+      - name: enrollment_term_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Returns only enrollments for the specified enrollment term. This parameter
+
+          only applies to the user enrollments path. May pass the ID from the
+
+          enrollment terms api or the SIS id prepended with ''sis_term_id:''.'
+      - name: sis_account_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments for the specified SIS account ID(s). Does not
+
+          look into sub_accounts. May pass in array or string.'
+      - name: sis_course_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments matching the specified SIS course ID(s).
+
+          May pass in array or string.'
+      - name: sis_section_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only section enrollments matching the specified SIS section ID(s).
+
+          May pass in array or string.'
+      - name: sis_user_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments for the specified SIS user ID(s). May pass in
+
+          array or string.'
+      - name: created_for_sis_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: boolean
+        required: false
+        description: 'If sis_user_id is present and created_for_sis_id is true, Returns only
+
+          enrollments for the specified SIS ID(s).
+
+          If a user has two sis_id''s, one enrollment may be created using one of the
+
+          two ids. This would limit the enrollments returned from the endpoint to
+
+          enrollments that were created from a sis_import with that sis_user_id'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+    post:
+      tags:
+      - Enrollments
+      operationId: enroll_user_sections
+      summary: Enroll a user
+      description: Create a new user enrollment for a course or section.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enrollment[start_at]:
+                  type: string
+                  format: date-time
+                  description: The start time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[end_at]:
+                  type: string
+                  format: date-time
+                  description: The end time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[user_id]:
+                  type: string
+                  description: The ID of the user to be enrolled in the course.
+                enrollment[type]:
+                  type: string
+                  enum:
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Enroll the user as a student, teacher, TA, observer, or designer. If no
+
+                    value is given, the type will be inferred by +enrollment[role]+ if supplied,
+
+                    otherwise ''StudentEnrollment'' will be used.'
+                enrollment[role]:
+                  type: string
+                  x-canvas-declared-type: Deprecated
+                  description: Assigns a custom course-level role to the user.
+                enrollment[role_id]:
+                  type: integer
+                  format: int64
+                  description: Assigns a custom course-level role to the user.
+                enrollment[enrollment_state]:
+                  type: string
+                  enum:
+                  - active
+                  - invited
+                  - inactive
+                  description: 'If set to ''active,'' student will be immediately enrolled in the course.
+
+                    Otherwise they will be required to accept a course invitation. Default is
+
+                    ''invited.''.
+
+
+                    If set to ''inactive'', student will be listed in the course roster for
+
+                    teachers, but will not be able to participate in the course until
+
+                    their enrollment is activated.'
+                enrollment[course_section_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course section to enroll the student in. If the
+
+                    section-specific URL is used, this argument is redundant and will be
+
+                    ignored.'
+                enrollment[limit_privileges_to_course_section]:
+                  type: boolean
+                  description: "If set, the enrollment will only allow the user to see and interact with\nusers enrolled in the section given by course_section_id.\n* For teachers and TAs, this includes grading privileges.\n* Section-limited students will not see any users (including teachers\n  and TAs) not enrolled in their sections.\n* Users may have other enrollments that grant privileges to\n  multiple sections in the same course."
+                enrollment[notify]:
+                  type: boolean
+                  description: 'If true, a notification will be sent to the enrolled user.
+
+                    Notifications are not sent by default.'
+                enrollment[self_enrollment_code]:
+                  type: string
+                  description: 'If the current user is not allowed to manage enrollments in this
+
+                    course, but the course allows self-enrollment, the user can self-
+
+                    enroll as a student in the default section by passing in a valid
+
+                    code. When self-enrolling, the user_id must be ''self''. The
+
+                    enrollment_state will be set to ''active'' and all other arguments
+
+                    will be ignored.'
+                enrollment[self_enrolled]:
+                  type: boolean
+                  description: 'If true, marks the enrollment as a self-enrollment, which gives
+
+                    students the ability to drop the course if desired. Defaults to false.'
+                enrollment[associated_user_id]:
+                  type: integer
+                  format: int64
+                  description: 'For an observer enrollment, the ID of a student to observe.
+
+                    This is a one-off operation; to automatically observe all a
+
+                    student''s enrollments (for example, as a parent), please use
+
+                    the {api:UserObserveesController#create User Observees API}.'
+                enrollment[sis_user_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (sis_user_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                enrollment[integration_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (integration_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                root_account:
+                  type: string
+                  description: 'The domain of the account to search for the user. Will be a no-op
+
+                    unless the sis_user_id or integration_id parameter is also included.'
+              required:
+              - enrollment[user_id]
+              - enrollment[type]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                enrollment[start_at]:
+                  type: string
+                  format: date-time
+                  description: The start time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[end_at]:
+                  type: string
+                  format: date-time
+                  description: The end time of the enrollment, in ISO8601 format. e.g. 2012-04-18T23:08:51Z
+                enrollment[user_id]:
+                  type: string
+                  description: The ID of the user to be enrolled in the course.
+                enrollment[type]:
+                  type: string
+                  enum:
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Enroll the user as a student, teacher, TA, observer, or designer. If no
+
+                    value is given, the type will be inferred by +enrollment[role]+ if supplied,
+
+                    otherwise ''StudentEnrollment'' will be used.'
+                enrollment[role]:
+                  type: string
+                  x-canvas-declared-type: Deprecated
+                  description: Assigns a custom course-level role to the user.
+                enrollment[role_id]:
+                  type: integer
+                  format: int64
+                  description: Assigns a custom course-level role to the user.
+                enrollment[enrollment_state]:
+                  type: string
+                  enum:
+                  - active
+                  - invited
+                  - inactive
+                  description: 'If set to ''active,'' student will be immediately enrolled in the course.
+
+                    Otherwise they will be required to accept a course invitation. Default is
+
+                    ''invited.''.
+
+
+                    If set to ''inactive'', student will be listed in the course roster for
+
+                    teachers, but will not be able to participate in the course until
+
+                    their enrollment is activated.'
+                enrollment[course_section_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course section to enroll the student in. If the
+
+                    section-specific URL is used, this argument is redundant and will be
+
+                    ignored.'
+                enrollment[limit_privileges_to_course_section]:
+                  type: boolean
+                  description: "If set, the enrollment will only allow the user to see and interact with\nusers enrolled in the section given by course_section_id.\n* For teachers and TAs, this includes grading privileges.\n* Section-limited students will not see any users (including teachers\n  and TAs) not enrolled in their sections.\n* Users may have other enrollments that grant privileges to\n  multiple sections in the same course."
+                enrollment[notify]:
+                  type: boolean
+                  description: 'If true, a notification will be sent to the enrolled user.
+
+                    Notifications are not sent by default.'
+                enrollment[self_enrollment_code]:
+                  type: string
+                  description: 'If the current user is not allowed to manage enrollments in this
+
+                    course, but the course allows self-enrollment, the user can self-
+
+                    enroll as a student in the default section by passing in a valid
+
+                    code. When self-enrolling, the user_id must be ''self''. The
+
+                    enrollment_state will be set to ''active'' and all other arguments
+
+                    will be ignored.'
+                enrollment[self_enrolled]:
+                  type: boolean
+                  description: 'If true, marks the enrollment as a self-enrollment, which gives
+
+                    students the ability to drop the course if desired. Defaults to false.'
+                enrollment[associated_user_id]:
+                  type: integer
+                  format: int64
+                  description: 'For an observer enrollment, the ID of a student to observe.
+
+                    This is a one-off operation; to automatically observe all a
+
+                    student''s enrollments (for example, as a parent), please use
+
+                    the {api:UserObserveesController#create User Observees API}.'
+                enrollment[sis_user_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (sis_user_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                enrollment[integration_id]:
+                  type: string
+                  description: 'Required if the user is being enrolled from another trusted account.
+
+                    The unique identifier for the user (integration_id) must also be
+
+                    accompanied by the root_account parameter. The user_id will be ignored.'
+                root_account:
+                  type: string
+                  description: 'The domain of the account to search for the user. Will be a no-op
+
+                    unless the sis_user_id or integration_id parameter is also included.'
+              required:
+              - enrollment[user_id]
+              - enrollment[type]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/users/{user_id}/enrollments:
+    get:
+      tags:
+      - Enrollments
+      operationId: list_enrollments_users
+      summary: List enrollments
+      description: 'Depending on the URL given, return a paginated list of either (1) all of
+
+        the enrollments in a course, (2) all of the enrollments in a section or (3)
+
+        all of a user''s enrollments. This includes student, teacher, TA, and
+
+        observer enrollments.
+
+
+        If a user has multiple enrollments in a context (e.g. as a teacher
+
+        and a student or in multiple course sections), each enrollment will be
+
+        listed separately.
+
+
+        note: Currently, only a root level admin user can return other users'' enrollments.
+
+        A user can, however, return his/her own enrollments.
+
+
+        Enrollments scoped to a course context will include inactive states by default
+
+        if the caller has account admin authorization and the state[] parameter is omitted.'
+      parameters:
+      - name: type
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of enrollment types to return. Accepted values are
+
+          ''StudentEnrollment'', ''TeacherEnrollment'', ''TaEnrollment'',
+
+          ''DesignerEnrollment'', and ''ObserverEnrollment.'' If omitted, all enrollment
+
+          types are returned. This argument is ignored if `role` is given.'
+      - name: role
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of enrollment roles to return. Accepted values include course-level
+
+          roles created by the {api:RoleOverridesController#add_role Add Role API}
+
+          as well as the base enrollment types accepted by the `type` argument above.'
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - invited
+            - creation_pending
+            - deleted
+            - rejected
+            - completed
+            - inactive
+            - current_and_invited
+            - current_and_future
+            - current_future_and_restricted
+            - current_and_concluded
+        required: false
+        description: 'Filter by enrollment state. If omitted, ''active'' and ''invited'' enrollments
+
+          are returned. The following synthetic states are supported only when
+
+          querying a user''s enrollments (either via user_id argument or via user
+
+          enrollments endpoint): +current_and_invited+, +current_and_future+, +current_future_and_restricted+, +current_and_concluded+'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - avatar_url
+            - group_ids
+            - locked
+            - observed_users
+            - can_be_removed
+            - uuid
+            - current_points
+        required: false
+        description: 'Array of additional information to include on the enrollment or user records.
+
+          "avatar_url" and "group_ids" will be returned on the user record. If "current_points"
+
+          is specified, the fields "current_points" and (if the caller has
+
+          permissions to manage grades) "unposted_current_points" will be included
+
+          in the "grades" hash for student enrollments.'
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: 'Filter by user_id (only valid for course or section enrollment
+
+          queries). If set to the current user''s id, this is a way to
+
+          determine if the user has any enrollments in the course or section,
+
+          independent of whether the user has permission to view other people
+
+          on the roster.'
+      - name: grading_period_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Return grades for the given grading_period.  If this parameter is not
+
+          specified, the returned grades will be for the whole course.'
+      - name: enrollment_term_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Returns only enrollments for the specified enrollment term. This parameter
+
+          only applies to the user enrollments path. May pass the ID from the
+
+          enrollment terms api or the SIS id prepended with ''sis_term_id:''.'
+      - name: sis_account_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments for the specified SIS account ID(s). Does not
+
+          look into sub_accounts. May pass in array or string.'
+      - name: sis_course_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments matching the specified SIS course ID(s).
+
+          May pass in array or string.'
+      - name: sis_section_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only section enrollments matching the specified SIS section ID(s).
+
+          May pass in array or string.'
+      - name: sis_user_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Returns only enrollments for the specified SIS user ID(s). May pass in
+
+          array or string.'
+      - name: created_for_sis_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: boolean
+        required: false
+        description: 'If sis_user_id is present and created_for_sis_id is true, Returns only
+
+          enrollments for the specified SIS ID(s).
+
+          If a user has two sis_id''s, one enrollment may be created using one of the
+
+          two ids. This would limit the enrollments returned from the endpoint to
+
+          enrollments that were created from a sis_import with that sis_user_id'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/accounts/{account_id}/enrollments/{id}:
+    get:
+      tags:
+      - Enrollments
+      operationId: enrollment_by_id
+      summary: Enrollment by ID
+      description: Get an Enrollment object by Enrollment ID
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the enrollment object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/accounts/{account_id}/bulk_enrollment:
+    post:
+      tags:
+      - Enrollments
+      operationId: enroll_multiple_users_to_one_or_more_courses
+      summary: Enroll multiple users to one or more courses
+      description: Enrolls multiple users in one or more courses in a single operation.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: The user IDs to enroll in the courses.
+                course_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: The course IDs to enroll each user in.
+                enrollment_type:
+                  type: string
+                  enum:
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Enroll each user as a student, teacher, TA, observer, or designer. If no
+
+                    value is given, the type will be ''StudentEnrollment''.'
+                enrollment_role_id:
+                  type: integer
+                  format: int64
+                  description: Optional custom course-level role id to apply to created enrollments.
+                start_at:
+                  type: string
+                  format: date-time
+                  description: 'The start time of every created enrollment, in ISO8601 format.
+
+                    e.g. 2012-04-18T23:08:51Z. When provided, applies to all enrollments in
+
+                    the bulk creation.'
+                end_at:
+                  type: string
+                  format: date-time
+                  description: 'The end time of every created enrollment, in ISO8601 format.
+
+                    e.g. 2012-04-18T23:08:51Z. When provided, applies to all enrollments in
+
+                    the bulk creation.'
+              required:
+              - user_ids
+              - course_ids
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: The user IDs to enroll in the courses.
+                course_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: The course IDs to enroll each user in.
+                enrollment_type:
+                  type: string
+                  enum:
+                  - StudentEnrollment
+                  - TeacherEnrollment
+                  - TaEnrollment
+                  - ObserverEnrollment
+                  - DesignerEnrollment
+                  description: 'Enroll each user as a student, teacher, TA, observer, or designer. If no
+
+                    value is given, the type will be ''StudentEnrollment''.'
+                enrollment_role_id:
+                  type: integer
+                  format: int64
+                  description: Optional custom course-level role id to apply to created enrollments.
+                start_at:
+                  type: string
+                  format: date-time
+                  description: 'The start time of every created enrollment, in ISO8601 format.
+
+                    e.g. 2012-04-18T23:08:51Z. When provided, applies to all enrollments in
+
+                    the bulk creation.'
+                end_at:
+                  type: string
+                  format: date-time
+                  description: 'The end time of every created enrollment, in ISO8601 format.
+
+                    e.g. 2012-04-18T23:08:51Z. When provided, applies to all enrollments in
+
+                    the bulk creation.'
+              required:
+              - user_ids
+              - course_ids
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/courses/{course_id}/enrollments/{id}:
+    delete:
+      tags:
+      - Enrollments
+      operationId: conclude_deactivate_or_delete_enrollment
+      summary: Conclude, deactivate, or delete an enrollment
+      description: 'Conclude, deactivate, or delete an enrollment. If the +task+ argument isn''t given, the enrollment
+
+        will be concluded.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: task
+        in: query
+        schema:
+          type: string
+          enum:
+          - conclude
+          - delete
+          - inactivate
+          - deactivate
+        required: false
+        description: 'The action to take on the enrollment.
+
+          When inactive, a user will still appear in the course roster to admins, but be unable to participate.
+
+          ("inactivate" and "deactivate" are equivalent tasks)'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/courses/{course_id}/enrollments/{id}/accept:
+    post:
+      tags:
+      - Enrollments
+      operationId: accept_course_invitation
+      summary: Accept Course Invitation
+      description: accepts a pending course invitation for the current user
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/courses/{course_id}/enrollments/{id}/reject:
+    post:
+      tags:
+      - Enrollments
+      operationId: reject_course_invitation
+      summary: Reject Course Invitation
+      description: rejects a pending course invitation for the current user
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/courses/{course_id}/enrollments/{id}/reactivate:
+    put:
+      tags:
+      - Enrollments
+      operationId: re_activate_enrollment
+      summary: Re-activate an enrollment
+      description: Activates an inactive enrollment
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/courses/{course_id}/users/{user_id}/last_attended:
+    put:
+      tags:
+      - Enrollments
+      operationId: add_last_attended_date
+      summary: Add last attended date
+      description: Add last attended date to student enrollment in course
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: The last attended date of a student enrollment in a course.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: The last attended date of a student enrollment in a course.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/users/{user_id}/temporary_enrollment_status:
+    get:
+      tags:
+      - Enrollments
+      operationId: show_temporary_enrollment_recipient_and_provider_status
+      summary: Show Temporary Enrollment recipient and provider status
+      description: Returns a JSON Object containing the temporary enrollment status for a user.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: account_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The ID of the account to check for temporary enrollment status.
+
+          Defaults to the domain root account if not provided.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+  /v1/temporary_enrollment_status:
+    get:
+      tags:
+      - Enrollments
+      operationId: bulk_temporary_enrollment_status
+      summary: Bulk Temporary Enrollment Status
+      description: Returns temporary enrollment statuses for multiple users at once.
+      parameters:
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: true
+        description: The IDs of the users to check temporary enrollment status for.
+      - name: account_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The ID of the account to scope the check to.
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The maximum number of user IDs to process. Defaults to 10, max 100.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/enrollments.html
+components:
+  schemas:
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The ID of the enrollment.
+        course_id:
+          type: integer
+          example: 1
+          description: The unique id of the course.
+        sis_course_id:
+          type: string
+          example: SHEL93921
+          description: The SIS Course ID in which the enrollment is associated. Only displayed if present. This field is only included if the user has permission to view SIS information.
+        course_integration_id:
+          type: string
+          example: SHEL93921
+          description: The Course Integration ID in which the enrollment is associated. This field is only included if the user has permission to view SIS information.
+        course_section_id:
+          type: integer
+          example: 1
+          description: The unique id of the user's section.
+        section_integration_id:
+          type: string
+          example: SHEL93921
+          description: The Section Integration ID in which the enrollment is associated. This field is only included if the user has permission to view SIS information.
+        sis_account_id:
+          type: string
+          example: SHEL93921
+          description: The SIS Account ID in which the enrollment is associated. Only displayed if present. This field is only included if the user has permission to view SIS information.
+        sis_section_id:
+          type: string
+          example: SHEL93921
+          description: The SIS Section ID in which the enrollment is associated. Only displayed if present. This field is only included if the user has permission to view SIS information.
+        sis_user_id:
+          type: string
+          example: SHEL93921
+          description: The SIS User ID in which the enrollment is associated. Only displayed if present. This field is only included if the user has permission to view SIS information.
+        enrollment_state:
+          type: string
+          example: active
+          description: The state of the user's enrollment in the course.
+        limit_privileges_to_course_section:
+          type: boolean
+          example: true
+          description: User can only access his or her own course section.
+        sis_import_id:
+          type: integer
+          example: 83
+          description: The unique identifier for the SIS import. This field is only included if the user has permission to manage SIS information.
+        root_account_id:
+          type: integer
+          example: 1
+          description: The unique id of the user's account.
+        type:
+          type: string
+          example: StudentEnrollment
+          description: The enrollment type. One of 'StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment', 'DesignerEnrollment', 'ObserverEnrollment'.
+        user_id:
+          type: integer
+          example: 1
+          description: The unique id of the user.
+        associated_user_id:
+          type: integer
+          description: The unique id of the associated user. Will be null unless type is ObserverEnrollment.
+        role:
+          type: string
+          example: StudentEnrollment
+          description: The enrollment role, for course-level permissions. This field will match `type` if the enrollment role has not been customized.
+        role_id:
+          type: integer
+          example: 1
+          description: The id of the enrollment role.
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-04-18T23:08:51Z'
+          description: The created time of the enrollment, in ISO8601 format.
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-04-18T23:08:51Z'
+          description: The updated time of the enrollment, in ISO8601 format.
+        start_at:
+          type: string
+          format: date-time
+          example: '2012-04-18T23:08:51Z'
+          description: The start time of the enrollment, in ISO8601 format.
+        end_at:
+          type: string
+          format: date-time
+          example: '2012-04-18T23:08:51Z'
+          description: The end time of the enrollment, in ISO8601 format.
+        last_activity_at:
+          type: string
+          format: date-time
+          example: '2012-04-18T23:08:51Z'
+          description: The last activity time of the user for the enrollment, in ISO8601 format.
+        last_attended_at:
+          type: string
+          format: date-time
+          example: '2012-04-18T23:08:51Z'
+          description: The last attended date of the user for the enrollment in a course, in ISO8601 format.
+        total_activity_time:
+          type: integer
+          example: 260
+          description: The total activity time of the user for the enrollment, in seconds.
+        html_url:
+          type: string
+          example: https://...
+          description: The URL to the Canvas web UI page for this course enrollment.
+        grades:
+          type: string
+          example:
+            html_url: https://...
+            current_score: 35
+            current_grade: null
+            final_score: 6.67
+            final_grade: null
+          description: The URL to the Canvas web UI page containing the grades associated with this enrollment.
+        user:
+          type: string
+          example:
+            id: 3
+            name: Student 1
+            sortable_name: 1, Student
+            short_name: Stud 1
+          description: A description of the user.
+        override_grade:
+          type: string
+          example: A
+          description: The user's override grade for the course.
+        override_score:
+          type: number
+          example: 99.99
+          description: The user's override score for the course.
+        unposted_current_grade:
+          type: string
+          example: ''
+          description: The user's current grade in the class including muted/unposted assignments. Only included if user has permissions to view this grade, typically teachers, TAs, and admins.
+        unposted_final_grade:
+          type: string
+          example: ''
+          description: The user's final grade for the class including muted/unposted assignments. Only included if user has permissions to view this grade, typically teachers, TAs, and admins..
+        unposted_current_score:
+          type: string
+          example: ''
+          description: The user's current score in the class including muted/unposted assignments. Only included if user has permissions to view this score, typically teachers, TAs, and admins..
+        unposted_final_score:
+          type: string
+          example: ''
+          description: The user's final score for the class including muted/unposted assignments. Only included if user has permissions to view this score, typically teachers, TAs, and admins..
+        has_grading_periods:
+          type: boolean
+          example: true
+          description: 'optional: Indicates whether the course the enrollment belongs to has grading periods set up. (applies only to student enrollments, and only available in course endpoints)'
+        totals_for_all_grading_periods_option:
+          type: boolean
+          example: true
+          description: 'optional: Indicates whether the course the enrollment belongs to has the Display Totals for ''All Grading Periods'' feature enabled. (applies only to student enrollments, and only available in course endpoints)'
+        current_grading_period_title:
+          type: string
+          example: Fall Grading Period
+          description: 'optional: The name of the currently active grading period, if one exists. If the course the enrollment belongs to does not have grading periods, or if no currently active grading period exists, the value will be null. (applies only to student enrollments, and only available in course endpoints)'
+        current_grading_period_id:
+          type: integer
+          example: 5
+          description: 'optional: The id of the currently active grading period, if one exists. If the course the enrollment belongs to does not have grading periods, or if no currently active grading period exists, the value will be null. (applies only to student enrollments, and only available in course endpoints)'
+        current_period_override_grade:
+          type: string
+          example: A
+          description: The user's override grade for the current grading period.
+        current_period_override_score:
+          type: number
+          example: 99.99
+          description: The user's override score for the current grading period.
+        current_period_unposted_current_score:
+          type: number
+          example: 95.8
+          description: 'optional: The student''s score in the course for the current grading period, including muted/unposted assignments. Only included if user has permission to view this score, typically teachers, TAs, and admins. If the course the enrollment belongs to does not have grading periods, or if no currently active grading period exists, the value will be null. (applies only to student enrollments, and only available in course endpoints)'
+        current_period_unposted_final_score:
+          type: number
+          example: 85.25
+          description: 'optional: The student''s score in the course for the current grading period, including muted/unposted assignments and including ungraded assignments with a score of 0. Only included if user has permission to view this score, typically teachers, TAs, and admins. If the course the enrollment belongs to does not have grading periods, or if no currently active grading period exists, the value will be null. (applies only to student enrollments, and only available in course endpoints)'
+        current_period_unposted_current_grade:
+          type: string
+          example: A
+          description: 'optional: The letter grade equivalent of current_period_unposted_current_score, if available. Only included if user has permission to view this grade, typically teachers, TAs, and admins. If the course the enrollment belongs to does not have grading periods, or if no currently active grading period exists, the value will be null. (applies only to student enrollments, and only available in course endpoints)'
+        current_period_unposted_final_grade:
+          type: string
+          example: B
+          description: 'optional: The letter grade equivalent of current_period_unposted_final_score, if available. Only included if user has permission to view this grade, typically teachers, TAs, and admins. If the course the enrollment belongs to does not have grading periods, or if no currently active grading period exists, the value will be null. (applies only to student enrollments, and only available in course endpoints)'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

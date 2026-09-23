@@ -1,0 +1,389 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Asset Processor API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Asset Processor
+  x-resource: asset_processor
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/asset_processor.html
+paths:
+  /lti/asset_processors/{asset_processor_id}/reports:
+    post:
+      tags:
+      - Asset Processor
+      operationId: create_asset_report
+      summary: Create an Asset Report
+      description: 'Creates a report for a given Canvas-managed asset (such as a submission
+
+        attachment).
+
+
+        Returns an HTTP 201 (Created) on success.'
+      parameters:
+      - name: asset_processor_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assetId:
+                  type: string
+                  description: 'The UUID of the asset to which the report applies. Canvas will supply
+
+                    this to the tool in the the `LtiAssetProcessorSubmissionNotice`.'
+                errorCode:
+                  type: string
+                  description: 'A machine-readable code indicating the cause of the failure, for reports
+
+                    with a processingProgress value of `Failed`. The following standard error
+
+                    codes are available, but tools may use their own (in which case the tool
+
+                    may provide human-readable information in the `comment` field):
+
+                    UNSUPPORTED_ASSET_TYPE, ASSET_TOO_LARGE, ASSET_TOO_SMALL,
+
+                    EULA_NOT_ACCEPTED, DOWNLOAD_FAILED'
+                indicationAlt:
+                  type: string
+                  description: 'Alternate text representing the meaning of the indicationColor for screen
+
+                    readers or as a tooltip over the indication color.'
+                indicationColor:
+                  type: string
+                  description: 'A hex (#RRGGBB) color code the tool wishes to use indicating the outcome
+
+                    of an asset''s report.'
+                priority:
+                  type: integer
+                  format: int64
+                  description: 'A number from 0 (meaning "good" or "success") to 5 (meaning urgent or
+
+                    time-critical notable features) indicating the tool''s perceived priority
+
+                    of the report. If a priority is not known or applicable, the tool should
+
+                    use the value 0.'
+                processingProgress:
+                  type: string
+                  description: 'Indicates the status of the report. Should be one of the following:
+
+                    Processed, Processing, PendingManual, Failed, NotProcessed, NotReady.
+
+                    If an unrecognized value is given, the value will be stored, but will
+
+                    be treated by Canvas as `NotReady`.'
+                result:
+                  type: string
+                  description: 'A short string (16 characters or fewer) that briefly describes the
+
+                    successful result of the processing. This should be provided if
+
+                    processingProgress is Processed, and not provided otherwise.'
+                timestamp:
+                  type: string
+                  description: 'An ISO8601 date time value with microsecond precision. Reports with newer
+
+                    timestamps for the same asset and report type supersede
+
+                    previously submitted reports with older (or equal) timestamps. Likewise,
+
+                    if the timestamp provided is older than the latest timestamp for an
+
+                    existing report (of same asset and type), the new report will be
+
+                    ignored and the endpoint will return an HTTP 409 (Conflict).'
+                title:
+                  type: string
+                  description: A human-readable title for the report, to be displayed to the user.
+                type:
+                  type: string
+                  description: An opaque value representing the type of report.
+                visibleToOwner:
+                  type: boolean
+                  description: 'A boolean value indicates whether the indicator and report
+
+                    should be visible to the user who owns the asset being reported on.
+
+                    If no value is provided, the platform should assume a default value of false'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                assetId:
+                  type: string
+                  description: 'The UUID of the asset to which the report applies. Canvas will supply
+
+                    this to the tool in the the `LtiAssetProcessorSubmissionNotice`.'
+                errorCode:
+                  type: string
+                  description: 'A machine-readable code indicating the cause of the failure, for reports
+
+                    with a processingProgress value of `Failed`. The following standard error
+
+                    codes are available, but tools may use their own (in which case the tool
+
+                    may provide human-readable information in the `comment` field):
+
+                    UNSUPPORTED_ASSET_TYPE, ASSET_TOO_LARGE, ASSET_TOO_SMALL,
+
+                    EULA_NOT_ACCEPTED, DOWNLOAD_FAILED'
+                indicationAlt:
+                  type: string
+                  description: 'Alternate text representing the meaning of the indicationColor for screen
+
+                    readers or as a tooltip over the indication color.'
+                indicationColor:
+                  type: string
+                  description: 'A hex (#RRGGBB) color code the tool wishes to use indicating the outcome
+
+                    of an asset''s report.'
+                priority:
+                  type: integer
+                  format: int64
+                  description: 'A number from 0 (meaning "good" or "success") to 5 (meaning urgent or
+
+                    time-critical notable features) indicating the tool''s perceived priority
+
+                    of the report. If a priority is not known or applicable, the tool should
+
+                    use the value 0.'
+                processingProgress:
+                  type: string
+                  description: 'Indicates the status of the report. Should be one of the following:
+
+                    Processed, Processing, PendingManual, Failed, NotProcessed, NotReady.
+
+                    If an unrecognized value is given, the value will be stored, but will
+
+                    be treated by Canvas as `NotReady`.'
+                result:
+                  type: string
+                  description: 'A short string (16 characters or fewer) that briefly describes the
+
+                    successful result of the processing. This should be provided if
+
+                    processingProgress is Processed, and not provided otherwise.'
+                timestamp:
+                  type: string
+                  description: 'An ISO8601 date time value with microsecond precision. Reports with newer
+
+                    timestamps for the same asset and report type supersede
+
+                    previously submitted reports with older (or equal) timestamps. Likewise,
+
+                    if the timestamp provided is older than the latest timestamp for an
+
+                    existing report (of same asset and type), the new report will be
+
+                    ignored and the endpoint will return an HTTP 409 (Conflict).'
+                title:
+                  type: string
+                  description: A human-readable title for the report, to be displayed to the user.
+                type:
+                  type: string
+                  description: An opaque value representing the type of report.
+                visibleToOwner:
+                  type: boolean
+                  description: 'A boolean value indicates whether the indicator and report
+
+                    should be visible to the user who owns the asset being reported on.
+
+                    If no value is provided, the platform should assume a default value of false'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: the input arguments, as accepted and stored in the database.
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/asset_processor.html
+  /lti/asset_processor_eulas/{context_external_tool_id}/deployment:
+    put:
+      tags:
+      - Asset Processor
+      operationId: update_eula_deployment_configuration
+      summary: Update Eula Deployment Configuration
+      description: 'Provides a mechanism by which a platform can enable or disable the requirement
+
+        for users to accept a EULA within the scope of an entire deployment'
+      parameters:
+      - name: context_external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eulaRequired:
+                  type: boolean
+                  description: A boolean value representing whether or not the EULA is required for the deployment.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                eulaRequired:
+                  type: boolean
+                  description: A boolean value representing whether or not the EULA is required for the deployment.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: the input arguments as accepted and stored in the database
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/asset_processor.html
+  /lti/asset_processor_eulas/{context_external_tool_id}/user:
+    post:
+      tags:
+      - Asset Processor
+      operationId: create_eula_acceptance
+      summary: Create an Eula Acceptance
+      description: 'The EULA user acceptance service provides a mechanism
+
+        by which a tool can notify a platform of whether or not a user has accepted a EULA.'
+      parameters:
+      - name: context_external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: 'The userId represents the user who has accepted or declined the EULA,
+
+                    `lti_id` of the Canvas User.'
+                accepted:
+                  type: boolean
+                  description: A boolean value representing whether or not the user has accepted the EULA
+                timestamp:
+                  type: string
+                  description: 'The timestamp represents the time at which the user accepted or declined the EULA.
+
+                    This timestamp must be formatted as an ISO 8601 date time.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: 'The userId represents the user who has accepted or declined the EULA,
+
+                    `lti_id` of the Canvas User.'
+                accepted:
+                  type: boolean
+                  description: A boolean value representing whether or not the user has accepted the EULA
+                timestamp:
+                  type: string
+                  description: 'The timestamp represents the time at which the user accepted or declined the EULA.
+
+                    This timestamp must be formatted as an ISO 8601 date time.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: the input arguments as accepted and stored in the database
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/asset_processor.html
+    delete:
+      tags:
+      - Asset Processor
+      operationId: delete_eula_acceptances_for_deployment
+      summary: Delete Eula Acceptances for deployment
+      description: 'Remove the EULA acceptance status for all users within the current deployment.
+
+        This will allow a tool to reset the EULA acceptance status for all users,
+
+        and force them to accept the EULA again in the case that the EULA has changed.'
+      parameters:
+      - name: context_external_tool_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: 204 No Content
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/asset_processor.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

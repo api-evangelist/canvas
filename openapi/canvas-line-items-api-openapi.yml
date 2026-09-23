@@ -1,0 +1,446 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Line Items API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Line Items
+  x-resource: line_items
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/line_items.html
+paths:
+  /lti/courses/{course_id}/line_items:
+    post:
+      tags:
+      - Line Items
+      operationId: create_line_item
+      summary: Create a Line Item
+      description: Create a new Line Item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scoreMaximum:
+                  type: number
+                  description: The maximum score for the line item. Scores created for the Line Item may exceed this value.
+                label:
+                  type: string
+                  description: 'The label for the Line Item. If no resourceLinkId is specified this value will also be used
+
+                    as the name of the placeholder assignment.'
+                resourceId:
+                  type: string
+                  description: 'A Tool Provider specified id for the Line Item. Multiple line items may
+
+                    share the same resourceId within a given context.'
+                tag:
+                  type: string
+                  description: 'A value used to qualify a line Item beyond its ids. Line Items may be queried
+
+                    by this value in the List endpoint. Multiple line items can share the same tag
+
+                    within a given context.'
+                resourceLinkId:
+                  type: string
+                  description: 'The resource link id the Line Item should be attached to. This value should
+
+                    match the LTI id of the Canvas assignment associated with the tool.'
+                startDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item is made available. Corresponds
+
+                    to the assignment''s unlock_at date.'
+                endDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item stops receiving submissions. Corresponds
+
+                    to the assignment''s due_at date.'
+                https://canvas.instructure.com/lti/submission_type:
+                  type: object
+                  additionalProperties: true
+                  description: '(EXTENSION) - Optional block to set Assignment Submission Type when creating a new assignment is created.
+
+                    type - ''none'' or ''external_tool''::
+
+                    external_tool_url - Submission URL only used when type: ''external_tool''::'
+              required:
+              - scoreMaximum
+              - label
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                scoreMaximum:
+                  type: number
+                  description: The maximum score for the line item. Scores created for the Line Item may exceed this value.
+                label:
+                  type: string
+                  description: 'The label for the Line Item. If no resourceLinkId is specified this value will also be used
+
+                    as the name of the placeholder assignment.'
+                resourceId:
+                  type: string
+                  description: 'A Tool Provider specified id for the Line Item. Multiple line items may
+
+                    share the same resourceId within a given context.'
+                tag:
+                  type: string
+                  description: 'A value used to qualify a line Item beyond its ids. Line Items may be queried
+
+                    by this value in the List endpoint. Multiple line items can share the same tag
+
+                    within a given context.'
+                resourceLinkId:
+                  type: string
+                  description: 'The resource link id the Line Item should be attached to. This value should
+
+                    match the LTI id of the Canvas assignment associated with the tool.'
+                startDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item is made available. Corresponds
+
+                    to the assignment''s unlock_at date.'
+                endDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item stops receiving submissions. Corresponds
+
+                    to the assignment''s due_at date.'
+                https://canvas.instructure.com/lti/submission_type:
+                  type: object
+                  additionalProperties: true
+                  description: '(EXTENSION) - Optional block to set Assignment Submission Type when creating a new assignment is created.
+
+                    type - ''none'' or ''external_tool''::
+
+                    external_tool_url - Submission URL only used when type: ''external_tool''::'
+              required:
+              - scoreMaximum
+              - label
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/line_items.html
+    get:
+      tags:
+      - Line Items
+      operationId: list_line_items
+      summary: List line Items
+      description: List all Line Items for a course
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: tag
+        in: query
+        schema:
+          type: string
+        required: false
+        description: If specified only Line Items with this tag will be included.
+      - name: resource_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: If specified only Line Items with this resource_id will be included.
+      - name: resource_link_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: If specified only Line Items attached to the specified resource_link_id will be included.
+      - name: limit
+        in: query
+        schema:
+          type: string
+        required: false
+        description: May be used to limit the number of Line Items returned in a page
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - launch_url
+        required: false
+        description: 'Array of additional information to include.
+
+
+          "launch_url":: includes the launch URL for each line item using the "https\://canvas.instructure.com/lti/launch_url" extension'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/line_items.html
+  /lti/courses/{course_id}/line_items/{id}:
+    put:
+      tags:
+      - Line Items
+      operationId: update_line_item
+      summary: Update a Line Item
+      description: Update new Line Item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scoreMaximum:
+                  type: number
+                  description: The maximum score for the line item. Scores created for the Line Item may exceed this value.
+                label:
+                  type: string
+                  description: 'The label for the Line Item. If no resourceLinkId is specified this value will also be used
+
+                    as the name of the placeholder assignment.'
+                resourceId:
+                  type: string
+                  description: 'A Tool Provider specified id for the Line Item. Multiple line items may
+
+                    share the same resourceId within a given context.'
+                tag:
+                  type: string
+                  description: 'A value used to qualify a line Item beyond its ids. Line Items may be queried
+
+                    by this value in the List endpoint. Multiple line items can share the same tag
+
+                    within a given context.'
+                startDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item is made available. Corresponds
+
+                    to the assignment''s unlock_at date.'
+                endDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item stops receiving submissions. Corresponds
+
+                    to the assignment''s due_at date.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                scoreMaximum:
+                  type: number
+                  description: The maximum score for the line item. Scores created for the Line Item may exceed this value.
+                label:
+                  type: string
+                  description: 'The label for the Line Item. If no resourceLinkId is specified this value will also be used
+
+                    as the name of the placeholder assignment.'
+                resourceId:
+                  type: string
+                  description: 'A Tool Provider specified id for the Line Item. Multiple line items may
+
+                    share the same resourceId within a given context.'
+                tag:
+                  type: string
+                  description: 'A value used to qualify a line Item beyond its ids. Line Items may be queried
+
+                    by this value in the List endpoint. Multiple line items can share the same tag
+
+                    within a given context.'
+                startDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item is made available. Corresponds
+
+                    to the assignment''s unlock_at date.'
+                endDateTime:
+                  type: string
+                  description: 'The ISO8601 date and time when the line item stops receiving submissions. Corresponds
+
+                    to the assignment''s due_at date.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/line_items.html
+    get:
+      tags:
+      - Line Items
+      operationId: show_line_item
+      summary: Show a Line Item
+      description: Show existing Line Item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - launch_url
+        required: false
+        description: 'Array of additional information to include.
+
+
+          "launch_url":: includes the launch URL for this line item using the "https\://canvas.instructure.com/lti/launch_url" extension'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/line_items.html
+    delete:
+      tags:
+      - Line Items
+      operationId: delete_line_item
+      summary: Delete a Line Item
+      description: Delete an existing Line Item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineItem'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/line_items.html
+components:
+  schemas:
+    LineItem:
+      type: object
+      properties:
+        id:
+          type: string
+          example: http://institution.canvas.com/api/lti/courses/5/line_items/2
+          description: The fully qualified URL for showing, updating, and deleting the Line Item
+        scoreMaximum:
+          type: number
+          example: '50'
+          description: The maximum score of the Line Item
+        label:
+          type: string
+          example: '50'
+          description: The label of the Line Item.
+        tag:
+          type: string
+          example: '50'
+          description: Tag used to qualify a line Item beyond its ids
+        resourceId:
+          type: string
+          example: '50'
+          description: A Tool Provider specified id for the Line Item. Multiple line items can share the same resourceId within a given context
+        resourceLinkId:
+          type: string
+          example: '50'
+          description: The resource link id the Line Item is attached to
+        https://canvas.instructure.com/lti/submission_type:
+          type: string
+          example: "{\n\t\"type\":\"external_tool\",\n\t\"external_tool_url\":\"https://my.launch.url\",\n}"
+          description: The extension that defines the submission_type of the line_item. Only returns if set through the line_item create endpoint.
+        https://canvas.instructure.com/lti/launch_url:
+          type: string
+          example: https://my.tool.url/launch
+          description: The launch url of the Line Item. Only returned if `include=launch_url` query parameter is passed, and only for Show and List actions.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

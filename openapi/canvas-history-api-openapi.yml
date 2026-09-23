@@ -1,0 +1,140 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST History API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: History
+  x-resource: history
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/history.html
+paths:
+  /v1/users/{user_id}/history:
+    get:
+      tags:
+      - History
+      operationId: list_recent_history_for_user
+      summary: List recent history for a user
+      description: 'Return a paginated list of the user''s recent history. History entries are returned in descending order,
+
+        newest to oldest. You may list history entries for yourself (use +self+ as the user_id), for a student you observe,
+
+        or for a user you manage as an administrator. Note that the +per_page+ pagination argument is not supported
+
+        and the number of history entries returned per page will vary.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoryEntry'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/history.html
+components:
+  schemas:
+    HistoryEntry:
+      type: object
+      properties:
+        asset_code:
+          type: string
+          example: assignment_123
+          description: The asset string for the item viewed
+        asset_name:
+          type: string
+          example: Test Assignment
+          description: The name of the item
+        asset_icon:
+          type: string
+          example: icon-assignment
+          description: The icon type shown for the item. One of 'icon-announcement', 'icon-assignment', 'icon-calendar-month', 'icon-discussion', 'icon-document', 'icon-download', 'icon-gradebook', 'icon-home', 'icon-message', 'icon-module', 'icon-outcomes', 'icon-quiz', 'icon-user', 'icon-syllabus'
+        asset_readable_category:
+          type: string
+          example: Assignment
+          description: The associated category describing the asset_icon
+        context_type:
+          type: string
+          example: Course
+          description: The type of context of the item visited. One of 'Course', 'Group', 'User', or 'Account'
+        context_id:
+          type: integer
+          format: int64
+          example: 123
+          description: The id of the context, if applicable
+        context_name:
+          type: string
+          example: Something 101
+          description: The name of the context
+        visited_url:
+          type: string
+          example: https://canvas.example.com/courses/123/assignments/456
+          description: The URL of the item
+        visited_at:
+          type: string
+          format: date-time
+          example: '2019-08-01T19:49:47Z'
+          description: When the page was visited
+        interaction_seconds:
+          type: integer
+          format: int64
+          example: 400
+          description: The estimated time spent on the page in seconds
+      required:
+      - asset_code
+      - asset_name
+      - visited_url
+      - visited_at
+      description: Information about a recently visited item or page in Canvas
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

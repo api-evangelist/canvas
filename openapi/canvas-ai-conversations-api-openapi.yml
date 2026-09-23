@@ -1,0 +1,459 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Ai Conversations API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Ai Conversations
+  x-resource: ai_conversations
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/ai_conversations.html
+paths:
+  /v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}:
+    get:
+      tags:
+      - Ai Conversations
+      operationId: show_conversation
+      summary: Show conversation
+      description: Get a specific conversation by ID (for teachers viewing student conversations)
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with conversation details including messages'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+    delete:
+      tags:
+      - Ai Conversations
+      operationId: delete_ai_conversation
+      summary: Delete AI conversation
+      description: End the current conversation session
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Success message'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+  /v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations:
+    get:
+      tags:
+      - Ai Conversations
+      operationId: get_active_conversation
+      summary: Get active conversation
+      description: Get the active conversation for the current user and AI experience
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with id and messages array, or empty object if no active conversation'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+    post:
+      tags:
+      - Ai Conversations
+      operationId: create_ai_conversation
+      summary: Create AI conversation
+      description: Initialize a new conversation with the AI experience
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with conversation_id and initial messages array'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+  /v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages:
+    post:
+      tags:
+      - Ai Conversations
+      operationId: post_message_to_conversation
+      summary: Post message to conversation
+      description: Send a message to an existing conversation and get the AI response
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The user's message to send to the AI
+              required:
+              - message
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The user's message to send to the AI
+              required:
+              - message
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with id and updated messages array'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+  /v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/evaluation:
+    get:
+      tags:
+      - Ai Conversations
+      operationId: get_conversation_evaluation
+      summary: Get conversation evaluation
+      description: 'Fetch the latest stored evaluation for a conversation from the
+
+        llm-conversation service. Reads only — does not run the LLM and is not
+
+        rate-limited. `evaluation` is null when none has been generated yet (llma
+
+        returns 200 + null, never 404, so this is distinguishable from an outage).
+
+        `stale` is true when the AI experience was edited after the stored
+
+        evaluation was generated.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with { id, evaluation, stale }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+    post:
+      tags:
+      - Ai Conversations
+      operationId: generate_conversation_evaluation
+      summary: Generate conversation evaluation
+      description: 'Run the LLM to (re)generate an evaluation for a conversation and persist it
+
+        in the llm-conversation service. Rate-limited. Also the Reset path — a fresh
+
+        run replaces any prior stored evaluation.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with { id, evaluation }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+  /v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages/{message_id}/feedback:
+    post:
+      tags:
+      - Ai Conversations
+      operationId: create_feedback_on_conversation_message
+      summary: Create feedback on a conversation message
+      description: 'Submit a like or dislike vote on an AI-generated message.
+
+
+        Ownership: load_conversation gates this action — only the conversation owner
+
+        or a course manager reaches here. Sub-resource (message_id within the
+
+        conversation) scoping is delegated to llma.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: message_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: llm-conversation message UUID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vote:
+                  type: string
+                  description: '"liked" or "disliked"'
+                feedback_message:
+                  type: string
+                  description: optional text for dislike
+              required:
+              - vote
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                vote:
+                  type: string
+                  description: '"liked" or "disliked"'
+                feedback_message:
+                  type: string
+                  description: optional text for dislike
+              required:
+              - vote
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Hash with feedback record'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+  /v1/courses/{course_id}/ai_experiences/{ai_experience_id}/conversations/{id}/messages/{message_id}/feedback/{feedback_id}:
+    delete:
+      tags:
+      - Ai Conversations
+      operationId: delete_feedback_on_conversation_message
+      summary: Delete feedback on a conversation message
+      description: 'Remove a previously submitted vote (toggling off like/dislike).
+
+
+        Ownership: load_conversation gates this action — only the conversation owner
+
+        or a course manager reaches here. Sub-resource (message_id, feedback_id within
+
+        the conversation) scoping is delegated to llma.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ai_experience_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: message_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feedback_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{Object} Success response'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/ai_conversations.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

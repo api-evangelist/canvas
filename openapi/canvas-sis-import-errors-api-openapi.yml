@@ -1,0 +1,180 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Sis Import Errors API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Sis Import Errors
+  x-resource: sis_import_errors
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/sis_import_errors.html
+paths:
+  /v1/accounts/{account_id}/sis_imports/{id}/errors:
+    get:
+      tags:
+      - Sis Import Errors
+      operationId: get_sis_import_error_list_sis_imports
+      summary: Get SIS import error list
+      description: 'Returns the list of SIS import errors for an account or a SIS import. Import
+
+        errors are only stored for 30 days.
+
+
+        Example:
+
+        curl ''https:///api/v1/accounts//sis_imports//sis_import_errors'' \
+
+        -H "Authorization: Bearer "
+
+
+        Example:
+
+        curl ''https:///api/v1/accounts//sis_import_errors'' \
+
+        -H "Authorization: Bearer "'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: failure
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If set, only shows errors on a sis import that would cause a failure.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SisImportError'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_import_errors.html
+  /v1/accounts/{account_id}/sis_import_errors:
+    get:
+      tags:
+      - Sis Import Errors
+      operationId: get_sis_import_error_list_sis_import_errors
+      summary: Get SIS import error list
+      description: 'Returns the list of SIS import errors for an account or a SIS import. Import
+
+        errors are only stored for 30 days.
+
+
+        Example:
+
+        curl ''https:///api/v1/accounts//sis_imports//sis_import_errors'' \
+
+        -H "Authorization: Bearer "
+
+
+        Example:
+
+        curl ''https:///api/v1/accounts//sis_import_errors'' \
+
+        -H "Authorization: Bearer "'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: failure
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If set, only shows errors on a sis import that would cause a failure.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SisImportError'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_import_errors.html
+components:
+  schemas:
+    SisImportError:
+      type: object
+      properties:
+        sis_import_id:
+          type: integer
+          example: '1'
+          description: The unique identifier for the SIS import.
+        file:
+          type: string
+          example: courses.csv
+          description: The file where the error message occurred.
+        message:
+          type: string
+          example: No short_name given for course C001
+          description: The error message that from the record.
+        row_info:
+          type: string
+          example: 'account_1, Sub account 1,, active '
+          description: The contents of the line that had the error.
+        row:
+          type: integer
+          example: '34'
+          description: The line number where the error occurred. Some Importers do not yet support this. This is a 1 based index starting with the header row.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,488 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Outcome Results API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Outcome Results
+  x-resource: outcome_results
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/outcome_results.html
+paths:
+  /v1/courses/{course_id}/outcome_results:
+    get:
+      tags:
+      - Outcome Results
+      operationId: get_outcome_results
+      summary: Get outcome results
+      description: 'Gets the outcome results for users and outcomes in the specified context.
+
+
+        used in sLMGB'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'If specified, only the users whose ids are given will be included in the
+
+          results. SIS ids can be used, prefixed by "sis_user_id:".
+
+          It is an error to specify an id for a user who is not a student in
+
+          the context.'
+      - name: outcome_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'If specified, only the outcomes whose ids are given will be included in the
+
+          results. it is an error to specify an id for an outcome which is not linked
+
+          to the context.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: '[String, "alignments"|"outcomes"|"outcomes.alignments"|"outcome_groups"|"outcome_links"|"outcome_paths"|"users"]
+
+          Specify additional collections to be side loaded with the result.
+
+          "alignments" includes only the alignments referenced by the returned
+
+          results.
+
+          "outcomes.alignments" includes all alignments referenced by outcomes in the
+
+          context.'
+      - name: include_hidden
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, results that are hidden from the learning mastery gradebook and student rollup
+
+          scores will be included'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_results.html
+  /v1/courses/{course_id}/assign_outcome_order:
+    post:
+      tags:
+      - Outcome Results
+      operationId: set_outcome_ordering_for_lmgb
+      summary: Set outcome ordering for LMGB
+      description: Saves the ordering of outcomes in LMGB for a user
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_results.html
+  /v1/courses/{course_id}/outcome_rollups:
+    get:
+      tags:
+      - Outcome Results
+      operationId: get_outcome_result_rollups
+      summary: Get outcome result rollups
+      description: 'Gets the outcome rollups for the users and outcomes in the specified
+
+        context.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: aggregate
+        in: query
+        schema:
+          type: string
+          enum:
+          - course
+        required: false
+        description: 'If specified, instead of returning one rollup for each user, all the user
+
+          rollups will be combined into one rollup for the course that will contain
+
+          the average (or median, see below) rollup score for each outcome.'
+      - name: aggregate_stat
+        in: query
+        schema:
+          type: string
+          enum:
+          - mean
+          - median
+        required: false
+        description: 'If aggregate rollups requested, then this value determines what
+
+          statistic is used for the aggregate. Defaults to "mean" if this value
+
+          is not specified.'
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'If specified, only the users whose ids are given will be included in the
+
+          results or used in an aggregate result. it is an error to specify an id
+
+          for a user who is not a student in the context'
+      - name: outcome_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'If specified, only the outcomes whose ids are given will be included in the
+
+          results. it is an error to specify an id for an outcome which is not linked
+
+          to the context.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: '[String, "courses"|"outcomes"|"outcomes.alignments"|"outcome_groups"|"outcome_links"|"outcome_paths"|"users"]
+
+          Specify additional collections to be side loaded with the result.'
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - missing_user_rollups
+            - missing_outcome_results
+            - ''
+        required: false
+        description: 'Specify additional values to exclude.
+
+          "missing_user_rollups" excludes rollups for users without results.
+
+          "missing_outcome_results" excludes outcomes without results.'
+      - name: sort_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - student
+          - outcome
+        required: false
+        description: 'If specified, sorts outcome result rollups. "student" sorting will sort
+
+          by a user''s sortable name. "outcome" sorting will sort by the given outcome''s
+
+          rollup score. The latter requires specifying the "sort_outcome_id" parameter.
+
+          By default, the sort order is ascending.'
+      - name: sort_outcome_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'If outcome sorting requested, then this determines which outcome to use
+
+          for rollup score sorting.'
+      - name: sort_order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: 'If sorting requested, then this allows changing the default sort order of
+
+          ascending to descending.'
+      - name: add_defaults
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If defaults are requested, then color and mastery level defaults will be
+
+          added to outcome ratings in the rollup. This will only take effect if
+
+          the Account Level Mastery Scales FF is DISABLED'
+      - name: contributing_scores
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: '**DEPRECATED**: This parameter is deprecated. Use the separate
+
+          GET /api/v1/courses/:course_id/outcomes/:outcome_id/contributing_scores
+
+          endpoint instead to fetch contributing scores for a specific outcome.
+
+          If contributing scores are requested, then each individual outcome score will
+
+          also include all graded artifacts that contributed to the outcome score'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_results.html
+  /v1/courses/{course_id}/outcomes/{outcome_id}/contributing_scores:
+    get:
+      tags:
+      - Outcome Results
+      operationId: get_contributing_scores
+      summary: Get contributing scores
+      description: 'Gets the contributing scores for a specific outcome and set of users.
+
+        Contributing scores are the individual assignment/quiz scores that
+
+        contributed to the outcome score for each user.
+
+
+        Returns all alignments for the outcome in the course context.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: outcome_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'If specified, only the users whose ids are given will be included in the
+
+          results. It is an error to specify an id for a user who is not a student in
+
+          the context.'
+      - name: only_assignment_alignments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If specified, only assignment alignments will be included in the results.
+      - name: show_unpublished_assignments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, unpublished assignments will be included in the results. Defaults to false.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_results.html
+  /v1/courses/{course_id}/outcome_mastery_distribution:
+    get:
+      tags:
+      - Outcome Results
+      operationId: get_mastery_distribution
+      summary: Get mastery distribution
+      description: 'Returns the distribution of student scores across mastery levels for all outcomes.
+
+        This endpoint fetches data for ALL students (not paginated) to provide accurate
+
+        distribution statistics for charts and analytics.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Optionally restrict which results are included:
+
+          - "missing_user_rollups": exclude students without any scores
+
+          - "missing_outcome_results": exclude outcomes without any results'
+      - name: outcome_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: Optionally restrict to specific outcome IDs
+      - name: student_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: Optionally restrict to specific student IDs. If not provided, all students will be included.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Optionally include additional data:
+
+          - "alignment_distributions": include contributing score distributions for alignments'
+      - name: only_assignment_alignments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true and alignment_distributions is included, only include assignment alignments. Default: false.'
+      - name: show_unpublished_assignments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include unpublished assignments in alignment distributions. Default: false.'
+      - name: add_defaults
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If defaults are requested, then color and mastery level defaults will be
+
+          added to outcome ratings in the result. This will only take effect if
+
+          the Account Level Mastery Scales FF is DISABLED'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: MasteryDistributionResponse
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_results.html
+  /v1/courses/{course_id}/enqueue_outcome_rollup_calculation:
+    post:
+      tags:
+      - Outcome Results
+      operationId: enqueue_delayed_outcome_rollup_calculation_job
+      summary: Enqueue a delayed Outcome Rollup Calculation Job
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_uuid:
+                  type: string
+                  description: The student UUID for the rollup job. If provided, calculates for specific student.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                student_uuid:
+                  type: string
+                  description: The student UUID for the rollup job. If provided, calculates for specific student.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: RollupJob
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_results.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

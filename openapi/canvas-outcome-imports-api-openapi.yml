@@ -1,0 +1,440 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Outcome Imports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Outcome Imports
+  x-resource: outcome_imports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/outcome_imports.html
+paths:
+  /v1/accounts/{account_id}/outcome_imports:
+    post:
+      tags:
+      - Outcome Imports
+      operationId: import_outcomes_accounts
+      summary: Import Outcomes
+      description: 'Import outcomes into Canvas.
+
+
+        For more information on the format that''s expected here, please see the
+
+        "Outcomes CSV" section in the API docs.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                import_type:
+                  type: string
+                  description: 'Choose the data format for reading outcome data. With a standard Canvas
+
+                    install, this option can only be ''instructure_csv'', and if unprovided,
+
+                    will be assumed to be so. Can be part of the query string.'
+                attachment:
+                  type: string
+                  description: "There are two ways to post outcome import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe outcome data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'"
+                extension:
+                  type: string
+                  description: 'Recommended for raw post request style imports. This field will be used to
+
+                    distinguish between csv and other file format extensions that
+
+                    would usually be provided with the filename in the multipart post request
+
+                    scenario. If not provided, this value will be inferred from the
+
+                    Content-Type, falling back to csv-file format if all else fails.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                import_type:
+                  type: string
+                  description: 'Choose the data format for reading outcome data. With a standard Canvas
+
+                    install, this option can only be ''instructure_csv'', and if unprovided,
+
+                    will be assumed to be so. Can be part of the query string.'
+                attachment:
+                  type: string
+                  description: "There are two ways to post outcome import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe outcome data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'"
+                extension:
+                  type: string
+                  description: 'Recommended for raw post request style imports. This field will be used to
+
+                    distinguish between csv and other file format extensions that
+
+                    would usually be provided with the filename in the multipart post request
+
+                    scenario. If not provided, this value will be inferred from the
+
+                    Content-Type, falling back to csv-file format if all else fails.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomeImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_imports.html
+  /v1/courses/{course_id}/outcome_imports:
+    post:
+      tags:
+      - Outcome Imports
+      operationId: import_outcomes_courses
+      summary: Import Outcomes
+      description: 'Import outcomes into Canvas.
+
+
+        For more information on the format that''s expected here, please see the
+
+        "Outcomes CSV" section in the API docs.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                import_type:
+                  type: string
+                  description: 'Choose the data format for reading outcome data. With a standard Canvas
+
+                    install, this option can only be ''instructure_csv'', and if unprovided,
+
+                    will be assumed to be so. Can be part of the query string.'
+                attachment:
+                  type: string
+                  description: "There are two ways to post outcome import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe outcome data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'"
+                extension:
+                  type: string
+                  description: 'Recommended for raw post request style imports. This field will be used to
+
+                    distinguish between csv and other file format extensions that
+
+                    would usually be provided with the filename in the multipart post request
+
+                    scenario. If not provided, this value will be inferred from the
+
+                    Content-Type, falling back to csv-file format if all else fails.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                import_type:
+                  type: string
+                  description: 'Choose the data format for reading outcome data. With a standard Canvas
+
+                    install, this option can only be ''instructure_csv'', and if unprovided,
+
+                    will be assumed to be so. Can be part of the query string.'
+                attachment:
+                  type: string
+                  description: "There are two ways to post outcome import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe outcome data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/accounts/<account_id>/outcome_imports?import_type=instructure_csv'\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/courses/<course_id>/outcome_imports?import_type=instructure_csv'"
+                extension:
+                  type: string
+                  description: 'Recommended for raw post request style imports. This field will be used to
+
+                    distinguish between csv and other file format extensions that
+
+                    would usually be provided with the filename in the multipart post request
+
+                    scenario. If not provided, this value will be inferred from the
+
+                    Content-Type, falling back to csv-file format if all else fails.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomeImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_imports.html
+  /v1/accounts/{account_id}/outcome_imports/{id}:
+    get:
+      tags:
+      - Outcome Imports
+      operationId: get_outcome_import_status_accounts
+      summary: Get Outcome import status
+      description: 'Get the status of an already created Outcome import. Pass ''latest'' for the outcome import id
+
+        for the latest import.
+
+
+        Examples:
+
+        curl ''https:///api/v1/accounts//outcome_imports/'' \
+
+        -H "Authorization: Bearer "
+
+        curl ''https:///api/v1/courses//outcome_imports/'' \
+
+        -H "Authorization: Bearer "'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomeImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_imports.html
+  /v1/courses/{course_id}/outcome_imports/{id}:
+    get:
+      tags:
+      - Outcome Imports
+      operationId: get_outcome_import_status_courses
+      summary: Get Outcome import status
+      description: 'Get the status of an already created Outcome import. Pass ''latest'' for the outcome import id
+
+        for the latest import.
+
+
+        Examples:
+
+        curl ''https:///api/v1/accounts//outcome_imports/'' \
+
+        -H "Authorization: Bearer "
+
+        curl ''https:///api/v1/courses//outcome_imports/'' \
+
+        -H "Authorization: Bearer "'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutcomeImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_imports.html
+  /v1/accounts/{account_id}/outcome_imports/{id}/created_group_ids:
+    get:
+      tags:
+      - Outcome Imports
+      operationId: get_ids_of_outcome_groups_created_after_successful_import_accounts
+      summary: Get IDs of outcome groups created after successful import
+      description: 'Get the IDs of the outcome groups created after a successful import.
+
+        Pass ''latest'' for the outcome import id for the latest import.
+
+
+        Examples:
+
+        curl ''https:///api/v1/accounts//outcome_imports/outcomes_group_ids/'' \
+
+        -H "Authorization: Bearer "
+
+        curl ''https:///api/v1/courses//outcome_imports/outcome_group_ids/'' \
+
+        -H "Authorization: Bearer "'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: array of outcome ids
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_imports.html
+  /v1/courses/{course_id}/outcome_imports/{id}/created_group_ids:
+    get:
+      tags:
+      - Outcome Imports
+      operationId: get_ids_of_outcome_groups_created_after_successful_import_courses
+      summary: Get IDs of outcome groups created after successful import
+      description: 'Get the IDs of the outcome groups created after a successful import.
+
+        Pass ''latest'' for the outcome import id for the latest import.
+
+
+        Examples:
+
+        curl ''https:///api/v1/accounts//outcome_imports/outcomes_group_ids/'' \
+
+        -H "Authorization: Bearer "
+
+        curl ''https:///api/v1/courses//outcome_imports/outcome_group_ids/'' \
+
+        -H "Authorization: Bearer "'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: array of outcome ids
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcome_imports.html
+components:
+  schemas:
+    OutcomeImport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The unique identifier for the outcome import.
+        learning_outcome_group_id:
+          type: integer
+          example: 1
+          description: The unique identifier for the group into which the outcomes will be imported to, or NULL.
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-12-01T23:59:00-06:00'
+          description: The date the outcome import was created.
+        ended_at:
+          type: string
+          format: date-time
+          example: '2013-12-02T00:03:21-06:00'
+          description: The date the outcome import finished. Returns null if not finished.
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-12-02T00:03:21-06:00'
+          description: The date the outcome import was last updated.
+        workflow_state:
+          type: string
+          example: imported
+          description: "The current state of the outcome import.\n - 'created': The outcome import has been created.\n - 'importing': The outcome import is currently processing.\n - 'succeeded': The outcome import has completed successfully.\n - 'failed': The outcome import failed."
+        data:
+          type: string
+          description: See the OutcomeImportData specification above.
+        progress:
+          type: string
+          example: '100'
+          description: The progress of the outcome import.
+        user:
+          type: string
+          description: The user that initiated the outcome_import. See the Users API for details.
+        processing_errors:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+          example:
+          - - 1
+            - 'Missing required fields: title'
+          description: An array of row number / error message pairs. Returns the first 25 errors.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

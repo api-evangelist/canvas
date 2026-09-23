@@ -1,0 +1,290 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Sis Integration API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Sis Integration
+  x-resource: sis_integration
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/sis_integration.html
+paths:
+  /sis/accounts/{account_id}/assignments:
+    get:
+      tags:
+      - Sis Integration
+      operationId: retrieve_assignments_enabled_for_grade_export_to_sis_accounts
+      summary: Retrieve assignments enabled for grade export to SIS
+      description: 'Retrieve a list of published assignments flagged as "post_to_sis".
+
+        See the Assignments API for more details on assignments.
+
+        Assignment group and section information are included for convenience.
+
+
+        Each section includes course information for the origin course and the
+
+        cross-listed course, if applicable. The `origin_course` is the course to
+
+        which the section belongs or the course from which the section was
+
+        cross-listed. Generally, the `origin_course` should be preferred when
+
+        performing integration work. The `xlist_course` is provided for consistency
+
+        and is only present when the section has been cross-listed.
+
+        See Sections API and Courses Api for me details.
+
+
+        The `override` is only provided if the Differentiated Assignments course
+
+        feature is turned on and the assignment has an override for that section.
+
+        When there is an override for the assignment the override object''s
+
+        keys/values can be merged with the top level assignment object to create a
+
+        view of the assignment object specific to that section.
+
+        See Assignments api for more information on assignment overrides.
+
+
+        restricts to courses that start before this date (if they have a start date)
+
+        restricts to courses that end after this date (if they have an end date)
+
+        information to include.
+
+
+        "student_overrides":: returns individual student override information'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the account to query.
+      - name: course_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The ID of the course to query.
+      - name: starts_before
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: When searching on an account,
+      - name: ends_after
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: When searching on an account,
+      - name: include
+        in: query
+        schema:
+          type: string
+          enum:
+          - student_overrides
+        required: false
+        description: Array of additional
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_integration.html
+  /sis/courses/{course_id}/assignments:
+    get:
+      tags:
+      - Sis Integration
+      operationId: retrieve_assignments_enabled_for_grade_export_to_sis_courses
+      summary: Retrieve assignments enabled for grade export to SIS
+      description: 'Retrieve a list of published assignments flagged as "post_to_sis".
+
+        See the Assignments API for more details on assignments.
+
+        Assignment group and section information are included for convenience.
+
+
+        Each section includes course information for the origin course and the
+
+        cross-listed course, if applicable. The `origin_course` is the course to
+
+        which the section belongs or the course from which the section was
+
+        cross-listed. Generally, the `origin_course` should be preferred when
+
+        performing integration work. The `xlist_course` is provided for consistency
+
+        and is only present when the section has been cross-listed.
+
+        See Sections API and Courses Api for me details.
+
+
+        The `override` is only provided if the Differentiated Assignments course
+
+        feature is turned on and the assignment has an override for that section.
+
+        When there is an override for the assignment the override object''s
+
+        keys/values can be merged with the top level assignment object to create a
+
+        view of the assignment object specific to that section.
+
+        See Assignments api for more information on assignment overrides.
+
+
+        restricts to courses that start before this date (if they have a start date)
+
+        restricts to courses that end after this date (if they have an end date)
+
+        information to include.
+
+
+        "student_overrides":: returns individual student override information'
+      parameters:
+      - name: account_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The ID of the account to query.
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the course to query.
+      - name: starts_before
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: When searching on an account,
+      - name: ends_after
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: When searching on an account,
+      - name: include
+        in: query
+        schema:
+          type: string
+          enum:
+          - student_overrides
+        required: false
+        description: Array of additional
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_integration.html
+  /sis/courses/{course_id}/disable_post_to_sis:
+    put:
+      tags:
+      - Sis Integration
+      operationId: disable_assignments_currently_enabled_for_grade_export_to_sis
+      summary: Disable assignments currently enabled for grade export to SIS
+      description: 'Disable all assignments flagged as "post_to_sis", with the option of making it
+
+        specific to a grading period, in a course.
+
+
+        On success, the response will be 204 No Content with an empty body.
+
+
+        On failure, the response will be 400 Bad Request with a body of a specific
+
+        message.
+
+
+        For disabling assignments in a specific grading period'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the course.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grading_period_id:
+                  type: integer
+                  format: int64
+                  description: The ID of the grading period.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grading_period_id:
+                  type: integer
+                  format: int64
+                  description: The ID of the grading period.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_integration.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

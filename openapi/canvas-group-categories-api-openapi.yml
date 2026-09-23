@@ -1,0 +1,1013 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Group Categories API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Group Categories
+  x-resource: group_categories
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/group_categories.html
+paths:
+  /v1/accounts/{account_id}/group_categories:
+    get:
+      tags:
+      - Group Categories
+      operationId: list_group_categories_for_context_accounts
+      summary: List group categories for a context
+      description: 'Returns a paginated list of group categories in a context. The list returned
+
+        depends on the permissions of the current user and the specified collaboration state.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: collaboration_state
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Filter group categories by their collaboration state:
+
+          - "all": Return both collaborative and non-collaborative group categories
+
+          - "collaborative": Return only collaborative group categories (default)
+
+          - "non_collaborative": Return only non-collaborative group categories'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupCategory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+    post:
+      tags:
+      - Group Categories
+      operationId: create_group_category_accounts
+      summary: Create a Group Category
+      description: Create a new group category
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the group category
+                non_collaborative:
+                  type: boolean
+                  description: 'Can only be set by users with the Differentiation Tag - Add permission
+
+
+                    If set to true, groups in this category will be only be visible to users with the
+
+                    Differentiation Tag - Manage permission.'
+                self_signup:
+                  type: string
+                  enum:
+                  - enabled
+                  - restricted
+                  description: "Allow students to sign up for a group themselves (Course Only).\nvalid values are:\n\"enabled\":: allows students to self sign up for any group in course\n\"restricted\":: allows students to self sign up only for groups in the\n               same section null disallows self sign up"
+                auto_leader:
+                  type: string
+                  enum:
+                  - first
+                  - random
+                  description: 'Assigns group leaders automatically when generating and allocating students to groups
+
+                    Valid values are:
+
+                    "first":: the first student to be allocated to a group is the leader
+
+                    "random":: a random student from all members is chosen as the leader'
+                group_limit:
+                  type: integer
+                  format: int64
+                  description: 'Limit the maximum number of users in each group (Course Only). Requires
+
+                    self signup.'
+                sis_group_category_id:
+                  type: string
+                  description: The unique SIS identifier.
+                create_group_count:
+                  type: integer
+                  format: int64
+                  description: Create this number of groups (Course Only).
+                split_group_count:
+                  type: string
+                  description: '(Deprecated)
+
+                    Create this number of groups, and evenly distribute students
+
+                    among them. not allowed with "enable_self_signup". because
+
+                    the group assignment happens synchronously, it''s recommended
+
+                    that you instead use the assign_unassigned_members endpoint.
+
+                    (Course Only)'
+              required:
+              - name
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the group category
+                non_collaborative:
+                  type: boolean
+                  description: 'Can only be set by users with the Differentiation Tag - Add permission
+
+
+                    If set to true, groups in this category will be only be visible to users with the
+
+                    Differentiation Tag - Manage permission.'
+                self_signup:
+                  type: string
+                  enum:
+                  - enabled
+                  - restricted
+                  description: "Allow students to sign up for a group themselves (Course Only).\nvalid values are:\n\"enabled\":: allows students to self sign up for any group in course\n\"restricted\":: allows students to self sign up only for groups in the\n               same section null disallows self sign up"
+                auto_leader:
+                  type: string
+                  enum:
+                  - first
+                  - random
+                  description: 'Assigns group leaders automatically when generating and allocating students to groups
+
+                    Valid values are:
+
+                    "first":: the first student to be allocated to a group is the leader
+
+                    "random":: a random student from all members is chosen as the leader'
+                group_limit:
+                  type: integer
+                  format: int64
+                  description: 'Limit the maximum number of users in each group (Course Only). Requires
+
+                    self signup.'
+                sis_group_category_id:
+                  type: string
+                  description: The unique SIS identifier.
+                create_group_count:
+                  type: integer
+                  format: int64
+                  description: Create this number of groups (Course Only).
+                split_group_count:
+                  type: string
+                  description: '(Deprecated)
+
+                    Create this number of groups, and evenly distribute students
+
+                    among them. not allowed with "enable_self_signup". because
+
+                    the group assignment happens synchronously, it''s recommended
+
+                    that you instead use the assign_unassigned_members endpoint.
+
+                    (Course Only)'
+              required:
+              - name
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCategory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/courses/{course_id}/group_categories:
+    get:
+      tags:
+      - Group Categories
+      operationId: list_group_categories_for_context_courses
+      summary: List group categories for a context
+      description: 'Returns a paginated list of group categories in a context. The list returned
+
+        depends on the permissions of the current user and the specified collaboration state.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: collaboration_state
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Filter group categories by their collaboration state:
+
+          - "all": Return both collaborative and non-collaborative group categories
+
+          - "collaborative": Return only collaborative group categories (default)
+
+          - "non_collaborative": Return only non-collaborative group categories'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupCategory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+    post:
+      tags:
+      - Group Categories
+      operationId: create_group_category_courses
+      summary: Create a Group Category
+      description: Create a new group category
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the group category
+                non_collaborative:
+                  type: boolean
+                  description: 'Can only be set by users with the Differentiation Tag - Add permission
+
+
+                    If set to true, groups in this category will be only be visible to users with the
+
+                    Differentiation Tag - Manage permission.'
+                self_signup:
+                  type: string
+                  enum:
+                  - enabled
+                  - restricted
+                  description: "Allow students to sign up for a group themselves (Course Only).\nvalid values are:\n\"enabled\":: allows students to self sign up for any group in course\n\"restricted\":: allows students to self sign up only for groups in the\n               same section null disallows self sign up"
+                auto_leader:
+                  type: string
+                  enum:
+                  - first
+                  - random
+                  description: 'Assigns group leaders automatically when generating and allocating students to groups
+
+                    Valid values are:
+
+                    "first":: the first student to be allocated to a group is the leader
+
+                    "random":: a random student from all members is chosen as the leader'
+                group_limit:
+                  type: integer
+                  format: int64
+                  description: 'Limit the maximum number of users in each group (Course Only). Requires
+
+                    self signup.'
+                sis_group_category_id:
+                  type: string
+                  description: The unique SIS identifier.
+                create_group_count:
+                  type: integer
+                  format: int64
+                  description: Create this number of groups (Course Only).
+                split_group_count:
+                  type: string
+                  description: '(Deprecated)
+
+                    Create this number of groups, and evenly distribute students
+
+                    among them. not allowed with "enable_self_signup". because
+
+                    the group assignment happens synchronously, it''s recommended
+
+                    that you instead use the assign_unassigned_members endpoint.
+
+                    (Course Only)'
+              required:
+              - name
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the group category
+                non_collaborative:
+                  type: boolean
+                  description: 'Can only be set by users with the Differentiation Tag - Add permission
+
+
+                    If set to true, groups in this category will be only be visible to users with the
+
+                    Differentiation Tag - Manage permission.'
+                self_signup:
+                  type: string
+                  enum:
+                  - enabled
+                  - restricted
+                  description: "Allow students to sign up for a group themselves (Course Only).\nvalid values are:\n\"enabled\":: allows students to self sign up for any group in course\n\"restricted\":: allows students to self sign up only for groups in the\n               same section null disallows self sign up"
+                auto_leader:
+                  type: string
+                  enum:
+                  - first
+                  - random
+                  description: 'Assigns group leaders automatically when generating and allocating students to groups
+
+                    Valid values are:
+
+                    "first":: the first student to be allocated to a group is the leader
+
+                    "random":: a random student from all members is chosen as the leader'
+                group_limit:
+                  type: integer
+                  format: int64
+                  description: 'Limit the maximum number of users in each group (Course Only). Requires
+
+                    self signup.'
+                sis_group_category_id:
+                  type: string
+                  description: The unique SIS identifier.
+                create_group_count:
+                  type: integer
+                  format: int64
+                  description: Create this number of groups (Course Only).
+                split_group_count:
+                  type: string
+                  description: '(Deprecated)
+
+                    Create this number of groups, and evenly distribute students
+
+                    among them. not allowed with "enable_self_signup". because
+
+                    the group assignment happens synchronously, it''s recommended
+
+                    that you instead use the assign_unassigned_members endpoint.
+
+                    (Course Only)'
+              required:
+              - name
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCategory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/group_categories/{group_category_id}:
+    get:
+      tags:
+      - Group Categories
+      operationId: get_single_group_category
+      summary: Get a single group category
+      description: 'Returns the data for a single group category, or a 401 if the caller doesn''t have
+
+        the rights to see it.'
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCategory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+    put:
+      tags:
+      - Group Categories
+      operationId: update_group_category
+      summary: Update a Group Category
+      description: Modifies an existing group category.
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the group category
+                self_signup:
+                  type: string
+                  enum:
+                  - enabled
+                  - restricted
+                  description: "Allow students to sign up for a group themselves (Course Only).\nValid values are:\n\"enabled\":: allows students to self sign up for any group in course\n\"restricted\":: allows students to self sign up only for groups in the\n               same section null disallows self sign up"
+                auto_leader:
+                  type: string
+                  enum:
+                  - first
+                  - random
+                  description: 'Assigns group leaders automatically when generating and allocating students to groups
+
+                    Valid values are:
+
+                    "first":: the first student to be allocated to a group is the leader
+
+                    "random":: a random student from all members is chosen as the leader'
+                group_limit:
+                  type: integer
+                  format: int64
+                  description: 'Limit the maximum number of users in each group (Course Only). Requires
+
+                    self signup.'
+                sis_group_category_id:
+                  type: string
+                  description: The unique SIS identifier.
+                create_group_count:
+                  type: integer
+                  format: int64
+                  description: Create this number of groups (Course Only).
+                split_group_count:
+                  type: string
+                  description: '(Deprecated)
+
+                    Create this number of groups, and evenly distribute students
+
+                    among them. not allowed with "enable_self_signup". because
+
+                    the group assignment happens synchronously, it''s recommended
+
+                    that you instead use the assign_unassigned_members endpoint.
+
+                    (Course Only)'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the group category
+                self_signup:
+                  type: string
+                  enum:
+                  - enabled
+                  - restricted
+                  description: "Allow students to sign up for a group themselves (Course Only).\nValid values are:\n\"enabled\":: allows students to self sign up for any group in course\n\"restricted\":: allows students to self sign up only for groups in the\n               same section null disallows self sign up"
+                auto_leader:
+                  type: string
+                  enum:
+                  - first
+                  - random
+                  description: 'Assigns group leaders automatically when generating and allocating students to groups
+
+                    Valid values are:
+
+                    "first":: the first student to be allocated to a group is the leader
+
+                    "random":: a random student from all members is chosen as the leader'
+                group_limit:
+                  type: integer
+                  format: int64
+                  description: 'Limit the maximum number of users in each group (Course Only). Requires
+
+                    self signup.'
+                sis_group_category_id:
+                  type: string
+                  description: The unique SIS identifier.
+                create_group_count:
+                  type: integer
+                  format: int64
+                  description: Create this number of groups (Course Only).
+                split_group_count:
+                  type: string
+                  description: '(Deprecated)
+
+                    Create this number of groups, and evenly distribute students
+
+                    among them. not allowed with "enable_self_signup". because
+
+                    the group assignment happens synchronously, it''s recommended
+
+                    that you instead use the assign_unassigned_members endpoint.
+
+                    (Course Only)'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCategory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+    delete:
+      tags:
+      - Group Categories
+      operationId: delete_group_category
+      summary: Delete a Group Category
+      description: 'Deletes a group category and all groups under it. Protected group
+
+        categories can not be deleted, i.e. "communities" and "student_organized".'
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/courses/{course_id}/group_categories/bulk_manage_differentiation_tag:
+    post:
+      tags:
+      - Group Categories
+      operationId: bulk_manage_differentiation_tags
+      summary: Bulk manage differentiation tags
+      description: 'This API is only meant for Groups and GroupCategories where non_collaborative is true.
+
+
+        Perform bulk operations on groups within a group category, or create a new group category
+
+        along with the groups in one transaction. If creation of the GroupCategory or any Group fails, the entire operation will be rolled back.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operations:
+                  type: object
+                  additionalProperties: true
+                  description: "A hash containing arrays of create/update/delete operations:\n{\n  \"create\": [\n    { \"name\": \"New Group A\" },\n    { \"name\": \"New Group B\" }\n  ],\n  \"update\": [\n    { \"id\": 123, \"name\": \"Updated Group Name A\" },\n    { \"id\": 456, \"name\": \"Updated Group Name B\" }\n  ],\n  \"delete\": [\n    { \"id\": 789 },\n    { \"id\": 101 }\n  ]\n}"
+                group_category:
+                  type: object
+                  additionalProperties: true
+                  description: "Attributes for the GroupCategory. May include:\n  - id [Optional, Integer]: The ID of an existing GroupCategory.\n  - name [Optional, String]: A new name for the GroupCategory. If provided with an ID, the category name will be updated."
+              required:
+              - operations
+              - group_category
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                operations:
+                  type: object
+                  additionalProperties: true
+                  description: "A hash containing arrays of create/update/delete operations:\n{\n  \"create\": [\n    { \"name\": \"New Group A\" },\n    { \"name\": \"New Group B\" }\n  ],\n  \"update\": [\n    { \"id\": 123, \"name\": \"Updated Group Name A\" },\n    { \"id\": 456, \"name\": \"Updated Group Name B\" }\n  ],\n  \"delete\": [\n    { \"id\": 789 },\n    { \"id\": 101 }\n  ]\n}"
+                group_category:
+                  type: object
+                  additionalProperties: true
+                  description: "Attributes for the GroupCategory. May include:\n  - id [Optional, Integer]: The ID of an existing GroupCategory.\n  - name [Optional, String]: A new name for the GroupCategory. If provided with an ID, the category name will be updated."
+              required:
+              - operations
+              - group_category
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: GroupCategory and groups operation results
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/courses/{course_id}/group_categories/differentiation_tag_candidate_count:
+    get:
+      tags:
+      - Group Categories
+      operationId: get_differentiation_tag_candidate_count
+      summary: Get differentiation tag candidate count
+      description: 'Returns the number of students in the course eligible for a
+
+        differentiation tag bulk-membership action (see Create a membership''s
+
+        `all_in_group_course` option), optionally narrowed by enrollment role
+
+        and/or existing differentiation tag membership. The count only includes
+
+        students visible to the calling user, so a section-limited teacher only
+
+        sees students in their own sections.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: enrollment_role_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: Only count students holding one of these enrollment role ids.
+      - name: differentiation_tag_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: Only count students who are members of one of these differentiation tags.
+      - name: exclude_user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: Exclude these user ids from the count.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{ "count": "integer" }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/courses/{course_id}/group_categories/import_tags:
+    post:
+      tags:
+      - Group Categories
+      operationId: import_differentiation_tags
+      summary: Import differentiation tags
+      description: 'Create Differentiation Tags through a CSV import
+
+
+        For more information on the format that''s expected here, please see the
+
+        "Differentiation Tag CSV" section in the API docs.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  description: "There are two ways to post differentiation tag import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe tag data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories/import_tags'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories_tags'"
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  description: "There are two ways to post differentiation tag import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe tag data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories/import_tags'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories_tags'"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/group_categories/{group_category_id}/import:
+    post:
+      tags:
+      - Group Categories
+      operationId: import_category_groups
+      summary: Import category groups
+      description: 'Create Groups in a Group Category through a CSV import
+
+
+        For more information on the format that''s expected here, please see the
+
+        "Group Category CSV" section in the API docs.'
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  description: "There are two ways to post group category import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe outcome data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories/<category_id>/import'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories/<category_id>/import'"
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                attachment:
+                  type: string
+                  description: "There are two ways to post group category import data - either via a\nmultipart/form-data form-field-style attachment, or via a non-multipart\nraw post request.\n\n'attachment' is required for multipart/form-data style posts. Assumed to\nbe outcome data from a file upload form field named 'attachment'.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories/<category_id>/import'\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      'https://<canvas>/api/v1/group_categories/<category_id>/import'"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/group_categories/{group_category_id}/groups:
+    get:
+      tags:
+      - Group Categories
+      operationId: list_groups_in_group_category
+      summary: List groups in group category
+      description: Returns a paginated list of groups in a group category
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Group
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/group_categories/{group_category_id}/export:
+    get:
+      tags:
+      - Group Categories
+      operationId: export_groups_in_and_users_in_category
+      summary: export groups in and users in category
+      description: Returns a csv file of users in format ready to import.
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/courses/{course_id}/group_categories/export_tags:
+    get:
+      tags:
+      - Group Categories
+      operationId: export_tags_and_users_in_course
+      summary: export tags and users in course
+      description: Returns a csv file of users in format ready to import.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/group_categories/{group_category_id}/users:
+    get:
+      tags:
+      - Group Categories
+      operationId: list_users_in_group_category
+      summary: List users in group category
+      description: Returns a paginated list of users in the group category.
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The partial name or full ID of the users to match and return in the results
+
+          list. Must be at least 3 characters.'
+      - name: unassigned
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Set this value to true if you wish only to search unassigned users in the
+
+          group category.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+  /v1/group_categories/{group_category_id}/assign_unassigned_members:
+    post:
+      tags:
+      - Group Categories
+      operationId: assign_unassigned_members
+      summary: Assign unassigned members
+      description: 'Assign all unassigned members as evenly as possible among the existing
+
+        student groups.'
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sync:
+                  type: boolean
+                  description: 'The assigning is done asynchronously by default. If you would like to
+
+                    override this and have the assigning done synchronously, set this value
+
+                    to true.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                sync:
+                  type: boolean
+                  description: 'The assigning is done asynchronously by default. If you would like to
+
+                    override this and have the assigning done synchronously, set this value
+
+                    to true.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: GroupMembership | Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/group_categories.html
+components:
+  schemas:
+    GroupCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 17
+          description: The ID of the group category.
+        name:
+          type: string
+          example: Math Groups
+          description: The display name of the group category.
+        role:
+          type: string
+          example: communities
+          description: 'Certain types of group categories have special role designations. Currently, these include: ''communities'', ''student_organized'', and ''imported''. Regular course/account group categories have a role of null.'
+        self_signup:
+          type: string
+          description: If the group category allows users to join a group themselves, thought they may only be a member of one group per group category at a time. Values include 'restricted', 'enabled', and null 'enabled' allows students to assign themselves to a group 'restricted' restricts them to only joining a group in their section null disallows students from joining groups
+        auto_leader:
+          type: string
+          description: Gives instructors the ability to automatically have group leaders assigned.  Values include 'random', 'first', and null; 'random' picks a student from the group at random as the leader, 'first' sets the first student to be assigned to the group as the leader
+        context_type:
+          type: string
+          example: Account
+          description: The course or account that the category group belongs to. The pattern here is that whatever the context_type is, there will be an _id field named after that type. So if instead context_type was 'Course', the course_id field would be replaced by an course_id field.
+        account_id:
+          type: integer
+          example: 3
+        group_limit:
+          type: integer
+          description: If self-signup is enabled, group_limit can be set to cap the number of users in each group. If null, there is no limit.
+        sis_group_category_id:
+          type: string
+          description: The SIS identifier for the group category. This field is only included if the user has permission to manage or view SIS information.
+        sis_import_id:
+          type: integer
+          description: The unique identifier for the SIS import. This field is only included if the user has permission to manage SIS information.
+        progress:
+          type: string
+          description: If the group category has not yet finished a randomly student assignment request, a progress object will be attached, which will contain information related to the progress of the assignment request. Refer to the Progress API for more information
+        non_collaborative:
+          type: boolean
+          description: Indicates whether this group category is non-collaborative. A value of true means these group categories rely on the manage_tags permissions and do not have collaborative features
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

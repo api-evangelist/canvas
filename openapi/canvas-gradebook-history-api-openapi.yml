@@ -1,0 +1,370 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Gradebook History API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Gradebook History
+  x-resource: gradebook_history
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/gradebook_history.html
+paths:
+  /v1/courses/{course_id}/gradebook_history/days:
+    get:
+      tags:
+      - Gradebook History
+      operationId: days_in_gradebook_history_for_this_course
+      summary: Days in gradebook history for this course
+      description: Returns a map of dates to grader/assignment groups
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the contextual course for this API call
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Day'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/gradebook_history.html
+  /v1/courses/{course_id}/gradebook_history/{date}:
+    get:
+      tags:
+      - Gradebook History
+      operationId: details_for_given_date_in_gradebook_history_for_this_course
+      summary: Details for a given date in gradebook history for this course
+      description: 'Returns the graders who worked on this day, along with the assignments they worked on.
+
+        More details can be obtained by selecting a grader and assignment and calling the
+
+        ''submissions'' api endpoint for a given date.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the contextual course for this API call
+      - name: date
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The date for which you would like to see detailed information
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Grader'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/gradebook_history.html
+  /v1/courses/{course_id}/gradebook_history/{date}/graders/{grader_id}/assignments/{assignment_id}/submissions:
+    get:
+      tags:
+      - Gradebook History
+      operationId: lists_submissions
+      summary: Lists submissions
+      description: Gives a nested list of submission versions
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the contextual course for this API call
+      - name: date
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The date for which you would like to see submissions
+      - name: grader_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the grader for which you want to see submissions
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the assignment for which you want to see submissions
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubmissionHistory'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/gradebook_history.html
+  /v1/courses/{course_id}/gradebook_history/feed:
+    get:
+      tags:
+      - Gradebook History
+      operationId: list_uncollated_submission_versions
+      summary: List uncollated submission versions
+      description: 'Gives a paginated, uncollated list of submission versions for all matching
+
+        submissions in the context. This SubmissionVersion objects will not include
+
+        the +new_grade+ or +previous_grade+ keys, only the +grade+; same for
+
+        +graded_at+ and +grader+.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the contextual course for this API call
+      - name: assignment_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'The ID of the assignment for which you want to see submissions. If
+
+          absent, versions of submissions from any assignment in the course are
+
+          included.'
+      - name: user_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'The ID of the user for which you want to see submissions. If absent,
+
+          versions of submissions from any user in the course are included.'
+      - name: ascending
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Returns submission versions in ascending date order (oldest first). If
+
+          absent, returns submission versions in descending date order (newest
+
+          first).'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubmissionVersion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/gradebook_history.html
+components:
+  schemas:
+    SubmissionHistory:
+      type: object
+      properties:
+        submission_id:
+          type: integer
+          example: 4
+          description: the id of the submission
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmissionVersion'
+          description: an array of all the versions of this submission
+    Day:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          example: '1986-08-09'
+          description: the date represented by this entry
+        graders:
+          type: integer
+          example: '[]'
+          description: an array of the graders who were responsible for the submissions in this response. the submissions are grouped according to the person who graded them and the assignment they were submitted for.
+    SubmissionVersion:
+      type: object
+      properties:
+        assignment_id:
+          type: integer
+          example: 22604
+          description: the id of the assignment this submissions is for
+        assignment_name:
+          type: string
+          example: some assignment
+          description: the name of the assignment this submission is for
+        body:
+          type: string
+          example: text from the submission
+          description: the body text of the submission
+        current_grade:
+          type: string
+          example: '100'
+          description: the most up to date grade for the current version of this submission
+        current_graded_at:
+          type: string
+          format: date-time
+          example: '2013-01-31T18:16:31Z'
+          description: the latest time stamp for the grading of this submission
+        current_grader:
+          type: string
+          example: Grader Name
+          description: the name of the most recent grader for this submission
+        grade_matches_current_submission:
+          type: boolean
+          example: true
+          description: boolean indicating whether the grade is equal to the current submission grade
+        graded_at:
+          type: string
+          format: date-time
+          example: '2013-01-31T18:16:31Z'
+          description: time stamp for the grading of this version of the submission
+        grader:
+          type: string
+          example: Grader Name
+          description: the name of the user who graded this version of the submission
+        grader_id:
+          type: integer
+          example: 67379
+          description: the user id of the user who graded this version of the submission
+        id:
+          type: integer
+          example: 11607
+          description: the id of the submission of which this is a version
+        new_grade:
+          type: string
+          example: '100'
+          description: the updated grade provided in this version of the submission
+        new_graded_at:
+          type: string
+          format: date-time
+          example: '2013-01-31T18:16:31Z'
+          description: the timestamp for the grading of this version of the submission (alias for graded_at)
+        new_grader:
+          type: string
+          example: Grader Name
+          description: alias for 'grader'
+        previous_grade:
+          type: string
+          example: '90'
+          description: the grade for the submission version immediately preceding this one
+        previous_graded_at:
+          type: string
+          format: date-time
+          example: '2013-01-29T12:12:12Z'
+          description: the timestamp for the grading of the submission version immediately preceding this one
+        previous_grader:
+          type: string
+          example: Graded on submission
+          description: the name of the grader who graded the version of this submission immediately preceding this one
+        score:
+          type: integer
+          example: 100
+          description: the score for this version of the submission
+        user_name:
+          type: string
+          example: student@example.com
+          description: the name of the student who created this submission
+        submission_type:
+          type: string
+          example: online
+          description: the type of submission
+        url:
+          type: string
+          description: the url of the submission, if there is one
+        user_id:
+          type: integer
+          example: 67376
+          description: the user ID of the student who created this submission
+        workflow_state:
+          type: string
+          example: unsubmitted
+          description: the state of the submission at this version
+      description: A SubmissionVersion object contains all the fields that a Submission object does, plus additional fields prefixed with current_* new_* and previous_* described below.
+    Grader:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 27
+          description: the user_id of the user who graded the contained submissions
+        name:
+          type: string
+          example: Some User
+          description: the name of the user who graded the contained submissions
+        assignments:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 2
+          - 3
+          description: the assignment groups for all submissions in this response that were graded by this user.  The details are not nested inside here, but the fact that an assignment is present here means that the grader did grade submissions for this assignment on the contextual date. You can use the id of a grader and of an assignment to make another API call to find all submissions for a grader/assignment combination on a given date.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

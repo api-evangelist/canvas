@@ -1,0 +1,1288 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Rubrics API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Rubrics
+  x-resource: rubrics
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/rubrics.html
+paths:
+  /v1/courses/{course_id}/rubrics:
+    post:
+      tags:
+      - Rubrics
+      operationId: create_single_rubric
+      summary: Create a single rubric
+      description: 'Returns the rubric with the given id.
+
+
+        Unfortunately this endpoint does not return a standard Rubric object,
+
+        instead it returns a hash that looks like
+
+        { ''rubric'': Rubric, ''rubric_association'': RubricAssociation }
+
+
+        This may eventually be deprecated in favor of a more standardized return
+
+        value, but that is not currently planned.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  description: The id of the rubric
+                rubric_association_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of the rubric association object (not the course/assignment itself, but the join table record id).
+
+                    It can be used in place of +rubric_association[association_id]+ and +rubric_association[association_type]+ if desired.'
+                rubric[title]:
+                  type: string
+                  description: The title of the rubric
+                rubric[free_form_criterion_comments]:
+                  type: boolean
+                  description: Whether or not you can write custom comments in the ratings field for a rubric
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric[criteria]:
+                  type: object
+                  additionalProperties: true
+                  description: An indexed Hash of RubricCriteria objects where the keys are integer ids and the values are the RubricCriteria objects
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                  description: The id of the rubric
+                rubric_association_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of the rubric association object (not the course/assignment itself, but the join table record id).
+
+                    It can be used in place of +rubric_association[association_id]+ and +rubric_association[association_type]+ if desired.'
+                rubric[title]:
+                  type: string
+                  description: The title of the rubric
+                rubric[free_form_criterion_comments]:
+                  type: boolean
+                  description: Whether or not you can write custom comments in the ratings field for a rubric
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric[criteria]:
+                  type: object
+                  additionalProperties: true
+                  description: An indexed Hash of RubricCriteria objects where the keys are integer ids and the values are the RubricCriteria objects
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+    get:
+      tags:
+      - Rubrics
+      operationId: list_rubrics_courses
+      summary: List rubrics
+      description: Returns the paginated list of active rubrics for the current context.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubrics/{id}:
+    put:
+      tags:
+      - Rubrics
+      operationId: update_single_rubric
+      summary: Update a single rubric
+      description: 'Returns the rubric with the given id.
+
+
+        Unfortunately this endpoint does not return a standard Rubric object,
+
+        instead it returns a hash that looks like
+
+        { ''rubric'': Rubric, ''rubric_association'': RubricAssociation }
+
+
+        This may eventually be deprecated in favor of a more standardized return
+
+        value, but that is not currently planned.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the rubric
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rubric_association_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of the rubric association object (not the course/assignment itself, but the join table record id).
+
+                    It can be used in place of +rubric_association[association_id]+ and +rubric_association[association_type]+ if desired.'
+                rubric[title]:
+                  type: string
+                  description: The title of the rubric
+                rubric[free_form_criterion_comments]:
+                  type: boolean
+                  description: Whether or not you can write custom comments in the ratings field for a rubric
+                rubric[skip_updating_points_possible]:
+                  type: boolean
+                  description: Whether or not to update the points possible
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  enum:
+                  - grading
+                  - bookmark
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric[criteria]:
+                  type: object
+                  additionalProperties: true
+                  description: An indexed Hash of RubricCriteria objects where the keys are integer ids and the values are the RubricCriteria objects
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                rubric_association_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of the rubric association object (not the course/assignment itself, but the join table record id).
+
+                    It can be used in place of +rubric_association[association_id]+ and +rubric_association[association_type]+ if desired.'
+                rubric[title]:
+                  type: string
+                  description: The title of the rubric
+                rubric[free_form_criterion_comments]:
+                  type: boolean
+                  description: Whether or not you can write custom comments in the ratings field for a rubric
+                rubric[skip_updating_points_possible]:
+                  type: boolean
+                  description: Whether or not to update the points possible
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  enum:
+                  - grading
+                  - bookmark
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric[criteria]:
+                  type: object
+                  additionalProperties: true
+                  description: An indexed Hash of RubricCriteria objects where the keys are integer ids and the values are the RubricCriteria objects
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+    delete:
+      tags:
+      - Rubrics
+      operationId: delete_single
+      summary: Delete a single
+      description: Deletes a Rubric and removes all RubricAssociations.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rubric'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+    get:
+      tags:
+      - Rubrics
+      operationId: get_single_rubric_courses
+      summary: Get a single rubric
+      description: Returns the rubric with the given id.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - assessments
+            - graded_assessments
+            - peer_assessments
+            - associations
+            - assignment_associations
+            - course_associations
+            - account_associations
+        required: false
+        description: Related records to include in the response.
+      - name: style
+        in: query
+        schema:
+          type: string
+          enum:
+          - full
+          - comments_only
+        required: false
+        description: Applicable only if assessments are being returned. If included, returns either all criteria data associated with the assessment, or just the comments. If not included, both data and comments are omitted.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rubric'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/accounts/{account_id}/rubrics:
+    get:
+      tags:
+      - Rubrics
+      operationId: list_rubrics_accounts
+      summary: List rubrics
+      description: Returns the paginated list of active rubrics for the current context.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/accounts/{account_id}/rubrics/{id}:
+    get:
+      tags:
+      - Rubrics
+      operationId: get_single_rubric_accounts
+      summary: Get a single rubric
+      description: Returns the rubric with the given id.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - assessments
+            - graded_assessments
+            - peer_assessments
+            - associations
+            - assignment_associations
+            - course_associations
+            - account_associations
+        required: false
+        description: Related records to include in the response.
+      - name: style
+        in: query
+        schema:
+          type: string
+          enum:
+          - full
+          - comments_only
+        required: false
+        description: Applicable only if assessments are being returned. If included, returns either all criteria data associated with the assessment, or just the comments. If not included, both data and comments are omitted.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rubric'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubrics/{id}/used_locations:
+    get:
+      tags:
+      - Rubrics
+      operationId: get_courses_and_assignments_for_rubric_courses
+      summary: Get the courses and assignments for a rubric
+      description: Returns the courses and assignments where a rubric is being used
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: UsedLocations
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/accounts/{account_id}/rubrics/{id}/used_locations:
+    get:
+      tags:
+      - Rubrics
+      operationId: get_courses_and_assignments_for_rubric_accounts
+      summary: Get the courses and assignments for a rubric
+      description: Returns the courses and assignments where a rubric is being used
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: UsedLocations
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubrics/upload:
+    post:
+      tags:
+      - Rubrics
+      operationId: creates_rubric_using_csv_file_courses
+      summary: Creates a rubric using a CSV file
+      description: Returns the rubric import object that was created
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: RubricImport
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/accounts/{account_id}/rubrics/upload:
+    post:
+      tags:
+      - Rubrics
+      operationId: creates_rubric_using_csv_file_accounts
+      summary: Creates a rubric using a CSV file
+      description: Returns the rubric import object that was created
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: RubricImport
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/rubrics/upload_template:
+    get:
+      tags:
+      - Rubrics
+      operationId: templated_file_for_importing_rubric
+      summary: Templated file for importing a rubric
+      description: Returns a CSV template file that can be used to import rubrics into Canvas.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: a CSV file in the format that can be imported
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubrics/upload/{id}:
+    get:
+      tags:
+      - Rubrics
+      operationId: get_status_of_rubric_import_courses
+      summary: Get the status of a rubric import
+      description: Can return the latest rubric import for an account or course, or a specific import by id
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: RubricImport
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/accounts/{account_id}/rubrics/upload/{id}:
+    get:
+      tags:
+      - Rubrics
+      operationId: get_status_of_rubric_import_accounts
+      summary: Get the status of a rubric import
+      description: Can return the latest rubric import for an account or course, or a specific import by id
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: RubricImport
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubric_associations/{rubric_association_id}/rubric_assessments:
+    post:
+      tags:
+      - Rubrics
+      operationId: create_single_rubric_assessment
+      summary: Create a single rubric assessment
+      description: 'Returns the rubric assessment with the given id.
+
+        The returned object also provides the information of
+
+        :ratings, :assessor_name, :related_group_submissions_and_assessments, :artifact'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      - name: rubric_association_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the object with which this rubric assessment is associated
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provisional:
+                  type: string
+                  description: (optional) Indicates whether this assessment is provisional, defaults to false.
+                final:
+                  type: string
+                  description: (optional) Indicates a provisional grade will be marked as final. It only takes effect if the provisional param is passed as true. Defaults to false.
+                graded_anonymously:
+                  type: boolean
+                  description: (optional) Defaults to false
+                rubric_assessment:
+                  type: object
+                  additionalProperties: true
+                  description: "A Hash of data to complement the rubric assessment:\nThe user id that refers to the person being assessed\n  rubric_assessment[user_id]\nAssessment type. There are only three valid types:  'grading', 'peer_review', or 'provisional_grade'\n  rubric_assessment[assessment_type]\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\nFor each criterion_id, change the id by the criterion number, ex: criterion_123\nIf the criterion_id is not specified it defaults to false, and nothing is updated."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                provisional:
+                  type: string
+                  description: (optional) Indicates whether this assessment is provisional, defaults to false.
+                final:
+                  type: string
+                  description: (optional) Indicates a provisional grade will be marked as final. It only takes effect if the provisional param is passed as true. Defaults to false.
+                graded_anonymously:
+                  type: boolean
+                  description: (optional) Defaults to false
+                rubric_assessment:
+                  type: object
+                  additionalProperties: true
+                  description: "A Hash of data to complement the rubric assessment:\nThe user id that refers to the person being assessed\n  rubric_assessment[user_id]\nAssessment type. There are only three valid types:  'grading', 'peer_review', or 'provisional_grade'\n  rubric_assessment[assessment_type]\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\nFor each criterion_id, change the id by the criterion number, ex: criterion_123\nIf the criterion_id is not specified it defaults to false, and nothing is updated."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubric_associations/{rubric_association_id}/rubric_assessments/{id}:
+    put:
+      tags:
+      - Rubrics
+      operationId: update_single_rubric_assessment
+      summary: Update a single rubric assessment
+      description: 'Returns the rubric assessment with the given id.
+
+        The returned object also provides the information of
+
+        :ratings, :assessor_name, :related_group_submissions_and_assessments, :artifact'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the rubric assessment
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      - name: rubric_association_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the object with which this rubric assessment is associated
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provisional:
+                  type: string
+                  description: (optional) Indicates whether this assessment is provisional, defaults to false.
+                final:
+                  type: string
+                  description: (optional) Indicates a provisional grade will be marked as final. It only takes effect if the provisional param is passed as true. Defaults to false.
+                graded_anonymously:
+                  type: boolean
+                  description: (optional) Defaults to false
+                rubric_assessment:
+                  type: object
+                  additionalProperties: true
+                  description: "A Hash of data to complement the rubric assessment:\nThe user id that refers to the person being assessed\n  rubric_assessment[user_id]\nAssessment type. There are only three valid types:  'grading', 'peer_review', or 'provisional_grade'\n  rubric_assessment[assessment_type]\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\nFor each criterion_id, change the id by the criterion number, ex: criterion_123\nIf the criterion_id is not specified it defaults to false, and nothing is updated."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                provisional:
+                  type: string
+                  description: (optional) Indicates whether this assessment is provisional, defaults to false.
+                final:
+                  type: string
+                  description: (optional) Indicates a provisional grade will be marked as final. It only takes effect if the provisional param is passed as true. Defaults to false.
+                graded_anonymously:
+                  type: boolean
+                  description: (optional) Defaults to false
+                rubric_assessment:
+                  type: object
+                  additionalProperties: true
+                  description: "A Hash of data to complement the rubric assessment:\nThe user id that refers to the person being assessed\n  rubric_assessment[user_id]\nAssessment type. There are only three valid types:  'grading', 'peer_review', or 'provisional_grade'\n  rubric_assessment[assessment_type]\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\nFor each criterion_id, change the id by the criterion number, ex: criterion_123\nIf the criterion_id is not specified it defaults to false, and nothing is updated."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+    delete:
+      tags:
+      - Rubrics
+      operationId: delete_single_rubric_assessment
+      summary: Delete a single rubric assessment
+      description: Deletes a rubric assessment
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: rubric_association_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RubricAssessment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubric_associations:
+    post:
+      tags:
+      - Rubrics
+      operationId: create_rubricassociation
+      summary: Create a RubricAssociation
+      description: Returns the rubric with the given id.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rubric_association[rubric_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the Rubric
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[title]:
+                  type: string
+                  description: The name of the object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  enum:
+                  - grading
+                  - bookmark
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric_association[bookmarked]:
+                  type: boolean
+                  description: Whether or not the associated rubric appears in its context
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                rubric_association[rubric_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the Rubric
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[title]:
+                  type: string
+                  description: The name of the object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  enum:
+                  - grading
+                  - bookmark
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric_association[bookmarked]:
+                  type: boolean
+                  description: Whether or not the associated rubric appears in its context
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RubricAssociation'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+  /v1/courses/{course_id}/rubric_associations/{id}:
+    put:
+      tags:
+      - Rubrics
+      operationId: update_rubricassociation
+      summary: Update a RubricAssociation
+      description: Returns the rubric with the given id.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the RubricAssociation to update
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rubric_association[rubric_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the Rubric
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[title]:
+                  type: string
+                  description: The name of the object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  enum:
+                  - grading
+                  - bookmark
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric_association[bookmarked]:
+                  type: boolean
+                  description: Whether or not the associated rubric appears in its context
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                rubric_association[rubric_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the Rubric
+                rubric_association[association_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the object with which this rubric is associated
+                rubric_association[association_type]:
+                  type: string
+                  enum:
+                  - Assignment
+                  - Course
+                  - Account
+                  description: The type of object this rubric is associated with
+                rubric_association[title]:
+                  type: string
+                  description: The name of the object this rubric is associated with
+                rubric_association[use_for_grading]:
+                  type: boolean
+                  description: Whether or not the associated rubric is used for grade calculation
+                rubric_association[hide_score_total]:
+                  type: boolean
+                  description: 'Whether or not the score total is displayed within the rubric.
+
+                    This option is only available if the rubric is not used for grading.'
+                rubric_association[purpose]:
+                  type: string
+                  enum:
+                  - grading
+                  - bookmark
+                  description: 'Whether or not the association is for grading (and thus linked to an assignment)
+
+                    or if it''s to indicate the rubric should appear in its context'
+                rubric_association[bookmarked]:
+                  type: boolean
+                  description: Whether or not the associated rubric appears in its context
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RubricAssociation'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+    delete:
+      tags:
+      - Rubrics
+      operationId: delete_rubricassociation
+      summary: Delete a RubricAssociation
+      description: Delete the RubricAssociation with the given ID
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RubricAssociation'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/rubrics.html
+components:
+  schemas:
+    Rubric:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the rubric
+        title:
+          type: string
+          example: some title
+          description: title of the rubric
+        context_id:
+          type: integer
+          example: 1
+          description: the context owning the rubric
+        context_type:
+          type: string
+          example: Course
+        points_possible:
+          type: integer
+          example: '10.0'
+        reusable:
+          type: boolean
+          example: 'false'
+        read_only:
+          type: boolean
+          example: 'true'
+        free_form_criterion_comments:
+          type: boolean
+          example: 'true'
+          description: whether or not free-form comments are used
+        hide_score_total:
+          type: boolean
+          example: 'true'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RubricCriterion'
+          description: An array with all of this Rubric's grading Criteria
+        assessments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RubricAssessment'
+          description: If an assessment type is included in the 'include' parameter, includes an array of rubric assessment objects for a given rubric, based on the assessment type requested. If the user does not request an assessment type this key will be absent.
+        associations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RubricAssociation'
+          description: If an association type is included in the 'include' parameter, includes an array of rubric association objects for a given rubric, based on the association type requested. If the user does not request an association type this key will be absent.
+    RubricRating__rubrics:
+      type: object
+      properties:
+        id:
+          type: string
+          example: name_2
+        criterion_id:
+          type: string
+          example: _10
+        description:
+          type: string
+        long_description:
+          type: string
+        points:
+          type: integer
+          example: '5'
+    RubricAssociation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the association
+        rubric_id:
+          type: integer
+          example: '1'
+          description: the ID of the rubric
+        association_id:
+          type: integer
+          example: 1
+          description: the ID of the object this association links to
+        association_type:
+          type: string
+          example: Course
+          description: the type of object this association links to
+        use_for_grading:
+          type: boolean
+          example: 'true'
+          description: Whether or not the associated rubric is used for grade calculation
+        summary_data:
+          type: string
+          example: ''
+        purpose:
+          type: string
+          example: grading
+          description: Whether or not the association is for grading (and thus linked to an assignment) or if it's to indicate the rubric should appear in its context. Values will be grading or bookmark.
+        hide_score_total:
+          type: boolean
+          example: 'true'
+          description: Whether or not the score total is displayed within the rubric. This option is only available if the rubric is not used for grading.
+        hide_points:
+          type: boolean
+          example: 'true'
+        hide_outcome_results:
+          type: boolean
+          example: 'true'
+    RubricCriterion:
+      type: object
+      properties:
+        id:
+          type: string
+          example: _10
+          description: the ID of the criterion
+        description:
+          type: string
+        long_description:
+          type: string
+        points:
+          type: integer
+          example: '5'
+        criterion_use_range:
+          type: boolean
+          example: 'false'
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RubricRating__rubrics'
+          description: the possible ratings for this Criterion
+    RubricAssessment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the rubric
+        rubric_id:
+          type: integer
+          example: 1
+          description: the rubric the assessment belongs to
+        rubric_association_id:
+          type: integer
+          example: '2'
+        score:
+          type: integer
+          example: '5.0'
+        artifact_type:
+          type: string
+          example: Submission
+          description: the object of the assessment
+        artifact_id:
+          type: integer
+          example: '3'
+          description: the id of the object of the assessment
+        artifact_attempt:
+          type: integer
+          example: '2'
+          description: the current number of attempts made on the object of the assessment
+        assessment_type:
+          type: string
+          example: grading
+          description: the type of assessment. values will be either 'grading', 'peer_review', or 'provisional_grade'
+        assessor_id:
+          type: integer
+          example: '6'
+          description: user id of the person who made the assessment
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          description: (Optional) If 'full' is included in the 'style' parameter, returned assessments will have their full details contained in their data hash. If the user does not request a style, this key will be absent.
+        comments:
+          type: array
+          items:
+            type: string
+          description: (Optional) If 'comments_only' is included in the 'style' parameter, returned assessments will include only the comments portion of their data hash. If the user does not request a style, this key will be absent.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

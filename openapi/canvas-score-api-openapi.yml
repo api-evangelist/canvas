@@ -1,0 +1,285 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Score API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Score
+  x-resource: score
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/score.html
+paths:
+  /lti/courses/{course_id}/line_items/{line_item_id}/scores:
+    post:
+      tags:
+      - Score
+      operationId: create_score
+      summary: Create a Score
+      description: 'Create a new Result from the score params. If this is for the first created line_item for a
+
+        resourceLinkId, or it is a line item that is not attached to a resourceLinkId, then a submission
+
+        record will be created for the associated assignment when gradingProgress is set to
+
+        FullyGraded or PendingManual.
+
+
+        The submission score will also be updated when a score object is sent with either of those
+
+        two values for gradingProgress. If a score object is sent with either of FullyGraded or
+
+        PendingManual as the value for gradingProgress and scoreGiven is missing, the assignment
+
+        will not be graded. This also supposes the line_item meets the condition to create a submission.
+
+
+        A submission comment with an unknown author will be created when the comment value is included.
+
+        This also supposes the line_item meets the condition to create a submission.
+
+
+        It is also possible to submit a file along with this score, which will attach the file to the
+
+        submission that is created. Files should be formatted as Content Items, with the correct syntax
+
+        below.
+
+
+        Returns a url pointing to the Result. If any files were submitted, also returns the Content Items
+
+        which were sent in the request, each with a url pointing to the Progress of the file upload.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: line_item_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: 'The lti_user_id or the Canvas user_id.
+
+                    Returns a 422 if user not found in Canvas or is not a student.'
+                activityProgress:
+                  type: string
+                  description: 'Indicate to Canvas the status of the user towards the activity''s completion.
+
+                    Must be one of Initialized, Started, InProgress, Submitted, Completed.'
+                gradingProgress:
+                  type: string
+                  description: 'Indicate to Canvas the status of the grading process.
+
+                    A value of PendingManual will require intervention by a grader.
+
+                    Values of NotReady, Failed, and Pending will cause the scoreGiven to be ignored.
+
+                    FullyGraded values will require no action.
+
+                    Possible values are NotReady, Failed, Pending, PendingManual, FullyGraded.'
+                timestamp:
+                  type: string
+                  description: 'Date and time when the score was modified in the tool. Should use ISO8601-formatted date with subsecond precision.
+
+                    Returns a 400 if the timestamp is earlier than the updated_at time of the Result.'
+                scoreGiven:
+                  type: number
+                  description: 'The Current score received in the tool for this line item and user,
+
+                    scaled to the scoreMaximum'
+                scoreMaximum:
+                  type: number
+                  description: 'Maximum possible score for this result; it must be present if scoreGiven is present.
+
+                    Returns 422 if not present when scoreGiven is present.'
+                comment:
+                  type: string
+                  description: Comment visible to the student about this score.
+                submission:
+                  type: object
+                  additionalProperties: true
+                  description: Contains metadata about the submission attempt. Supported fields listed below.
+                submission[submittedAt]:
+                  type: string
+                  description: Date and time that the submission was originally created. Should use ISO8601-formatted date with subsecond precision. If the submittedAt time has not changed from its current value, the submission attempt number will not be incremented.
+                https://canvas.instructure.com/lti/submission:
+                  type: object
+                  additionalProperties: true
+                  description: (EXTENSION) Optional submission type and data. Fields listed below.
+                https://canvas.instructure.com/lti/submission[new_submission]:
+                  type: boolean
+                  description: (EXTENSION field) flag to indicate that this is a new submission. Defaults to true unless submission_type is none.
+                https://canvas.instructure.com/lti/submission[preserve_score]:
+                  type: boolean
+                  description: (EXTENSION field) flag to prevent a request from clearing an existing grade for a submission. Defaults to false.
+                https://canvas.instructure.com/lti/submission[prioritize_non_tool_grade]:
+                  type: boolean
+                  description: (EXTENSION field) flag to prevent a request from overwriting an existing grade for a submission. Defaults to false.
+                https://canvas.instructure.com/lti/submission[submission_type]:
+                  type: string
+                  description: '(EXTENSION field) permissible values are: none, basic_lti_launch, online_text_entry, external_tool, online_upload, or online_url. Defaults to external_tool. Ignored if content_items are provided.'
+                https://canvas.instructure.com/lti/submission[submission_data]:
+                  type: string
+                  description: (EXTENSION field) submission data (URL or body text). Only used for submission_types basic_lti_launch, online_text_entry, online_url. Ignored if content_items are provided.
+                https://canvas.instructure.com/lti/submission[submitted_at]:
+                  type: string
+                  description: (EXTENSION field) Date and time that the submission was originally created. Should use ISO8601-formatted date with subsecond precision. This should match the date and time that the original submission happened in Canvas. Use of submission.submittedAt is preferred.
+                https://canvas.instructure.com/lti/submission[content_items]:
+                  type: array
+                  items: {}
+                  description: '(EXTENSION field) Files that should be included with the submission. Each item should contain `type: file`, and a url pointing to the file. It can also contain a title, and an explicit MIME type if needed (otherwise, MIME type will be inferred from the title or url). If any items are present, submission_type will be online_upload.'
+              required:
+              - userId
+              - activityProgress
+              - gradingProgress
+              - timestamp
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: 'The lti_user_id or the Canvas user_id.
+
+                    Returns a 422 if user not found in Canvas or is not a student.'
+                activityProgress:
+                  type: string
+                  description: 'Indicate to Canvas the status of the user towards the activity''s completion.
+
+                    Must be one of Initialized, Started, InProgress, Submitted, Completed.'
+                gradingProgress:
+                  type: string
+                  description: 'Indicate to Canvas the status of the grading process.
+
+                    A value of PendingManual will require intervention by a grader.
+
+                    Values of NotReady, Failed, and Pending will cause the scoreGiven to be ignored.
+
+                    FullyGraded values will require no action.
+
+                    Possible values are NotReady, Failed, Pending, PendingManual, FullyGraded.'
+                timestamp:
+                  type: string
+                  description: 'Date and time when the score was modified in the tool. Should use ISO8601-formatted date with subsecond precision.
+
+                    Returns a 400 if the timestamp is earlier than the updated_at time of the Result.'
+                scoreGiven:
+                  type: number
+                  description: 'The Current score received in the tool for this line item and user,
+
+                    scaled to the scoreMaximum'
+                scoreMaximum:
+                  type: number
+                  description: 'Maximum possible score for this result; it must be present if scoreGiven is present.
+
+                    Returns 422 if not present when scoreGiven is present.'
+                comment:
+                  type: string
+                  description: Comment visible to the student about this score.
+                submission:
+                  type: object
+                  additionalProperties: true
+                  description: Contains metadata about the submission attempt. Supported fields listed below.
+                submission[submittedAt]:
+                  type: string
+                  description: Date and time that the submission was originally created. Should use ISO8601-formatted date with subsecond precision. If the submittedAt time has not changed from its current value, the submission attempt number will not be incremented.
+                https://canvas.instructure.com/lti/submission:
+                  type: object
+                  additionalProperties: true
+                  description: (EXTENSION) Optional submission type and data. Fields listed below.
+                https://canvas.instructure.com/lti/submission[new_submission]:
+                  type: boolean
+                  description: (EXTENSION field) flag to indicate that this is a new submission. Defaults to true unless submission_type is none.
+                https://canvas.instructure.com/lti/submission[preserve_score]:
+                  type: boolean
+                  description: (EXTENSION field) flag to prevent a request from clearing an existing grade for a submission. Defaults to false.
+                https://canvas.instructure.com/lti/submission[prioritize_non_tool_grade]:
+                  type: boolean
+                  description: (EXTENSION field) flag to prevent a request from overwriting an existing grade for a submission. Defaults to false.
+                https://canvas.instructure.com/lti/submission[submission_type]:
+                  type: string
+                  description: '(EXTENSION field) permissible values are: none, basic_lti_launch, online_text_entry, external_tool, online_upload, or online_url. Defaults to external_tool. Ignored if content_items are provided.'
+                https://canvas.instructure.com/lti/submission[submission_data]:
+                  type: string
+                  description: (EXTENSION field) submission data (URL or body text). Only used for submission_types basic_lti_launch, online_text_entry, online_url. Ignored if content_items are provided.
+                https://canvas.instructure.com/lti/submission[submitted_at]:
+                  type: string
+                  description: (EXTENSION field) Date and time that the submission was originally created. Should use ISO8601-formatted date with subsecond precision. This should match the date and time that the original submission happened in Canvas. Use of submission.submittedAt is preferred.
+                https://canvas.instructure.com/lti/submission[content_items]:
+                  type: array
+                  items: {}
+                  description: '(EXTENSION field) Files that should be included with the submission. Each item should contain `type: file`, and a url pointing to the file. It can also contain a title, and an explicit MIME type if needed (otherwise, MIME type will be inferred from the title or url). If any items are present, submission_type will be online_upload.'
+              required:
+              - userId
+              - activityProgress
+              - gradingProgress
+              - timestamp
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: resultUrl String The url to the result that was created.
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/score.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

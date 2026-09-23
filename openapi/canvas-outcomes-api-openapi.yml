@@ -1,0 +1,404 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Outcomes API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Outcomes
+  x-resource: outcomes
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/outcomes.html
+paths:
+  /v1/outcomes/{id}:
+    get:
+      tags:
+      - Outcomes
+      operationId: show_outcome
+      summary: Show an outcome
+      description: Returns the details of the outcome with the given id.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: add_defaults
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If defaults are requested, then color and mastery level defaults will be
+
+          added to outcome ratings in the result. This will only take effect if
+
+          the Account Level Mastery Scales FF is DISABLED'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Outcome'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcomes.html
+    put:
+      tags:
+      - Outcomes
+      operationId: update_outcome
+      summary: Update an outcome
+      description: 'Modify an existing outcome. Fields not provided are left as is;
+
+        unrecognized fields are ignored.
+
+
+        If any new ratings are provided, the combination of all new ratings
+
+        provided completely replace any existing embedded rubric criterion; it is
+
+        not possible to tweak the ratings of the embedded rubric criterion.
+
+
+        A new embedded rubric criterion''s mastery_points default to the maximum
+
+        points in the highest rating if not specified in the mastery_points
+
+        parameter. Any new ratings lacking a description are given a default of "No
+
+        description". Any new ratings lacking a point value are given a default of
+
+        0.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The new outcome title.
+                display_name:
+                  type: string
+                  description: 'A friendly name shown in reports for outcomes with cryptic titles,
+
+                    such as common core standards names.'
+                description:
+                  type: string
+                  description: The new outcome description.
+                vendor_guid:
+                  type: string
+                  description: A custom GUID for the learning standard.
+                mastery_points:
+                  type: integer
+                  format: int64
+                  description: The new mastery threshold for the embedded rubric criterion.
+                ratings[description]:
+                  type: array
+                  items:
+                    type: string
+                  description: The description of a new rating level for the embedded rubric criterion.
+                ratings[points]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The points corresponding to a new rating level for the embedded rubric
+
+                    criterion.'
+                calculation_method:
+                  type: string
+                  enum:
+                  - weighted_average
+                  - decaying_average
+                  - n_mastery
+                  - latest
+                  - highest
+                  - average
+                  description: 'The new calculation method. If the
+
+                    Outcomes New Decaying Average Calculation Method FF is ENABLED
+
+                    then "weighted_average" can be used and it is same as previous "decaying_average"
+
+                    and new "decaying_average" will have improved version of calculation.'
+                calculation_int:
+                  type: integer
+                  format: int64
+                  description: The new calculation int.  Only applies if the calculation_method is "decaying_average" or "n_mastery"
+                add_defaults:
+                  type: boolean
+                  description: 'If defaults are requested, then color and mastery level defaults will be
+
+                    added to outcome ratings in the result. This will only take effect if
+
+                    the Account Level Mastery Scales FF is DISABLED'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The new outcome title.
+                display_name:
+                  type: string
+                  description: 'A friendly name shown in reports for outcomes with cryptic titles,
+
+                    such as common core standards names.'
+                description:
+                  type: string
+                  description: The new outcome description.
+                vendor_guid:
+                  type: string
+                  description: A custom GUID for the learning standard.
+                mastery_points:
+                  type: integer
+                  format: int64
+                  description: The new mastery threshold for the embedded rubric criterion.
+                ratings[description]:
+                  type: array
+                  items:
+                    type: string
+                  description: The description of a new rating level for the embedded rubric criterion.
+                ratings[points]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The points corresponding to a new rating level for the embedded rubric
+
+                    criterion.'
+                calculation_method:
+                  type: string
+                  enum:
+                  - weighted_average
+                  - decaying_average
+                  - n_mastery
+                  - latest
+                  - highest
+                  - average
+                  description: 'The new calculation method. If the
+
+                    Outcomes New Decaying Average Calculation Method FF is ENABLED
+
+                    then "weighted_average" can be used and it is same as previous "decaying_average"
+
+                    and new "decaying_average" will have improved version of calculation.'
+                calculation_int:
+                  type: integer
+                  format: int64
+                  description: The new calculation int.  Only applies if the calculation_method is "decaying_average" or "n_mastery"
+                add_defaults:
+                  type: boolean
+                  description: 'If defaults are requested, then color and mastery level defaults will be
+
+                    added to outcome ratings in the result. This will only take effect if
+
+                    the Account Level Mastery Scales FF is DISABLED'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Outcome'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcomes.html
+  /v1/courses/{course_id}/outcome_alignments:
+    get:
+      tags:
+      - Outcomes
+      operationId: get_outcome_alignments_for_student_or_assignment
+      summary: Get outcome alignments for a student or assignment
+      description: Returns outcome alignments for a student or assignment in a course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      - name: student_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'The id of the student. Returns alignments filtered by student submissions.
+
+          Can be combined with assignment_id to filter to a specific assignment.'
+      - name: assignment_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'The id of the assignment. When provided without student_id, returns all
+
+          outcome alignments for the assignment (requires manage_grades or
+
+          view_all_grades permission). When provided with student_id, filters to
+
+          that student''s submission.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutcomeAlignment__outcomes'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/outcomes.html
+components:
+  schemas:
+    Outcome:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the outcome
+        url:
+          type: string
+          example: /api/v1/outcomes/1
+          description: the URL for fetching/updating the outcome. should be treated as opaque
+        context_id:
+          type: integer
+          example: 1
+          description: the context owning the outcome. may be null for global outcomes
+        context_type:
+          type: string
+          example: Account
+        title:
+          type: string
+          example: Outcome title
+          description: title of the outcome
+        display_name:
+          type: string
+          example: My Favorite Outcome
+          description: Optional friendly name for reporting
+        description:
+          type: string
+          example: Outcome description
+          description: description of the outcome. omitted in the abbreviated form.
+        vendor_guid:
+          type: string
+          example: customid9000
+          description: A custom GUID for the learning standard.
+        points_possible:
+          type: integer
+          example: 5
+          description: maximum points possible. included only if the outcome embeds a rubric criterion. omitted in the abbreviated form.
+        mastery_points:
+          type: integer
+          example: 3
+          description: points necessary to demonstrate mastery outcomes. included only if the outcome embeds a rubric criterion. omitted in the abbreviated form.
+        calculation_method:
+          type: string
+          example: decaying_average
+          description: the method used to calculate a students score
+        calculation_int:
+          type: integer
+          example: 65
+          description: this defines the variable value used by the calculation_method. included only if calculation_method uses it
+        ratings:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: RubricRating
+          description: possible ratings for this outcome. included only if the outcome embeds a rubric criterion. omitted in the abbreviated form.
+        can_edit:
+          type: boolean
+          example: true
+          description: whether the current user can update the outcome
+        can_unlink:
+          type: boolean
+          example: true
+          description: whether the outcome can be unlinked
+        assessed:
+          type: boolean
+          example: true
+          description: whether this outcome has been used to assess a student
+        has_updateable_rubrics:
+          type: boolean
+          example: true
+          description: whether updates to this outcome will propagate to unassessed rubrics that have imported it
+    OutcomeAlignment__outcomes:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the id of the aligned learning outcome.
+        assignment_id:
+          type: integer
+          example: 2
+          description: the id of the aligned assignment (null for live assessments).
+        assessment_id:
+          type: integer
+          example: 3
+          description: the id of the aligned live assessment (null for assignments).
+        submission_types:
+          type: string
+          example: online_text_entry,online_url
+          description: a string representing the different submission types of an aligned assignment.
+        url:
+          type: string
+          example: /courses/1/assignments/5
+          description: the URL for the aligned assignment.
+        title:
+          type: string
+          example: Unit 1 test
+          description: the title of the aligned assignment.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

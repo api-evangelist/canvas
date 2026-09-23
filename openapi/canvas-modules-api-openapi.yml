@@ -1,0 +1,1429 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Modules API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Modules
+  x-resource: modules
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/modules.html
+paths:
+  /v1/courses/{course_id}/modules:
+    get:
+      tags:
+      - Modules
+      operationId: list_modules
+      summary: List modules
+      description: A paginated list of the modules in a course
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - items
+            - content_details
+        required: false
+        description: "- \"items\": Return module items inline if possible.\n  This parameter suggests that Canvas return module items directly\n  in the Module object JSON, to avoid having to make separate API\n  requests for each module when enumerating modules and items. Canvas\n  is free to omit 'items' for any particular module if it deems them\n  too numerous to return inline. Callers must be prepared to use the\n  {api:ContextModuleItemsApiController#index List Module Items API}\n  if items are not returned.\n- \"content_details\": Requires 'items'. Returns additional\n  details with module items specific to their associated content items.\n  Includes standard lock information for each item."
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The partial name of the modules (and module items, if ''items'' is
+
+          specified with include[]) to match and return.'
+      - name: student_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Returns module completion information for the student with this id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Module__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    post:
+      tags:
+      - Modules
+      operationId: create_module
+      summary: Create a module
+      description: Create and return a new module
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module[name]:
+                  type: string
+                  description: The name of the module
+                module[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The date the module will unlock
+                module[position]:
+                  type: integer
+                  format: int64
+                  description: The position of this module in the course (1-based)
+                module[require_sequential_progress]:
+                  type: boolean
+                  description: Whether module items must be unlocked in order
+                module[prerequisite_module_ids]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'IDs of Modules that must be completed before this one is unlocked.
+
+                    Prerequisite modules must precede this module (i.e. have a lower position
+
+                    value), otherwise they will be ignored'
+                module[publish_final_grade]:
+                  type: boolean
+                  description: 'Whether to publish the student''s final grade for the course upon
+
+                    completion of this module.'
+              required:
+              - module[name]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                module[name]:
+                  type: string
+                  description: The name of the module
+                module[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The date the module will unlock
+                module[position]:
+                  type: integer
+                  format: int64
+                  description: The position of this module in the course (1-based)
+                module[require_sequential_progress]:
+                  type: boolean
+                  description: Whether module items must be unlocked in order
+                module[prerequisite_module_ids]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'IDs of Modules that must be completed before this one is unlocked.
+
+                    Prerequisite modules must precede this module (i.e. have a lower position
+
+                    value), otherwise they will be ignored'
+                module[publish_final_grade]:
+                  type: boolean
+                  description: 'Whether to publish the student''s final grade for the course upon
+
+                    completion of this module.'
+              required:
+              - module[name]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{id}:
+    get:
+      tags:
+      - Modules
+      operationId: show_module
+      summary: Show module
+      description: Get information about a single module
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - items
+            - content_details
+        required: false
+        description: "- \"items\": Return module items inline if possible.\n  This parameter suggests that Canvas return module items directly\n  in the Module object JSON, to avoid having to make separate API\n  requests for each module when enumerating modules and items. Canvas\n  is free to omit 'items' for any particular module if it deems them\n  too numerous to return inline. Callers must be prepared to use the\n  {api:ContextModuleItemsApiController#index List Module Items API}\n  if items are not returned.\n- \"content_details\": Requires 'items'. Returns additional\n  details with module items specific to their associated content items.\n  Includes standard lock information for each item."
+      - name: student_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Returns module completion information for the student with this id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    put:
+      tags:
+      - Modules
+      operationId: update_module
+      summary: Update a module
+      description: Update and return an existing module
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module[name]:
+                  type: string
+                  description: The name of the module
+                module[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The date the module will unlock
+                module[position]:
+                  type: integer
+                  format: int64
+                  description: The position of the module in the course (1-based)
+                module[require_sequential_progress]:
+                  type: boolean
+                  description: Whether module items must be unlocked in order
+                module[prerequisite_module_ids]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'IDs of Modules that must be completed before this one is unlocked
+
+                    Prerequisite modules must precede this module (i.e. have a lower position
+
+                    value), otherwise they will be ignored'
+                module[publish_final_grade]:
+                  type: boolean
+                  description: 'Whether to publish the student''s final grade for the course upon
+
+                    completion of this module.'
+                module[published]:
+                  type: boolean
+                  description: Whether the module is published and visible to students
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                module[name]:
+                  type: string
+                  description: The name of the module
+                module[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The date the module will unlock
+                module[position]:
+                  type: integer
+                  format: int64
+                  description: The position of the module in the course (1-based)
+                module[require_sequential_progress]:
+                  type: boolean
+                  description: Whether module items must be unlocked in order
+                module[prerequisite_module_ids]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'IDs of Modules that must be completed before this one is unlocked
+
+                    Prerequisite modules must precede this module (i.e. have a lower position
+
+                    value), otherwise they will be ignored'
+                module[publish_final_grade]:
+                  type: boolean
+                  description: 'Whether to publish the student''s final grade for the course upon
+
+                    completion of this module.'
+                module[published]:
+                  type: boolean
+                  description: Whether the module is published and visible to students
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    delete:
+      tags:
+      - Modules
+      operationId: delete_module
+      summary: Delete module
+      description: Delete a module
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{id}/relock:
+    put:
+      tags:
+      - Modules
+      operationId: re_lock_module_progressions
+      summary: Re-lock module progressions
+      description: 'Resets module progressions to their default locked state and
+
+        recalculates them based on the current requirements.
+
+
+        Adding progression requirements to an active course will not lock students
+
+        out of modules they have already unlocked unless this action is called.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Module__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{module_id}/items:
+    get:
+      tags:
+      - Modules
+      operationId: list_module_items
+      summary: List module items
+      description: A paginated list of the items in a module
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - content_details
+        required: false
+        description: 'If included, will return additional details specific to the content
+
+          associated with each item. Refer to the {api:Modules:Module%20Item Module
+
+          Item specification} for more details.
+
+          Includes standard lock information for each item.'
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial title of the items to match and return.
+      - name: student_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Returns module completion information for the student with this id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModuleItem__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    post:
+      tags:
+      - Modules
+      operationId: create_module_item
+      summary: Create a module item
+      description: Create and return a new module item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module_item[title]:
+                  type: string
+                  description: The name of the module item and associated content
+                module_item[type]:
+                  type: string
+                  enum:
+                  - File
+                  - Page
+                  - Discussion
+                  - Assignment
+                  - Quiz
+                  - SubHeader
+                  - ExternalUrl
+                  - ExternalTool
+                  description: The type of content linked to the item
+                module_item[content_id]:
+                  type: string
+                  description: 'The id of the content to link to the module item. Required, except for
+
+                    ''ExternalUrl'', ''Page'', and ''SubHeader'' types.'
+                module_item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of this item in the module (1-based).
+                module_item[indent]:
+                  type: integer
+                  format: int64
+                  description: 0-based indent level; module items may be indented to show a hierarchy
+                module_item[page_url]:
+                  type: string
+                  description: 'Suffix for the linked wiki page (e.g. ''front-page''). Required for ''Page''
+
+                    type.'
+                module_item[external_url]:
+                  type: string
+                  description: 'External url that the item points to. [Required for ''ExternalUrl'' and
+
+                    ''ExternalTool'' types.'
+                module_item[new_tab]:
+                  type: boolean
+                  description: 'Whether the external tool opens in a new tab. Only applies to
+
+                    ''ExternalTool'' type.'
+                module_item[completion_requirement][type]:
+                  type: string
+                  enum:
+                  - must_view
+                  - must_contribute
+                  - must_submit
+                  - must_mark_done
+                  description: 'Completion requirement for this module item.
+
+                    "must_view": Applies to all item types
+
+                    "must_contribute": Only applies to "Assignment", "Discussion", and "Page" types
+
+                    "must_submit", "min_score": Only apply to "Assignment" and "Quiz" types
+
+                    "must_mark_done": Only applies to "Assignment", "Page", and "AiExperience" types
+
+                    Inapplicable types will be ignored'
+                module_item[completion_requirement][min_score]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum score required to complete. Required for completion_requirement
+
+                    type ''min_score''.'
+                module_item[iframe][width]:
+                  type: integer
+                  format: int64
+                  description: Width of the ExternalTool on launch
+                module_item[iframe][height]:
+                  type: integer
+                  format: int64
+                  description: Height of the ExternalTool on launch
+              required:
+              - module_item[type]
+              - module_item[content_id]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                module_item[title]:
+                  type: string
+                  description: The name of the module item and associated content
+                module_item[type]:
+                  type: string
+                  enum:
+                  - File
+                  - Page
+                  - Discussion
+                  - Assignment
+                  - Quiz
+                  - SubHeader
+                  - ExternalUrl
+                  - ExternalTool
+                  description: The type of content linked to the item
+                module_item[content_id]:
+                  type: string
+                  description: 'The id of the content to link to the module item. Required, except for
+
+                    ''ExternalUrl'', ''Page'', and ''SubHeader'' types.'
+                module_item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of this item in the module (1-based).
+                module_item[indent]:
+                  type: integer
+                  format: int64
+                  description: 0-based indent level; module items may be indented to show a hierarchy
+                module_item[page_url]:
+                  type: string
+                  description: 'Suffix for the linked wiki page (e.g. ''front-page''). Required for ''Page''
+
+                    type.'
+                module_item[external_url]:
+                  type: string
+                  description: 'External url that the item points to. [Required for ''ExternalUrl'' and
+
+                    ''ExternalTool'' types.'
+                module_item[new_tab]:
+                  type: boolean
+                  description: 'Whether the external tool opens in a new tab. Only applies to
+
+                    ''ExternalTool'' type.'
+                module_item[completion_requirement][type]:
+                  type: string
+                  enum:
+                  - must_view
+                  - must_contribute
+                  - must_submit
+                  - must_mark_done
+                  description: 'Completion requirement for this module item.
+
+                    "must_view": Applies to all item types
+
+                    "must_contribute": Only applies to "Assignment", "Discussion", and "Page" types
+
+                    "must_submit", "min_score": Only apply to "Assignment" and "Quiz" types
+
+                    "must_mark_done": Only applies to "Assignment", "Page", and "AiExperience" types
+
+                    Inapplicable types will be ignored'
+                module_item[completion_requirement][min_score]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum score required to complete. Required for completion_requirement
+
+                    type ''min_score''.'
+                module_item[iframe][width]:
+                  type: integer
+                  format: int64
+                  description: Width of the ExternalTool on launch
+                module_item[iframe][height]:
+                  type: integer
+                  format: int64
+                  description: Height of the ExternalTool on launch
+              required:
+              - module_item[type]
+              - module_item[content_id]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleItem__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{module_id}/items/{id}:
+    get:
+      tags:
+      - Modules
+      operationId: show_module_item
+      summary: Show module item
+      description: Get information about a single module item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - content_details
+        required: false
+        description: 'If included, will return additional details specific to the content
+
+          associated with this item. Refer to the {api:Modules:Module%20Item Module
+
+          Item specification} for more details.
+
+          Includes standard lock information for each item.'
+      - name: student_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Returns module completion information for the student with this id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleItem__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    put:
+      tags:
+      - Modules
+      operationId: update_module_item
+      summary: Update a module item
+      description: Update and return an existing module item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module_item[title]:
+                  type: string
+                  description: The name of the module item
+                module_item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of this item in the module (1-based)
+                module_item[indent]:
+                  type: integer
+                  format: int64
+                  description: 0-based indent level; module items may be indented to show a hierarchy
+                module_item[external_url]:
+                  type: string
+                  description: External url that the item points to. Only applies to 'ExternalUrl' type.
+                module_item[new_tab]:
+                  type: boolean
+                  description: 'Whether the external tool opens in a new tab. Only applies to
+
+                    ''ExternalTool'' type.'
+                module_item[completion_requirement][type]:
+                  type: string
+                  enum:
+                  - must_view
+                  - must_contribute
+                  - must_submit
+                  - must_mark_done
+                  description: 'Completion requirement for this module item.
+
+                    "must_view": Applies to all item types
+
+                    "must_contribute": Only applies to "Assignment", "Discussion", and "Page" types
+
+                    "must_submit", "min_score": Only apply to "Assignment" and "Quiz" types
+
+                    "must_mark_done": Only applies to "Assignment", "Page", and "AiExperience" types
+
+                    Inapplicable types will be ignored'
+                module_item[completion_requirement][min_score]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum score required to complete, Required for completion_requirement
+
+                    type ''min_score''.'
+                module_item[published]:
+                  type: boolean
+                  description: Whether the module item is published and visible to students.
+                module_item[module_id]:
+                  type: string
+                  description: 'Move this item to another module by specifying the target module id here.
+
+                    The target module must be in the same course.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                module_item[title]:
+                  type: string
+                  description: The name of the module item
+                module_item[position]:
+                  type: integer
+                  format: int64
+                  description: The position of this item in the module (1-based)
+                module_item[indent]:
+                  type: integer
+                  format: int64
+                  description: 0-based indent level; module items may be indented to show a hierarchy
+                module_item[external_url]:
+                  type: string
+                  description: External url that the item points to. Only applies to 'ExternalUrl' type.
+                module_item[new_tab]:
+                  type: boolean
+                  description: 'Whether the external tool opens in a new tab. Only applies to
+
+                    ''ExternalTool'' type.'
+                module_item[completion_requirement][type]:
+                  type: string
+                  enum:
+                  - must_view
+                  - must_contribute
+                  - must_submit
+                  - must_mark_done
+                  description: 'Completion requirement for this module item.
+
+                    "must_view": Applies to all item types
+
+                    "must_contribute": Only applies to "Assignment", "Discussion", and "Page" types
+
+                    "must_submit", "min_score": Only apply to "Assignment" and "Quiz" types
+
+                    "must_mark_done": Only applies to "Assignment", "Page", and "AiExperience" types
+
+                    Inapplicable types will be ignored'
+                module_item[completion_requirement][min_score]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum score required to complete, Required for completion_requirement
+
+                    type ''min_score''.'
+                module_item[published]:
+                  type: boolean
+                  description: Whether the module item is published and visible to students.
+                module_item[module_id]:
+                  type: string
+                  description: 'Move this item to another module by specifying the target module id here.
+
+                    The target module must be in the same course.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleItem__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    delete:
+      tags:
+      - Modules
+      operationId: delete_module_item
+      summary: Delete module item
+      description: Delete a module item
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleItem__modules'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{module_id}/items/{id}/select_mastery_path:
+    post:
+      tags:
+      - Modules
+      operationId: select_mastery_path
+      summary: Select a mastery path
+      description: 'Select a mastery path when module item includes several possible paths.
+
+        Requires Mastery Paths feature to be enabled. Returns a compound document
+
+        with the assignments included in the given path and any module items
+
+        related to those assignments'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assignment_set_id:
+                  type: string
+                  description: 'Assignment set chosen, as specified in the mastery_paths portion of the
+
+                    context module item response'
+                student_id:
+                  type: string
+                  description: 'Which student the selection applies to.  If not specified, current user is
+
+                    implied.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                assignment_set_id:
+                  type: string
+                  description: 'Assignment set chosen, as specified in the mastery_paths portion of the
+
+                    context module item response'
+                student_id:
+                  type: string
+                  description: 'Which student the selection applies to.  If not specified, current user is
+
+                    implied.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{module_id}/items/{id}/done:
+    put:
+      tags:
+      - Modules
+      operationId: mark_module_item_as_done_not_done
+      summary: Mark module item as done/not done
+      description: 'Mark a module item as done/not done. Use HTTP method PUT to mark as done,
+
+        and DELETE to mark as not done.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/module_item_sequence:
+    get:
+      tags:
+      - Modules
+      operationId: get_module_item_sequence
+      summary: Get module item sequence
+      description: 'Given an asset in a course, find the ModuleItem it belongs to, the previous and next Module Items
+
+        in the course sequence, and also any applicable mastery path rules'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: asset_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - ModuleItem
+          - File
+          - Page
+          - Discussion
+          - Assignment
+          - Quiz
+          - ExternalTool
+        required: false
+        description: 'The type of asset to find module sequence information for. Use the ModuleItem if it is known
+
+          (e.g., the user navigated from a module item), since this will avoid ambiguity if the asset
+
+          appears more than once in the module sequence.'
+      - name: asset_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The id of the asset (or the url in the case of a Page)
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModuleItemSequence'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{module_id}/items/{id}/mark_read:
+    post:
+      tags:
+      - Modules
+      operationId: mark_module_item_read
+      summary: Mark module item read
+      description: 'Fulfills "must view" requirement for a module item. It is generally not necessary to do this explicitly,
+
+        but it is provided for applications that need to access external content directly (bypassing the html_url
+
+        redirect that normally allows Canvas to fulfill "must view" requirements).
+
+
+        This endpoint cannot be used to complete requirements on locked or unpublished module items.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+  /v1/courses/{course_id}/modules/{context_module_id}/assignment_overrides:
+    get:
+      tags:
+      - Modules
+      operationId: list_module_s_overrides
+      summary: List a module's overrides
+      description: Returns a paginated list of AssignmentOverrides that apply to the ContextModule.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: context_module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModuleAssignmentOverride'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+    put:
+      tags:
+      - Modules
+      operationId: update_module_s_overrides
+      summary: Update a module's overrides
+      description: 'Accepts a list of overrides and applies them to the ContextModule. Returns 204 No Content response
+
+        code if successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: context_module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the module. Overrides that already exist should include an ID
+
+                    and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the module''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''student_ids'', and ''course_section_id''. ''group_id'' is accepted if the Differentiation
+
+                    Tags account setting is enabled.'
+              required:
+              - overrides
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the module. Overrides that already exist should include an ID
+
+                    and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the module''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''student_ids'', and ''course_section_id''. ''group_id'' is accepted if the Differentiation
+
+                    Tags account setting is enabled.'
+              required:
+              - overrides
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/modules.html
+components:
+  schemas:
+    ModuleAssignmentOverride:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4355
+          description: the ID of the assignment override
+        context_module_id:
+          type: integer
+          example: 567
+          description: the ID of the module the override applies to
+        title:
+          type: string
+          example: Section 6
+          description: the title of the override
+        students:
+          type: string
+          description: an array of the override's target students (present only if the override targets an adhoc set of students)
+        course_section:
+          type: string
+          description: the override's target section (present only if the override targets a section)
+    ModuleItem__modules:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 768
+          description: the unique identifier for the module item
+        module_id:
+          type: integer
+          example: 123
+          description: the id of the Module this item appears in
+        position:
+          type: integer
+          example: 1
+          description: the position of this item in the module (1-based)
+        title:
+          type: string
+          example: 'Square Roots: Irrational numbers or boxy vegetables?'
+          description: the title of this item
+        indent:
+          type: integer
+          example: 0
+          description: 0-based indent level; module items may be indented to show a hierarchy
+        type:
+          type: string
+          example: Assignment
+          description: the type of object referred to one of 'File', 'Page', 'Discussion', 'Assignment', 'Quiz', 'SubHeader', 'ExternalUrl', 'ExternalTool'
+        content_id:
+          type: integer
+          example: 1337
+          description: the id of the object referred to applies to 'File', 'Discussion', 'Assignment', 'Quiz', 'ExternalTool' types
+        html_url:
+          type: string
+          example: https://canvas.example.edu/courses/222/modules/items/768
+          description: link to the item in Canvas
+        url:
+          type: string
+          example: https://canvas.example.edu/api/v1/courses/222/assignments/987
+          description: (Optional) link to the Canvas API object, if applicable
+        page_url:
+          type: string
+          example: my-page-title
+          description: (only for 'Page' type) unique locator for the linked wiki page
+        external_url:
+          type: string
+          example: https://www.example.com/externalurl
+          description: (only for 'ExternalUrl' and 'ExternalTool' types) external url that the item points to
+        new_tab:
+          type: boolean
+          example: false
+          description: (only for 'ExternalTool' type) whether the external tool opens in a new tab
+        completion_requirement:
+          type: string
+          example:
+            type: min_score
+            min_score: 10
+            completed: true
+          description: Completion requirement for this module item
+        content_details:
+          type: string
+          example:
+            points_possible: 20
+            due_at: '2012-12-31T06:00:00-06:00'
+            unlock_at: '2012-12-31T06:00:00-06:00'
+            lock_at: '2012-12-31T06:00:00-06:00'
+          description: (Present only if requested through include[]=content_details) If applicable, returns additional details specific to the associated object
+        published:
+          type: boolean
+          example: true
+          description: (Optional) Whether this module item is published. This field is present only if the caller has permission to view unpublished items.
+    ModuleItemSequenceNode:
+      type: object
+      properties:
+        prev:
+          type: string
+          description: The previous ModuleItem in the sequence
+        current:
+          type: string
+          example:
+            id: 768
+            module_id: 123
+            title: A lonely page
+            type: Page
+          description: The ModuleItem being queried
+        next:
+          type: string
+          example:
+            id: 769
+            module_id: 127
+            title: Project 1
+            type: Assignment
+          description: The next ModuleItem in the sequence
+        mastery_path:
+          type: object
+          additionalProperties: true
+          example:
+            locked: true
+            assignment_sets: []
+            selected_set_id: null
+            awaiting_choice: false
+            still_processing: false
+            modules_url: /courses/11/modules
+            choose_url: /courses/11/modules/items/9/choose
+            modules_tab_disabled: false
+          description: The conditional release rule for the module item, if applicable
+    ModuleItemSequence:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleItemSequenceNode'
+          example:
+          - prev: null
+            current:
+              id: 768
+              module_id: 123
+              title: A lonely page
+              type: Page
+            next:
+              id: 769
+              module_id: 127
+              title: Project 1
+              type: Assignment
+            mastery_path:
+              locked: true
+              assignment_sets: []
+              selected_set_id: null
+              awaiting_choice: false
+              still_processing: false
+              modules_url: /courses/11/modules
+              choose_url: /courses/11/modules/items/9/choose
+              modules_tab_disabled: false
+          description: an array containing one ModuleItemSequenceNode for each appearence of the asset in the module sequence (up to 10 total)
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module__modules'
+          example:
+          - id: 123
+            name: Overview
+          - id: 127
+            name: Imaginary Numbers
+          description: an array containing each Module referenced above
+    Module__modules:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+          description: the unique identifier for the module
+        workflow_state:
+          type: string
+          example: active
+          description: 'the state of the module: ''active'', ''deleted'''
+        position:
+          type: integer
+          example: 2
+          description: the position of this module in the course (1-based)
+        name:
+          type: string
+          example: Imaginary Numbers and You
+          description: the name of this module
+        unlock_at:
+          type: string
+          format: date-time
+          example: '2012-12-31T06:00:00-06:00'
+          description: (Optional) the date this module will unlock
+        require_sequential_progress:
+          type: boolean
+          example: true
+          description: Whether module items must be unlocked in order
+        requirement_type:
+          type: string
+          example: all
+          description: Whether module requires all required items or one required item to be considered complete (one of 'all' or 'one')
+        prerequisite_module_ids:
+          type: array
+          items:
+            type: integer
+          example:
+          - 121
+          - 122
+          description: IDs of Modules that must be completed before this one is unlocked
+        items_count:
+          type: integer
+          example: 10
+          description: The number of items in the module
+        items_url:
+          type: string
+          example: https://canvas.example.com/api/v1/modules/123/items
+          description: The API URL to retrive this module's items
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleItem__modules'
+          description: The contents of this module, as an array of Module Items. (Present only if requested via include[]=items AND the module is not deemed too large by Canvas.)
+        state:
+          type: string
+          example: started
+          description: The state of this Module for the calling user one of 'locked', 'unlocked', 'started', 'completed' (Optional; present only if the caller is a student or if the optional parameter 'student_id' is included)
+        completed_at:
+          type: string
+          format: date-time
+          description: the date the calling user completed the module (Optional; present only if the caller is a student or if the optional parameter 'student_id' is included)
+        publish_final_grade:
+          type: boolean
+          description: if the student's final grade for the course should be published to the SIS upon completion of this module
+        published:
+          type: boolean
+          example: true
+          description: (Optional) Whether this module is published. This field is present only if the caller has permission to view unpublished modules.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

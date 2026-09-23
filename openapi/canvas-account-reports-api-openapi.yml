@@ -1,0 +1,397 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Account Reports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Account Reports
+  x-resource: account_reports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/account_reports.html
+paths:
+  /v1/accounts/{account_id}/reports:
+    get:
+      tags:
+      - Account Reports
+      operationId: list_available_reports
+      summary: List Available Reports
+      description: Returns a paginated list of reports for the current context.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - description_html
+            - params_html
+        required: false
+        description: 'Array of additional information to include.
+
+
+          "description_html":: an HTML description of the report, with example output
+
+          "parameters_html":: an HTML form for the report parameters'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/account_reports.html
+  /v1/accounts/{account_id}/reports/{report}:
+    post:
+      tags:
+      - Account Reports
+      operationId: start_report
+      summary: Start a Report
+      description: 'Generates a report instance for the account. Note that "report" in the
+
+        request must match one of the available report names. To fetch a list of
+
+        available report names and parameters for each report (including whether or
+
+        not those parameters are required), see
+
+        {api:AccountReportsController#available_reports List Available Reports}.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: report
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  description: 'The parameters will vary for each report. To fetch a list
+
+                    of available parameters for each report, see {api:AccountReportsController#available_reports List Available Reports}.
+
+                    A few example parameters have been provided below. Note that the example
+
+                    parameters provided below may not be valid for every report.'
+                parameters[skip_message]:
+                  type: boolean
+                  description: 'If true, no message will be sent
+
+                    to the user upon completion of the report.'
+                parameters[course_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of the course to report on.
+
+                    Note: this parameter has been listed to serve as an example and may not be
+
+                    valid for every report.'
+                parameters[users]:
+                  type: boolean
+                  description: 'If true, user data will be included. If
+
+                    false, user data will be omitted. Note: this parameter has been listed to
+
+                    serve as an example and may not be valid for every report.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                parameters:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  description: 'The parameters will vary for each report. To fetch a list
+
+                    of available parameters for each report, see {api:AccountReportsController#available_reports List Available Reports}.
+
+                    A few example parameters have been provided below. Note that the example
+
+                    parameters provided below may not be valid for every report.'
+                parameters[skip_message]:
+                  type: boolean
+                  description: 'If true, no message will be sent
+
+                    to the user upon completion of the report.'
+                parameters[course_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of the course to report on.
+
+                    Note: this parameter has been listed to serve as an example and may not be
+
+                    valid for every report.'
+                parameters[users]:
+                  type: boolean
+                  description: 'If true, user data will be included. If
+
+                    false, user data will be omitted. Note: this parameter has been listed to
+
+                    serve as an example and may not be valid for every report.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report__account_reports'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/account_reports.html
+    get:
+      tags:
+      - Account Reports
+      operationId: index_of_reports
+      summary: Index of Reports
+      description: Shows all reports that have been run for the account of a specific type.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: report
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report__account_reports'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/account_reports.html
+  /v1/accounts/{account_id}/reports/{report}/{id}:
+    get:
+      tags:
+      - Account Reports
+      operationId: status_of_report
+      summary: Status of a Report
+      description: Returns the status of a report.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: report
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report__account_reports'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/account_reports.html
+    delete:
+      tags:
+      - Account Reports
+      operationId: delete_report
+      summary: Delete a Report
+      description: Deletes a generated report instance.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: report
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report__account_reports'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/account_reports.html
+  /v1/accounts/{account_id}/reports/{report}/{id}/abort:
+    put:
+      tags:
+      - Account Reports
+      operationId: abort_report
+      summary: Abort a Report
+      description: Abort a report in progress
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: report
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report__account_reports'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/account_reports.html
+components:
+  schemas:
+    Report__account_reports:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: '1'
+          description: The unique identifier for the report.
+        report:
+          type: string
+          example: sis_export_csv
+          description: The type of report.
+        file_url:
+          type: string
+          example: https://example.com/some/path
+          description: The url to the report download.
+        attachment:
+          type: string
+          description: The attachment api object of the report. Only available after the report has completed.
+        status:
+          type: string
+          example: complete
+          description: The status of the report
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-12-01T23:59:00-06:00'
+          description: The date and time the report was created.
+        started_at:
+          type: string
+          format: date-time
+          example: '2013-12-02T00:03:21-06:00'
+          description: The date and time the report started processing.
+        ended_at:
+          type: string
+          format: date-time
+          example: '2013-12-02T00:03:21-06:00'
+          description: The date and time the report finished processing.
+        run_time:
+          type: number
+          example: 33.3
+          description: The time (in seconds) the report has been waiting to run, has been running so far, or took to run to completion, depending on its current state.
+        parameters:
+          type: string
+          example:
+            course_id: 2
+            start_at: '2012-07-13T10:55:20-06:00'
+            end_at: '2012-07-13T10:55:20-06:00'
+          description: The report parameters
+        progress:
+          type: integer
+          example: '100'
+          description: The progress of the report
+        current_line:
+          type: integer
+          example: '12000'
+          description: This is the current line count being written to the report. It updates every 1000 records.
+        user:
+          type: string
+          description: The user that initiated the account report. See the Users API for details.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

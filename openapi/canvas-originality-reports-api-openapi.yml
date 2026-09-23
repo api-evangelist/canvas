@@ -1,0 +1,606 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Originality Reports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Originality Reports
+  x-resource: originality_reports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/originality_reports.html
+paths:
+  /lti/assignments/{assignment_id}/submissions/{submission_id}/originality_report:
+    post:
+      tags:
+      - Originality Reports
+      operationId: create_originality_report
+      summary: Create an Originality Report
+      description: Create a new OriginalityReport for the specified file
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                originality_report[file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of the file being given an originality score. Required
+
+                    if creating a report associated with a file.'
+                originality_report[originality_score]:
+                  type: number
+                  description: 'A number between 0 and 100 representing the measure of the
+
+                    specified file''s originality.'
+                originality_report[originality_report_url]:
+                  type: string
+                  description: 'The URL where the originality report for the specified
+
+                    file may be found.'
+                originality_report[originality_report_file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the file within Canvas that contains the originality
+
+                    report for the submitted file provided in the request URL.'
+                originality_report[tool_setting][resource_type_code]:
+                  type: string
+                  description: 'The resource type code of the resource handler Canvas should use for the
+
+                    LTI launch for viewing originality reports. If set Canvas will launch
+
+                    to the message with type ''basic-lti-launch-request'' in the specified
+
+                    resource handler rather than using the originality_report_url.'
+                originality_report[tool_setting][resource_url]:
+                  type: string
+                  description: 'The URL Canvas should launch to when showing an LTI originality report.
+
+                    Note that this value is inferred from the specified resource handler''s
+
+                    message "path" value (See `resource_type_code`) unless
+
+                    it is specified. If this parameter is used a `resource_type_code`
+
+                    must also be specified.'
+                originality_report[workflow_state]:
+                  type: string
+                  description: 'May be set to "pending", "error", or "scored". If an originality score
+
+                    is provided a workflow state of "scored" will be inferred.'
+                originality_report[error_message]:
+                  type: string
+                  description: 'A message describing the error. If set, the "workflow_state"
+
+                    will be set to "error."'
+                originality_report[attempt]:
+                  type: integer
+                  format: int64
+                  description: 'If no `file_id` is given, and no file is required for the assignment
+
+                    (that is, the assignment allows an online text entry), this parameter
+
+                    may be given to clarify which attempt number the report is for (in the
+
+                    case of resubmissions). If this field is omitted and no `file_id` is
+
+                    given, the report will be created (or updated, if it exists) for the
+
+                    first submission attempt with no associated file.'
+              required:
+              - originality_report[originality_score]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                originality_report[file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of the file being given an originality score. Required
+
+                    if creating a report associated with a file.'
+                originality_report[originality_score]:
+                  type: number
+                  description: 'A number between 0 and 100 representing the measure of the
+
+                    specified file''s originality.'
+                originality_report[originality_report_url]:
+                  type: string
+                  description: 'The URL where the originality report for the specified
+
+                    file may be found.'
+                originality_report[originality_report_file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the file within Canvas that contains the originality
+
+                    report for the submitted file provided in the request URL.'
+                originality_report[tool_setting][resource_type_code]:
+                  type: string
+                  description: 'The resource type code of the resource handler Canvas should use for the
+
+                    LTI launch for viewing originality reports. If set Canvas will launch
+
+                    to the message with type ''basic-lti-launch-request'' in the specified
+
+                    resource handler rather than using the originality_report_url.'
+                originality_report[tool_setting][resource_url]:
+                  type: string
+                  description: 'The URL Canvas should launch to when showing an LTI originality report.
+
+                    Note that this value is inferred from the specified resource handler''s
+
+                    message "path" value (See `resource_type_code`) unless
+
+                    it is specified. If this parameter is used a `resource_type_code`
+
+                    must also be specified.'
+                originality_report[workflow_state]:
+                  type: string
+                  description: 'May be set to "pending", "error", or "scored". If an originality score
+
+                    is provided a workflow state of "scored" will be inferred.'
+                originality_report[error_message]:
+                  type: string
+                  description: 'A message describing the error. If set, the "workflow_state"
+
+                    will be set to "error."'
+                originality_report[attempt]:
+                  type: integer
+                  format: int64
+                  description: 'If no `file_id` is given, and no file is required for the assignment
+
+                    (that is, the assignment allows an online text entry), this parameter
+
+                    may be given to clarify which attempt number the report is for (in the
+
+                    case of resubmissions). If this field is omitted and no `file_id` is
+
+                    given, the report will be created (or updated, if it exists) for the
+
+                    first submission attempt with no associated file.'
+              required:
+              - originality_report[originality_score]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginalityReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/originality_reports.html
+  /lti/assignments/{assignment_id}/submissions/{submission_id}/originality_report/{id}:
+    put:
+      tags:
+      - Originality Reports
+      operationId: edit_originality_report_submissions
+      summary: Edit an Originality Report
+      description: 'Modify an existing originality report. An alternative to this endpoint is
+
+        to POST the same parameters listed below to the CREATE endpoint.'
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                originality_report[originality_score]:
+                  type: number
+                  description: 'A number between 0 and 100 representing the measure of the
+
+                    specified file''s originality.'
+                originality_report[originality_report_url]:
+                  type: string
+                  description: 'The URL where the originality report for the specified
+
+                    file may be found.'
+                originality_report[originality_report_file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the file within Canvas that contains the originality
+
+                    report for the submitted file provided in the request URL.'
+                originality_report[tool_setting][resource_type_code]:
+                  type: string
+                  description: 'The resource type code of the resource handler Canvas should use for the
+
+                    LTI launch for viewing originality reports. If set Canvas will launch
+
+                    to the message with type ''basic-lti-launch-request'' in the specified
+
+                    resource handler rather than using the originality_report_url.'
+                originality_report[tool_setting][resource_url]:
+                  type: string
+                  description: 'The URL Canvas should launch to when showing an LTI originality report.
+
+                    Note that this value is inferred from the specified resource handler''s
+
+                    message "path" value (See `resource_type_code`) unless
+
+                    it is specified. If this parameter is used a `resource_type_code`
+
+                    must also be specified.'
+                originality_report[workflow_state]:
+                  type: string
+                  description: 'May be set to "pending", "error", or "scored". If an originality score
+
+                    is provided a workflow state of "scored" will be inferred.'
+                originality_report[error_message]:
+                  type: string
+                  description: 'A message describing the error. If set, the "workflow_state"
+
+                    will be set to "error."'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                originality_report[originality_score]:
+                  type: number
+                  description: 'A number between 0 and 100 representing the measure of the
+
+                    specified file''s originality.'
+                originality_report[originality_report_url]:
+                  type: string
+                  description: 'The URL where the originality report for the specified
+
+                    file may be found.'
+                originality_report[originality_report_file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the file within Canvas that contains the originality
+
+                    report for the submitted file provided in the request URL.'
+                originality_report[tool_setting][resource_type_code]:
+                  type: string
+                  description: 'The resource type code of the resource handler Canvas should use for the
+
+                    LTI launch for viewing originality reports. If set Canvas will launch
+
+                    to the message with type ''basic-lti-launch-request'' in the specified
+
+                    resource handler rather than using the originality_report_url.'
+                originality_report[tool_setting][resource_url]:
+                  type: string
+                  description: 'The URL Canvas should launch to when showing an LTI originality report.
+
+                    Note that this value is inferred from the specified resource handler''s
+
+                    message "path" value (See `resource_type_code`) unless
+
+                    it is specified. If this parameter is used a `resource_type_code`
+
+                    must also be specified.'
+                originality_report[workflow_state]:
+                  type: string
+                  description: 'May be set to "pending", "error", or "scored". If an originality score
+
+                    is provided a workflow state of "scored" will be inferred.'
+                originality_report[error_message]:
+                  type: string
+                  description: 'A message describing the error. If set, the "workflow_state"
+
+                    will be set to "error."'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginalityReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/originality_reports.html
+    get:
+      tags:
+      - Originality Reports
+      operationId: show_originality_report_submissions
+      summary: Show an Originality Report
+      description: Get a single originality report
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginalityReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/originality_reports.html
+  /lti/assignments/{assignment_id}/files/{file_id}/originality_report:
+    put:
+      tags:
+      - Originality Reports
+      operationId: edit_originality_report_files
+      summary: Edit an Originality Report
+      description: 'Modify an existing originality report. An alternative to this endpoint is
+
+        to POST the same parameters listed below to the CREATE endpoint.'
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: file_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                originality_report[originality_score]:
+                  type: number
+                  description: 'A number between 0 and 100 representing the measure of the
+
+                    specified file''s originality.'
+                originality_report[originality_report_url]:
+                  type: string
+                  description: 'The URL where the originality report for the specified
+
+                    file may be found.'
+                originality_report[originality_report_file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the file within Canvas that contains the originality
+
+                    report for the submitted file provided in the request URL.'
+                originality_report[tool_setting][resource_type_code]:
+                  type: string
+                  description: 'The resource type code of the resource handler Canvas should use for the
+
+                    LTI launch for viewing originality reports. If set Canvas will launch
+
+                    to the message with type ''basic-lti-launch-request'' in the specified
+
+                    resource handler rather than using the originality_report_url.'
+                originality_report[tool_setting][resource_url]:
+                  type: string
+                  description: 'The URL Canvas should launch to when showing an LTI originality report.
+
+                    Note that this value is inferred from the specified resource handler''s
+
+                    message "path" value (See `resource_type_code`) unless
+
+                    it is specified. If this parameter is used a `resource_type_code`
+
+                    must also be specified.'
+                originality_report[workflow_state]:
+                  type: string
+                  description: 'May be set to "pending", "error", or "scored". If an originality score
+
+                    is provided a workflow state of "scored" will be inferred.'
+                originality_report[error_message]:
+                  type: string
+                  description: 'A message describing the error. If set, the "workflow_state"
+
+                    will be set to "error."'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                originality_report[originality_score]:
+                  type: number
+                  description: 'A number between 0 and 100 representing the measure of the
+
+                    specified file''s originality.'
+                originality_report[originality_report_url]:
+                  type: string
+                  description: 'The URL where the originality report for the specified
+
+                    file may be found.'
+                originality_report[originality_report_file_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the file within Canvas that contains the originality
+
+                    report for the submitted file provided in the request URL.'
+                originality_report[tool_setting][resource_type_code]:
+                  type: string
+                  description: 'The resource type code of the resource handler Canvas should use for the
+
+                    LTI launch for viewing originality reports. If set Canvas will launch
+
+                    to the message with type ''basic-lti-launch-request'' in the specified
+
+                    resource handler rather than using the originality_report_url.'
+                originality_report[tool_setting][resource_url]:
+                  type: string
+                  description: 'The URL Canvas should launch to when showing an LTI originality report.
+
+                    Note that this value is inferred from the specified resource handler''s
+
+                    message "path" value (See `resource_type_code`) unless
+
+                    it is specified. If this parameter is used a `resource_type_code`
+
+                    must also be specified.'
+                originality_report[workflow_state]:
+                  type: string
+                  description: 'May be set to "pending", "error", or "scored". If an originality score
+
+                    is provided a workflow state of "scored" will be inferred.'
+                originality_report[error_message]:
+                  type: string
+                  description: 'A message describing the error. If set, the "workflow_state"
+
+                    will be set to "error."'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginalityReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/originality_reports.html
+    get:
+      tags:
+      - Originality Reports
+      operationId: show_originality_report_files
+      summary: Show an Originality Report
+      description: Get a single originality report
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: file_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OriginalityReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/originality_reports.html
+components:
+  schemas:
+    OriginalityReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: '4'
+          description: The id of the OriginalityReport
+        file_id:
+          type: integer
+          example: '8'
+          description: The id of the file receiving the originality score
+        originality_score:
+          type: number
+          example: '0.16'
+          description: A number between 0 and 100 representing the originality score
+        originality_report_file_id:
+          type: integer
+          example: '23'
+          description: The ID of the file within Canvas containing the originality report document (if provided)
+        originality_report_url:
+          type: string
+          example: http://www.example.com/report
+          description: A non-LTI launch URL where the originality score of the file may be found.
+        tool_setting:
+          type: string
+          description: A ToolSetting object containing optional 'resource_type_code' and 'resource_url'
+        error_report:
+          type: string
+          description: A message describing the error. If set, the workflow_state will become 'error.'
+        submission_time:
+          type: string
+          format: date-time
+          description: The submitted_at date time of the submission.
+        root_account_id:
+          type: integer
+          example: '1'
+          description: The id of the root Account associated with the OriginalityReport
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,389 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Quiz Submission Questions API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Quiz Submission Questions
+  x-resource: quiz_submission_questions
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/quiz_submission_questions.html
+paths:
+  /v1/quiz_submissions/{quiz_submission_id}/questions:
+    get:
+      tags:
+      - Quiz Submission Questions
+      operationId: get_all_quiz_submission_questions
+      summary: Get all quiz submission questions
+      description: 'Get a list of all the question records for this quiz submission.
+
+
+        200 OK response code is returned if the request was successful.'
+      parameters:
+      - name: quiz_submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - quiz_question
+        required: false
+        description: Associations to include with the quiz submission question.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submission_questions.html
+    post:
+      tags:
+      - Quiz Submission Questions
+      operationId: answering_questions
+      summary: Answering questions
+      description: Provide or update an answer to one or more QuizQuestions.
+      parameters:
+      - name: quiz_submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission being taken. Note that this
+
+                    must be the latest attempt index, as questions for earlier attempts can
+
+                    not be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when the Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+                quiz_questions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/QuizSubmissionQuestion'
+                  description: 'Set of question IDs and the answer value.
+
+
+                    See {Appendix: Question Answer Formats} for the accepted answer formats
+
+                    for each question type.'
+              required:
+              - attempt
+              - validation_token
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission being taken. Note that this
+
+                    must be the latest attempt index, as questions for earlier attempts can
+
+                    not be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when the Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+                quiz_questions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/QuizSubmissionQuestion'
+                  description: 'Set of question IDs and the answer value.
+
+
+                    See {Appendix: Question Answer Formats} for the accepted answer formats
+
+                    for each question type.'
+              required:
+              - attempt
+              - validation_token
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizSubmissionQuestion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submission_questions.html
+  /v1/quiz_submissions/{quiz_submission_id}/questions/{id}/formatted_answer:
+    get:
+      tags:
+      - Quiz Submission Questions
+      operationId: get_formatted_student_numerical_answer
+      summary: Get a formatted student numerical answer
+      description: 'Matches the intended behavior of the UI when a numerical answer is entered
+
+        and returns the resulting formatted number'
+      parameters:
+      - name: quiz_submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: answer
+        in: query
+        schema:
+          type: number
+        required: true
+        description: no description
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submission_questions.html
+  /v1/quiz_submissions/{quiz_submission_id}/questions/{id}/flag:
+    put:
+      tags:
+      - Quiz Submission Questions
+      operationId: flagging_question
+      summary: Flagging a question
+      description: 'Set a flag on a quiz question to indicate that you want to return to it
+
+        later.'
+      parameters:
+      - name: quiz_submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission being taken. Note that this
+
+                    must be the latest attempt index, as questions for earlier attempts can
+
+                    not be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when the Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+              required:
+              - attempt
+              - validation_token
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission being taken. Note that this
+
+                    must be the latest attempt index, as questions for earlier attempts can
+
+                    not be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when the Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+              required:
+              - attempt
+              - validation_token
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submission_questions.html
+  /v1/quiz_submissions/{quiz_submission_id}/questions/{id}/unflag:
+    put:
+      tags:
+      - Quiz Submission Questions
+      operationId: unflagging_question
+      summary: Unflagging a question
+      description: 'Remove the flag that you previously set on a quiz question after you''ve
+
+        returned to it.'
+      parameters:
+      - name: quiz_submission_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission being taken. Note that this
+
+                    must be the latest attempt index, as questions for earlier attempts can
+
+                    not be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when the Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+              required:
+              - attempt
+              - validation_token
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                attempt:
+                  type: integer
+                  format: int64
+                  description: 'The attempt number of the quiz submission being taken. Note that this
+
+                    must be the latest attempt index, as questions for earlier attempts can
+
+                    not be modified.'
+                validation_token:
+                  type: string
+                  description: 'The unique validation token you received when the Quiz Submission was
+
+                    created.'
+                access_code:
+                  type: string
+                  description: Access code for the Quiz, if any.
+              required:
+              - attempt
+              - validation_token
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_submission_questions.html
+components:
+  schemas:
+    QuizSubmissionQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the QuizQuestion this answer is for.
+        flagged:
+          type: boolean
+          example: true
+          description: Whether this question is flagged.
+        answer:
+          type: string
+          description: The provided answer (if any) for this question. The format of this parameter depends on the type of the question, see the Appendix for more information.
+        answers:
+          type: array
+          items:
+            type: string
+          description: The possible answers for this question when those possible answers are necessary.  The presence of this parameter is dependent on permissions.
+      required:
+      - id
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

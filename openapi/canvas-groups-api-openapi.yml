@@ -1,0 +1,1404 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Groups API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Groups
+  x-resource: groups
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/groups.html
+paths:
+  /v1/groups/{group_id}/files:
+    post:
+      tags:
+      - Groups
+      operationId: upload_file_groups
+      summary: Upload a file
+      description: 'Upload a file to the group.
+
+
+        This API endpoint is the first step in uploading a file to a group.
+
+        See the {file:file.file_uploads.html File Upload Documentation} for details on
+
+        the file upload workflow.
+
+
+        Only those with the "Manage Files" permission on a group can upload files
+
+        to the group. By default, this is anybody participating in the
+
+        group, or any admin over the group.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/group_categories/{group_category_id}/groups:
+    post:
+      tags:
+      - Groups
+      operationId: create_group_group_categories
+      summary: Create a group
+      description: 'Creates a new group. Groups created using the "/api/v1/groups/"
+
+        endpoint will be community groups.'
+      parameters:
+      - name: group_category_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the group
+                description:
+                  type: string
+                  description: A description of the group
+                is_public:
+                  type: boolean
+                  description: whether the group is public (applies only to community groups)
+                join_level:
+                  type: string
+                  enum:
+                  - parent_context_auto_join
+                  - parent_context_request
+                  - invitation_only
+                  description: no description
+                storage_quota_mb:
+                  type: integer
+                  format: int64
+                  description: 'The allowed file storage for the group, in megabytes. This parameter is
+
+                    ignored if the caller does not have the manage_storage_quotas permission.'
+                sis_group_id:
+                  type: string
+                  description: The sis ID of the group. Must have manage_sis permission to set.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the group
+                description:
+                  type: string
+                  description: A description of the group
+                is_public:
+                  type: boolean
+                  description: whether the group is public (applies only to community groups)
+                join_level:
+                  type: string
+                  enum:
+                  - parent_context_auto_join
+                  - parent_context_request
+                  - invitation_only
+                  description: no description
+                storage_quota_mb:
+                  type: integer
+                  format: int64
+                  description: 'The allowed file storage for the group, in megabytes. This parameter is
+
+                    ignored if the caller does not have the manage_storage_quotas permission.'
+                sis_group_id:
+                  type: string
+                  description: The sis ID of the group. Must have manage_sis permission to set.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/users/self/groups:
+    get:
+      tags:
+      - Groups
+      operationId: list_your_groups
+      summary: List your groups
+      description: Returns a paginated list of active groups for the current user.
+      parameters:
+      - name: context_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - Account
+          - Course
+        required: false
+        description: Only include groups that are in this type of context.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - tabs
+        required: false
+        description: "- \"tabs\": Include the list of tabs configured for each group.  See the\n  {api:TabsController#index List available tabs API} for more information."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/accounts/{account_id}/groups:
+    get:
+      tags:
+      - Groups
+      operationId: list_groups_available_in_context_accounts
+      summary: List the groups available in a context
+      description: Returns the paginated list of active groups in the given context that are visible to user.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: only_own_groups
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Will only include groups that the user belongs to if this is set
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - tabs
+        required: false
+        description: "- \"tabs\": Include the list of tabs configured for each group.  See the\n  {api:TabsController#index List available tabs API} for more information."
+      - name: collaboration_state
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Filter groups by their collaboration state:
+
+          - "all": Return both collaborative and non-collaborative groups
+
+          - "collaborative": Return only collaborative groups (default)
+
+          - "non_collaborative": Return only non-collaborative groups'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/courses/{course_id}/groups:
+    get:
+      tags:
+      - Groups
+      operationId: list_groups_available_in_context_courses
+      summary: List the groups available in a context
+      description: Returns the paginated list of active groups in the given context that are visible to user.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: only_own_groups
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Will only include groups that the user belongs to if this is set
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - tabs
+        required: false
+        description: "- \"tabs\": Include the list of tabs configured for each group.  See the\n  {api:TabsController#index List available tabs API} for more information."
+      - name: collaboration_state
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Filter groups by their collaboration state:
+
+          - "all": Return both collaborative and non-collaborative groups
+
+          - "collaborative": Return only collaborative groups (default)
+
+          - "non_collaborative": Return only non-collaborative groups'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/courses/{course_id}/bulk_user_tags:
+    get:
+      tags:
+      - Groups
+      operationId: bulk_fetch_user_tags_for_multiple_users_in_course
+      summary: Bulk fetch user tags for multiple users in a course
+      description: Returns a mapping of user IDs to arrays of non-collaborative group (tag) IDs for each user in the given course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the course context (from the route).
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: An array of user IDs to fetch tags for.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: 'Hash A mapping of user IDs to arrays of tag (group) IDs. Example: { "35": 5, "79": 3, 4, 5 }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}:
+    get:
+      tags:
+      - Groups
+      operationId: get_single_group
+      summary: Get a single group
+      description: 'Returns the data for a single group, or a 401 if the caller doesn''t have
+
+        the rights to see it.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - permissions
+            - tabs
+        required: false
+        description: "- \"permissions\": Include permissions the current user has\n  for the group.\n- \"tabs\": Include the list of tabs configured for each group.  See the\n  {api:TabsController#index List available tabs API} for more information."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    put:
+      tags:
+      - Groups
+      operationId: edit_group
+      summary: Edit a group
+      description: 'Modifies an existing group. Note that to set an avatar image for the
+
+        group, you must first upload the image file to the group, and the use the
+
+        id in the response as the argument to this function. See the
+
+        {file:file.file_uploads.html File Upload Documentation} for details on the file
+
+        upload workflow.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the group
+                description:
+                  type: string
+                  description: A description of the group
+                is_public:
+                  type: boolean
+                  description: 'Whether the group is public (applies only to community groups). Currently
+
+                    you cannot set a group back to private once it has been made public.'
+                join_level:
+                  type: string
+                  enum:
+                  - parent_context_auto_join
+                  - parent_context_request
+                  - invitation_only
+                  description: no description
+                avatar_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of the attachment previously uploaded to the group that you would
+
+                    like to use as the avatar image for this group.'
+                storage_quota_mb:
+                  type: integer
+                  format: int64
+                  description: 'The allowed file storage for the group, in megabytes. This parameter is
+
+                    ignored if the caller does not have the manage_storage_quotas permission.'
+                members:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of user ids for users you would like in the group.
+
+                    Users not in the group will be sent invitations. Existing group
+
+                    members who aren''t in the list will be removed from the group.'
+                sis_group_id:
+                  type: string
+                  description: The sis ID of the group. Must have manage_sis permission to set.
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the group
+                description:
+                  type: string
+                  description: A description of the group
+                is_public:
+                  type: boolean
+                  description: 'Whether the group is public (applies only to community groups). Currently
+
+                    you cannot set a group back to private once it has been made public.'
+                join_level:
+                  type: string
+                  enum:
+                  - parent_context_auto_join
+                  - parent_context_request
+                  - invitation_only
+                  description: no description
+                avatar_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of the attachment previously uploaded to the group that you would
+
+                    like to use as the avatar image for this group.'
+                storage_quota_mb:
+                  type: integer
+                  format: int64
+                  description: 'The allowed file storage for the group, in megabytes. This parameter is
+
+                    ignored if the caller does not have the manage_storage_quotas permission.'
+                members:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of user ids for users you would like in the group.
+
+                    Users not in the group will be sent invitations. Existing group
+
+                    members who aren''t in the list will be removed from the group.'
+                sis_group_id:
+                  type: string
+                  description: The sis ID of the group. Must have manage_sis permission to set.
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    delete:
+      tags:
+      - Groups
+      operationId: delete_group
+      summary: Delete a group
+      description: Deletes a group and removes all members.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups:
+    post:
+      tags:
+      - Groups
+      operationId: create_group_groups
+      summary: Create a group
+      description: 'Creates a new group. Groups created using the "/api/v1/groups/"
+
+        endpoint will be community groups.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the group
+                description:
+                  type: string
+                  description: A description of the group
+                is_public:
+                  type: boolean
+                  description: whether the group is public (applies only to community groups)
+                join_level:
+                  type: string
+                  enum:
+                  - parent_context_auto_join
+                  - parent_context_request
+                  - invitation_only
+                  description: no description
+                storage_quota_mb:
+                  type: integer
+                  format: int64
+                  description: 'The allowed file storage for the group, in megabytes. This parameter is
+
+                    ignored if the caller does not have the manage_storage_quotas permission.'
+                sis_group_id:
+                  type: string
+                  description: The sis ID of the group. Must have manage_sis permission to set.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the group
+                description:
+                  type: string
+                  description: A description of the group
+                is_public:
+                  type: boolean
+                  description: whether the group is public (applies only to community groups)
+                join_level:
+                  type: string
+                  enum:
+                  - parent_context_auto_join
+                  - parent_context_request
+                  - invitation_only
+                  description: no description
+                storage_quota_mb:
+                  type: integer
+                  format: int64
+                  description: 'The allowed file storage for the group, in megabytes. This parameter is
+
+                    ignored if the caller does not have the manage_storage_quotas permission.'
+                sis_group_id:
+                  type: string
+                  description: The sis ID of the group. Must have manage_sis permission to set.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/invite:
+    post:
+      tags:
+      - Groups
+      operationId: invite_others_to_group
+      summary: Invite others to a group
+      description: 'Sends an invitation to all supplied email addresses which will allow the
+
+        receivers to join the group.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invitees:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of email addresses to be sent invitations.
+              required:
+              - invitees
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                invitees:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of email addresses to be sent invitations.
+              required:
+              - invitees
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/users:
+    get:
+      tags:
+      - Groups
+      operationId: list_group_s_users
+      summary: List group's users
+      description: Returns a paginated list of users in the group.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The partial name or full ID of the users to match and return in the
+
+          results list. Must be at least 2 characters.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - avatar_url
+        required: false
+        description: '"avatar_url": Include users'' avatar_urls.'
+      - name: exclude_inactive
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Whether to filter out inactive users from the results. Defaults to
+
+          false unless explicitly provided.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    delete:
+      tags:
+      - Groups
+      operationId: bulk_delete_memberships_bulk_deletes_memberships_by_providing_array_of_user_ids_or_for_differentiation_tag_groups_by_providing_all_in_group_course_to_remove_every_course_student_matching_optional_role_tag_filter
+      summary: Bulk delete memberships Bulk deletes memberships by providing an array of user…
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: '- An array of user IDs to delete memberships in bulk.'
+      - name: all_in_group_course
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: '- If true, remove every enrolled student from the course
+
+          that matches the filters below, instead of using user_ids.'
+      - name: exclude_user_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: '- An array of user IDs to exclude when using all_in_group_course.'
+      - name: enrollment_role_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: '- Restrict all_in_group_course to these enrollment roles.'
+      - name: differentiation_tag_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: '- Restrict all_in_group_course to members of these tags.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: 'JSON - For single deletion: `{ "ok": true }` - For bulk deletion: ```json { "message": "Bulk delete completed", "deleted_user_ids": 123, 456, "unauthorized_user_ids": 789 }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/preview_html:
+    post:
+      tags:
+      - Groups
+      operationId: preview_processed_html_groups
+      summary: Preview processed html
+      description: Preview html content processed for this group
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                html:
+                  type: string
+                  description: The html content to process
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                html:
+                  type: string
+                  description: The html content to process
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/activity_stream:
+    get:
+      tags:
+      - Groups
+      operationId: group_activity_stream
+      summary: Group activity stream
+      description: 'Returns the current user''s group-specific activity stream, paginated.
+
+
+        For full documentation, see the API documentation for the user activity
+
+        stream, in the user api.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/activity_stream/summary:
+    get:
+      tags:
+      - Groups
+      operationId: group_activity_stream_summary
+      summary: Group activity stream summary
+      description: 'Returns a summary of the current user''s group-specific activity stream.
+
+
+        For full documentation, see the API documentation for the user activity
+
+        stream summary, in the user api.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/permissions:
+    get:
+      tags:
+      - Groups
+      operationId: permissions_groups
+      summary: Permissions
+      description: 'Returns permission information for the calling user in the given group.
+
+        See also the {api:AccountsController#permissions Account} and
+
+        {api:CoursesController#permissions Course} counterparts.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: permissions
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of permissions to check against the authenticated user.
+
+          Permission names are documented in the {api:RoleOverridesController#manageable_permissions List assignable permissions} endpoint.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/memberships:
+    get:
+      tags:
+      - Groups
+      operationId: list_group_memberships
+      summary: List group memberships
+      description: A paginated list of the members of a group.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: filter_states
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - accepted
+            - invited
+            - requested
+        required: false
+        description: 'Only list memberships with the given workflow_states. By default it will
+
+          return all memberships.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupMembership'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    post:
+      tags:
+      - Groups
+      operationId: create_membership
+      summary: Create a membership
+      description: 'Join, or request to join, a group, depending on the join_level of the
+
+        group. If the membership or join request already exists, then it is simply
+
+        returned.
+
+
+        For differentiation tags, you can bulk add users using one of two methods:
+
+
+        1. Provide an array of user IDs via the `members[]` parameter.
+
+
+        2. Use the course-wide option with the following parameters:
+
+        - `all_in_group_course` [Boolean]: If set to true, the endpoint will add
+
+        every currently enrolled student (from the course context) to the
+
+        differentiation tag.
+
+        - `exclude_user_ids[]` [Integer]: When using `all_in_group_course`, you can
+
+        optionally exclude specific users by providing their IDs in this parameter.
+
+        - `enrollment_role_id[]` [Integer]: When using `all_in_group_course`, restrict
+
+        the bulk add to students holding one of these enrollment roles.
+
+        - `differentiation_tag_id[]` [Integer]: When using `all_in_group_course`, restrict
+
+        the bulk add to students who are members of one of these differentiation tags.
+
+
+        In this context, these parameters only apply to differentiation tag memberships.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: '- The ID of the user for individual membership creation.'
+                members:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- Bulk add multiple users to a differentiation tag.'
+                all_in_group_course:
+                  type: boolean
+                  description: '- If true, add all enrolled students from the course.'
+                exclude_user_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- An array of user IDs to exclude when using all_in_group_course.'
+                enrollment_role_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- Restrict all_in_group_course to these enrollment roles.'
+                differentiation_tag_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- Restrict all_in_group_course to members of these tags.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: '- The ID of the user for individual membership creation.'
+                members:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- Bulk add multiple users to a differentiation tag.'
+                all_in_group_course:
+                  type: boolean
+                  description: '- If true, add all enrolled students from the course.'
+                exclude_user_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- An array of user IDs to exclude when using all_in_group_course.'
+                enrollment_role_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- Restrict all_in_group_course to these enrollment roles.'
+                differentiation_tag_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: '- Restrict all_in_group_course to members of these tags.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: GroupMembership or a JSON response detailing partial failures if some memberships could not be created.
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/memberships/{membership_id}:
+    get:
+      tags:
+      - Groups
+      operationId: get_single_group_membership_memberships
+      summary: Get a single group membership
+      description: Returns the group membership with the given membership id or user id.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: membership_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMembership'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    put:
+      tags:
+      - Groups
+      operationId: update_membership_memberships
+      summary: Update a membership
+      description: Accept a membership request, or add/remove moderator rights.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: membership_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - accepted
+                  description: Currently, the only allowed value is "accepted"
+                moderator:
+                  type: string
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - accepted
+                  description: Currently, the only allowed value is "accepted"
+                moderator:
+                  type: string
+                  description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMembership'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    delete:
+      tags:
+      - Groups
+      operationId: leave_group_memberships
+      summary: Leave a group
+      description: 'Leave a group if you are allowed to leave (some groups, such as sets of
+
+        course groups created by teachers, cannot be left). You may also use ''self''
+
+        in place of a membership_id.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: membership_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+  /v1/groups/{group_id}/users/{user_id}:
+    get:
+      tags:
+      - Groups
+      operationId: get_single_group_membership_users
+      summary: Get a single group membership
+      description: Returns the group membership with the given membership id or user id.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMembership'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    put:
+      tags:
+      - Groups
+      operationId: update_membership_users
+      summary: Update a membership
+      description: Accept a membership request, or add/remove moderator rights.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - accepted
+                  description: Currently, the only allowed value is "accepted"
+                moderator:
+                  type: string
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - accepted
+                  description: Currently, the only allowed value is "accepted"
+                moderator:
+                  type: string
+                  description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMembership'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+    delete:
+      tags:
+      - Groups
+      operationId: leave_group_users
+      summary: Leave a group
+      description: 'Leave a group if you are allowed to leave (some groups, such as sets of
+
+        course groups created by teachers, cannot be left). You may also use ''self''
+
+        in place of a membership_id.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/groups.html
+components:
+  schemas:
+    GroupMembership:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 92
+          description: The id of the membership object
+        group_id:
+          type: integer
+          example: 17
+          description: The id of the group object to which the membership belongs
+        user_id:
+          type: integer
+          example: 3
+          description: The id of the user object to which the membership belongs
+        workflow_state:
+          type: string
+          example: accepted
+          description: The current state of the membership. Current possible values are 'accepted', 'invited', and 'requested'
+        moderator:
+          type: boolean
+          example: true
+          description: Whether or not the user is a moderator of the group (the must also be an active member of the group to moderate)
+        just_created:
+          type: boolean
+          example: true
+          description: 'optional: whether or not the record was just created on a create call (POST), i.e. was the user just added to the group, or was the user already a member'
+        sis_import_id:
+          type: integer
+          example: 4
+          description: The id of the SIS import if created through SIS. Only included if the user has permission to manage SIS information.
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 17
+          description: The ID of the group.
+        name:
+          type: string
+          example: Math Group 1
+          description: The display name of the group.
+        description:
+          type: string
+          description: A description of the group. This is plain text.
+        is_public:
+          type: boolean
+          example: false
+          description: Whether or not the group is public.  Currently only community groups can be made public.  Also, once a group has been set to public, it cannot be changed back to private.
+        followed_by_user:
+          type: boolean
+          example: false
+          description: Whether or not the current user is following this group.
+        join_level:
+          type: string
+          example: invitation_only
+          description: How people are allowed to join the group.  For all groups except for community groups, the user must share the group's parent course or account.  For student organized or community groups, where a user can be a member of as many or few as they want, the applicable levels are 'parent_context_auto_join', 'parent_context_request', and 'invitation_only'.  For class groups, where students are divided up and should only be part of one group of the category, this value will always be 'invitation_only', and is not relevant. * If 'parent_context_auto_join', anyone can join and will be automatically accepted. * If 'parent_context_request', anyone  can request to join, which must be approved by a group moderator. * If 'invitation_only', only those how have received an invitation my join the group, by accepting that invitation.
+        members_count:
+          type: integer
+          example: 0
+          description: The number of members currently in the group
+        is_full:
+          type: boolean
+          example: false
+          description: Whether the group has reached its membership cap (or its group category's group limit). Reflects the true membership across all sections, even for viewers whose visible member list is restricted to their own section.
+        avatar_url:
+          type: string
+          example: https://<canvas>/files/avatar_image.png
+          description: The url of the group's avatar
+        context_type:
+          type: string
+          example: Course
+          description: The course or account that the group belongs to. The pattern here is that whatever the context_type is, there will be an _id field named after that type. So if instead context_type was 'account', the course_id field would be replaced by an account_id field.
+        context_name:
+          type: string
+          example: Course 101
+          description: The course or account name that the group belongs to.
+        course_id:
+          type: integer
+          example: 3
+        role:
+          type: string
+          description: 'Certain types of groups have special role designations. Currently, these include: ''communities'', ''student_organized'', and ''imported''. Regular course/account groups have a role of null.'
+        group_category_id:
+          type: integer
+          example: 4
+          description: The ID of the group's category.
+        sis_group_id:
+          type: string
+          example: group4a
+          description: The SIS ID of the group. Only included if the user has permission to view SIS information.
+        sis_import_id:
+          type: integer
+          example: 14
+          description: The id of the SIS import if created through SIS. Only included if the user has permission to manage SIS information.
+        storage_quota_mb:
+          type: integer
+          example: 50
+          description: the storage quota for the group, in megabytes
+        permissions:
+          type: object
+          additionalProperties: true
+          example:
+            create_discussion_topic: true
+            create_announcement: true
+          description: 'optional: the permissions the user has for the group. returned only for a single group and include[]=permissions'
+        users:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: User
+          description: 'optional: A list of users that are members in the group. Returned only if include[]=users. WARNING: this collection''s size is capped (if there are an extremely large number of users in the group (thousands) not all of them will be returned). If you need to capture all the users in a group with certainty or experiencing slow response consider using the paginated /api/v1/groups/<group_id>/users endpoint.'
+        non_collaborative:
+          type: boolean
+          description: Indicates whether this group category is non-collaborative. A value of true means these group categories rely on the manage_tags permissions and do not have collaborative features
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,285 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST New Quizzes Accommodations API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: New Quizzes Accommodations
+  x-resource: new_quizzes_accommodations
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/new_quizzes_accommodations.html
+paths:
+  /quiz/v1/courses/{course_id}/quizzes/{assignment_id}/accommodations:
+    post:
+      tags:
+      - New Quizzes Accommodations
+      operationId: set_quiz_level_accommodations
+      summary: Set Quiz-Level Accommodations
+      description: 'Apply accommodations at the quiz level for students in a specific assignment.
+
+
+        Request Body Format:
+
+        [{
+
+        "user_id": 3,
+
+        "extra_time": 60,
+
+        "extra_attempts": 1,
+
+        "reduce_choices_enabled": true
+
+        }]
+
+
+        Responses
+
+
+        * 200 OK: Accommodations were processed with some successes and failures
+
+        * 401 Unauthorized: User does not have permission to update accommodations
+
+        * 404 Not Found: The course or assignment was not found
+
+        * 400 Bad Request: Validation error (e.g., invalid JSON, missing user IDs)'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The ID of the course where the quiz is located.
+      - name: assignment_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The ID of the assignment/quiz that needs accommodations.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas user ID of the student receiving accommodations.
+                extra_time:
+                  type: integer
+                  format: int64
+                  description: 'Amount of extra time in <b>minutes</b> granted for quiz submission.
+
+                    Allowed range: 0 to 10080 minutes (168 hours).'
+                extra_attempts:
+                  type: integer
+                  format: int64
+                  description: Number of times the student is allowed to re-take the quiz over the multiple-attempt limit.
+                reduce_choices_enabled:
+                  type: boolean
+                  description: If 'true', removes <b>one incorrect answer</b> from multiple-choice questions with <b>4 or more options</b>.
+              required:
+              - user_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas user ID of the student receiving accommodations.
+                extra_time:
+                  type: integer
+                  format: int64
+                  description: 'Amount of extra time in <b>minutes</b> granted for quiz submission.
+
+                    Allowed range: 0 to 10080 minutes (168 hours).'
+                extra_attempts:
+                  type: integer
+                  format: int64
+                  description: Number of times the student is allowed to re-take the quiz over the multiple-attempt limit.
+                reduce_choices_enabled:
+                  type: boolean
+                  description: If 'true', removes <b>one incorrect answer</b> from multiple-choice questions with <b>4 or more options</b>.
+              required:
+              - user_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccommodationResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes_accommodations.html
+  /quiz/v1/courses/{course_id}/accommodations:
+    post:
+      tags:
+      - New Quizzes Accommodations
+      operationId: set_course_level_accommodations
+      summary: Set Course-Level Accommodations
+      description: 'Apply accommodations at the course level for students enrolled in a given course.
+
+
+        Request Body Format:
+
+        [{
+
+        "user_id": 3,
+
+        "extra_time": 60,
+
+        "apply_to_in_progress_quiz_sessions": true,
+
+        "reduce_choices_enabled": true
+
+        }]
+
+
+        Responses
+
+
+        * 200 OK: Accommodations were processed with some successes and failures
+
+        * 401 Unauthorized: User does not have permission to update accommodations
+
+        * 404 Not Found: The course was not found
+
+        * 400 Bad Request: Validation error (e.g., invalid JSON, missing user IDs)'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The ID of the course where accommodations should be applied.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas user ID of the student receiving accommodations.
+                extra_time:
+                  type: integer
+                  format: int64
+                  description: 'Amount of extra time in <b>minutes</b> granted for quiz submission.
+
+                    Allowed range: 0 to 10080 minutes (168 hours).'
+                apply_to_in_progress_quiz_sessions:
+                  type: boolean
+                  description: If 'true', applies the accommodation to currently <b>in-progress</b> quiz sessions.
+                reduce_choices_enabled:
+                  type: boolean
+                  description: If 'true', removes <b>one incorrect answer</b> from multiple-choice questions with <b>4 or more options</b>.
+              required:
+              - user_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas user ID of the student receiving accommodations.
+                extra_time:
+                  type: integer
+                  format: int64
+                  description: 'Amount of extra time in <b>minutes</b> granted for quiz submission.
+
+                    Allowed range: 0 to 10080 minutes (168 hours).'
+                apply_to_in_progress_quiz_sessions:
+                  type: boolean
+                  description: If 'true', applies the accommodation to currently <b>in-progress</b> quiz sessions.
+                reduce_choices_enabled:
+                  type: boolean
+                  description: If 'true', removes <b>one incorrect answer</b> from multiple-choice questions with <b>4 or more options</b>.
+              required:
+              - user_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccommodationResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/new_quizzes_accommodations.html
+components:
+  schemas:
+    AccommodationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Accommodations processed
+          description: Processing result message
+        successful:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - user_id: 5
+          description: List of successfully processed accommodations
+        failed:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - user_id: 6
+            error: User is not in any in-progress quiz sessions for course 3
+          description: List of accommodations that failed to process
+      description: Response structure for processing accommodations
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

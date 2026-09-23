@@ -1,0 +1,346 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Moderated Grading API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Moderated Grading
+  x-resource: moderated_grading
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/moderated_grading.html
+paths:
+  /v1/courses/{course_id}/assignments/{assignment_id}/moderated_students:
+    get:
+      tags:
+      - Moderated Grading
+      operationId: list_students_selected_for_moderation
+      summary: List students selected for moderation
+      description: Returns a paginated list of students selected for moderation
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+    post:
+      tags:
+      - Moderated Grading
+      operationId: select_students_for_moderation
+      summary: Select students for moderation
+      description: Returns an array of users that were selected for moderation
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_ids:
+                  type: array
+                  items:
+                    type: number
+                  description: user ids for students to select for moderation
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                student_ids:
+                  type: array
+                  items:
+                    type: number
+                  description: user ids for students to select for moderation
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/bulk_select:
+    put:
+      tags:
+      - Moderated Grading
+      operationId: bulk_select_provisional_grades
+      summary: Bulk select provisional grades
+      description: 'Choose which provisional grades will be received by associated students for an assignment.
+
+        The caller must be the final grader for the assignment or an admin with :select_final_grade rights.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/status:
+    get:
+      tags:
+      - Moderated Grading
+      operationId: show_provisional_grade_status_for_student
+      summary: Show provisional grade status for a student
+      description: Tell whether the student's submission needs one or more provisional grades.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: student_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The id of the student to show the status for
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/{provisional_grade_id}/select:
+    put:
+      tags:
+      - Moderated Grading
+      operationId: select_provisional_grade
+      summary: Select provisional grade
+      description: 'Choose which provisional grade the student should receive for a submission.
+
+        The caller must be the final grader for the assignment or an admin with :select_final_grade rights.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: provisional_grade_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/publish:
+    post:
+      tags:
+      - Moderated Grading
+      operationId: publish_provisional_grades_for_assignment
+      summary: Publish provisional grades for an assignment
+      description: 'Publish the selected provisional grade for all submissions to an assignment.
+
+        Use the "Select provisional grade" endpoint to choose which provisional grade to publish
+
+        for a particular submission.
+
+
+        Students not in the moderation set will have their one and only provisional grade published.
+
+
+        WARNING: This is irreversible. This will overwrite existing grades in the gradebook.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      deprecated: true
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/provisional_grades/publish_async:
+    post:
+      tags:
+      - Moderated Grading
+      operationId: publish_provisional_grades_for_assignment_asynchronous
+      summary: Publish provisional grades for an assignment (asynchronous)
+      description: 'Publish the selected provisional grade for all submissions to an assignment
+
+        in a background job. Unlike the synchronous "Publish provisional grades"
+
+        endpoint, this returns immediately with a Progress object that can be polled
+
+        for completion.
+
+
+        Use the "Select provisional grade" endpoint to choose which provisional grade to publish
+
+        for a particular submission.
+
+
+        Students not in the moderation set will have their one and only provisional grade published.
+
+
+        WARNING: This is irreversible. This will overwrite existing grades in the gradebook.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/anonymous_provisional_grades/status:
+    get:
+      tags:
+      - Moderated Grading
+      operationId: show_provisional_grade_status_for_student_moderated_grading
+      summary: Show provisional grade status for a student
+      description: Determine whether or not the student's submission needs one or more provisional grades.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: anonymous_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The id of the student to show the status for
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/moderated_grading.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

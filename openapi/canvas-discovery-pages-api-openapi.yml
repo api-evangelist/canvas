@@ -1,0 +1,333 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Discovery Pages API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Discovery Pages
+  x-resource: discovery_pages
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/discovery_pages.html
+paths:
+  /v1/discovery_pages:
+    get:
+      tags:
+      - Discovery Pages
+      operationId: get_discovery_page
+      summary: Get Discovery Page
+      description: 'Get the discovery page configuration for the domain root account.
+
+
+        Returns labels exactly as stored, with no HTML-escaping applied.
+
+        Callers are responsible for escaping on render (the admin React UI
+
+        does this via JSX auto-escaping).'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryPage'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discovery_pages.html
+    put:
+      tags:
+      - Discovery Pages
+      operationId: update_discovery_page
+      summary: Update Discovery Page
+      description: 'Update or create the discovery page configuration for the domain root account.
+
+        This is a full replacement - provide the complete configuration including
+
+        primary, secondary, and active fields. Any fields omitted will be removed.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                discovery_page[primary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[primary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[primary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+                discovery_page[secondary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[secondary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[secondary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+                discovery_page[active]:
+                  type: boolean
+                  description: Whether the discovery page is enabled. Defaults to false if not provided.
+              required:
+              - discovery_page[primary][authentication_provider_id]
+              - discovery_page[primary][label]
+              - discovery_page[secondary][authentication_provider_id]
+              - discovery_page[secondary][label]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                discovery_page[primary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[primary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[primary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+                discovery_page[secondary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[secondary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[secondary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+                discovery_page[active]:
+                  type: boolean
+                  description: Whether the discovery page is enabled. Defaults to false if not provided.
+              required:
+              - discovery_page[primary][authentication_provider_id]
+              - discovery_page[primary][label]
+              - discovery_page[secondary][authentication_provider_id]
+              - discovery_page[secondary][label]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryPage'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discovery_pages.html
+  /v1/discovery_pages/token:
+    post:
+      tags:
+      - Discovery Pages
+      operationId: generate_discovery_page_preview_token
+      summary: Generate Discovery Page Preview Token
+      description: 'Returns a short-lived RS256-signed JWT containing the discovery page
+
+        button link configuration, suitable for sending to the identity service
+
+        preview iframe via postMessage.
+
+
+        A discovery_page configuration must be provided in the request body.
+
+        Omitting it returns a 400 Bad Request.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                discovery_page[primary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[primary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[primary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+                discovery_page[secondary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[secondary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[secondary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+              required:
+              - discovery_page[primary][authentication_provider_id]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                discovery_page[primary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[primary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[primary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+                discovery_page[secondary][authentication_provider_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The ID of an active authentication provider for this account.
+                discovery_page[secondary][label]:
+                  type: array
+                  items:
+                    type: string
+                  description: The display label for this authentication provider button.
+                discovery_page[secondary][icon]:
+                  type: array
+                  items:
+                    type: string
+                  description: Icon key for this authentication provider button.
+              required:
+              - discovery_page[primary][authentication_provider_id]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{ "token": "eyJ..." }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discovery_pages.html
+components:
+  schemas:
+    DiscoveryPage:
+      type: object
+      properties:
+        primary:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryPageEntry'
+          description: Primary authentication provider buttons displayed prominently
+        secondary:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryPageEntry'
+          description: Secondary authentication provider buttons displayed less prominently
+        active:
+          type: boolean
+          description: Whether the discovery page is enabled
+      description: Configuration for the login discovery page
+    DiscoveryPageEntry:
+      type: object
+      properties:
+        authentication_provider_id:
+          type: integer
+          example: 1
+          description: The ID of the authentication provider
+        label:
+          type: string
+          example: Students
+          description: The display label for this provider button
+        icon:
+          type: string
+          example: google
+          description: Icon key for this provider button
+          enum:
+          - apple
+          - auth0
+          - classlink
+          - default
+          - facebook
+          - github
+          - google
+          - linkedin
+          - microsoft
+          - okta
+          - onelogin
+          - ping
+      description: A single authentication provider entry on the discovery page
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

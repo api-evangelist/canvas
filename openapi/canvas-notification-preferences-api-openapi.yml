@@ -1,0 +1,474 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Notification Preferences API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Notification Preferences
+  x-resource: notification_preferences
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/notification_preferences.html
+paths:
+  /v1/users/{user_id}/communication_channels/{communication_channel_id}/notification_preferences:
+    get:
+      tags:
+      - Notification Preferences
+      operationId: list_preferences_communication_channel_id
+      summary: List preferences
+      description: Fetch all preferences for the given communication channel
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: communication_channel_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationPreference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/{user_id}/communication_channels/{type}/{address}/notification_preferences:
+    get:
+      tags:
+      - Notification Preferences
+      operationId: list_preferences_type
+      summary: List preferences
+      description: Fetch all preferences for the given communication channel
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: address
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationPreference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/{user_id}/communication_channels/{communication_channel_id}/notification_preference_categories:
+    get:
+      tags:
+      - Notification Preferences
+      operationId: list_of_preference_categories
+      summary: List of preference categories
+      description: Fetch all notification preference categories for the given communication channel
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: communication_channel_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/{user_id}/communication_channels/{communication_channel_id}/notification_preferences/{notification}:
+    get:
+      tags:
+      - Notification Preferences
+      operationId: get_preference_communication_channel_id
+      summary: Get a preference
+      description: Fetch the preference for the given notification for the given communication channel
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: communication_channel_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: notification
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/{user_id}/communication_channels/{type}/{address}/notification_preferences/{notification}:
+    get:
+      tags:
+      - Notification Preferences
+      operationId: get_preference_type
+      summary: Get a preference
+      description: Fetch the preference for the given notification for the given communication channel
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: address
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: notification
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/self/communication_channels/{communication_channel_id}/notification_preferences/{notification}:
+    put:
+      tags:
+      - Notification Preferences
+      operationId: update_preference_communication_channel_id
+      summary: Update a preference
+      description: Change the preference for a single notification for a single communication channel
+      parameters:
+      - name: communication_channel_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: notification
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_preferences[frequency]:
+                  type: string
+                  description: The desired frequency for this notification
+              required:
+              - notification_preferences[frequency]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                notification_preferences[frequency]:
+                  type: string
+                  description: The desired frequency for this notification
+              required:
+              - notification_preferences[frequency]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/self/communication_channels/{type}/{address}/notification_preferences/{notification}:
+    put:
+      tags:
+      - Notification Preferences
+      operationId: update_preference_type
+      summary: Update a preference
+      description: Change the preference for a single notification for a single communication channel
+      parameters:
+      - name: type
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: address
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: notification
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_preferences[frequency]:
+                  type: string
+                  description: The desired frequency for this notification
+              required:
+              - notification_preferences[frequency]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                notification_preferences[frequency]:
+                  type: string
+                  description: The desired frequency for this notification
+              required:
+              - notification_preferences[frequency]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/self/communication_channels/{communication_channel_id}/notification_preference_categories/{category}:
+    put:
+      tags:
+      - Notification Preferences
+      operationId: update_preferences_by_category
+      summary: Update preferences by category
+      description: Change the preferences for multiple notifications based on the category for a single communication channel
+      parameters:
+      - name: communication_channel_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: category
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The name of the category. Must be parameterized (e.g. The category "Course Content" should be "course_content")
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_preferences[frequency]:
+                  type: string
+                  description: The desired frequency for each notification in the category
+              required:
+              - notification_preferences[frequency]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                notification_preferences[frequency]:
+                  type: string
+                  description: The desired frequency for each notification in the category
+              required:
+              - notification_preferences[frequency]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/self/communication_channels/{communication_channel_id}/notification_preferences:
+    put:
+      tags:
+      - Notification Preferences
+      operationId: update_multiple_preferences_communication_channel_id
+      summary: Update multiple preferences
+      description: Change the preferences for multiple notifications for a single communication channel at once
+      parameters:
+      - name: communication_channel_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_preferences[<X>][frequency]:
+                  type: string
+                  description: The desired frequency for <X> notification
+              required:
+              - notification_preferences[<X>][frequency]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                notification_preferences[<X>][frequency]:
+                  type: string
+                  description: The desired frequency for <X> notification
+              required:
+              - notification_preferences[<X>][frequency]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+  /v1/users/self/communication_channels/{type}/{address}/notification_preferences:
+    put:
+      tags:
+      - Notification Preferences
+      operationId: update_multiple_preferences_type
+      summary: Update multiple preferences
+      description: Change the preferences for multiple notifications for a single communication channel at once
+      parameters:
+      - name: type
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: address
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notification_preferences[<X>][frequency]:
+                  type: string
+                  description: The desired frequency for <X> notification
+              required:
+              - notification_preferences[<X>][frequency]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                notification_preferences[<X>][frequency]:
+                  type: string
+                  description: The desired frequency for <X> notification
+              required:
+              - notification_preferences[<X>][frequency]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/notification_preferences.html
+components:
+  schemas:
+    NotificationPreference:
+      type: object
+      properties:
+        href:
+          type: string
+          example: https://canvas.instructure.com/users/1/communication_channels/email/student@example.edu/notification_preferences/new_announcement
+        notification:
+          type: string
+          example: new_announcement
+          description: The notification this preference belongs to
+        category:
+          type: string
+          example: announcement
+          description: The category of that notification
+        frequency:
+          type: string
+          example: daily
+          description: How often to send notifications to this communication channel for the given notification. Possible values are 'immediately', 'daily', 'weekly', and 'never'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

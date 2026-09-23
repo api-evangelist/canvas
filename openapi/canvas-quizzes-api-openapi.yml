@@ -1,0 +1,848 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Quizzes API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Quizzes
+  x-resource: quizzes
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/quizzes.html
+paths:
+  /v1/courses/{course_id}/quizzes:
+    get:
+      tags:
+      - Quizzes
+      operationId: list_quizzes_in_course
+      summary: List quizzes in a course
+      description: Returns the paginated list of Quizzes in this course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial title of the quizzes to match and return.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+    post:
+      tags:
+      - Quizzes
+      operationId: create_quiz
+      summary: Create a quiz
+      description: Create a new quiz for this course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz[title]:
+                  type: string
+                  description: The quiz title.
+                quiz[description]:
+                  type: string
+                  description: A description of the quiz.
+                quiz[quiz_type]:
+                  type: string
+                  enum:
+                  - practice_quiz
+                  - assignment
+                  - graded_survey
+                  - survey
+                  description: The type of quiz.
+                quiz[assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The assignment group id to put the assignment in. Defaults to the top
+
+                    assignment group in the course. Only valid if the quiz is graded, i.e. if
+
+                    quiz_type is "assignment" or "graded_survey".'
+                quiz[time_limit]:
+                  type: integer
+                  format: int64
+                  description: 'Time limit to take this quiz, in minutes. Set to null for no time limit.
+
+                    Defaults to null.'
+                quiz[shuffle_answers]:
+                  type: boolean
+                  description: 'If true, quiz answers for multiple choice questions will be randomized for
+
+                    each student. Defaults to false.'
+                quiz[hide_results]:
+                  type: string
+                  enum:
+                  - always
+                  - until_after_last_attempt
+                  description: 'Dictates whether or not quiz results are hidden from students.
+
+                    If null, students can see their results after any attempt.
+
+                    If "always", students can never see their results.
+
+                    If "until_after_last_attempt", students can only see results after their
+
+                    last attempt. (Only valid if allowed_attempts > 1). Defaults to null.'
+                quiz[show_correct_answers]:
+                  type: boolean
+                  description: 'Only valid if hide_results=null
+
+                    If false, hides correct answers from students when quiz results are viewed.
+
+                    Defaults to true.'
+                quiz[show_correct_answers_last_attempt]:
+                  type: boolean
+                  description: 'Only valid if show_correct_answers=true and allowed_attempts > 1
+
+                    If true, hides correct answers from students when quiz results are viewed
+
+                    until they submit the last attempt for the quiz.
+
+                    Defaults to false.'
+                quiz[show_correct_answers_at]:
+                  type: string
+                  format: date-time
+                  description: 'Only valid if show_correct_answers=true
+
+                    If set, the correct answers will be visible by students only after this
+
+                    date, otherwise the correct answers are visible once the student hands in
+
+                    their quiz submission.'
+                quiz[hide_correct_answers_at]:
+                  type: string
+                  format: date-time
+                  description: 'Only valid if show_correct_answers=true
+
+                    If set, the correct answers will stop being visible once this date has
+
+                    passed. Otherwise, the correct answers will be visible indefinitely.'
+                quiz[allowed_attempts]:
+                  type: integer
+                  format: int64
+                  description: 'Number of times a student is allowed to take a quiz.
+
+                    Set to -1 for unlimited attempts.
+
+                    Defaults to 1.'
+                quiz[scoring_policy]:
+                  type: string
+                  enum:
+                  - keep_highest
+                  - keep_latest
+                  description: 'Required and only valid if allowed_attempts > 1.
+
+                    Scoring policy for a quiz that students can take multiple times.
+
+                    Defaults to "keep_highest".'
+                quiz[one_question_at_a_time]:
+                  type: boolean
+                  description: 'If true, shows quiz to student one question at a time.
+
+                    Defaults to false.'
+                quiz[cant_go_back]:
+                  type: boolean
+                  description: 'Only valid if one_question_at_a_time=true
+
+                    If true, questions are locked after answering.
+
+                    Defaults to false.'
+                quiz[access_code]:
+                  type: string
+                  description: 'Restricts access to the quiz with a password.
+
+                    For no access code restriction, set to null.
+
+                    Defaults to null.'
+                quiz[ip_filter]:
+                  type: string
+                  description: "Restricts access to the quiz to computers in a specified IP range.\nFilters can be a comma-separated list of addresses, or an address followed by a mask\n\nExamples:\n  \"192.168.217.1\"\n  \"192.168.217.1/24\"\n  \"192.168.217.1/255.255.255.0\"\n\nFor no IP filter restriction, set to null.\nDefaults to null."
+                quiz[due_at]:
+                  type: string
+                  format: date-time
+                  description: 'The day/time the quiz is due.
+
+                    Accepts times in ISO 8601 format, e.g. 2011-10-21T18:48Z.'
+                quiz[lock_at]:
+                  type: string
+                  format: date-time
+                  description: 'The day/time the quiz is locked for students.
+
+                    Accepts times in ISO 8601 format, e.g. 2011-10-21T18:48Z.'
+                quiz[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: 'The day/time the quiz is unlocked for students.
+
+                    Accepts times in ISO 8601 format, e.g. 2011-10-21T18:48Z.'
+                quiz[published]:
+                  type: boolean
+                  description: 'Whether the quiz should have a draft state of published or unpublished.
+
+                    NOTE: If students have started taking the quiz, or there are any
+
+                    submissions for the quiz, you may not unpublish a quiz and will recieve
+
+                    an error.'
+                quiz[one_time_results]:
+                  type: boolean
+                  description: 'Whether students should be prevented from viewing their quiz results past
+
+                    the first time (right after they turn the quiz in.)
+
+                    Only valid if "hide_results" is not set to "always".
+
+                    Defaults to false.'
+                quiz[only_visible_to_overrides]:
+                  type: boolean
+                  description: 'Whether this quiz is only visible to overrides (Only useful if
+
+                    ''differentiated assignments'' account setting is on)
+
+                    Defaults to false.'
+              required:
+              - quiz[title]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz[title]:
+                  type: string
+                  description: The quiz title.
+                quiz[description]:
+                  type: string
+                  description: A description of the quiz.
+                quiz[quiz_type]:
+                  type: string
+                  enum:
+                  - practice_quiz
+                  - assignment
+                  - graded_survey
+                  - survey
+                  description: The type of quiz.
+                quiz[assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The assignment group id to put the assignment in. Defaults to the top
+
+                    assignment group in the course. Only valid if the quiz is graded, i.e. if
+
+                    quiz_type is "assignment" or "graded_survey".'
+                quiz[time_limit]:
+                  type: integer
+                  format: int64
+                  description: 'Time limit to take this quiz, in minutes. Set to null for no time limit.
+
+                    Defaults to null.'
+                quiz[shuffle_answers]:
+                  type: boolean
+                  description: 'If true, quiz answers for multiple choice questions will be randomized for
+
+                    each student. Defaults to false.'
+                quiz[hide_results]:
+                  type: string
+                  enum:
+                  - always
+                  - until_after_last_attempt
+                  description: 'Dictates whether or not quiz results are hidden from students.
+
+                    If null, students can see their results after any attempt.
+
+                    If "always", students can never see their results.
+
+                    If "until_after_last_attempt", students can only see results after their
+
+                    last attempt. (Only valid if allowed_attempts > 1). Defaults to null.'
+                quiz[show_correct_answers]:
+                  type: boolean
+                  description: 'Only valid if hide_results=null
+
+                    If false, hides correct answers from students when quiz results are viewed.
+
+                    Defaults to true.'
+                quiz[show_correct_answers_last_attempt]:
+                  type: boolean
+                  description: 'Only valid if show_correct_answers=true and allowed_attempts > 1
+
+                    If true, hides correct answers from students when quiz results are viewed
+
+                    until they submit the last attempt for the quiz.
+
+                    Defaults to false.'
+                quiz[show_correct_answers_at]:
+                  type: string
+                  format: date-time
+                  description: 'Only valid if show_correct_answers=true
+
+                    If set, the correct answers will be visible by students only after this
+
+                    date, otherwise the correct answers are visible once the student hands in
+
+                    their quiz submission.'
+                quiz[hide_correct_answers_at]:
+                  type: string
+                  format: date-time
+                  description: 'Only valid if show_correct_answers=true
+
+                    If set, the correct answers will stop being visible once this date has
+
+                    passed. Otherwise, the correct answers will be visible indefinitely.'
+                quiz[allowed_attempts]:
+                  type: integer
+                  format: int64
+                  description: 'Number of times a student is allowed to take a quiz.
+
+                    Set to -1 for unlimited attempts.
+
+                    Defaults to 1.'
+                quiz[scoring_policy]:
+                  type: string
+                  enum:
+                  - keep_highest
+                  - keep_latest
+                  description: 'Required and only valid if allowed_attempts > 1.
+
+                    Scoring policy for a quiz that students can take multiple times.
+
+                    Defaults to "keep_highest".'
+                quiz[one_question_at_a_time]:
+                  type: boolean
+                  description: 'If true, shows quiz to student one question at a time.
+
+                    Defaults to false.'
+                quiz[cant_go_back]:
+                  type: boolean
+                  description: 'Only valid if one_question_at_a_time=true
+
+                    If true, questions are locked after answering.
+
+                    Defaults to false.'
+                quiz[access_code]:
+                  type: string
+                  description: 'Restricts access to the quiz with a password.
+
+                    For no access code restriction, set to null.
+
+                    Defaults to null.'
+                quiz[ip_filter]:
+                  type: string
+                  description: "Restricts access to the quiz to computers in a specified IP range.\nFilters can be a comma-separated list of addresses, or an address followed by a mask\n\nExamples:\n  \"192.168.217.1\"\n  \"192.168.217.1/24\"\n  \"192.168.217.1/255.255.255.0\"\n\nFor no IP filter restriction, set to null.\nDefaults to null."
+                quiz[due_at]:
+                  type: string
+                  format: date-time
+                  description: 'The day/time the quiz is due.
+
+                    Accepts times in ISO 8601 format, e.g. 2011-10-21T18:48Z.'
+                quiz[lock_at]:
+                  type: string
+                  format: date-time
+                  description: 'The day/time the quiz is locked for students.
+
+                    Accepts times in ISO 8601 format, e.g. 2011-10-21T18:48Z.'
+                quiz[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: 'The day/time the quiz is unlocked for students.
+
+                    Accepts times in ISO 8601 format, e.g. 2011-10-21T18:48Z.'
+                quiz[published]:
+                  type: boolean
+                  description: 'Whether the quiz should have a draft state of published or unpublished.
+
+                    NOTE: If students have started taking the quiz, or there are any
+
+                    submissions for the quiz, you may not unpublish a quiz and will recieve
+
+                    an error.'
+                quiz[one_time_results]:
+                  type: boolean
+                  description: 'Whether students should be prevented from viewing their quiz results past
+
+                    the first time (right after they turn the quiz in.)
+
+                    Only valid if "hide_results" is not set to "always".
+
+                    Defaults to false.'
+                quiz[only_visible_to_overrides]:
+                  type: boolean
+                  description: 'Whether this quiz is only visible to overrides (Only useful if
+
+                    ''differentiated assignments'' account setting is on)
+
+                    Defaults to false.'
+              required:
+              - quiz[title]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+  /v1/courses/{course_id}/quizzes/{id}:
+    get:
+      tags:
+      - Quizzes
+      operationId: get_single_quiz
+      summary: Get a single quiz
+      description: Returns the quiz with the given id.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+    put:
+      tags:
+      - Quizzes
+      operationId: edit_quiz
+      summary: Edit a quiz
+      description: 'Modify an existing quiz. See the documentation for quiz creation.
+
+
+        Additional arguments:'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz[notify_of_update]:
+                  type: boolean
+                  description: 'If true, notifies users that the quiz has changed.
+
+                    Defaults to true'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz[notify_of_update]:
+                  type: boolean
+                  description: 'If true, notifies users that the quiz has changed.
+
+                    Defaults to true'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+    delete:
+      tags:
+      - Quizzes
+      operationId: delete_quiz
+      summary: Delete a quiz
+      description: Deletes a quiz and returns the deleted quiz object.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+  /v1/courses/{course_id}/quizzes/{id}/reorder:
+    post:
+      tags:
+      - Quizzes
+      operationId: reorder_quiz_items
+      summary: Reorder quiz items
+      description: 'Change order of the quiz questions or groups within the quiz
+
+
+        204 No Content response code is returned if the reorder was successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order[id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The associated item's unique identifier
+                order[type]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - question
+                    - group
+                  description: The type of item is either 'question' or 'group'
+              required:
+              - order[id]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                order[id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The associated item's unique identifier
+                order[type]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - question
+                    - group
+                  description: The type of item is either 'question' or 'group'
+              required:
+              - order[id]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+  /v1/courses/{course_id}/quizzes/{id}/validate_access_code:
+    post:
+      tags:
+      - Quizzes
+      operationId: validate_quiz_access_code
+      summary: Validate quiz access code
+      description: Accepts an access code and returns a boolean indicating whether that access code is correct
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_code:
+                  type: string
+                  description: The access code being validated
+              required:
+              - access_code
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                access_code:
+                  type: string
+                  description: The access code being validated
+              required:
+              - access_code
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quizzes.html
+components:
+  schemas:
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+          description: the ID of the quiz
+        title:
+          type: string
+          example: Hamlet Act 3 Quiz
+          description: the title of the quiz
+        html_url:
+          type: string
+          example: http://canvas.example.edu/courses/1/quizzes/2
+          description: the HTTP/HTTPS URL to the quiz
+        mobile_url:
+          type: string
+          example: http://canvas.example.edu/courses/1/quizzes/2?persist_healdess=1&force_user=1
+          description: a url suitable for loading the quiz in a mobile webview.  it will persiste the headless session and, for quizzes in public courses, will force the user to login
+        preview_url:
+          type: string
+          example: http://canvas.example.edu/courses/1/quizzes/2/take?preview=1
+          description: A url that can be visited in the browser with a POST request to preview a quiz as the teacher. Only present when the user may grade
+        description:
+          type: string
+          example: This is a quiz on Act 3 of Hamlet
+          description: the description of the quiz
+        quiz_type:
+          type: string
+          example: assignment
+          description: 'type of quiz possible values: ''practice_quiz'', ''assignment'', ''graded_survey'', ''survey'''
+        assignment_group_id:
+          type: integer
+          example: 3
+          description: 'the ID of the quiz''s assignment group:'
+        time_limit:
+          type: integer
+          example: 5
+          description: quiz time limit in minutes
+        shuffle_answers:
+          type: boolean
+          example: false
+          description: shuffle answers for students?
+        hide_results:
+          type: string
+          example: always
+          description: 'let students see their quiz responses? possible values: null, ''always'', ''until_after_last_attempt'''
+        show_correct_answers:
+          type: boolean
+          example: true
+          description: show which answers were correct when results are shown? only valid if hide_results=null
+        show_correct_answers_last_attempt:
+          type: boolean
+          example: true
+          description: restrict the show_correct_answers option above to apply only to the last submitted attempt of a quiz that allows multiple attempts. only valid if show_correct_answers=true and allowed_attempts > 1
+        show_correct_answers_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: when should the correct answers be visible by students? only valid if show_correct_answers=true
+        hide_correct_answers_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: prevent the students from seeing correct answers after the specified date has passed. only valid if show_correct_answers=true
+        one_time_results:
+          type: boolean
+          example: true
+          description: prevent the students from seeing their results more than once (right after they submit the quiz)
+        scoring_policy:
+          type: string
+          example: keep_highest
+          description: 'which quiz score to keep (only if allowed_attempts != 1) possible values: ''keep_highest'', ''keep_latest'''
+        allowed_attempts:
+          type: integer
+          example: 3
+          description: how many times a student can take the quiz -1 = unlimited attempts
+        one_question_at_a_time:
+          type: boolean
+          example: false
+          description: show one question at a time?
+        question_count:
+          type: integer
+          example: 12
+          description: the number of questions in the quiz
+        points_possible:
+          type: integer
+          example: 20
+          description: The total point value given to the quiz
+        cant_go_back:
+          type: boolean
+          example: false
+          description: lock questions after answering? only valid if one_question_at_a_time=true
+        access_code:
+          type: string
+          example: 2beornot2be
+          description: access code to restrict quiz access
+        ip_filter:
+          type: string
+          example: 123.123.123.123
+          description: IP address or range that quiz access is limited to
+        due_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: when the quiz is due
+        lock_at:
+          type: string
+          format: date-time
+          description: when to lock the quiz
+        unlock_at:
+          type: string
+          format: date-time
+          example: '2013-01-21T23:59:00-07:00'
+          description: when to unlock the quiz
+        published:
+          type: boolean
+          example: true
+          description: whether the quiz has a published or unpublished draft state.
+        unpublishable:
+          type: boolean
+          example: true
+          description: Whether the assignment's 'published' state can be changed to false. Will be false if there are student submissions for the quiz.
+        locked_for_user:
+          type: boolean
+          example: false
+          description: Whether or not this is locked for the user.
+        lock_info:
+          type: string
+          description: (Optional) Information for the user about the lock. Present when locked_for_user is true.
+        lock_explanation:
+          type: string
+          example: This quiz is locked until September 1 at 12:00am
+          description: (Optional) An explanation of why this is locked for the user. Present when locked_for_user is true.
+        speedgrader_url:
+          type: string
+          example: http://canvas.instructure.com/courses/1/speed_grader?assignment_id=1
+          description: Link to SpeedGrader for this quiz. Will not be present if quiz is unpublished
+        quiz_extensions_url:
+          type: string
+          example: http://canvas.instructure.com/courses/1/quizzes/2/quiz_extensions
+          description: Link to endpoint to send extensions for this quiz.
+        permissions:
+          type: string
+          description: Permissions the user has for the quiz
+        all_dates:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: AssignmentDate
+          description: list of due dates for the quiz
+        version_number:
+          type: integer
+          example: 3
+          description: Current version number of the quiz
+        question_types:
+          type: array
+          items:
+            type: string
+          example:
+          - multiple_choice
+          - essay
+          description: List of question types in the quiz
+        anonymous_submissions:
+          type: boolean
+          example: false
+          description: Whether survey submissions will be kept anonymous (only applicable to 'graded_survey', 'survey' quiz types)
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

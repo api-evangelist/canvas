@@ -1,0 +1,325 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Grade Change Log API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Grade Change Log
+  x-resource: grade_change_log
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/grade_change_log.html
+paths:
+  /v1/audit/grade_change/assignments/{assignment_id}:
+    get:
+      tags:
+      - Grade Change Log
+      operationId: query_by_assignment
+      summary: Query by assignment
+      description: List grade change events for a given assignment.
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The beginning of the time range from which you want events.
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The end of the time range from which you want events.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradeChangeEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grade_change_log.html
+  /v1/audit/grade_change/courses/{course_id}:
+    get:
+      tags:
+      - Grade Change Log
+      operationId: query_by_course_grade_change_log
+      summary: Query by course
+      description: List grade change events for a given course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The beginning of the time range from which you want events.
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The end of the time range from which you want events.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradeChangeEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grade_change_log.html
+  /v1/audit/grade_change/students/{student_id}:
+    get:
+      tags:
+      - Grade Change Log
+      operationId: query_by_student
+      summary: Query by student
+      description: List grade change events for a given student.
+      parameters:
+      - name: student_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The beginning of the time range from which you want events.
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The end of the time range from which you want events.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradeChangeEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grade_change_log.html
+  /v1/audit/grade_change/graders/{grader_id}:
+    get:
+      tags:
+      - Grade Change Log
+      operationId: query_by_grader
+      summary: Query by grader
+      description: List grade change events for a given grader.
+      parameters:
+      - name: grader_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The beginning of the time range from which you want events.
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The end of the time range from which you want events.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradeChangeEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grade_change_log.html
+  /v1/audit/grade_change:
+    get:
+      tags:
+      - Grade Change Log
+      operationId: advanced_query
+      summary: Advanced query
+      description: 'List grade change events satisfying all given parameters. Teachers may query for events in courses they teach.
+
+        Queries without +course_id+ or +assignment_id+ require account administrator rights.
+
+
+        At least one of +course_id+, +assignment_id+, +student_id+, or +grader_id+ must be specified.'
+      parameters:
+      - name: course_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: Restrict query to events in the specified course.
+      - name: assignment_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: Restrict query to the given assignment. If "override" is given, query the course final grade override instead.
+      - name: student_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: User id of a student to search grading events for.
+      - name: grader_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: User id of a grader to search grading events for.
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The beginning of the time range from which you want events.
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The end of the time range from which you want events.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradeChangeEvent'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grade_change_log.html
+components:
+  schemas:
+    GradeChangeEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          example: e2b76430-27a5-0131-3ca1-48e0eb13f29b
+          description: ID of the event.
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-07-19T15:00:00-06:00'
+          description: timestamp of the event
+        event_type:
+          type: string
+          example: grade_change
+          description: GradeChange event type
+        excused_after:
+          type: boolean
+          example: true
+          description: Boolean indicating whether the submission was excused after the change.
+        excused_before:
+          type: boolean
+          example: false
+          description: Boolean indicating whether the submission was excused before the change.
+        grade_after:
+          type: string
+          example: '8'
+          description: The grade after the change.
+        grade_before:
+          type: string
+          example: '8'
+          description: The grade before the change.
+        graded_anonymously:
+          type: boolean
+          example: true
+          description: Boolean indicating whether the student name was visible when the grade was given. Could be null if the grade change record was created before this feature existed.
+        version_number:
+          type: string
+          example: '1'
+          description: Version Number of the grade change submission.
+        request_id:
+          type: string
+          example: e2b76430-27a5-0131-3ca1-48e0eb13f29b
+          description: The unique request id of the request during the grade change.
+        links:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,3671 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Users API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Users
+  x-resource: users
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/users.html
+paths:
+  /v1/accounts/{account_id}/users:
+    get:
+      tags:
+      - Users
+      operationId: list_users_in_account
+      summary: List users in account
+      description: 'A paginated list of users associated with this account.
+
+
+        @example_request
+
+        curl https:///api/v1/accounts/self/users?search_term= \
+
+        -X GET \
+
+        -H ''Authorization: Bearer '''
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The partial name or full ID of the users to match and return in the
+
+          results list. Must be at least 3 characters.
+
+
+          Note that the API will prefer matching on canonical user ID if the ID has
+
+          a numeric form. It will only search against other fields if non-numeric
+
+          in form, or if the numeric value doesn''t yield any matches. Queries by
+
+          administrative users will search on SIS ID, Integration ID, login ID,
+
+          name, or email address'
+      - name: enrollment_type
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'When set, only return users enrolled with the specified course-level base role.
+
+          This can be a base role type of ''student'', ''teacher'',
+
+          ''ta'', ''observer'', or ''designer''.'
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - username
+          - email
+          - sis_id
+          - integration_id
+          - last_login
+          - id
+        required: false
+        description: 'The column to sort results by. For efficiency, use +id+ if you intend to retrieve
+
+          many pages of results. In the future, other sort options may be rate-limited
+
+          after 50 pages.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: The order to sort the given column by.
+      - name: include_deleted_users
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'When set to true and used with an account context, returns users who have deleted
+
+          pseudonyms for the context'
+      - name: uuids
+        in: query
+        schema:
+          type: array
+          items: {}
+        required: false
+        description: 'When set, only return users with the specified UUIDs. UUIDs after the first 100
+
+          are ignored.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    post:
+      tags:
+      - Users
+      operationId: create_user
+      summary: Create a user
+      description: 'Create and return a new user and pseudonym for an account.
+
+
+        [DEPRECATED (for self-registration only)] If you don''t have the "Modify
+
+        login details for users" permission, but self-registration is enabled
+
+        on the account, you can still use this endpoint to register new users.
+
+        Certain fields will be required, and others will be ignored (see below).'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user[name]:
+                  type: string
+                  description: 'The full name of the user. This name will be used by teacher for grading.
+
+                    Required if this is a self-registration.'
+                user[short_name]:
+                  type: string
+                  description: User's name as it will be displayed in discussions, messages, and comments.
+                user[sortable_name]:
+                  type: string
+                  description: User's name as used to sort alphabetically in lists.
+                user[time_zone]:
+                  type: string
+                  description: 'The time zone for the user. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                user[locale]:
+                  type: string
+                  description: 'The user''s preferred language, from the list of languages Canvas supports.
+
+                    This is in RFC-5646 format.'
+                user[terms_of_use]:
+                  type: boolean
+                  description: 'Whether the user accepts the terms of use. Required if this is a
+
+                    self-registration and this canvas instance requires users to accept
+
+                    the terms (on by default).
+
+
+                    If this is true, it will mark the user as having accepted the terms of use.'
+                user[skip_registration]:
+                  type: boolean
+                  description: 'Automatically mark the user as registered.
+
+
+                    If this is true, it is recommended to set <tt>"pseudonym[send_confirmation]"</tt> to true as well.
+
+                    Otherwise, the user will not receive any messages about their account creation.
+
+
+                    The users communication channel confirmation can be skipped by setting
+
+                    <tt>"communication_channel[skip_confirmation]"</tt> to true as well.'
+                pseudonym[unique_id]:
+                  type: string
+                  description: 'User''s login ID. If this is a self-registration, it must be a valid
+
+                    email address.'
+                pseudonym[password]:
+                  type: string
+                  description: User's password. Cannot be set during self-registration.
+                pseudonym[sis_user_id]:
+                  type: string
+                  description: 'SIS ID for the user''s account. To set this parameter, the caller must be
+
+                    able to manage SIS permissions.'
+                pseudonym[integration_id]:
+                  type: string
+                  description: 'Integration ID for the login. To set this parameter, the caller must be able to
+
+                    manage SIS permissions. The Integration ID is a secondary
+
+                    identifier useful for more complex SIS integrations.'
+                pseudonym[send_confirmation]:
+                  type: boolean
+                  description: 'Send user notification of account creation if true.
+
+                    Automatically set to true during self-registration.'
+                pseudonym[force_self_registration]:
+                  type: boolean
+                  description: 'Send user a self-registration style email if true.
+
+                    Setting it means the users will get a notification asking them
+
+                    to "complete the registration process" by clicking it, setting
+
+                    a password, and letting them in.  Will only be executed on
+
+                    if the user does not need admin approval.
+
+                    Defaults to false unless explicitly provided.'
+                pseudonym[authentication_provider_id]:
+                  type: string
+                  description: 'The authentication provider this login is associated with. Logins
+
+                    associated with a specific provider can only be used with that provider.
+
+                    Legacy providers (LDAP, CAS, SAML) will search for logins associated with
+
+                    them, or unassociated logins. New providers will only search for logins
+
+                    explicitly associated with them. This can be the integer ID of the
+
+                    provider, or the type of the provider (in which case, it will find the
+
+                    first matching provider).'
+                communication_channel[type]:
+                  type: string
+                  description: The communication channel type, e.g. 'email' or 'sms'.
+                communication_channel[address]:
+                  type: string
+                  description: The communication channel address, e.g. the user's email address.
+                communication_channel[confirmation_url]:
+                  type: boolean
+                  description: 'Only valid for account admins. If true, returns the new user account
+
+                    confirmation URL in the response.'
+                communication_channel[skip_confirmation]:
+                  type: boolean
+                  description: 'Only valid for site admins and account admins making requests; If true, the channel is
+
+                    automatically validated and no confirmation email or SMS is sent.
+
+                    Otherwise, the user must respond to a confirmation message to confirm the
+
+                    channel.
+
+
+                    If this is true, it is recommended to set <tt>"pseudonym[send_confirmation]"</tt> to true as well.
+
+                    Otherwise, the user will not receive any messages about their account creation.'
+                force_validations:
+                  type: boolean
+                  description: 'If true, validations are performed on the newly created user (and their associated pseudonym)
+
+                    even if the request is made by a privileged user like an admin. When set to false,
+
+                    or not included in the request parameters, any newly created users are subject to
+
+                    validations unless the request is made by a user with a ''manage_user_logins'' right.
+
+                    In which case, certain validations such as ''require_acceptance_of_terms'' and
+
+                    ''require_presence_of_name'' are not enforced. Use this parameter to return helpful json
+
+                    errors while building users with an admin request.'
+                enable_sis_reactivation:
+                  type: boolean
+                  description: 'When true, will first try to re-activate a deleted user with matching sis_user_id if possible.
+
+                    This is commonly done with +user[skip_registration]+ and +communication_channel[skip_confirmation]+
+
+                    so that the default communication_channel is also restored.'
+                destination:
+                  type: string
+                  format: uri
+                  description: 'If you''re setting the password for the newly created user, you can provide this param
+
+                    with a valid URL pointing into this Canvas installation, and the response will include
+
+                    a destination field that''s a URL that you can redirect a browser to and have the newly
+
+                    created user automatically logged in. The URL is only valid for a short time, and must
+
+                    match the domain this request is directed to, and be for a well-formed path that Canvas
+
+                    can recognize.'
+                initial_enrollment_type:
+                  type: string
+                  description: '`observer` if doing a self-registration with a pairing code. This allows setting the
+
+                    password during user creation.'
+                pairing_code[code]:
+                  type: string
+                  description: 'If provided and valid, will link the new user as an observer to the student''s whose
+
+                    pairing code is given.'
+              required:
+              - pseudonym[unique_id]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user[name]:
+                  type: string
+                  description: 'The full name of the user. This name will be used by teacher for grading.
+
+                    Required if this is a self-registration.'
+                user[short_name]:
+                  type: string
+                  description: User's name as it will be displayed in discussions, messages, and comments.
+                user[sortable_name]:
+                  type: string
+                  description: User's name as used to sort alphabetically in lists.
+                user[time_zone]:
+                  type: string
+                  description: 'The time zone for the user. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                user[locale]:
+                  type: string
+                  description: 'The user''s preferred language, from the list of languages Canvas supports.
+
+                    This is in RFC-5646 format.'
+                user[terms_of_use]:
+                  type: boolean
+                  description: 'Whether the user accepts the terms of use. Required if this is a
+
+                    self-registration and this canvas instance requires users to accept
+
+                    the terms (on by default).
+
+
+                    If this is true, it will mark the user as having accepted the terms of use.'
+                user[skip_registration]:
+                  type: boolean
+                  description: 'Automatically mark the user as registered.
+
+
+                    If this is true, it is recommended to set <tt>"pseudonym[send_confirmation]"</tt> to true as well.
+
+                    Otherwise, the user will not receive any messages about their account creation.
+
+
+                    The users communication channel confirmation can be skipped by setting
+
+                    <tt>"communication_channel[skip_confirmation]"</tt> to true as well.'
+                pseudonym[unique_id]:
+                  type: string
+                  description: 'User''s login ID. If this is a self-registration, it must be a valid
+
+                    email address.'
+                pseudonym[password]:
+                  type: string
+                  description: User's password. Cannot be set during self-registration.
+                pseudonym[sis_user_id]:
+                  type: string
+                  description: 'SIS ID for the user''s account. To set this parameter, the caller must be
+
+                    able to manage SIS permissions.'
+                pseudonym[integration_id]:
+                  type: string
+                  description: 'Integration ID for the login. To set this parameter, the caller must be able to
+
+                    manage SIS permissions. The Integration ID is a secondary
+
+                    identifier useful for more complex SIS integrations.'
+                pseudonym[send_confirmation]:
+                  type: boolean
+                  description: 'Send user notification of account creation if true.
+
+                    Automatically set to true during self-registration.'
+                pseudonym[force_self_registration]:
+                  type: boolean
+                  description: 'Send user a self-registration style email if true.
+
+                    Setting it means the users will get a notification asking them
+
+                    to "complete the registration process" by clicking it, setting
+
+                    a password, and letting them in.  Will only be executed on
+
+                    if the user does not need admin approval.
+
+                    Defaults to false unless explicitly provided.'
+                pseudonym[authentication_provider_id]:
+                  type: string
+                  description: 'The authentication provider this login is associated with. Logins
+
+                    associated with a specific provider can only be used with that provider.
+
+                    Legacy providers (LDAP, CAS, SAML) will search for logins associated with
+
+                    them, or unassociated logins. New providers will only search for logins
+
+                    explicitly associated with them. This can be the integer ID of the
+
+                    provider, or the type of the provider (in which case, it will find the
+
+                    first matching provider).'
+                communication_channel[type]:
+                  type: string
+                  description: The communication channel type, e.g. 'email' or 'sms'.
+                communication_channel[address]:
+                  type: string
+                  description: The communication channel address, e.g. the user's email address.
+                communication_channel[confirmation_url]:
+                  type: boolean
+                  description: 'Only valid for account admins. If true, returns the new user account
+
+                    confirmation URL in the response.'
+                communication_channel[skip_confirmation]:
+                  type: boolean
+                  description: 'Only valid for site admins and account admins making requests; If true, the channel is
+
+                    automatically validated and no confirmation email or SMS is sent.
+
+                    Otherwise, the user must respond to a confirmation message to confirm the
+
+                    channel.
+
+
+                    If this is true, it is recommended to set <tt>"pseudonym[send_confirmation]"</tt> to true as well.
+
+                    Otherwise, the user will not receive any messages about their account creation.'
+                force_validations:
+                  type: boolean
+                  description: 'If true, validations are performed on the newly created user (and their associated pseudonym)
+
+                    even if the request is made by a privileged user like an admin. When set to false,
+
+                    or not included in the request parameters, any newly created users are subject to
+
+                    validations unless the request is made by a user with a ''manage_user_logins'' right.
+
+                    In which case, certain validations such as ''require_acceptance_of_terms'' and
+
+                    ''require_presence_of_name'' are not enforced. Use this parameter to return helpful json
+
+                    errors while building users with an admin request.'
+                enable_sis_reactivation:
+                  type: boolean
+                  description: 'When true, will first try to re-activate a deleted user with matching sis_user_id if possible.
+
+                    This is commonly done with +user[skip_registration]+ and +communication_channel[skip_confirmation]+
+
+                    so that the default communication_channel is also restored.'
+                destination:
+                  type: string
+                  format: uri
+                  description: 'If you''re setting the password for the newly created user, you can provide this param
+
+                    with a valid URL pointing into this Canvas installation, and the response will include
+
+                    a destination field that''s a URL that you can redirect a browser to and have the newly
+
+                    created user automatically logged in. The URL is only valid for a short time, and must
+
+                    match the domain this request is directed to, and be for a well-formed path that Canvas
+
+                    can recognize.'
+                initial_enrollment_type:
+                  type: string
+                  description: '`observer` if doing a self-registration with a pairing code. This allows setting the
+
+                    password during user creation.'
+                pairing_code[code]:
+                  type: string
+                  description: 'If provided and valid, will link the new user as an observer to the student''s whose
+
+                    pairing code is given.'
+              required:
+              - pseudonym[unique_id]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/files:
+    post:
+      tags:
+      - Users
+      operationId: upload_file_users
+      summary: Upload a file
+      description: 'Upload a file to the user''s personal files section.
+
+
+        This API endpoint is the first step in uploading a file to a user''s files.
+
+        See the {file:file.file_uploads.html File Upload Documentation} for details on
+
+        the file upload workflow.
+
+
+        Note that typically users will only be able to upload files to their
+
+        own files section. Passing a user_id of +self+ is an easy shortcut
+
+        to specify the current user.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/activity_stream:
+    get:
+      tags:
+      - Users
+      operationId: list_activity_stream_self
+      summary: List the activity stream
+      description: 'Returns the current user''s global activity stream, paginated.
+
+
+        There are many types of objects that can be returned in the activity
+
+        stream. All object types have the same basic set of shared attributes:
+
+        !!!javascript
+
+        {
+
+        ''created_at'': ''2011-07-13T09:12:00Z'',
+
+        ''updated_at'': ''2011-07-25T08:52:41Z'',
+
+        ''id'': 1234,
+
+        ''title'': ''Stream Item Subject'',
+
+        ''message'': ''This is the body text of the activity stream item. It is plain-text, and can be multiple paragraphs.'',
+
+        ''type'': ''DiscussionTopic|Conversation|Message|Submission|Conference|Collaboration|AssessmentRequest...'',
+
+        ''read_state'': false,
+
+        ''context_type'': ''course'', // course|group
+
+        ''course_id'': 1,
+
+        ''group_id'': null,
+
+        ''html_url'': "http://..." // URL to the Canvas web UI for this stream item
+
+        }
+
+
+        In addition, each item type has its own set of attributes available.
+
+
+        DiscussionTopic:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''DiscussionTopic'',
+
+        ''discussion_topic_id'': 1234,
+
+        ''total_root_discussion_entries'': 5,
+
+        ''require_initial_post'': true,
+
+        ''user_has_posted'': true,
+
+        ''root_discussion_entries'': {
+
+        ...
+
+        }
+
+        }
+
+
+        For DiscussionTopic, the message is truncated at 4kb.
+
+
+        Announcement:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Announcement'',
+
+        ''announcement_id'': 1234,
+
+        ''total_root_discussion_entries'': 5,
+
+        ''require_initial_post'': true,
+
+        ''user_has_posted'': null,
+
+        ''root_discussion_entries'': {
+
+        ...
+
+        }
+
+        }
+
+
+        For Announcement, the message is truncated at 4kb.
+
+
+        Conversation:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Conversation'',
+
+        ''conversation_id'': 1234,
+
+        ''private'': false,
+
+        ''participant_count'': 3,
+
+        }
+
+
+        Message:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Message'',
+
+        ''message_id'': 1234,
+
+        ''notification_category'': ''Assignment Graded''
+
+        }
+
+
+        Submission:
+
+
+        Returns an {api:Submissions:Submission Submission} with its Course and Assignment data.
+
+
+        Conference:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Conference'',
+
+        ''web_conference_id'': 1234
+
+        }
+
+
+        Collaboration:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Collaboration'',
+
+        ''collaboration_id'': 1234
+
+        }
+
+
+        AssessmentRequest:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''AssessmentRequest'',
+
+        ''assessment_request_id'': 1234
+
+        }'
+      parameters:
+      - name: only_active_courses
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, will only return objects for courses the user is actively participating in
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    delete:
+      tags:
+      - Users
+      operationId: hide_all_stream_items
+      summary: Hide all stream items
+      description: Hide all stream items for the user
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/activity_stream:
+    get:
+      tags:
+      - Users
+      operationId: list_activity_stream_activity_stream
+      summary: List the activity stream
+      description: 'Returns the current user''s global activity stream, paginated.
+
+
+        There are many types of objects that can be returned in the activity
+
+        stream. All object types have the same basic set of shared attributes:
+
+        !!!javascript
+
+        {
+
+        ''created_at'': ''2011-07-13T09:12:00Z'',
+
+        ''updated_at'': ''2011-07-25T08:52:41Z'',
+
+        ''id'': 1234,
+
+        ''title'': ''Stream Item Subject'',
+
+        ''message'': ''This is the body text of the activity stream item. It is plain-text, and can be multiple paragraphs.'',
+
+        ''type'': ''DiscussionTopic|Conversation|Message|Submission|Conference|Collaboration|AssessmentRequest...'',
+
+        ''read_state'': false,
+
+        ''context_type'': ''course'', // course|group
+
+        ''course_id'': 1,
+
+        ''group_id'': null,
+
+        ''html_url'': "http://..." // URL to the Canvas web UI for this stream item
+
+        }
+
+
+        In addition, each item type has its own set of attributes available.
+
+
+        DiscussionTopic:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''DiscussionTopic'',
+
+        ''discussion_topic_id'': 1234,
+
+        ''total_root_discussion_entries'': 5,
+
+        ''require_initial_post'': true,
+
+        ''user_has_posted'': true,
+
+        ''root_discussion_entries'': {
+
+        ...
+
+        }
+
+        }
+
+
+        For DiscussionTopic, the message is truncated at 4kb.
+
+
+        Announcement:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Announcement'',
+
+        ''announcement_id'': 1234,
+
+        ''total_root_discussion_entries'': 5,
+
+        ''require_initial_post'': true,
+
+        ''user_has_posted'': null,
+
+        ''root_discussion_entries'': {
+
+        ...
+
+        }
+
+        }
+
+
+        For Announcement, the message is truncated at 4kb.
+
+
+        Conversation:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Conversation'',
+
+        ''conversation_id'': 1234,
+
+        ''private'': false,
+
+        ''participant_count'': 3,
+
+        }
+
+
+        Message:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Message'',
+
+        ''message_id'': 1234,
+
+        ''notification_category'': ''Assignment Graded''
+
+        }
+
+
+        Submission:
+
+
+        Returns an {api:Submissions:Submission Submission} with its Course and Assignment data.
+
+
+        Conference:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Conference'',
+
+        ''web_conference_id'': 1234
+
+        }
+
+
+        Collaboration:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''Collaboration'',
+
+        ''collaboration_id'': 1234
+
+        }
+
+
+        AssessmentRequest:
+
+
+        !!!javascript
+
+        {
+
+        ''type'': ''AssessmentRequest'',
+
+        ''assessment_request_id'': 1234
+
+        }'
+      parameters:
+      - name: only_active_courses
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, will only return objects for courses the user is actively participating in
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/activity_stream/summary:
+    get:
+      tags:
+      - Users
+      operationId: activity_stream_summary
+      summary: Activity stream summary
+      description: Returns a summary of the current user's global activity stream.
+      parameters:
+      - name: only_active_courses
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, will only return objects for courses the user is actively participating in
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/todo:
+    get:
+      tags:
+      - Users
+      operationId: list_todo_items
+      summary: List the TODO items
+      description: 'A paginated list of the current user''s list of todo items.
+
+
+        There is a limit to the number of items returned.
+
+
+        The `ignore` and `ignore_permanently` URLs can be used to update the user''s
+
+        preferences on what items will be displayed.
+
+        Performing a DELETE request against the `ignore` URL will hide that item
+
+        from future todo item requests, until the item changes.
+
+        Performing a DELETE request against the `ignore_permanently` URL will hide
+
+        that item forever.'
+      parameters:
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ungraded_quizzes
+            - grading_counts
+        required: false
+        description: "\"ungraded_quizzes\":: Optionally include ungraded quizzes (such as practice quizzes and surveys) in the list.\n                     These will be returned under a +quiz+ key instead of an +assignment+ key in response elements.\n\"grading_counts\":: Optionally include segmented submission counts on grading-type items:\n                   +on_time_needs_grading_count+, +late_needs_grading_count+,\n                   +resubmitted_needs_grading_count+, +submitted_submissions_count+, and\n                   +total_submissions_count+. Only honored when the account has the\n                   +educator_dashboard+ feature enabled; otherwise silently ignored."
+      - name: course_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Restrict results to todo items in the given courses. Accepts numeric IDs
+
+          and SIS IDs of the form +sis_course_id:foo+. Applies to grading, submitting,
+
+          checkpoint, and ungraded quiz items alike. Courses the user is not enrolled
+
+          in (or that cannot be resolved) are silently dropped. When the parameter is
+
+          present but no valid courses resolve, an empty list is returned rather than
+
+          the unfiltered list.'
+      - name: submission_status
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - late
+            - resubmitted
+        required: false
+        description: "Restrict grading todo items to submissions matching the given\ncharacteristics. Values OR-combine. When present, only grading (and\ncheckpoint grading) items are returned; submitting and ungraded-quiz items\nare omitted.\n\"late\":: Turned in after the due date.\n\"resubmitted\":: Student resubmitted after grading; the grade no longer\n                matches the current submission.\nUnknown values are silently dropped. When the parameter is present but no\nvalid statuses resolve, grading items return empty rather than unfiltered."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/todo_item_count:
+    get:
+      tags:
+      - Users
+      operationId: list_counts_for_todo_items
+      summary: List counts for todo items
+      description: 'Counts of different todo items such as the number of assignments needing grading as well as the number of assignments needing submitting.
+
+
+        There is a limit to the number of todo items this endpoint will count.
+
+        It will only look at the first 100 todo items for the user. If the user has more than 100 todo items this count may not be reliable.
+
+        The largest reliable number for both counts is 100.'
+      parameters:
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ungraded_quizzes
+        required: false
+        description: "\"ungraded_quizzes\":: Optionally include ungraded quizzes (such as practice quizzes and surveys) in the list.\n                     These will be returned under a +quiz+ key instead of an +assignment+ key in response elements."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/upcoming_events:
+    get:
+      tags:
+      - Users
+      operationId: list_upcoming_assignments_calendar_events
+      summary: List upcoming assignments, calendar events
+      description: A paginated list of the current user's upcoming events.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/missing_submissions:
+    get:
+      tags:
+      - Users
+      operationId: list_missing_submissions
+      summary: List Missing Submissions
+      description: 'A paginated list of past-due assignments for which the student does not have a submission.
+
+        The user sending the request must either be the student, an admin or a parent observer using the parent app'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: the student's ID
+      - name: observed_user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Return missing submissions for the given observed user. Must be accompanied by course_ids[].
+
+          The user making the request must be observing the observed user in all the courses specified by
+
+          course_ids[].'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - planner_overrides
+            - course
+        required: false
+        description: "\"planner_overrides\":: Optionally include the assignment's associated planner override, if it exists, for the current user.\n                      These will be returned under a +planner_override+ key\n\"course\":: Optionally include the assignments' courses"
+      - name: filter
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submittable
+            - current_grading_period
+        required: false
+        description: '"submittable":: Only return assignments that the current user can submit (i.e. filter out locked assignments)
+
+          "current_grading_period":: Only return missing assignments that are in the current grading period'
+      - name: course_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Optionally restricts the list of past-due assignments to only those associated with the specified
+
+          course IDs. Required if observed_user_id is passed.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Assignment
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/activity_stream/{id}:
+    delete:
+      tags:
+      - Users
+      operationId: hide_stream_item
+      summary: Hide a stream item
+      description: Hide the given stream item.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}:
+    get:
+      tags:
+      - Users
+      operationId: show_user_details
+      summary: Show user details
+      description: 'Shows details for user.
+
+
+        Also includes an attribute "permissions", a non-comprehensive list of permissions for the user.
+
+        Example:
+
+        !!!javascript
+
+        "permissions": {
+
+        "can_update_name": true, // Whether the user can update their name.
+
+        "can_update_avatar": false, // Whether the user can update their avatar.
+
+        "limit_parent_app_web_access": false // Whether the user can interact with Canvas web from the Canvas Parent app.
+
+        }'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - uuid
+            - last_login
+        required: false
+        description: 'Array of additional information to include on the user record.
+
+          "locale", "avatar_url", "permissions", "email", and "effective_locale"
+
+          will always be returned'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    put:
+      tags:
+      - Users
+      operationId: edit_user
+      summary: Edit a user
+      description: Modify an existing user. To modify a user's login, see the documentation for logins.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user[name]:
+                  type: string
+                  description: The full name of the user. This name will be used by teacher for grading.
+                user[short_name]:
+                  type: string
+                  description: User's name as it will be displayed in discussions, messages, and comments.
+                user[sortable_name]:
+                  type: string
+                  description: User's name as used to sort alphabetically in lists.
+                user[time_zone]:
+                  type: string
+                  description: 'The time zone for the user. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                user[email]:
+                  type: string
+                  description: The default email address of the user.
+                user[locale]:
+                  type: string
+                  description: 'The user''s preferred language, from the list of languages Canvas supports.
+
+                    This is in RFC-5646 format.'
+                user[avatar][token]:
+                  type: string
+                  description: 'A unique representation of the avatar record to assign as the user''s
+
+                    current avatar. This token can be obtained from the user avatars endpoint.
+
+                    This supersedes the +user[avatar][url]+ argument, and if both are included
+
+                    the url will be ignored. Note: this is an internal representation and is
+
+                    subject to change without notice. It should be consumed with this api
+
+                    endpoint and used in the user update endpoint, and should not be
+
+                    constructed by the client.'
+                user[avatar][url]:
+                  type: string
+                  description: 'To set the user''s avatar to point to an external url, do not include a
+
+                    token and instead pass the url here. Warning: For maximum compatibility,
+
+                    please use 128 px square images.'
+                user[avatar][state]:
+                  type: string
+                  enum:
+                  - none
+                  - submitted
+                  - approved
+                  - locked
+                  - reported
+                  - re_reported
+                  description: To set the state of user's avatar. Only valid for account administrator.
+                user[title]:
+                  type: string
+                  description: 'Sets a title on the user profile. (See {api:ProfileController#settings Get user profile}.)
+
+                    Profiles must be enabled on the root account.'
+                user[bio]:
+                  type: string
+                  description: 'Sets a bio on the user profile. (See {api:ProfileController#settings Get user profile}.)
+
+                    Profiles must be enabled on the root account.'
+                user[pronunciation]:
+                  type: string
+                  description: 'Sets name pronunciation on the user profile. (See {api:ProfileController#settings Get user profile}.)
+
+                    Profiles and name pronunciation must be enabled on the root account.'
+                user[pronouns]:
+                  type: string
+                  description: 'Sets pronouns on the user profile.
+
+                    Passing an empty string will empty the user''s pronouns
+
+                    Only Available Pronouns set on the root account are allowed
+
+                    Adding and changing pronouns must be enabled on the root account.'
+                user[event]:
+                  type: string
+                  enum:
+                  - suspend
+                  - unsuspend
+                  description: 'Suspends or unsuspends all logins for this user that the calling user
+
+                    has permission to'
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user[name]:
+                  type: string
+                  description: The full name of the user. This name will be used by teacher for grading.
+                user[short_name]:
+                  type: string
+                  description: User's name as it will be displayed in discussions, messages, and comments.
+                user[sortable_name]:
+                  type: string
+                  description: User's name as used to sort alphabetically in lists.
+                user[time_zone]:
+                  type: string
+                  description: 'The time zone for the user. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                user[email]:
+                  type: string
+                  description: The default email address of the user.
+                user[locale]:
+                  type: string
+                  description: 'The user''s preferred language, from the list of languages Canvas supports.
+
+                    This is in RFC-5646 format.'
+                user[avatar][token]:
+                  type: string
+                  description: 'A unique representation of the avatar record to assign as the user''s
+
+                    current avatar. This token can be obtained from the user avatars endpoint.
+
+                    This supersedes the +user[avatar][url]+ argument, and if both are included
+
+                    the url will be ignored. Note: this is an internal representation and is
+
+                    subject to change without notice. It should be consumed with this api
+
+                    endpoint and used in the user update endpoint, and should not be
+
+                    constructed by the client.'
+                user[avatar][url]:
+                  type: string
+                  description: 'To set the user''s avatar to point to an external url, do not include a
+
+                    token and instead pass the url here. Warning: For maximum compatibility,
+
+                    please use 128 px square images.'
+                user[avatar][state]:
+                  type: string
+                  enum:
+                  - none
+                  - submitted
+                  - approved
+                  - locked
+                  - reported
+                  - re_reported
+                  description: To set the state of user's avatar. Only valid for account administrator.
+                user[title]:
+                  type: string
+                  description: 'Sets a title on the user profile. (See {api:ProfileController#settings Get user profile}.)
+
+                    Profiles must be enabled on the root account.'
+                user[bio]:
+                  type: string
+                  description: 'Sets a bio on the user profile. (See {api:ProfileController#settings Get user profile}.)
+
+                    Profiles must be enabled on the root account.'
+                user[pronunciation]:
+                  type: string
+                  description: 'Sets name pronunciation on the user profile. (See {api:ProfileController#settings Get user profile}.)
+
+                    Profiles and name pronunciation must be enabled on the root account.'
+                user[pronouns]:
+                  type: string
+                  description: 'Sets pronouns on the user profile.
+
+                    Passing an empty string will empty the user''s pronouns
+
+                    Only Available Pronouns set on the root account are allowed
+
+                    Adding and changing pronouns must be enabled on the root account.'
+                user[event]:
+                  type: string
+                  enum:
+                  - suspend
+                  - unsuspend
+                  description: 'Suspends or unsuspends all logins for this user that the calling user
+
+                    has permission to'
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/accounts/{account_id}/self_registration:
+    post:
+      tags:
+      - Users
+      operationId: deprecated_self_register_user
+      summary: '[DEPRECATED] Self register a user'
+      description: 'Self register and return a new user and pseudonym for an account.
+
+
+        If self-registration is enabled on the account, you can use this
+
+        endpoint to self register new users.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user[name]:
+                  type: string
+                  description: The full name of the user. This name will be used by teacher for grading.
+                user[short_name]:
+                  type: string
+                  description: User's name as it will be displayed in discussions, messages, and comments.
+                user[sortable_name]:
+                  type: string
+                  description: User's name as used to sort alphabetically in lists.
+                user[time_zone]:
+                  type: string
+                  description: 'The time zone for the user. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                user[locale]:
+                  type: string
+                  description: 'The user''s preferred language, from the list of languages Canvas supports.
+
+                    This is in RFC-5646 format.'
+                user[terms_of_use]:
+                  type: boolean
+                  description: Whether the user accepts the terms of use.
+                pseudonym[unique_id]:
+                  type: string
+                  description: User's login ID. Must be a valid email address.
+                communication_channel[type]:
+                  type: string
+                  description: The communication channel type, e.g. 'email' or 'sms'.
+                communication_channel[address]:
+                  type: string
+                  description: The communication channel address, e.g. the user's email address.
+              required:
+              - user[name]
+              - user[terms_of_use]
+              - pseudonym[unique_id]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user[name]:
+                  type: string
+                  description: The full name of the user. This name will be used by teacher for grading.
+                user[short_name]:
+                  type: string
+                  description: User's name as it will be displayed in discussions, messages, and comments.
+                user[sortable_name]:
+                  type: string
+                  description: User's name as used to sort alphabetically in lists.
+                user[time_zone]:
+                  type: string
+                  description: 'The time zone for the user. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                user[locale]:
+                  type: string
+                  description: 'The user''s preferred language, from the list of languages Canvas supports.
+
+                    This is in RFC-5646 format.'
+                user[terms_of_use]:
+                  type: boolean
+                  description: Whether the user accepts the terms of use.
+                pseudonym[unique_id]:
+                  type: string
+                  description: User's login ID. Must be a valid email address.
+                communication_channel[type]:
+                  type: string
+                  description: The communication channel type, e.g. 'email' or 'sms'.
+                communication_channel[address]:
+                  type: string
+                  description: The communication channel address, e.g. the user's email address.
+              required:
+              - user[name]
+              - user[terms_of_use]
+              - pseudonym[unique_id]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/settings:
+    get:
+      tags:
+      - Users
+      operationId: update_user_settings
+      summary: Update user settings
+      description: Update an existing user's settings.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: manual_mark_as_read
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, require user to manually mark discussion posts as read (don''t
+
+          auto-mark as read).'
+      - name: release_notes_badge_disabled
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, hide the badge for new release notes.
+      - name: collapse_global_nav
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, the user's page loads with the global navigation collapsed
+      - name: collapse_course_nav
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, the user''s course pages will load with the course navigation
+
+          collapsed.'
+      - name: hide_dashcard_color_overlays
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, images on course cards will be presented without being tinted
+
+          to match the course color.'
+      - name: comment_library_suggestions_enabled
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, suggestions within the comment library will be shown.
+      - name: elementary_dashboard_disabled
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, will display the user''s preferred class Canvas dashboard
+
+          view instead of the canvas for elementary view.'
+      - name: widget_dashboard_user_preference
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, enables the widget dashboard for the user. Only applies
+
+          when the widget_dashboard feature is enabled at the account level.
+
+          Defaults to true when the feature becomes available.'
+      - name: widget_dashboard_dark_mode
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, enables the dark color theme for the widget dashboard.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/colors:
+    get:
+      tags:
+      - Users
+      operationId: get_custom_colors
+      summary: Get custom colors
+      description: Returns all custom colors that have been saved for a user.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/colors/{asset_string}:
+    get:
+      tags:
+      - Users
+      operationId: get_custom_color
+      summary: Get custom color
+      description: 'Returns the custom colors that have been saved for a user for a given context.
+
+
+        The asset_string parameter should be in the format ''context_id'', for example
+
+        ''course_42''.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: asset_string
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    put:
+      tags:
+      - Users
+      operationId: update_custom_color
+      summary: Update custom color
+      description: 'Updates a custom color for a user for a given context. This allows
+
+        colors for the calendar and elsewhere to be customized on a user basis.
+
+
+        The asset string parameter should be in the format ''context_id'', for example
+
+        ''course_42'''
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: asset_string
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hexcode:
+                  type: string
+                  description: 'The hexcode of the color to set for the context, if you choose to pass the
+
+                    hexcode as a query parameter rather than in the request body you should
+
+                    NOT include the ''#'' unless you escape it first.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                hexcode:
+                  type: string
+                  description: 'The hexcode of the color to set for the context, if you choose to pass the
+
+                    hexcode as a query parameter rather than in the request body you should
+
+                    NOT include the ''#'' unless you escape it first.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/text_editor_preference:
+    put:
+      tags:
+      - Users
+      operationId: update_text_editor_preference
+      summary: Update text editor preference
+      description: 'Updates a user''s default choice for text editor. This allows
+
+        the Choose an Editor propmts to preload the user''s preference.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text_editor_preference:
+                  type: string
+                  enum:
+                  - block_editor
+                  - rce
+                  - ''
+                  description: The identifier for the editor.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                text_editor_preference:
+                  type: string
+                  enum:
+                  - block_editor
+                  - rce
+                  - ''
+                  description: The identifier for the editor.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/files_ui_version_preference:
+    put:
+      tags:
+      - Users
+      operationId: update_files_ui_version_preference
+      summary: Update files UI version preference
+      description: 'Updates a user''s default choice for files UI version. This allows
+
+        the files UI to preload the user''s preference.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                files_ui_version:
+                  type: string
+                  enum:
+                  - v1
+                  - v2
+                  description: The identifier for the files UI version.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                files_ui_version:
+                  type: string
+                  enum:
+                  - v1
+                  - v2
+                  description: The identifier for the files UI version.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/dashboard_positions:
+    get:
+      tags:
+      - Users
+      operationId: get_dashboard_positions
+      summary: Get dashboard positions
+      description: Returns all dashboard positions that have been saved for a user.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    put:
+      tags:
+      - Users
+      operationId: update_dashboard_positions
+      summary: Update dashboard positions
+      description: 'Updates the dashboard positions for a user for a given context. This allows
+
+        positions for the dashboard cards and elsewhere to be customized on a per
+
+        user basis.
+
+
+        The asset string parameter should be in the format ''context_id'', for example
+
+        ''course_42'''
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/sessions:
+    delete:
+      tags:
+      - Users
+      operationId: terminate_all_user_sessions
+      summary: Terminate all user sessions
+      description: 'Terminates all sessions for a user. This includes all browser-based
+
+        sessions and all access tokens, including manually generated ones.
+
+        The user can immediately re-authenticate to access Canvas again if
+
+        they have the current credentials. All integrations will need to
+
+        be re-authorized.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/mobile_sessions:
+    delete:
+      tags:
+      - Users
+      operationId: log_users_out_of_all_mobile_apps_mobile_sessions
+      summary: Log users out of all mobile apps
+      description: 'Permanently expires any active mobile sessions, forcing them to re-authorize.
+
+
+        The route that takes a user id will expire mobile sessions for that user.
+
+        The route that doesn''t take a user id will expire mobile sessions for *all* users
+
+        in the institution (except for account administrators if +skip_admins+ is given).'
+      parameters:
+      - name: skip_admins
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, will not expire mobile sessions for account administrators.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/mobile_sessions:
+    delete:
+      tags:
+      - Users
+      operationId: log_users_out_of_all_mobile_apps_id
+      summary: Log users out of all mobile apps
+      description: 'Permanently expires any active mobile sessions, forcing them to re-authorize.
+
+
+        The route that takes a user id will expire mobile sessions for that user.
+
+        The route that doesn''t take a user id will expire mobile sessions for *all* users
+
+        in the institution (except for account administrators if +skip_admins+ is given).'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: skip_admins
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If true, will not expire mobile sessions for account administrators.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/merge_into/{destination_user_id}:
+    put:
+      tags:
+      - Users
+      operationId: merge_user_into_another_user_destination_user_id
+      summary: Merge user into another user
+      description: 'Merge a user into another user.
+
+        To merge users, the caller must have permissions to manage both users. This
+
+        should be considered irreversible. This will delete the user and move all
+
+        the data into the destination user.
+
+
+        User merge details and caveats:
+
+        The from_user is the user that was deleted in the user_merge process.
+
+        The destination_user is the user that remains, that is being split.
+
+
+        Avatars:
+
+        When both users have avatars, only the destination_users avatar will remain.
+
+        When one user has an avatar, it will end up on the destination_user.
+
+
+        Terms of Use:
+
+        If either user has accepted terms of use, it will be be left as accepted.
+
+
+        Communication Channels:
+
+        All unique communication channels moved to the destination_user.
+
+        All notification preferences are moved to the destination_user.
+
+
+        Enrollments:
+
+        All unique enrollments are moved to the destination_user.
+
+        When there is an enrollment that would end up making it so that a user would
+
+        be observing themselves, the enrollment is not moved over.
+
+        Everything that is tied to the from_user at the course level relating to the
+
+        enrollment is also moved to the destination_user.
+
+
+        Submissions:
+
+        All submissions are moved to the destination_user. If there are enrollments
+
+        for both users in the same course, we prefer submissions that have grades
+
+        then submissions that have work in them, and if there are no grades or no
+
+        work, they are not moved.
+
+
+        Other notes:
+
+        Access Tokens are moved on merge.
+
+        Conversations are moved on merge.
+
+        Favorites are moved on merge.
+
+        Courses will commonly use LTI tools. LTI tools reference the user with IDs
+
+        that are stored on a user object. Merging users deletes one user and moves
+
+        all records from the deleted user to the destination_user. These IDs are
+
+        kept for all enrollments, group_membership, and account_users for the
+
+        from_user at the time of the merge. When the destination_user launches an
+
+        LTI tool from a course that used to be the from_user''s, it doesn''t appear as
+
+        a new user to the tool provider. Instead it will send the stored ids. The
+
+        destination_user''s LTI IDs remain as they were for the courses that they
+
+        originally had. Future enrollments for the destination_user will use the IDs
+
+        that are on the destination_user object. LTI IDs that are kept and tracked
+
+        per context include lti_context_id, lti_id and uuid. APIs that return the
+
+        LTI ids will return the one for the context that it is called for, except
+
+        for the user uuid. The user UUID will display the destination_users uuid,
+
+        and when getting the uuid from an api that is in a context that was
+
+        recorded from a merge event, an additional attribute is added as past_uuid.
+
+
+        When finding users by SIS ids in different accounts the
+
+        destination_account_id is required.
+
+
+        The account can also be identified by passing the domain in destination_account_id.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: destination_user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/merge_into/accounts/{destination_account_id}/users/{destination_user_id}:
+    put:
+      tags:
+      - Users
+      operationId: merge_user_into_another_user_accounts
+      summary: Merge user into another user
+      description: 'Merge a user into another user.
+
+        To merge users, the caller must have permissions to manage both users. This
+
+        should be considered irreversible. This will delete the user and move all
+
+        the data into the destination user.
+
+
+        User merge details and caveats:
+
+        The from_user is the user that was deleted in the user_merge process.
+
+        The destination_user is the user that remains, that is being split.
+
+
+        Avatars:
+
+        When both users have avatars, only the destination_users avatar will remain.
+
+        When one user has an avatar, it will end up on the destination_user.
+
+
+        Terms of Use:
+
+        If either user has accepted terms of use, it will be be left as accepted.
+
+
+        Communication Channels:
+
+        All unique communication channels moved to the destination_user.
+
+        All notification preferences are moved to the destination_user.
+
+
+        Enrollments:
+
+        All unique enrollments are moved to the destination_user.
+
+        When there is an enrollment that would end up making it so that a user would
+
+        be observing themselves, the enrollment is not moved over.
+
+        Everything that is tied to the from_user at the course level relating to the
+
+        enrollment is also moved to the destination_user.
+
+
+        Submissions:
+
+        All submissions are moved to the destination_user. If there are enrollments
+
+        for both users in the same course, we prefer submissions that have grades
+
+        then submissions that have work in them, and if there are no grades or no
+
+        work, they are not moved.
+
+
+        Other notes:
+
+        Access Tokens are moved on merge.
+
+        Conversations are moved on merge.
+
+        Favorites are moved on merge.
+
+        Courses will commonly use LTI tools. LTI tools reference the user with IDs
+
+        that are stored on a user object. Merging users deletes one user and moves
+
+        all records from the deleted user to the destination_user. These IDs are
+
+        kept for all enrollments, group_membership, and account_users for the
+
+        from_user at the time of the merge. When the destination_user launches an
+
+        LTI tool from a course that used to be the from_user''s, it doesn''t appear as
+
+        a new user to the tool provider. Instead it will send the stored ids. The
+
+        destination_user''s LTI IDs remain as they were for the courses that they
+
+        originally had. Future enrollments for the destination_user will use the IDs
+
+        that are on the destination_user object. LTI IDs that are kept and tracked
+
+        per context include lti_context_id, lti_id and uuid. APIs that return the
+
+        LTI ids will return the one for the context that it is called for, except
+
+        for the user uuid. The user UUID will display the destination_users uuid,
+
+        and when getting the uuid from an api that is in a context that was
+
+        recorded from a merge event, an additional attribute is added as past_uuid.
+
+
+        When finding users by SIS ids in different accounts the
+
+        destination_account_id is required.
+
+
+        The account can also be identified by passing the domain in destination_account_id.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: destination_account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: destination_user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/split:
+    post:
+      tags:
+      - Users
+      operationId: split_merged_users_into_separate_users
+      summary: Split merged users into separate users
+      description: 'Merged users cannot be fully restored to their previous state, but this will
+
+        attempt to split as much as possible to the previous state.
+
+        To split a merged user, the caller must have permissions to manage all of
+
+        the users logins. If there are multiple users that have been merged into one
+
+        user it will split each merge into a separate user.
+
+        A split can only happen within 180 days of a user merge. A user merge deletes
+
+        the previous user and may be permanently deleted. In this scenario we create
+
+        a new user object and proceed to move as much as possible to the new user.
+
+        The user object will not have preserved the name or settings from the
+
+        previous user. Some items may have been deleted during a user_merge that
+
+        cannot be restored, and/or the data has become stale because of other
+
+        changes to the objects since the time of the user_merge.
+
+
+        Split users details and caveats:
+
+
+        The from_user is the user that was deleted in the user_merge process.
+
+        The destination_user is the user that remains, that is being split.
+
+
+        Avatars:
+
+        When both users had avatars, both will be remain.
+
+        When from_user had an avatar and destination_user did not have an avatar,
+
+        the destination_user''s avatar will be deleted if it still matches what was
+
+        there are the time of the merge.
+
+        If the destination_user''s avatar was changed at anytime after the merge, it
+
+        will remain on the destination user.
+
+        If the from_user had an avatar it will be there after split.
+
+
+        Terms of Use:
+
+        If from_user had not accepted terms of use, they will be prompted again
+
+        to accept terms of use after the split.
+
+        If the destination_user had not accepted terms of use, hey will be prompted
+
+        again to accept terms of use after the split.
+
+        If neither user had accepted the terms of use, but since the time of the
+
+        merge had accepted, both will be prompted to accept terms of use.
+
+        If both had accepted terms of use, this will remain.
+
+
+        Communication Channels:
+
+        All communication channels are restored to what they were prior to the
+
+        merge. If a communication channel was added after the merge, it will remain
+
+        on the destination_user.
+
+        Notification preferences remain with the communication channels.
+
+
+        Enrollments:
+
+        All enrollments from the time of the merge will be moved back to where they
+
+        were. Enrollments created since the time of the merge that were created by
+
+        sis_import will go to the user that owns that sis_id used for the import.
+
+        Other new enrollments will remain on the destination_user.
+
+        Everything that is tied to the destination_user at the course level relating
+
+        to an enrollment is moved to the from_user. When both users are in the same
+
+        course prior to merge this can cause some unexpected items to move.
+
+
+        Submissions:
+
+        Unlike other items tied to a course, submissions are explicitly recorded to
+
+        avoid problems with grades.
+
+        All submissions were moved are restored to the spot prior to merge.
+
+        All submission that were created in a course that was moved in enrollments
+
+        are moved over to the from_user.
+
+
+        Other notes:
+
+        Access Tokens are moved back on split.
+
+        Conversations are moved back on split.
+
+        Favorites that existing at the time of merge are moved back on split.
+
+        LTI ids are restored to how they were prior to merge.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/pandata_events_token:
+    post:
+      tags:
+      - Users
+      operationId: get_pandata_events_jwt_token_and_its_expiration_date
+      summary: Get a Pandata Events jwt token and its expiration date
+      description: 'Returns a jwt auth and props token that can be used to send events to
+
+        Pandata.
+
+
+        NOTE: This is currently only available to the mobile developer keys.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_key:
+                  type: string
+                  description: The pandata events appKey for this mobile app
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                app_key:
+                  type: string
+                  description: The pandata events appKey for this mobile app
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{id}/graded_submissions:
+    get:
+      tags:
+      - Users
+      operationId: get_users_most_recently_graded_submissions
+      summary: Get a users most recently graded submissions
+      description: Returns a list of the user's most recently graded submissions.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - assignment
+        required: false
+        description: Associations to include with the group
+      - name: only_current_enrollments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Returns submissions for only currently active enrollments
+      - name: only_published_assignments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Returns submissions for only published assignments
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Submission
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/profile:
+    get:
+      tags:
+      - Users
+      operationId: get_user_profile
+      summary: Get user profile
+      description: 'Returns user profile data, including user id, name, and profile pic.
+
+
+        When requesting the profile for the user accessing the API, the user''s
+
+        calendar feed URL and LTI user id will be returned as well.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - links
+            - user_services
+            - uuid
+        required: false
+        description: "Array of additional information to include.\n\n\"links\":: include the user's profile links in the response\n          as an array of objects with +url+ and +title+ fields\n\"user_services\":: include names and links for the user's connected services\n\"uuid\":: include the user's uuid in the response"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/avatars:
+    get:
+      tags:
+      - Users
+      operationId: list_avatar_options
+      summary: List avatar options
+      description: 'A paginated list of the possible user avatar options that can be set with the user update endpoint. The response will be an array of avatar records. If the ''type'' field is ''attachment'', the record will include all the normal attachment json fields; otherwise it will include only the ''url'' and ''display_name'' fields. Additionally, all records will include a ''type'' field and a ''token'' field. The following explains each field in more detail
+
+        type:: ["gravatar"|"attachment"|"no_pic"] The type of avatar record, for categorization purposes.
+
+        url:: The url of the avatar
+
+        token:: A unique representation of the avatar record which can be used to set the avatar with the user update endpoint. Note: this is an internal representation and is subject to change without notice. It should be consumed with this api endpoint and used in the user update endpoint, and should not be constructed by the client.
+
+        display_name:: A textual description of the avatar record
+
+        id:: [''attachment'' type only] the internal id of the attachment
+
+        content-type:: [''attachment'' type only] the content-type of the attachment
+
+        filename:: [''attachment'' type only] the filename of the attachment
+
+        size:: [''attachment'' type only] the size of the attachment'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Avatar'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/page_views:
+    get:
+      tags:
+      - Users
+      operationId: list_user_page_views
+      summary: List user page views
+      description: 'Return a paginated list of the user''s page view history in json format,
+
+        similar to the available CSV download. Page views are returned in
+
+        descending order, newest to oldest.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The beginning of the time range from which you want page views.
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: The end of the time range from which you want page views.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PageView'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/page_views/query:
+    post:
+      tags:
+      - Users
+      operationId: beta_initiate_page_views_query
+      summary: BETA - Initiate page views query
+      description: 'Initiates an asynchronous query for user page views data within a specified date range.
+
+        This method enqueues a background job to process the page views query and returns
+
+        a polling URL that can be used to check the query status and retrieve results when ready.
+
+
+        As this is a beta endpoint, it is subject to change or removal at any time without the standard notice periods outlined in the API policy.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                  description: The start date for the page views query in YYYY-MM-DD format. Must be the first day of a month.
+                end_date:
+                  type: string
+                  description: The end date for the page views query in YYYY-MM-DD format. Must be the first day of a month and after start_date.
+                results_format:
+                  type: string
+                  description: 'The desired format for the query results. Supported formats: "csv", "jsonl"'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                  description: The start date for the page views query in YYYY-MM-DD format. Must be the first day of a month.
+                end_date:
+                  type: string
+                  description: The end date for the page views query in YYYY-MM-DD format. Must be the first day of a month and after start_date.
+                results_format:
+                  type: string
+                  description: 'The desired format for the query results. Supported formats: "csv", "jsonl"'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncQueryResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/page_views/query/{query_id}:
+    get:
+      tags:
+      - Users
+      operationId: beta_poll_query_status
+      summary: BETA - Poll query status
+      description: 'Checks the status of a previously initiated page views query. Returns the current
+
+        processing status and provides a result URL when the query is complete.
+
+
+        The query may fail with status "failed" and error_code
+
+        "RESULT_SIZE_LIMIT_EXCEEDED" if the result exceeds 500 MB.
+
+        If this happens, narrow the date range or query smaller
+
+        time intervals.
+
+
+        As this is a beta endpoint, it is subject to change or removal at any time without the standard notice periods outlined in the API policy.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: query_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The UUID of the query to check status for
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncQueryStatusResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/page_views/query/{query_id}/results:
+    get:
+      tags:
+      - Users
+      operationId: beta_get_query_results
+      summary: BETA - Get query results
+      description: 'Retrieves the results of a completed page views query. Returns the data in the
+
+        format specified when the query was initiated (CSV or JSON). The response may
+
+        be compressed with gzip encoding.
+
+
+        As this is a beta endpoint, it is subject to change or removal at any time without the standard notice periods outlined in the API policy.
+
+
+        Note: PageView payloads use two types of identifiers: globalId and localId. Global identifier is equal to (shardId*10000000000000)+localId.
+
+        Please note our global identifiers might change if your Canvas instance goes through shard migration process, in this case your current
+
+        shardId in the global identifier will change to a new shardId. Local identifiers do not change after shard migration and stay unique in the
+
+        context of the Canvas account. The following fields in the PageView payload are global identifiers: `links_user`, `links_context`, `links_asset`,
+
+        `links_real_user`, `links_account`, `developer_key_id`, `asset_user_access_id`.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: query_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The UUID of the completed query to retrieve results for
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: QueryResultsResponse
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/page_views/query:
+    post:
+      tags:
+      - Users
+      operationId: beta_initiate_batch_page_views_query
+      summary: BETA - Initiate batch page views query
+      description: 'Initiates an asynchronous query for page views data across multiple users.
+
+        This method enqueues a background job to process the batch page views query and returns
+
+        a polling URL that can be used to check the query status and retrieve results when ready.
+
+
+        As this is a beta endpoint, it is subject to change or removal at any time without the standard notice periods outlined in the API policy.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items: {}
+                  description: Array of user IDs to query page views for. Must contain at least one user ID. Duplicate user IDs are not allowed.
+                start_date:
+                  type: string
+                  description: The start date for the page views query in YYYY-MM-DD format. Must be the first day of a month.
+                end_date:
+                  type: string
+                  description: The end date for the page views query in YYYY-MM-DD format. Must be the first day of a month and after start_date.
+                results_format:
+                  type: string
+                  description: 'The desired format for the query results. Supported formats: "csv", "jsonl"'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items: {}
+                  description: Array of user IDs to query page views for. Must contain at least one user ID. Duplicate user IDs are not allowed.
+                start_date:
+                  type: string
+                  description: The start date for the page views query in YYYY-MM-DD format. Must be the first day of a month.
+                end_date:
+                  type: string
+                  description: The end date for the page views query in YYYY-MM-DD format. Must be the first day of a month and after start_date.
+                results_format:
+                  type: string
+                  description: 'The desired format for the query results. Supported formats: "csv", "jsonl"'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncQueryResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/page_views/query/{query_id}:
+    get:
+      tags:
+      - Users
+      operationId: beta_poll_batch_query_status
+      summary: BETA - Poll batch query status
+      description: 'Checks the status of a previously initiated batch page views query. Returns the current
+
+        processing status and provides a result URL when the query is complete.
+
+
+        As this is a beta endpoint, it is subject to change or removal at any time without the standard notice periods outlined in the API policy.'
+      parameters:
+      - name: query_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The UUID of the query to check status for
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncQueryStatusResponse'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/page_views/query/{query_id}/results:
+    get:
+      tags:
+      - Users
+      operationId: beta_get_batch_query_results
+      summary: BETA - Get batch query results
+      description: 'Retrieves the results of a completed batch page views query. Returns the data in the
+
+        format specified when the query was initiated (CSV or JSON). The response may
+
+        be compressed with gzip encoding.
+
+
+        As this is a beta endpoint, it is subject to change or removal at any time without the standard notice periods outlined in the API policy.'
+      parameters:
+      - name: query_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The UUID of the completed query to retrieve results for
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: QueryResultsResponse
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/{user_id}/custom_data:
+    put:
+      tags:
+      - Users
+      operationId: store_custom_data
+      summary: Store custom data
+      description: Store arbitrary user data as JSON.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ns:
+                  type: string
+                  description: 'The namespace under which to store the data.  This should be something other
+
+                    Canvas API apps aren''t likely to use, such as a reverse DNS for your organization.'
+                data:
+                  type: object
+                  additionalProperties: true
+                  description: 'The data you want to store for the user, at the specified scope.  If the data is
+
+                    composed of (possibly nested) JSON objects, scopes will be generated for the (nested)
+
+                    keys (see examples).'
+              required:
+              - ns
+              - data
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                ns:
+                  type: string
+                  description: 'The namespace under which to store the data.  This should be something other
+
+                    Canvas API apps aren''t likely to use, such as a reverse DNS for your organization.'
+                data:
+                  type: object
+                  additionalProperties: true
+                  description: 'The data you want to store for the user, at the specified scope.  If the data is
+
+                    composed of (possibly nested) JSON objects, scopes will be generated for the (nested)
+
+                    keys (see examples).'
+              required:
+              - ns
+              - data
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    get:
+      tags:
+      - Users
+      operationId: load_custom_data
+      summary: Load custom data
+      description: 'Load custom user data.
+
+
+        Arbitrary JSON data can be stored for a User. This API call
+
+        retrieves that data for a (optional) given scope.
+
+        See {api:UsersController#set_custom_data Store Custom Data} for details and
+
+        examples.
+
+
+        On success, this endpoint returns an object containing the data that was requested.
+
+
+        Responds with status code 400 if the namespace parameter, +ns+, is missing or invalid,
+
+        or if the specified scope does not contain any data.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ns
+        in: query
+        schema:
+          type: string
+        required: true
+        description: 'The namespace from which to retrieve the data.  This should be something other
+
+          Canvas API apps aren''t likely to use, such as a reverse DNS for your organization.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    delete:
+      tags:
+      - Users
+      operationId: delete_custom_data
+      summary: Delete custom data
+      description: 'Delete custom user data.
+
+
+        Arbitrary JSON data can be stored for a User. This API call
+
+        deletes that data for a given scope. Without a scope, all custom_data is deleted.
+
+        See {api:UsersController#set_custom_data Store Custom Data} for details and
+
+        examples of storage and retrieval.
+
+
+        As an example, we''ll store some data, then delete a subset of it.
+
+
+        Example {api:UsersController#set_custom_data PUT} with valid JSON data:
+
+        curl ''https:///api/v1/users//custom_data'' \
+
+        -X PUT \
+
+        -F ''ns=com.my-organization.canvas-app'' \
+
+        -F ''data[fruit][apple]=so tasty'' \
+
+        -F ''data[fruit][kiwi]=a bit sour'' \
+
+        -F ''data[veggies][root][onion]=tear-jerking'' \
+
+        -H ''Authorization: Bearer ''
+
+
+        Response:
+
+        !!!javascript
+
+        {
+
+        "data": {
+
+        "fruit": {
+
+        "apple": "so tasty",
+
+        "kiwi": "a bit sour"
+
+        },
+
+        "veggies": {
+
+        "root": {
+
+        "onion": "tear-jerking"
+
+        }
+
+        }
+
+        }
+
+        }
+
+
+        Example DELETE:
+
+        curl ''https:///api/v1/users//custom_data/fruit/kiwi'' \
+
+        -X DELETE \
+
+        -F ''ns=com.my-organization.canvas-app'' \
+
+        -H ''Authorization: Bearer ''
+
+
+        Response:
+
+        !!!javascript
+
+        {
+
+        "data": "a bit sour"
+
+        }
+
+
+        Example {api:UsersController#get_custom_data GET} following the above DELETE:
+
+        curl ''https:///api/v1/users//custom_data'' \
+
+        -X GET \
+
+        -F ''ns=com.my-organization.canvas-app'' \
+
+        -H ''Authorization: Bearer ''
+
+
+        Response:
+
+        !!!javascript
+
+        {
+
+        "data": {
+
+        "fruit": {
+
+        "apple": "so tasty"
+
+        },
+
+        "veggies": {
+
+        "root": {
+
+        "onion": "tear-jerking"
+
+        }
+
+        }
+
+        }
+
+        }
+
+
+        Note that hashes left empty after a DELETE will get removed from the custom_data store.
+
+        For example, following the previous commands, if we delete /custom_data/veggies/root/onion,
+
+        then the entire /custom_data/veggies scope will be removed.
+
+
+        Example DELETE that empties a parent scope:
+
+        curl ''https:///api/v1/users//custom_data/veggies/root/onion'' \
+
+        -X DELETE \
+
+        -F ''ns=com.my-organization.canvas-app'' \
+
+        -H ''Authorization: Bearer ''
+
+
+        Response:
+
+        !!!javascript
+
+        {
+
+        "data": "tear-jerking"
+
+        }
+
+
+        Example {api:UsersController#get_custom_data GET} following the above DELETE:
+
+        curl ''https:///api/v1/users//custom_data'' \
+
+        -X GET \
+
+        -F ''ns=com.my-organization.canvas-app'' \
+
+        -H ''Authorization: Bearer ''
+
+
+        Response:
+
+        !!!javascript
+
+        {
+
+        "data": {
+
+        "fruit": {
+
+        "apple": "so tasty"
+
+        }
+
+        }
+
+        }
+
+
+        On success, this endpoint returns an object containing the data that was deleted.
+
+
+        Responds with status code 400 if the namespace parameter, +ns+, is missing or invalid,
+
+        or if the specified scope does not contain any data.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ns
+        in: query
+        schema:
+          type: string
+        required: true
+        description: 'The namespace from which to delete the data.  This should be something other
+
+          Canvas API apps aren''t likely to use, such as a reverse DNS for your organization.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/course_nicknames:
+    get:
+      tags:
+      - Users
+      operationId: list_course_nicknames
+      summary: List course nicknames
+      description: Returns all course nicknames you have set.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseNickname'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    delete:
+      tags:
+      - Users
+      operationId: clear_course_nicknames
+      summary: Clear course nicknames
+      description: Remove all stored course nicknames.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+  /v1/users/self/course_nicknames/{course_id}:
+    get:
+      tags:
+      - Users
+      operationId: get_course_nickname
+      summary: Get course nickname
+      description: Returns the nickname for a specific course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseNickname'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    put:
+      tags:
+      - Users
+      operationId: set_course_nickname
+      summary: Set course nickname
+      description: 'Set a nickname for the given course. This will replace the course''s name
+
+        in output of API calls you make subsequently, as well as in selected
+
+        places in the Canvas web user interface.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  description: The nickname to set.  It must be non-empty and shorter than 60 characters.
+              required:
+              - nickname
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  description: The nickname to set.  It must be non-empty and shorter than 60 characters.
+              required:
+              - nickname
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseNickname'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+    delete:
+      tags:
+      - Users
+      operationId: remove_course_nickname
+      summary: Remove course nickname
+      description: 'Remove the nickname for the given course.
+
+        Subsequent course API calls will return the actual name for the course.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseNickname'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/users.html
+components:
+  schemas:
+    CourseNickname:
+      type: object
+      properties:
+        course_id:
+          type: integer
+          example: 88
+          description: the ID of the course
+        name:
+          type: string
+          example: S1048576 DPMS1200 Intro to Newtonian Mechanics
+          description: the actual name of the course
+        nickname:
+          type: string
+          example: Physics
+          description: the calling user's nickname for the course
+    Avatar:
+      type: object
+      properties:
+        type:
+          type: string
+          example: gravatar
+          description: '[''gravatar''|''attachment''|''no_pic''] The type of avatar record, for categorization purposes.'
+        url:
+          type: string
+          example: https://secure.gravatar.com/avatar/2284...
+          description: The url of the avatar
+        token:
+          type: string
+          example: <opaque_token>
+          description: 'A unique representation of the avatar record which can be used to set the avatar with the user update endpoint. Note: this is an internal representation and is subject to change without notice. It should be consumed with this api endpoint and used in the user update endpoint, and should not be constructed by the client.'
+        display_name:
+          type: string
+          example: user, sample
+          description: A textual description of the avatar record.
+        id:
+          type: integer
+          example: 12
+          description: '[''attachment'' type only] the internal id of the attachment'
+        content-type:
+          type: string
+          example: image/jpeg
+          description: '[''attachment'' type only] the content-type of the attachment.'
+        filename:
+          type: string
+          example: profile.jpg
+          description: '[''attachment'' type only] the filename of the attachment'
+        size:
+          type: integer
+          example: 32649
+          description: '[''attachment'' type only] the size of the attachment'
+      required:
+      - type
+      - url
+      - token
+      - display_name
+      description: Possible avatar for a user.
+    AsyncQueryResponse:
+      type: object
+      properties:
+        poll_url:
+          type: string
+          example: /api/v1/users/123/page_views/query/550e8400-e29b-41d4-a716-446655440000
+          description: URL endpoint to poll for query status updates
+      required:
+      - poll_url
+      description: Response returned when successfully initiating a page views query
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the user.
+        name:
+          type: string
+          example: Sheldon Cooper
+          description: The name of the user.
+        sortable_name:
+          type: string
+          example: Cooper, Sheldon
+          description: The name of the user that is should be used for sorting groups of users, such as in the gradebook.
+        last_name:
+          type: string
+          example: Cooper
+          description: The last name of the user.
+        first_name:
+          type: string
+          example: Sheldon
+          description: The first name of the user.
+        short_name:
+          type: string
+          example: Shelly
+          description: A short name the user has selected, for use in conversations or other less formal places through the site.
+        sis_user_id:
+          type: string
+          example: SHEL93921
+          description: The SIS ID associated with the user.  This field is only included if the user came from a SIS import and has permissions to view SIS information.
+        sis_import_id:
+          type: integer
+          format: int64
+          example: '18'
+          description: The id of the SIS import.  This field is only included if the user came from a SIS import and has permissions to manage SIS information.
+        integration_id:
+          type: string
+          example: ABC59802
+          description: The integration_id associated with the user.  This field is only included if the user came from a SIS import and has permissions to view SIS information.
+        login_id:
+          type: string
+          example: sheldon@caltech.example.com
+          description: The unique login id for the user.  This is what the user uses to log in to Canvas.
+        avatar_url:
+          type: string
+          example: https://en.gravatar.com/avatar/d8cb8c8cd40ddf0cd05241443a591868?s=80&r=g
+          description: If avatars are enabled, this field will be included and contain a url to retrieve the user's avatar.
+        avatar_state:
+          type: string
+          example: approved
+          description: 'Optional: If avatars are enabled and caller is admin, this field can be requested and will contain the current state of the user''s avatar.'
+        enrollments:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: Enrollment
+          description: 'Optional: This field can be requested with certain API calls, and will return a list of the users active enrollments. See the List enrollments API for more details about the format of these records.'
+        email:
+          type: string
+          example: sheldon@caltech.example.com
+          description: 'Optional: This field can be requested with certain API calls, and will return the users primary email address.'
+        locale:
+          type: string
+          example: tlh
+          description: 'Optional: This field can be requested with certain API calls, and will return the users locale in RFC 5646 format.'
+        last_login:
+          type: string
+          example: '2012-05-30T17:45:25Z'
+          description: 'Optional: This field is only returned in certain API calls, and will return a timestamp representing the last time the user logged in to canvas.'
+        time_zone:
+          type: string
+          example: America/Denver
+          description: 'Optional: This field is only returned in certain API calls, and will return the IANA time zone name of the user''s preferred timezone.'
+        bio:
+          type: string
+          example: I like the Muppets.
+          description: 'Optional: The user''s bio.'
+        pronouns:
+          type: string
+          example: he/him
+          description: 'Optional: This field is only returned if pronouns are enabled, and will return the pronouns of the user.'
+      required:
+      - id
+      description: A Canvas user, e.g. a student, teacher, administrator, observer, etc.
+    AsyncQueryStatusResponse:
+      type: object
+      properties:
+        query_id:
+          type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+          description: The UUID of the query being polled
+        status:
+          type: string
+          example: finished
+          description: Current processing status of the query
+          enum:
+          - queued
+          - processing
+          - finished
+          - failed
+        format:
+          type: string
+          example: csv
+          description: The format that results will be returned in
+          enum:
+          - csv
+          - json
+        results_url:
+          type: string
+          example: /api/v1/users/123/page_views/query/550e8400-e29b-41d4-a716-446655440000/results
+          description: URL to retrieve query results. Only present when status is 'finished'
+        error_code:
+          type: string
+          example: RESULT_SIZE_LIMIT_EXCEEDED
+          description: Error code indicating the reason for query failure, if applicable
+      required:
+      - query_id
+      - status
+      - format
+      description: Response containing the current status of a page views query
+    PageView:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 3e246700-e305-0130-51de-02e33aa501ef
+          description: A UUID representing the page view.  This is also the unique request id
+        app_name:
+          type: string
+          example: Canvas for iOS
+          description: If the request is from an API request, the app that generated the access token
+        url:
+          type: string
+          example: https://canvas.instructure.com/conversations
+          description: The URL requested
+        context_type:
+          type: string
+          example: Course
+          description: The type of context for the request
+        asset_type:
+          type: string
+          example: Discussion
+          description: The type of asset in the context for the request, if any
+        controller:
+          type: string
+          example: discussions
+          description: The rails controller that handled the request
+        action:
+          type: string
+          example: index
+          description: The rails action that handled the request
+        contributed:
+          type: boolean
+          example: 'false'
+          description: This field is deprecated, and will always be false
+        interaction_seconds:
+          type: number
+          example: '7.21'
+          description: An approximation of how long the user spent on the page, in seconds
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-10-01T19:49:47Z'
+          description: When the request was made
+        user_request:
+          type: boolean
+          example: 'true'
+          description: A flag indicating whether the request was user-initiated, or automatic (such as an AJAX call). Not available in history CSV.
+        render_time:
+          type: number
+          example: '0.369'
+          description: How long the response took to render, in seconds. Not available in history CSV.
+        user_agent:
+          type: string
+          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1
+          description: The user-agent of the browser or program that made the request
+        participated:
+          type: boolean
+          example: 'false'
+          description: True if the request counted as participating, such as submitting homework
+        http_method:
+          type: string
+          example: GET
+          description: The HTTP method such as GET or POST
+        remote_ip:
+          type: string
+          example: 173.194.46.71
+          description: The origin IP address of the request
+        session_id:
+          type: string
+          example: b4f5c8e0-e2f3-0130-51e0-02e33aa501ef
+          description: The session identifier for the user session that made the request
+        developer_key_id:
+          type: number
+          example: '42'
+          description: The ID of the developer key that authorized the API request, if applicable
+        asset_user_access_id:
+          type: number
+          example: '9876'
+          description: The ID of the asset (e.g. an assignment) associated with this page view, if applicable
+        links:
+          type: string
+          example:
+            user: 1234
+            account: 1234
+          description: The page view links to define the relationships
+      required:
+      - id
+      description: The record of a user page view access in Canvas
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1234
+          description: The ID of the user.
+        name:
+          type: string
+          example: Sample User
+          description: Sample User
+        short_name:
+          type: string
+          example: Sample User
+          description: Sample User
+        sortable_name:
+          type: string
+          example: user, sample
+          description: user, sample
+        title:
+          type: string
+        bio:
+          type: string
+        pronunciation:
+          type: string
+          example: Sample name pronunciation
+          description: Name pronunciation
+        primary_email:
+          type: string
+          example: sample_user@example.com
+          description: sample_user@example.com
+        login_id:
+          type: string
+          example: sample_user@example.com
+          description: sample_user@example.com
+        sis_user_id:
+          type: string
+          example: sis1
+          description: sis1
+        lti_user_id:
+          type: string
+        avatar_url:
+          type: string
+          example: ..url..
+          description: The avatar_url can change over time, so we recommend not caching it for more than a few hours
+        calendar:
+          type: string
+        time_zone:
+          type: string
+          example: America/Denver
+          description: 'Optional: This field is only returned in certain API calls, and will return the IANA time zone name of the user''s preferred timezone.'
+        locale:
+          type: string
+          description: The users locale.
+        k5_user:
+          type: boolean
+          example: true
+          description: 'Optional: Whether or not the user is a K5 user. This field is nil if the user settings are not for the user making the request.'
+        use_classic_font_in_k5:
+          type: boolean
+          example: false
+          description: 'Optional: Whether or not the user should see the classic font on the dashboard. Only applies if k5_user is true. This field is nil if the user settings are not for the user making the request.'
+      description: Profile details for a Canvas user.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

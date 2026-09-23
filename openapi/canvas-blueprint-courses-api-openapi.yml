@@ -1,0 +1,777 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Blueprint Courses API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Blueprint Courses
+  x-resource: blueprint_courses
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+paths:
+  /v1/courses/{course_id}/blueprint_templates/{template_id}:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: get_blueprint_information
+      summary: Get blueprint information
+      description: 'Using ''default'' as the template_id should suffice for the current implmentation (as there should be only one template per course).
+
+        However, using specific template ids may become necessary in the future'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintTemplate'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/associated_courses:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: get_associated_course_information
+      summary: Get associated course information
+      description: Returns a list of courses that are configured to receive updates from this blueprint
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Course
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/update_associations:
+    put:
+      tags:
+      - Blueprint Courses
+      operationId: update_associated_courses
+      summary: Update associated courses
+      description: 'Send a list of course ids to add or remove new associations for the template.
+
+        Cannot add courses that do not belong to the blueprint course''s account. Also cannot add
+
+        other blueprint courses or courses that already have an association with another blueprint course.
+
+
+        After associating new courses, {api:MasterCourses::MasterTemplatesController#queue_migration start a sync} to populate their contents from the blueprint.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_ids_to_add:
+                  type: array
+                  items: {}
+                  description: Courses to add as associated courses
+                course_ids_to_remove:
+                  type: array
+                  items: {}
+                  description: Courses to remove as associated courses
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                course_ids_to_add:
+                  type: array
+                  items: {}
+                  description: Courses to add as associated courses
+                course_ids_to_remove:
+                  type: array
+                  items: {}
+                  description: Courses to remove as associated courses
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/migrations:
+    post:
+      tags:
+      - Blueprint Courses
+      operationId: begin_migration_to_push_to_associated_courses
+      summary: Begin a migration to push to associated courses
+      description: 'Begins a migration to push recently updated content to all associated courses.
+
+        Only one migration can be running at a time.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: An optional comment to be included in the sync history.
+                send_notification:
+                  type: boolean
+                  description: Send a notification to the calling user when the sync completes.
+                copy_settings:
+                  type: boolean
+                  description: 'Whether course settings should be copied over to associated courses.
+
+                    Defaults to true for newly associated courses.'
+                send_item_notifications:
+                  type: boolean
+                  description: 'By default, new-item notifications are suppressed in blueprint syncs.
+
+                    If this option is set, teachers and students may receive notifications
+
+                    for items such as announcements and assignments that are created
+
+                    in associated courses (subject to the usual notification settings).
+
+                    This option requires the Blueprint Item Notifications feature to be enabled.'
+                publish_after_initial_sync:
+                  type: boolean
+                  description: If set, newly associated courses will be automatically published after the sync completes
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: An optional comment to be included in the sync history.
+                send_notification:
+                  type: boolean
+                  description: Send a notification to the calling user when the sync completes.
+                copy_settings:
+                  type: boolean
+                  description: 'Whether course settings should be copied over to associated courses.
+
+                    Defaults to true for newly associated courses.'
+                send_item_notifications:
+                  type: boolean
+                  description: 'By default, new-item notifications are suppressed in blueprint syncs.
+
+                    If this option is set, teachers and students may receive notifications
+
+                    for items such as announcements and assignments that are created
+
+                    in associated courses (subject to the usual notification settings).
+
+                    This option requires the Blueprint Item Notifications feature to be enabled.'
+                publish_after_initial_sync:
+                  type: boolean
+                  description: If set, newly associated courses will be automatically published after the sync completes
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: list_blueprint_migrations
+      summary: List blueprint migrations
+      description: 'Shows a paginated list of migrations for the template, starting with the most recent. This endpoint can be called on a
+
+        blueprint course. See also {api:MasterCourses::MasterTemplatesController#imports_index the associated course side}.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlueprintMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/restrict_item:
+    put:
+      tags:
+      - Blueprint Courses
+      operationId: set_or_remove_restrictions_on_blueprint_course_object
+      summary: Set or remove restrictions on a blueprint course object
+      description: If a blueprint course object is restricted, editing will be limited for copies in associated courses.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content_type:
+                  type: string
+                  description: '[String, "assignment"|"attachment"|"discussion_topic"|"external_tool"|"lti-quiz"|"quiz"|"wiki_page"]
+
+                    The type of the object.'
+                content_id:
+                  type: integer
+                  format: int64
+                  description: The ID of the object.
+                restricted:
+                  type: boolean
+                  description: Whether to apply restrictions.
+                restrictions:
+                  $ref: '#/components/schemas/BlueprintRestriction'
+                  description: '(Optional) If the object is restricted, this specifies a set of restrictions. If not specified,
+
+                    the course-level restrictions will be used. See {api:CoursesController#update Course API update documentation}'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                content_type:
+                  type: string
+                  description: '[String, "assignment"|"attachment"|"discussion_topic"|"external_tool"|"lti-quiz"|"quiz"|"wiki_page"]
+
+                    The type of the object.'
+                content_id:
+                  type: integer
+                  format: int64
+                  description: The ID of the object.
+                restricted:
+                  type: boolean
+                  description: Whether to apply restrictions.
+                restrictions:
+                  $ref: '#/components/schemas/BlueprintRestriction'
+                  description: '(Optional) If the object is restricted, this specifies a set of restrictions. If not specified,
+
+                    the course-level restrictions will be used. See {api:CoursesController#update Course API update documentation}'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/unsynced_changes:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: get_unsynced_changes
+      summary: Get unsynced changes
+      description: 'Retrieve a list of learning objects that have changed since the last blueprint sync operation.
+
+        If no syncs have been completed, a ChangeRecord with a change_type of +initial_sync+ is returned.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChangeRecord'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/migrations/{id}:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: show_blueprint_migration
+      summary: Show a blueprint migration
+      description: 'Shows the status of a migration. This endpoint can be called on a blueprint course. See also
+
+        {api:MasterCourses::MasterTemplatesController#imports_show the associated course side}.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_templates/{template_id}/migrations/{id}/details:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: get_migration_details
+      summary: Get migration details
+      description: 'Show the changes that were propagated in a blueprint migration. This endpoint can be called on a
+
+        blueprint course. See also {api:MasterCourses::MasterTemplatesController#import_details the associated course side}.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: template_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChangeRecord'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_subscriptions:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: list_blueprint_subscriptions
+      summary: List blueprint subscriptions
+      description: Returns a list of blueprint subscriptions for the given course. (Currently a course may have no more than one.)
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlueprintSubscription'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_subscriptions/{subscription_id}/migrations:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: list_blueprint_imports
+      summary: List blueprint imports
+      description: 'Shows a paginated list of migrations imported into a course associated with a blueprint, starting with the most recent. See also
+
+        {api:MasterCourses::MasterTemplatesController#migrations_index the blueprint course side}.
+
+
+        Use ''default'' as the subscription_id to use the currently active blueprint subscription.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: subscription_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlueprintMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_subscriptions/{subscription_id}/migrations/{id}:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: show_blueprint_import
+      summary: Show a blueprint import
+      description: 'Shows the status of an import into a course associated with a blueprint. See also
+
+        {api:MasterCourses::MasterTemplatesController#migrations_show the blueprint course side}.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: subscription_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+  /v1/courses/{course_id}/blueprint_subscriptions/{subscription_id}/migrations/{id}/details:
+    get:
+      tags:
+      - Blueprint Courses
+      operationId: get_import_details
+      summary: Get import details
+      description: 'Show the changes that were propagated to a course associated with a blueprint. See also
+
+        {api:MasterCourses::MasterTemplatesController#migration_details the blueprint course side}.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: subscription_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChangeRecord'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/blueprint_courses.html
+components:
+  schemas:
+    BlueprintSubscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+          description: The ID of the blueprint course subscription
+        template_id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the blueprint template the associated course is subscribed to
+        blueprint_course:
+          type: object
+          additionalProperties: true
+          example:
+            id: 2
+            name: Biology 100 Blueprint
+            course_code: BIOL 100 BP
+            term_name: Default term
+          description: The blueprint course subscribed to
+      description: Associates a course with a blueprint
+    BlueprintMigration:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the migration.
+        template_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the template the migration belongs to. Only present when querying a blueprint course.
+        subscription_id:
+          type: integer
+          format: int64
+          example: 101
+          description: The ID of the associated course's blueprint subscription. Only present when querying a course associated with a blueprint.
+        user_id:
+          type: integer
+          format: int64
+          example: 3
+          description: The ID of the user who queued the migration.
+        workflow_state:
+          type: string
+          example: running
+          description: 'Current state of the content migration: queued, exporting, imports_queued, completed, exports_failed, imports_failed'
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the migration was queued
+        exports_started_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the exports begun
+        imports_queued_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the exports were completed and imports were queued
+        imports_completed_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the imports were completed
+        comment:
+          type: string
+          example: Fixed spelling in question 3 of midterm exam
+          description: User-specified comment describing changes made in this operation
+    ChangeRecord:
+      type: object
+      properties:
+        asset_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the learning object that was changed in the blueprint course.
+        asset_type:
+          type: string
+          example: assignment
+          description: The type of the learning object that was changed in the blueprint course.  One of 'assignment', 'attachment', 'discussion_topic', 'external_tool', 'quiz', 'wiki_page', 'syllabus', or 'settings'.  For 'syllabus' or 'settings', the asset_id is the course id.
+        asset_name:
+          type: string
+          example: Some Assignment
+          description: The name of the learning object that was changed in the blueprint course.
+        change_type:
+          type: string
+          example: created
+          description: The type of change; one of 'created', 'updated', 'deleted'
+        html_url:
+          type: string
+          example: https://canvas.example.com/courses/101/assignments/2
+          description: The URL of the changed object
+        locked:
+          type: boolean
+          example: false
+          description: Whether the object is locked in the blueprint
+        exceptions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - course_id: 101
+            conflicting_changes:
+            - points
+          description: A list of ExceptionRecords for linked courses that did not receive this update.
+      description: Describes a learning object change propagated to associated courses from a blueprint course
+    BlueprintRestriction:
+      type: object
+      properties:
+        content:
+          type: boolean
+          example: true
+          description: Restriction on main content (e.g. title, description).
+        points:
+          type: boolean
+          example: true
+          description: Restriction on points possible for assignments and graded learning objects
+        due_dates:
+          type: boolean
+          example: false
+          description: Restriction on due dates for assignments and graded learning objects
+        availability_dates:
+          type: boolean
+          example: true
+          description: Restriction on availability dates for an object
+      description: A set of restrictions on editing for copied objects in associated courses
+    BlueprintTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the template.
+        course_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the Course the template belongs to.
+        last_export_completed_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the last export was completed
+        associated_course_count:
+          type: integer
+          example: 3
+          description: Number of associated courses for the template
+        latest_migration:
+          type: string
+          description: Details of the latest migration
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

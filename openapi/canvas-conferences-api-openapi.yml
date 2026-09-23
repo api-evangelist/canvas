@@ -1,0 +1,274 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Conferences API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Conferences
+  x-resource: conferences
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/conferences.html
+paths:
+  /v1/courses/{course_id}/conferences:
+    get:
+      tags:
+      - Conferences
+      operationId: list_conferences_courses
+      summary: List conferences
+      description: 'Retrieve the paginated list of conferences for this context
+
+
+        This API returns a JSON object containing the list of conferences,
+
+        the key for the list of conferences is "conferences"'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conferences.html
+  /v1/groups/{group_id}/conferences:
+    get:
+      tags:
+      - Conferences
+      operationId: list_conferences_groups
+      summary: List conferences
+      description: 'Retrieve the paginated list of conferences for this context
+
+
+        This API returns a JSON object containing the list of conferences,
+
+        the key for the list of conferences is "conferences"'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conferences.html
+  /v1/conferences:
+    get:
+      tags:
+      - Conferences
+      operationId: list_conferences_for_current_user
+      summary: List conferences for the current user
+      description: 'Retrieve the paginated list of conferences for all courses and groups
+
+        the current user belongs to
+
+
+        This API returns a JSON object containing the list of conferences.
+
+        The key for the list of conferences is "conferences".'
+      parameters:
+      - name: state
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'If set to "live", returns only conferences that are live (i.e., have
+
+          started and not finished yet). If omitted, returns all conferences for
+
+          this user''s groups and courses.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conference'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conferences.html
+components:
+  schemas:
+    ConferenceRecording:
+      type: object
+      properties:
+        duration_minutes:
+          type: integer
+          example: 0
+        title:
+          type: string
+          example: 'course2: Test conference 3 [170]_0'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-12-12T16:09:33.903-07:00'
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-12-12T16:09:09.960-07:00'
+        playback_url:
+          type: string
+          example: http://example.com/recording_url
+    Conference:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 170
+          description: The id of the conference
+        conference_type:
+          type: string
+          example: AdobeConnect
+          description: The type of conference
+        conference_key:
+          type: string
+          example: abcdjoelisgreatxyz
+          description: The 3rd party's ID for the conference
+        description:
+          type: string
+          example: Conference Description
+          description: The description for the conference
+        duration:
+          type: integer
+          example: 60
+          description: The expected duration the conference is supposed to last
+        ended_at:
+          type: string
+          format: date-time
+          example: '2013-12-13T17:23:26Z'
+          description: The date that the conference ended at, null if it hasn't ended
+        started_at:
+          type: string
+          format: date-time
+          example: '2013-12-12T23:02:17Z'
+          description: The date the conference started at, null if it hasn't started
+        title:
+          type: string
+          example: Test conference
+          description: The title of the conference
+        users:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 7
+          - 8
+          - 9
+          - 10
+          description: Array of user ids that are participants in the conference
+        invitees:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 7
+          - 8
+          - 9
+          - 10
+          description: Array of user ids that are invitees in the conference
+        attendees:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 7
+          - 8
+          - 9
+          - 10
+          description: Array of user ids that are attendees in the conference
+        has_advanced_settings:
+          type: boolean
+          example: false
+          description: True if the conference type has advanced settings.
+        long_running:
+          type: boolean
+          example: false
+          description: If true the conference is long running and has no expected end time
+        user_settings:
+          type: object
+          additionalProperties: true
+          example:
+            record: true
+          description: A collection of settings specific to the conference type
+        recordings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConferenceRecording'
+          description: A List of recordings for the conference
+        url:
+          type: string
+          description: URL for the conference, may be null if the conference type doesn't set it
+        join_url:
+          type: string
+          description: URL to join the conference, may be null if the conference type doesn't set it
+        context_type:
+          type: string
+          description: The type of this conference's context, typically 'Course' or 'Group'.
+        context_id:
+          type: integer
+          description: The ID of this conference's context.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

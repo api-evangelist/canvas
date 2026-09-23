@@ -1,0 +1,149 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Comm Messages API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Comm Messages
+  x-resource: comm_messages
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/comm_messages.html
+paths:
+  /v1/comm_messages:
+    get:
+      tags:
+      - Comm Messages
+      operationId: list_of_commmessages_for_user
+      summary: List of CommMessages for a user
+      description: Retrieve a paginated list of messages sent to a user.
+      parameters:
+      - name: user_id
+        in: query
+        schema:
+          type: string
+        required: true
+        description: The user id for whom you want to retrieve CommMessages
+      - name: start_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'The beginning of the time range you want to retrieve message from.
+
+          Up to a year prior to the current date is available.'
+      - name: end_time
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'The end of the time range you want to retrieve messages for.
+
+          Up to a year prior to the current date is available.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommMessage'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/comm_messages.html
+components:
+  schemas:
+    CommMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+          description: The ID of the CommMessage.
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-03-19T21:00:00Z'
+          description: The date and time this message was created
+        sent_at:
+          type: string
+          format: date-time
+          example: '2013-03-20T22:42:00Z'
+          description: The date and time this message was sent
+        workflow_state:
+          type: string
+          example: sent
+          description: 'The workflow state of the message. Possible values: ''created'' : The message has been created, but not yet processed. ''staged'' : The message is queued for sending. ''sending'' : The message is being sent currently. ''sent'' : The message has been successfully sent. ''bounced'' : An error occurred during the sending of the message.''dashboard'' : The message has been sent to the dashboard. ''closed'' :  The message has been sent and closed, typically for dashboard messages or messages sent to deleted users. ''cancelled'' : The message was cancelled before it could be sent.'
+        from:
+          type: string
+          example: notifications@example.com
+          description: The address that was put in the 'from' field of the message
+        from_name:
+          type: string
+          example: Instructure Canvas
+          description: The display name for the from address
+        to:
+          type: string
+          example: someone@example.com
+          description: 'The address the message was sent to:'
+        reply_to:
+          type: string
+          example: notifications+specialdata@example.com
+          description: The reply_to header of the message
+        subject:
+          type: string
+          example: example subject line
+          description: The message subject
+        body:
+          type: string
+          example: This is the body of the message
+          description: The plain text body of the message
+        html_body:
+          type: string
+          example: <html><body>This is the body of the message</body></html>
+          description: The HTML body of the message.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

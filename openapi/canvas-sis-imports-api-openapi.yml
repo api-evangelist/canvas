@@ -1,0 +1,884 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Sis Imports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Sis Imports
+  x-resource: sis_imports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/sis_imports.html
+paths:
+  /v1/accounts/{account_id}/sis_imports:
+    get:
+      tags:
+      - Sis Imports
+      operationId: get_sis_import_list
+      summary: Get SIS import list
+      description: 'Returns the list of SIS imports for an account
+
+
+        Example:
+
+        curl https:///api/v1/accounts//sis_imports \
+
+        -H ''Authorization: Bearer '''
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: created_since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: If set, only shows imports created after the specified date (use ISO8601 format)
+      - name: created_before
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: If set, only shows imports created before the specified date (use ISO8601 format)
+      - name: workflow_state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - initializing
+            - created
+            - importing
+            - cleanup_batch
+            - imported
+            - imported_with_messages
+            - aborted
+            - failed
+            - failed_with_messages
+            - restoring
+            - partially_restored
+            - restored
+        required: false
+        description: If set, only returns imports that are in the given state.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SisImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+    post:
+      tags:
+      - Sis Imports
+      operationId: import_sis_data
+      summary: Import SIS data
+      description: 'Import SIS data into Canvas. Must be on a root account with SIS imports
+
+        enabled.
+
+
+        For more information on the format that''s expected here, please see the
+
+        "SIS CSV" section in the API docs.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                import_type:
+                  type: string
+                  description: 'Choose the data format for reading SIS data. With a standard Canvas
+
+                    install, this option can only be ''instructure_csv'', and if unprovided,
+
+                    will be assumed to be so. Can be part of the query string.'
+                attachment:
+                  type: string
+                  description: "There are three ways to post SIS import data:\n1. As a multipart/form-data form field named +attachment+\n2. As a raw post with a Content-Type of application/zip or application/octet-stream\n3. Using the {file:file.file_uploads.html File Upload} process, which can be more reliable\n   for large files. Use the +pre_attachment[name]+ argument to start that flow. See that\n   parameter below for more information.\n\n+attachment+ is required for multipart/form-data style posts. Assumed to\nbe SIS data from a file upload form field named +attachment+.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: application/octet-stream' --data-binary @<filename>.zip \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv&extension=zip\n\n  curl -H 'Content-Type: application/zip' --data-binary @<filename>.zip \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv&batch_mode=1&batch_mode_term_id=15\n\nIf the attachment is a zip file, the uncompressed file(s) cannot be 100x larger than the zip, or the import will fail.\nFor example, if the zip file is 1KB but the total size of the uncompressed file(s) is 100KB or greater the import will\nfail. There is a hard cap of 50 GB."
+                pre_attachment[name]:
+                  type: string
+                  description: 'The name of the file to be uploaded (in a separate request) via the
+
+                    {file:file.file_uploads.html File Upload} workflow. This is the recommended
+
+                    way to upload larger batches, since the upload itself no longer has to finish
+
+                    within the 1-minute Canvas request timeout period. This argument cannot be combined
+
+                    with the +attachment+ argument; use one or the other.
+
+
+                    To use this flow:
+
+                    1. Perform a POST to this endpoint with file information in +pre_attachment+
+
+                    2. {file:file.file_uploads.html Upload the file} using the data in the response''s +pre_attachment+
+
+                    3. Once the file has been uploaded, the SIS import will begin.
+
+                    4. {api:SisImportsApiController#show Check the progress} of the import as usual.
+
+
+                    NOTE: this option must be sent as either a query parameter or as a JSON
+
+                    body parameter; +application/x-www-form-urlencoded+ is not supported due to
+
+                    conflicts with raw post body data.'
+                pre_attachment[*]:
+                  type: string
+                  description: Other file upload properties; see {file:file.file_uploads.html File Upload Documentation}
+                extension:
+                  type: string
+                  description: 'Recommended for raw post request style imports. This field will be used to
+
+                    distinguish between zip, xml, csv, and other file format extensions that
+
+                    would usually be provided with the filename in the multipart post request
+
+                    scenario. If not provided, this value will be inferred from the
+
+                    Content-Type, falling back to zip-file format if all else fails.'
+                batch_mode:
+                  type: boolean
+                  description: 'If set, this SIS import will be run in batch mode, deleting any data
+
+                    previously imported via SIS that is not present in this latest import.
+
+                    See the SIS CSV Format page for details.
+
+                    Batch mode cannot be used with diffing.'
+                batch_mode_term_id:
+                  type: string
+                  description: Limit deletions to only this term. Required if batch mode is enabled.
+                multi_term_batch_mode:
+                  type: boolean
+                  description: Runs batch mode against all terms in terms file. Requires change_threshold.
+                skip_deletes:
+                  type: boolean
+                  description: 'When set the import will skip any deletes. This does not account for
+
+                    objects that are deleted during the batch mode cleanup process.'
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is false. If true, any fields containing “sticky” or UI changes will be overridden.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+                add_sis_stickiness:
+                  type: boolean
+                  description: 'This option, if present, will process all changes as if they were UI
+
+                    changes. This means that "stickiness" will be added to changed fields.
+
+                    This option is only processed if ''override_sis_stickiness'' is also provided.'
+                clear_sis_stickiness:
+                  type: boolean
+                  description: 'This option, if present, will clear "stickiness" from all fields processed
+
+                    by this import. Requires that ''override_sis_stickiness'' is also provided.
+
+                    If ''add_sis_stickiness'' is also provided, ''clear_sis_stickiness'' will
+
+                    overrule the behavior of ''add_sis_stickiness'''
+                update_sis_id_if_login_claimed:
+                  type: boolean
+                  description: 'This option, if present, will override the old (or non-existent)
+
+                    non-matching SIS ID with the new SIS ID in the upload,
+
+                    if a pseudonym is found from the login field and the SIS ID doesn''t match.'
+                diffing_data_set_identifier:
+                  type: string
+                  description: 'If set on a CSV import, Canvas will attempt to optimize the SIS import by
+
+                    comparing this set of CSVs to the previous set that has the same data set
+
+                    identifier, and only applying the difference between the two. See the
+
+                    SIS CSV Format documentation for more details.
+
+                    Diffing cannot be used with batch_mode'
+                diffing_remaster_data_set:
+                  type: boolean
+                  description: 'If true, and diffing_data_set_identifier is sent, this SIS import will be
+
+                    part of the data set, but diffing will not be performed. See the SIS CSV
+
+                    Format documentation for details.'
+                diffing_drop_status:
+                  type: string
+                  enum:
+                  - deleted
+                  - completed
+                  - inactive
+                  description: 'If diffing_drop_status is passed, this SIS import will use this status for
+
+                    enrollments that are not included in the sis_batch. Defaults to ''deleted'''
+                diffing_user_remove_status:
+                  type: string
+                  enum:
+                  - deleted
+                  - suspended
+                  description: 'For users removed from one batch to the next one using the same
+
+                    diffing_data_set_identifier, set their status to the value of this argument.
+
+                    Defaults to ''deleted''.'
+                batch_mode_enrollment_drop_status:
+                  type: string
+                  enum:
+                  - deleted
+                  - completed
+                  - inactive
+                  description: 'If batch_mode_enrollment_drop_status is passed, this SIS import will use
+
+                    this status for enrollments that are not included in the sis_batch. This
+
+                    will have an effect if multi_term_batch_mode is set. Defaults to ''deleted''
+
+                    This will still mark courses and sections that are not included in the
+
+                    sis_batch as deleted, and subsequently enrollments in the deleted courses
+
+                    and sections as deleted.'
+                change_threshold:
+                  type: integer
+                  format: int64
+                  description: 'If set with batch_mode, the batch cleanup process will not run if the
+
+                    number of items deleted is higher than the percentage set. If set to 10
+
+                    and a term has 200 enrollments, and batch would delete more than 20 of
+
+                    the enrollments the batch will abort before the enrollments are deleted.
+
+                    The change_threshold will be evaluated for course, sections, and
+
+                    enrollments independently.
+
+                    If set with diffing, diffing will not be performed if the files are
+
+                    greater than the threshold as a percent. If set to 5 and the file is more
+
+                    than 5% smaller or more than 5% larger than the file that is being
+
+                    compared to, diffing will not be performed. If the files are less than 5%,
+
+                    diffing will be performed. The way the percent is calculated is by taking
+
+                    the size of the current import and dividing it by the size of the previous
+
+                    import. The formula used is:
+
+                    |(1 - current_file_size / previous_file_size)| * 100
+
+                    See the SIS CSV Format documentation for more details.
+
+                    Required for multi_term_batch_mode.'
+                diff_row_count_threshold:
+                  type: integer
+                  format: int64
+                  description: 'If set with diffing, diffing will not be performed if the number of rows
+
+                    to be run in the fully calculated diff import exceeds the threshold.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                import_type:
+                  type: string
+                  description: 'Choose the data format for reading SIS data. With a standard Canvas
+
+                    install, this option can only be ''instructure_csv'', and if unprovided,
+
+                    will be assumed to be so. Can be part of the query string.'
+                attachment:
+                  type: string
+                  description: "There are three ways to post SIS import data:\n1. As a multipart/form-data form field named +attachment+\n2. As a raw post with a Content-Type of application/zip or application/octet-stream\n3. Using the {file:file.file_uploads.html File Upload} process, which can be more reliable\n   for large files. Use the +pre_attachment[name]+ argument to start that flow. See that\n   parameter below for more information.\n\n+attachment+ is required for multipart/form-data style posts. Assumed to\nbe SIS data from a file upload form field named +attachment+.\n\nExamples:\n  curl -F attachment=@<filename> -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv\n\nIf you decide to do a raw post, you can skip the 'attachment' argument,\nbut you will then be required to provide a suitable Content-Type header.\nYou are encouraged to also provide the 'extension' argument.\n\nExamples:\n  curl -H 'Content-Type: application/octet-stream' --data-binary @<filename>.zip \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv&extension=zip\n\n  curl -H 'Content-Type: application/zip' --data-binary @<filename>.zip \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv\n\n  curl -H 'Content-Type: text/csv' --data-binary @<filename>.csv \\\n      -H \"Authorization: Bearer <token>\" \\\n      https://<canvas>/api/v1/accounts/<account_id>/sis_imports.json?import_type=instructure_csv&batch_mode=1&batch_mode_term_id=15\n\nIf the attachment is a zip file, the uncompressed file(s) cannot be 100x larger than the zip, or the import will fail.\nFor example, if the zip file is 1KB but the total size of the uncompressed file(s) is 100KB or greater the import will\nfail. There is a hard cap of 50 GB."
+                pre_attachment[name]:
+                  type: string
+                  description: 'The name of the file to be uploaded (in a separate request) via the
+
+                    {file:file.file_uploads.html File Upload} workflow. This is the recommended
+
+                    way to upload larger batches, since the upload itself no longer has to finish
+
+                    within the 1-minute Canvas request timeout period. This argument cannot be combined
+
+                    with the +attachment+ argument; use one or the other.
+
+
+                    To use this flow:
+
+                    1. Perform a POST to this endpoint with file information in +pre_attachment+
+
+                    2. {file:file.file_uploads.html Upload the file} using the data in the response''s +pre_attachment+
+
+                    3. Once the file has been uploaded, the SIS import will begin.
+
+                    4. {api:SisImportsApiController#show Check the progress} of the import as usual.
+
+
+                    NOTE: this option must be sent as either a query parameter or as a JSON
+
+                    body parameter; +application/x-www-form-urlencoded+ is not supported due to
+
+                    conflicts with raw post body data.'
+                pre_attachment[*]:
+                  type: string
+                  description: Other file upload properties; see {file:file.file_uploads.html File Upload Documentation}
+                extension:
+                  type: string
+                  description: 'Recommended for raw post request style imports. This field will be used to
+
+                    distinguish between zip, xml, csv, and other file format extensions that
+
+                    would usually be provided with the filename in the multipart post request
+
+                    scenario. If not provided, this value will be inferred from the
+
+                    Content-Type, falling back to zip-file format if all else fails.'
+                batch_mode:
+                  type: boolean
+                  description: 'If set, this SIS import will be run in batch mode, deleting any data
+
+                    previously imported via SIS that is not present in this latest import.
+
+                    See the SIS CSV Format page for details.
+
+                    Batch mode cannot be used with diffing.'
+                batch_mode_term_id:
+                  type: string
+                  description: Limit deletions to only this term. Required if batch mode is enabled.
+                multi_term_batch_mode:
+                  type: boolean
+                  description: Runs batch mode against all terms in terms file. Requires change_threshold.
+                skip_deletes:
+                  type: boolean
+                  description: 'When set the import will skip any deletes. This does not account for
+
+                    objects that are deleted during the batch mode cleanup process.'
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is false. If true, any fields containing “sticky” or UI changes will be overridden.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+                add_sis_stickiness:
+                  type: boolean
+                  description: 'This option, if present, will process all changes as if they were UI
+
+                    changes. This means that "stickiness" will be added to changed fields.
+
+                    This option is only processed if ''override_sis_stickiness'' is also provided.'
+                clear_sis_stickiness:
+                  type: boolean
+                  description: 'This option, if present, will clear "stickiness" from all fields processed
+
+                    by this import. Requires that ''override_sis_stickiness'' is also provided.
+
+                    If ''add_sis_stickiness'' is also provided, ''clear_sis_stickiness'' will
+
+                    overrule the behavior of ''add_sis_stickiness'''
+                update_sis_id_if_login_claimed:
+                  type: boolean
+                  description: 'This option, if present, will override the old (or non-existent)
+
+                    non-matching SIS ID with the new SIS ID in the upload,
+
+                    if a pseudonym is found from the login field and the SIS ID doesn''t match.'
+                diffing_data_set_identifier:
+                  type: string
+                  description: 'If set on a CSV import, Canvas will attempt to optimize the SIS import by
+
+                    comparing this set of CSVs to the previous set that has the same data set
+
+                    identifier, and only applying the difference between the two. See the
+
+                    SIS CSV Format documentation for more details.
+
+                    Diffing cannot be used with batch_mode'
+                diffing_remaster_data_set:
+                  type: boolean
+                  description: 'If true, and diffing_data_set_identifier is sent, this SIS import will be
+
+                    part of the data set, but diffing will not be performed. See the SIS CSV
+
+                    Format documentation for details.'
+                diffing_drop_status:
+                  type: string
+                  enum:
+                  - deleted
+                  - completed
+                  - inactive
+                  description: 'If diffing_drop_status is passed, this SIS import will use this status for
+
+                    enrollments that are not included in the sis_batch. Defaults to ''deleted'''
+                diffing_user_remove_status:
+                  type: string
+                  enum:
+                  - deleted
+                  - suspended
+                  description: 'For users removed from one batch to the next one using the same
+
+                    diffing_data_set_identifier, set their status to the value of this argument.
+
+                    Defaults to ''deleted''.'
+                batch_mode_enrollment_drop_status:
+                  type: string
+                  enum:
+                  - deleted
+                  - completed
+                  - inactive
+                  description: 'If batch_mode_enrollment_drop_status is passed, this SIS import will use
+
+                    this status for enrollments that are not included in the sis_batch. This
+
+                    will have an effect if multi_term_batch_mode is set. Defaults to ''deleted''
+
+                    This will still mark courses and sections that are not included in the
+
+                    sis_batch as deleted, and subsequently enrollments in the deleted courses
+
+                    and sections as deleted.'
+                change_threshold:
+                  type: integer
+                  format: int64
+                  description: 'If set with batch_mode, the batch cleanup process will not run if the
+
+                    number of items deleted is higher than the percentage set. If set to 10
+
+                    and a term has 200 enrollments, and batch would delete more than 20 of
+
+                    the enrollments the batch will abort before the enrollments are deleted.
+
+                    The change_threshold will be evaluated for course, sections, and
+
+                    enrollments independently.
+
+                    If set with diffing, diffing will not be performed if the files are
+
+                    greater than the threshold as a percent. If set to 5 and the file is more
+
+                    than 5% smaller or more than 5% larger than the file that is being
+
+                    compared to, diffing will not be performed. If the files are less than 5%,
+
+                    diffing will be performed. The way the percent is calculated is by taking
+
+                    the size of the current import and dividing it by the size of the previous
+
+                    import. The formula used is:
+
+                    |(1 - current_file_size / previous_file_size)| * 100
+
+                    See the SIS CSV Format documentation for more details.
+
+                    Required for multi_term_batch_mode.'
+                diff_row_count_threshold:
+                  type: integer
+                  format: int64
+                  description: 'If set with diffing, diffing will not be performed if the number of rows
+
+                    to be run in the fully calculated diff import exceeds the threshold.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SisImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+  /v1/accounts/{account_id}/sis_imports/importing:
+    get:
+      tags:
+      - Sis Imports
+      operationId: get_current_importing_sis_import
+      summary: Get the current importing SIS import
+      description: 'Returns the SIS imports that are currently processing for an account. If no
+
+        imports are running, will return an empty array.
+
+
+        Example:
+
+        curl https:///api/v1/accounts//sis_imports/importing \
+
+        -H ''Authorization: Bearer '''
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SisImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+  /v1/accounts/{account_id}/sis_imports/{id}:
+    get:
+      tags:
+      - Sis Imports
+      operationId: get_sis_import_status
+      summary: Get SIS import status
+      description: 'Get the status of an already created SIS import.
+
+
+        Examples:
+
+        curl https:///api/v1/accounts//sis_imports/ \
+
+        -H ''Authorization: Bearer '''
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SisImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+  /v1/accounts/{account_id}/sis_imports/{id}/restore_states:
+    put:
+      tags:
+      - Sis Imports
+      operationId: restore_workflow_states_of_sis_imported_items
+      summary: Restore workflow_states of SIS imported items
+      description: 'This will restore the the workflow_state for all the items that changed
+
+        their workflow_state during the import being restored.
+
+        This will restore states for items imported with the following importers:
+
+        accounts.csv terms.csv courses.csv sections.csv group_categories.csv
+
+        groups.csv users.csv admins.csv
+
+        This also restores states for other items that changed during the import.
+
+        An example would be if an enrollment was deleted from a sis import and the
+
+        group_membership was also deleted as a result of the enrollment deletion,
+
+        both items would be restored when the sis batch is restored.
+
+
+        Restore data is retained for 30 days post-import. This endpoint is
+
+        unavailable after that time.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                batch_mode:
+                  type: boolean
+                  description: If set, will only restore items that were deleted from batch_mode.
+                undelete_only:
+                  type: boolean
+                  description: 'If set, will only restore items that were deleted. This will ignore any
+
+                    items that were created or modified.'
+                unconclude_only:
+                  type: boolean
+                  description: 'If set, will only restore enrollments that were concluded. This will
+
+                    ignore any items that were created or deleted.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                batch_mode:
+                  type: boolean
+                  description: If set, will only restore items that were deleted from batch_mode.
+                undelete_only:
+                  type: boolean
+                  description: 'If set, will only restore items that were deleted. This will ignore any
+
+                    items that were created or modified.'
+                unconclude_only:
+                  type: boolean
+                  description: 'If set, will only restore enrollments that were concluded. This will
+
+                    ignore any items that were created or deleted.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+  /v1/accounts/{account_id}/sis_imports/{id}/abort:
+    put:
+      tags:
+      - Sis Imports
+      operationId: abort_sis_import
+      summary: Abort SIS import
+      description: 'Abort a SIS import that has not completed.
+
+
+        Aborting a sis batch that is running can take some time for every process to
+
+        see the abort event. Subsequent sis batches begin to process 10 minutes
+
+        after the abort to allow each process to clean up properly.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SisImport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+  /v1/accounts/{account_id}/sis_imports/abort_all_pending:
+    put:
+      tags:
+      - Sis Imports
+      operationId: abort_all_pending_sis_imports
+      summary: Abort all pending SIS imports
+      description: Abort already created but not processed or processing SIS imports.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sis_imports.html
+components:
+  schemas:
+    SisImport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The unique identifier for the SIS import.
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-12-01T23:59:00-06:00'
+          description: The date the SIS import was created.
+        ended_at:
+          type: string
+          format: date-time
+          example: '2013-12-02T00:03:21-06:00'
+          description: The date the SIS import finished. Returns null if not finished.
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-12-02T00:03:21-06:00'
+          description: The date the SIS import was last updated.
+        workflow_state:
+          type: string
+          example: imported
+          description: "The current state of the SIS import.\n - 'initializing': The SIS import is being created, if this gets stuck in initializing, it will not import and will continue on to next import.\n - 'created': The SIS import has been created.\n - 'importing': The SIS import is currently processing.\n - 'cleanup_batch': The SIS import is currently cleaning up courses, sections, and enrollments not included in the batch for batch_mode imports.\n - 'imported': The SIS import has completed successfully.\n - 'imported_with_messages': The SIS import completed with errors or warnings.\n - 'aborted': The SIS import was aborted.\n - 'failed_with_messages': The SIS import failed with errors.\n - 'failed': The SIS import failed.\n - 'restoring': The SIS import is restoring states of imported items.\n - 'partially_restored': The SIS import is restored some of the states of imported items. This is generally due to passing a param like undelete only.\n - 'restored': The SIS import is restored all of the states of imported items."
+        data:
+          type: string
+          description: data
+        statistics:
+          type: string
+          description: statistics
+        progress:
+          type: string
+          example: '100'
+          description: The progress of the SIS import. The progress will reset when using batch_mode and have a different progress for the cleanup stage
+        errors_attachment:
+          type: string
+          description: The errors_attachment api object of the SIS import. Only available if there are errors or warning and import has completed.
+        user:
+          type: string
+          description: The user that initiated the sis_batch. See the Users API for details.
+        processing_warnings:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          example:
+          - - students.csv
+            - user John Doe has already claimed john_doe's requested login information, skipping
+          description: Only imports that are complete will get this data. An array of CSV_file/warning_message pairs.
+        processing_errors:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          example:
+          - - students.csv
+            - Error while importing CSV. Please contact support.
+          description: An array of CSV_file/error_message pairs.
+        batch_mode:
+          type: boolean
+          example: 'true'
+          description: Whether the import was run in batch mode.
+        batch_mode_term_id:
+          type: string
+          example: '1234'
+          description: The term the batch was limited to.
+        multi_term_batch_mode:
+          type: boolean
+          example: 'false'
+          description: Enables batch mode against all terms in term file. Requires change_threshold to be set.
+        skip_deletes:
+          type: boolean
+          example: 'false'
+          description: When set the import will skip any deletes.
+        override_sis_stickiness:
+          type: boolean
+          example: 'false'
+          description: Whether UI changes were overridden.
+        add_sis_stickiness:
+          type: boolean
+          example: 'false'
+          description: Whether stickiness was added to the batch changes.
+        clear_sis_stickiness:
+          type: boolean
+          example: 'false'
+          description: Whether stickiness was cleared.
+        diffing_threshold_exceeded:
+          type: boolean
+          example: 'true'
+          description: Whether a diffing job failed because the threshold limit got exceeded.
+        diffing_data_set_identifier:
+          type: string
+          example: account-5-enrollments
+          description: The identifier of the data set that this SIS batch diffs against
+        diffing_remaster:
+          type: boolean
+          example: 'false'
+          description: Whether diffing remaster data was enabled.
+        diffed_against_import_id:
+          type: integer
+          example: 1
+          description: The ID of the SIS Import that this import was diffed against
+        csv_attachments:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+              format: binary
+          example: []
+          description: An array of CSV files for processing
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

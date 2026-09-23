@@ -1,0 +1,1232 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Learning Object Dates API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Learning Object Dates
+  x-resource: learning_object_dates
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+paths:
+  /v1/courses/{course_id}/modules/{context_module_id}/date_details:
+    get:
+      tags:
+      - Learning Object Dates
+      operationId: get_learning_object_s_date_information_modules
+      summary: Get a learning object's date information
+      description: 'Get a learning object''s date-related information, including due date, availability dates,
+
+        override status, and a paginated list of all assignment overrides for the item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: context_module_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what additional data to include in the response.\nValid values:\n- \"peer_review\": includes peer review sub assignment information and overrides in the response.\n  If a peer review sub assignment exists, it is returned regardless of the Peer Review\n  Allocation and Grading feature state. If no peer review sub assignment exists,\n  the feature must be enabled to receive a null value; otherwise the key is omitted.\n- \"child_peer_review_override_dates\": each assignment override will include a peer_review_dates\n  field containing the matched peer review override data (id, due_at, unlock_at, lock_at)\n  for that override. The field will be present as null if no matching peer review override exists."
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what data to exclude from the response.\nValid values:\n- \"peer_review_overrides\": when include[]=peer_review is also specified, the\n  peer_review_sub_assignment object will not include the overrides array, reducing the\n  response payload size. This is useful when using include[]=child_peer_review_override_dates\n  since the peer review override data is already embedded in the parent assignment overrides.\n- \"child_override_due_dates\": prevents the sub_assignment_due_dates field from being included\n  in assignment override responses, even when discussion checkpoints are enabled. This reduces\n  response payload size when checkpoint due date information is not needed."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningObjectDates'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/date_details:
+    get:
+      tags:
+      - Learning Object Dates
+      operationId: get_learning_object_s_date_information_assignments
+      summary: Get a learning object's date information
+      description: 'Get a learning object''s date-related information, including due date, availability dates,
+
+        override status, and a paginated list of all assignment overrides for the item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what additional data to include in the response.\nValid values:\n- \"peer_review\": includes peer review sub assignment information and overrides in the response.\n  If a peer review sub assignment exists, it is returned regardless of the Peer Review\n  Allocation and Grading feature state. If no peer review sub assignment exists,\n  the feature must be enabled to receive a null value; otherwise the key is omitted.\n- \"child_peer_review_override_dates\": each assignment override will include a peer_review_dates\n  field containing the matched peer review override data (id, due_at, unlock_at, lock_at)\n  for that override. The field will be present as null if no matching peer review override exists."
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what data to exclude from the response.\nValid values:\n- \"peer_review_overrides\": when include[]=peer_review is also specified, the\n  peer_review_sub_assignment object will not include the overrides array, reducing the\n  response payload size. This is useful when using include[]=child_peer_review_override_dates\n  since the peer review override data is already embedded in the parent assignment overrides.\n- \"child_override_due_dates\": prevents the sub_assignment_due_dates field from being included\n  in assignment override responses, even when discussion checkpoints are enabled. This reduces\n  response payload size when checkpoint due date information is not needed."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningObjectDates'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+    put:
+      tags:
+      - Learning Object Dates
+      operationId: update_learning_object_s_date_information_assignments
+      summary: Update a learning object's date information
+      description: 'Updates date-related information for learning objects, including due date, availability dates,
+
+        override status, and assignment overrides.
+
+
+        Returns 204 No Content response code if successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/date_details:
+    get:
+      tags:
+      - Learning Object Dates
+      operationId: get_learning_object_s_date_information_quizzes
+      summary: Get a learning object's date information
+      description: 'Get a learning object''s date-related information, including due date, availability dates,
+
+        override status, and a paginated list of all assignment overrides for the item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what additional data to include in the response.\nValid values:\n- \"peer_review\": includes peer review sub assignment information and overrides in the response.\n  If a peer review sub assignment exists, it is returned regardless of the Peer Review\n  Allocation and Grading feature state. If no peer review sub assignment exists,\n  the feature must be enabled to receive a null value; otherwise the key is omitted.\n- \"child_peer_review_override_dates\": each assignment override will include a peer_review_dates\n  field containing the matched peer review override data (id, due_at, unlock_at, lock_at)\n  for that override. The field will be present as null if no matching peer review override exists."
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what data to exclude from the response.\nValid values:\n- \"peer_review_overrides\": when include[]=peer_review is also specified, the\n  peer_review_sub_assignment object will not include the overrides array, reducing the\n  response payload size. This is useful when using include[]=child_peer_review_override_dates\n  since the peer review override data is already embedded in the parent assignment overrides.\n- \"child_override_due_dates\": prevents the sub_assignment_due_dates field from being included\n  in assignment override responses, even when discussion checkpoints are enabled. This reduces\n  response payload size when checkpoint due date information is not needed."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningObjectDates'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+    put:
+      tags:
+      - Learning Object Dates
+      operationId: update_learning_object_s_date_information_quizzes
+      summary: Update a learning object's date information
+      description: 'Updates date-related information for learning objects, including due date, availability dates,
+
+        override status, and assignment overrides.
+
+
+        Returns 204 No Content response code if successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+  /v1/courses/{course_id}/discussion_topics/{discussion_topic_id}/date_details:
+    get:
+      tags:
+      - Learning Object Dates
+      operationId: get_learning_object_s_date_information_discussion_topics
+      summary: Get a learning object's date information
+      description: 'Get a learning object''s date-related information, including due date, availability dates,
+
+        override status, and a paginated list of all assignment overrides for the item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: discussion_topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what additional data to include in the response.\nValid values:\n- \"peer_review\": includes peer review sub assignment information and overrides in the response.\n  If a peer review sub assignment exists, it is returned regardless of the Peer Review\n  Allocation and Grading feature state. If no peer review sub assignment exists,\n  the feature must be enabled to receive a null value; otherwise the key is omitted.\n- \"child_peer_review_override_dates\": each assignment override will include a peer_review_dates\n  field containing the matched peer review override data (id, due_at, unlock_at, lock_at)\n  for that override. The field will be present as null if no matching peer review override exists."
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what data to exclude from the response.\nValid values:\n- \"peer_review_overrides\": when include[]=peer_review is also specified, the\n  peer_review_sub_assignment object will not include the overrides array, reducing the\n  response payload size. This is useful when using include[]=child_peer_review_override_dates\n  since the peer review override data is already embedded in the parent assignment overrides.\n- \"child_override_due_dates\": prevents the sub_assignment_due_dates field from being included\n  in assignment override responses, even when discussion checkpoints are enabled. This reduces\n  response payload size when checkpoint due date information is not needed."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningObjectDates'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+    put:
+      tags:
+      - Learning Object Dates
+      operationId: update_learning_object_s_date_information_discussion_topics
+      summary: Update a learning object's date information
+      description: 'Updates date-related information for learning objects, including due date, availability dates,
+
+        override status, and assignment overrides.
+
+
+        Returns 204 No Content response code if successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: discussion_topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+  /v1/courses/{course_id}/pages/{url_or_id}/date_details:
+    get:
+      tags:
+      - Learning Object Dates
+      operationId: get_learning_object_s_date_information_pages
+      summary: Get a learning object's date information
+      description: 'Get a learning object''s date-related information, including due date, availability dates,
+
+        override status, and a paginated list of all assignment overrides for the item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: url_or_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what additional data to include in the response.\nValid values:\n- \"peer_review\": includes peer review sub assignment information and overrides in the response.\n  If a peer review sub assignment exists, it is returned regardless of the Peer Review\n  Allocation and Grading feature state. If no peer review sub assignment exists,\n  the feature must be enabled to receive a null value; otherwise the key is omitted.\n- \"child_peer_review_override_dates\": each assignment override will include a peer_review_dates\n  field containing the matched peer review override data (id, due_at, unlock_at, lock_at)\n  for that override. The field will be present as null if no matching peer review override exists."
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what data to exclude from the response.\nValid values:\n- \"peer_review_overrides\": when include[]=peer_review is also specified, the\n  peer_review_sub_assignment object will not include the overrides array, reducing the\n  response payload size. This is useful when using include[]=child_peer_review_override_dates\n  since the peer review override data is already embedded in the parent assignment overrides.\n- \"child_override_due_dates\": prevents the sub_assignment_due_dates field from being included\n  in assignment override responses, even when discussion checkpoints are enabled. This reduces\n  response payload size when checkpoint due date information is not needed."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningObjectDates'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+    put:
+      tags:
+      - Learning Object Dates
+      operationId: update_learning_object_s_date_information_pages
+      summary: Update a learning object's date information
+      description: 'Updates date-related information for learning objects, including due date, availability dates,
+
+        override status, and assignment overrides.
+
+
+        Returns 204 No Content response code if successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: url_or_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+  /v1/courses/{course_id}/files/{attachment_id}/date_details:
+    get:
+      tags:
+      - Learning Object Dates
+      operationId: get_learning_object_s_date_information_files
+      summary: Get a learning object's date information
+      description: 'Get a learning object''s date-related information, including due date, availability dates,
+
+        override status, and a paginated list of all assignment overrides for the item.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: attachment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what additional data to include in the response.\nValid values:\n- \"peer_review\": includes peer review sub assignment information and overrides in the response.\n  If a peer review sub assignment exists, it is returned regardless of the Peer Review\n  Allocation and Grading feature state. If no peer review sub assignment exists,\n  the feature must be enabled to receive a null value; otherwise the key is omitted.\n- \"child_peer_review_override_dates\": each assignment override will include a peer_review_dates\n  field containing the matched peer review override data (id, due_at, unlock_at, lock_at)\n  for that override. The field will be present as null if no matching peer review override exists."
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items: {}
+        required: false
+        description: "Array of strings indicating what data to exclude from the response.\nValid values:\n- \"peer_review_overrides\": when include[]=peer_review is also specified, the\n  peer_review_sub_assignment object will not include the overrides array, reducing the\n  response payload size. This is useful when using include[]=child_peer_review_override_dates\n  since the peer review override data is already embedded in the parent assignment overrides.\n- \"child_override_due_dates\": prevents the sub_assignment_due_dates field from being included\n  in assignment override responses, even when discussion checkpoints are enabled. This reduces\n  response payload size when checkpoint due date information is not needed."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningObjectDates'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+    put:
+      tags:
+      - Learning Object Dates
+      operationId: update_learning_object_s_date_information_files
+      summary: Update a learning object's date information
+      description: 'Updates date-related information for learning objects, including due date, availability dates,
+
+        override status, and assignment overrides.
+
+
+        Returns 204 No Content response code if successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: attachment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                due_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's due date. Not applicable for ungraded discussions, pages, and files.
+                unlock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's unlock date. Must be before the due date if there is one.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: The learning object's lock date. Must be after the due date if there is one.
+                only_visible_to_overrides:
+                  type: boolean
+                  description: Whether the learning object is only assigned to students who are targeted by an override.
+                assignment_overrides:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of overrides to apply to the learning object. Overrides that already exist should include
+
+                    an ID and will be updated if needed. New overrides will be created for overrides in the list
+
+                    without an ID. Overrides not included in the list will be deleted. Providing an empty list
+
+                    will delete all of the object''s overrides. Keys for each override object can include: ''id'',
+
+                    ''title'', ''due_at'', ''unlock_at'', ''lock_at'', ''student_ids'', and ''course_section_id'', ''course_id'',
+
+                    ''noop_id'', and ''unassign_item''.'
+                peer_review:
+                  type: object
+                  additionalProperties: true
+                  description: 'Optional peer review configuration for assignments with peer reviews enabled.
+
+                    Requires the peer_review_allocation_and_grading feature flag.
+
+                    Keys can include: ''due_at'', ''unlock_at'', ''lock_at'', ''peer_review_overrides'''
+                peer_review[due_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review due date
+                peer_review[unlock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review unlock date (when peer reviews become available)
+                peer_review[lock_at]:
+                  type: string
+                  format: date-time
+                  description: The peer review lock date (when peer reviews are no longer available)
+                peer_review[peer_review_overrides]:
+                  type: array
+                  items:
+                    type: array
+                    items: {}
+                  description: 'List of peer review overrides. Each override can include: ''id'', ''due_at'',
+
+                    ''unlock_at'', ''lock_at'', ''student_ids'', ''course_section_id'', ''course_id'',
+
+                    ''group_id'', ''unassign_item'''
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/learning_object_dates.html
+components:
+  schemas:
+    LearningObjectDates:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4
+          description: the ID of the learning object (not present for checkpoints)
+        due_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the due date for the learning object. returns null if not present or applicable. never applicable for ungraded discussions, pages, and files
+        lock_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the lock date (learning object is locked after this date). returns null if not present
+        reply_to_topic_due_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the reply_to_topic sub_assignment due_date. returns null if not present
+        required_replies_due_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the reply_to_entry sub_assignment due_date. returns null if not present
+        unlock_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the unlock date (learning object is unlocked after this date). returns null if not present
+        only_visible_to_overrides:
+          type: boolean
+          example: false
+          description: whether the learning object is only visible to overrides
+        graded:
+          type: boolean
+          example: true
+          description: whether the learning object is graded (and thus has a due date)
+        blueprint_date_locks:
+          type: array
+          items:
+            type: string
+          example:
+          - due_dates
+          - availability_dates
+          description: '[exclusive to blueprint child content only] list of lock types'
+        visible_to_everyone:
+          type: boolean
+          example: true
+          description: whether the learning object is visible to everyone
+        overrides:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: AssignmentOverride
+          description: paginated list of AssignmentOverride objects
+        checkpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningObjectDates'
+          description: list of Checkpoint objects, only present if a learning object has subAssignments
+        tag:
+          type: string
+          example: reply_to_topic
+          description: the tag identifying the type of checkpoint (only present for checkpoints)
+        peer_review_sub_assignment:
+          type: object
+          additionalProperties: true
+          description: peer review sub assignment details. If a peer review sub assignment exists, it is returned regardless of the Peer Review Allocation and Grading feature state. If no peer review sub assignment exists, the feature must be enabled to receive a null value; otherwise the key is omitted.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

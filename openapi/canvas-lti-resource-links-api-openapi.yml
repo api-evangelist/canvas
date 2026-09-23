@@ -1,0 +1,513 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Lti Resource Links API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Lti Resource Links
+  x-resource: lti_resource_links
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+paths:
+  /v1/courses/{course_id}/lti_resource_links:
+    get:
+      tags:
+      - Lti Resource Links
+      operationId: list_lti_resource_links
+      summary: List LTI Resource Links
+      description: 'Returns all Resource Links in the specified course. This includes links
+
+        that are associated with Assignments, Module Items, Collaborations, and
+
+        that are embedded in rich content. This endpoint is paginated, and will
+
+        return 50 links per page by default.
+
+        Links are sorted by the order in which they were created.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include_deleted
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Include deleted resource links and links associated with deleted content in response. Default is false.
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The number of registrations to return per page. Defaults to 50.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lti__ResourceLink'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+    post:
+      tags:
+      - Lti Resource Links
+      operationId: create_lti_resource_link
+      summary: Create an LTI Resource Link
+      description: 'Create a new LTI Resource Link in the specified course with the provided parameters.
+
+
+        Caution! Resource Links are usually created by the tool via LTI Deep Linking. The tool has no
+
+        knowledge of links created via this API, and may not be able to handle or launch them.
+
+
+        Links created using this API cannot be associated with a specific piece of Canvas content,
+
+        like an Assignment, Module Item, or Collaboration. Links created using this API are only suitable
+
+        for embedding in rich content using the `canvas_launch_url` provided in the API response.
+
+
+        This link will be associated with the ContextExternalTool available in this context that matches the provided url.
+
+        If a matching tool is not found, the link will not be created and this will return an error.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: The launch URL for this resource link.
+                title:
+                  type: string
+                  description: The title of the resource link.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  description: Custom parameters to be sent to the tool when launching this link.
+              required:
+              - url
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: The launch URL for this resource link.
+                title:
+                  type: string
+                  description: The title of the resource link.
+                custom:
+                  type: object
+                  additionalProperties: true
+                  description: Custom parameters to be sent to the tool when launching this link.
+              required:
+              - url
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ResourceLink'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+  /v1/courses/{course_id}/lti_resource_links/{id}:
+    get:
+      tags:
+      - Lti Resource Links
+      operationId: show_lti_resource_link
+      summary: Show an LTI Resource Link
+      description: 'Return details about the specified resource link. The ID can be in the standard
+
+        Canvas format ("1"), or in these special formats:
+
+
+        - resource_link_uuid: - Find the resource link by its resource_link_uuid
+
+        - lookup_uuid: - Find the resource link by its lookup_uuid'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include_deleted
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Include deleted resource links in search. Default is false.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ResourceLink'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+    put:
+      tags:
+      - Lti Resource Links
+      operationId: update_lti_resource_link
+      summary: Update an LTI Resource Link
+      description: 'Update the specified resource link with the provided parameters.
+
+
+        Caution! Changing existing links may result in launch errors.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: 'The launch URL for this resource link.
+
+                    <b>Caution!</b> URL must match the URL or domain of the tool associated with this resource link'
+                custom:
+                  type: object
+                  additionalProperties: true
+                  description: 'Custom parameters to be sent to the tool when launching this link.
+
+                    <b>Caution!</b> Changing these from what the tool provided could result in errors if the tool doesn''t see what it''s expecting.'
+                include_deleted:
+                  type: boolean
+                  description: Update link even if it is deleted. Default is false.
+                context_external_tool_id:
+                  type: integer
+                  format: int64
+                  description: 'The Canvas identifier for the LTI 1.3 External Tool that the LTI Resource Link was originally installed from.
+
+                    <b>Caution!</b> The resource link url must match the tool''s domain or url.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: 'The launch URL for this resource link.
+
+                    <b>Caution!</b> URL must match the URL or domain of the tool associated with this resource link'
+                custom:
+                  type: object
+                  additionalProperties: true
+                  description: 'Custom parameters to be sent to the tool when launching this link.
+
+                    <b>Caution!</b> Changing these from what the tool provided could result in errors if the tool doesn''t see what it''s expecting.'
+                include_deleted:
+                  type: boolean
+                  description: Update link even if it is deleted. Default is false.
+                context_external_tool_id:
+                  type: integer
+                  format: int64
+                  description: 'The Canvas identifier for the LTI 1.3 External Tool that the LTI Resource Link was originally installed from.
+
+                    <b>Caution!</b> The resource link url must match the tool''s domain or url.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ResourceLink'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+    delete:
+      tags:
+      - Lti Resource Links
+      operationId: delete_lti_resource_link
+      summary: Delete an LTI Resource Link
+      description: 'Delete the specified resource link. The ID can be in the standard
+
+        Canvas format ("1"), or in these special formats:
+
+
+        - resource_link_uuid: - Find the resource link by its resource_link_uuid
+
+        - lookup_uuid: - Find the resource link by its lookup_uuid
+
+
+        Only links that are not associated with Assignments, Module Items, or Collaborations can be deleted.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ResourceLink'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+  /v1/courses/{course_id}/lti_resource_links/bulk:
+    post:
+      tags:
+      - Lti Resource Links
+      operationId: bulk_create_lti_resource_links
+      summary: Bulk Create LTI Resource Links
+      description: 'Create up to 100 new LTI Resource Links in the specified course with the provided parameters.
+
+
+        Caution! Resource Links are usually created by the tool via LTI Deep Linking. The tool has no
+
+        knowledge of links created via this API, and may not be able to handle or launch them.
+
+
+        Links created using this API cannot be associated with a specific piece of Canvas content,
+
+        like an Assignment, Module Item, or Collaboration. Links created using this API are only suitable
+
+        for embedding in rich content using the `canvas_launch_url` provided in the API response.
+
+
+        Each link will be associated with the ContextExternalTool available in this context that matches the provided url.
+
+        If a matching tool is not found, or any parameters are invalid, no links will be created and this will return an error.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                POST:
+                  type: string
+                  description: body [Required, Array] The POST body should be a JSON array of objects containing the parameters for each link to create.
+                url:
+                  type: array
+                  items:
+                    type: string
+                  description: Each object must contain a launch URL.
+                title:
+                  type: array
+                  items:
+                    type: string
+                  description: Each object may contain a title.
+                custom:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  description: Custom parameters to be sent to the tool when launching this link.
+              required:
+              - url
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                POST:
+                  type: string
+                  description: body [Required, Array] The POST body should be a JSON array of objects containing the parameters for each link to create.
+                url:
+                  type: array
+                  items:
+                    type: string
+                  description: Each object must contain a launch URL.
+                title:
+                  type: array
+                  items:
+                    type: string
+                  description: Each object may contain a title.
+                custom:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  description: Custom parameters to be sent to the tool when launching this link.
+              required:
+              - url
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ResourceLink'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_resource_links.html
+components:
+  schemas:
+    Lti__ResourceLink:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The Canvas identifier for the LTI Resource Link.
+        context_id:
+          type: integer
+          example: 1
+          description: The Canvas identifier for the context that the LTI Resource Link is associated with.
+        context_type:
+          type: string
+          example: Course
+          description: The type of the context that the LTI Resource Link is associated with.
+          enum:
+          - Course
+          - Assignment
+          - Collaboration
+        context_external_tool_id:
+          type: integer
+          example: 1
+          description: The Canvas identifier for the LTI 1.3 External Tool that the LTI Resource Link was originally installed from. Note that this tool may have been deleted or reinstalled and may not be the tool that would be launched for this url.
+        resource_type:
+          type: string
+          example: assignment
+          description: The type of Canvas content for the resource link. Included for convenience.
+          enum:
+          - assignment
+          - module_item
+          - collaboration
+          - rich_content
+        canvas_launch_url:
+          type: string
+          example: https://example.instructure.com/courses/1/external_tools/retrieve?resource_link_lookup_uuid=ae43ba23-d238-49bc-ab55-ba7f79f77896
+          description: The Canvas URL that launches the LTI Resource Link. Suitable for use in Canvas rich content
+        resource_link_uuid:
+          type: string
+          example: ae43ba23-d238-49bc-ab55-ba7f79f77896
+          description: The LTI identifier for the LTI Resource Link, included as the resource_link_id when this link is launched
+        lookup_uuid:
+          type: string
+          example: c522554a-d4be-49ef-b163-9c87fdc6ad6f
+          description: A unique identifier for the LTI Resource Link, present in the rich content representation. Remains the same across content migration.
+        title:
+          type: string
+          example: Assignment 1
+          description: The title of the LTI Resource Link. Usually tool-provided, or matches the assignment name
+        url:
+          type: string
+          example: https://example.com/lti/launch/content_item/123
+          description: The tool URL to which the LTI Resource Link will launch
+        lti_1_1_id:
+          type: string
+          example: 6a8aaca162bfc4393804afd4cd53cd94413c48bb
+          description: The LTI 1.1 identifier for the LTI Resource Link, included in lti1p1 migration claim when launched. Only present if tool was migrated from 1.1 to 1.3.
+        created_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the resource link's creation
+        updated_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the resource link's last update
+        workflow_state:
+          type: string
+          example: active
+          description: The state of the resource link
+          enum:
+          - active
+          - deleted
+        associated_content_type:
+          type: string
+          example: ModuleItem
+          description: Type of the associated content this resource link belongs to if present. Now only supports `ModuleItems`, later may be extend others
+          enum:
+          - ModuleItem
+        associated_content_id:
+          type: integer
+          example: 1
+          description: The Canvas identifier of the associated content, e.g. ModuleItem related to this link. Present if associated_content_type is present
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

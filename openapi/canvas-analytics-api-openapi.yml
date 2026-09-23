@@ -1,0 +1,712 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Analytics API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Analytics
+  x-resource: analytics
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/analytics.html
+paths:
+  /v1/accounts/{account_id}/analytics/terms/{term_id}/activity:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_participation_data_terms
+      summary: Get department-level participation data
+      description: 'Returns page view hits summed across all courses in the department. Two
+
+        groupings of these counts are returned; one by day (+by_date+), the other
+
+        by category (+by_category+). The possible categories are announcements,
+
+        assignments, collaborations, conferences, discussions, files, general,
+
+        grades, groups, modules, other, pages, and quizzes.
+
+
+        This and the other department-level endpoints have three variations which
+
+        all return the same style of data but for different subsets of courses. All
+
+        share the prefix /api/v1/accounts//analytics. The possible
+
+        suffixes are:
+
+
+        * /current: includes all available courses in the default term
+
+        * /completed: includes all concluded courses in the default term
+
+        * /terms/: includes all available or concluded courses in the
+
+        given term.
+
+
+        Courses not yet offered or which have been deleted are never included.
+
+
+        /current and /completed are intended for use when the account has only one
+
+        term. /terms/ is intended for use when the account has multiple
+
+        terms.
+
+
+        The action follows the suffix.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: term_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/current/activity:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_participation_data_current
+      summary: Get department-level participation data
+      description: 'Returns page view hits summed across all courses in the department. Two
+
+        groupings of these counts are returned; one by day (+by_date+), the other
+
+        by category (+by_category+). The possible categories are announcements,
+
+        assignments, collaborations, conferences, discussions, files, general,
+
+        grades, groups, modules, other, pages, and quizzes.
+
+
+        This and the other department-level endpoints have three variations which
+
+        all return the same style of data but for different subsets of courses. All
+
+        share the prefix /api/v1/accounts//analytics. The possible
+
+        suffixes are:
+
+
+        * /current: includes all available courses in the default term
+
+        * /completed: includes all concluded courses in the default term
+
+        * /terms/: includes all available or concluded courses in the
+
+        given term.
+
+
+        Courses not yet offered or which have been deleted are never included.
+
+
+        /current and /completed are intended for use when the account has only one
+
+        term. /terms/ is intended for use when the account has multiple
+
+        terms.
+
+
+        The action follows the suffix.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/completed/activity:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_participation_data_completed
+      summary: Get department-level participation data
+      description: 'Returns page view hits summed across all courses in the department. Two
+
+        groupings of these counts are returned; one by day (+by_date+), the other
+
+        by category (+by_category+). The possible categories are announcements,
+
+        assignments, collaborations, conferences, discussions, files, general,
+
+        grades, groups, modules, other, pages, and quizzes.
+
+
+        This and the other department-level endpoints have three variations which
+
+        all return the same style of data but for different subsets of courses. All
+
+        share the prefix /api/v1/accounts//analytics. The possible
+
+        suffixes are:
+
+
+        * /current: includes all available courses in the default term
+
+        * /completed: includes all concluded courses in the default term
+
+        * /terms/: includes all available or concluded courses in the
+
+        given term.
+
+
+        Courses not yet offered or which have been deleted are never included.
+
+
+        /current and /completed are intended for use when the account has only one
+
+        term. /terms/ is intended for use when the account has multiple
+
+        terms.
+
+
+        The action follows the suffix.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/terms/{term_id}/grades:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_grade_data_terms
+      summary: Get department-level grade data
+      description: 'Returns the distribution of grades for students in courses in the
+
+        department. Each data point is one student''s current grade in one course;
+
+        if a student is in multiple courses, he contributes one value per course,
+
+        but if he''s enrolled multiple times in the same course (e.g. a lecture
+
+        section and a lab section), he only constributes on value for that course.
+
+
+        Grades are binned to the nearest integer score; anomalous grades outside
+
+        the 0 to 100 range are ignored. The raw counts are returned, not yet
+
+        normalized by the total count.
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: term_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/current/grades:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_grade_data_current
+      summary: Get department-level grade data
+      description: 'Returns the distribution of grades for students in courses in the
+
+        department. Each data point is one student''s current grade in one course;
+
+        if a student is in multiple courses, he contributes one value per course,
+
+        but if he''s enrolled multiple times in the same course (e.g. a lecture
+
+        section and a lab section), he only constributes on value for that course.
+
+
+        Grades are binned to the nearest integer score; anomalous grades outside
+
+        the 0 to 100 range are ignored. The raw counts are returned, not yet
+
+        normalized by the total count.
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/completed/grades:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_grade_data_completed
+      summary: Get department-level grade data
+      description: 'Returns the distribution of grades for students in courses in the
+
+        department. Each data point is one student''s current grade in one course;
+
+        if a student is in multiple courses, he contributes one value per course,
+
+        but if he''s enrolled multiple times in the same course (e.g. a lecture
+
+        section and a lab section), he only constributes on value for that course.
+
+
+        Grades are binned to the nearest integer score; anomalous grades outside
+
+        the 0 to 100 range are ignored. The raw counts are returned, not yet
+
+        normalized by the total count.
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/terms/{term_id}/statistics:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_statistics_terms
+      summary: Get department-level statistics
+      description: 'Returns numeric statistics about the department and term (or filter).
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: term_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/current/statistics:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_statistics_current
+      summary: Get department-level statistics
+      description: 'Returns numeric statistics about the department and term (or filter).
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/completed/statistics:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_statistics_completed
+      summary: Get department-level statistics
+      description: 'Returns numeric statistics about the department and term (or filter).
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/terms/{term_id}/statistics_by_subaccount:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_statistics_broken_down_by_subaccount_terms
+      summary: Get department-level statistics, broken down by subaccount
+      description: 'Returns numeric statistics about the department subaccounts and term (or filter).
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: term_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/current/statistics_by_subaccount:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_statistics_broken_down_by_subaccount_current
+      summary: Get department-level statistics, broken down by subaccount
+      description: 'Returns numeric statistics about the department subaccounts and term (or filter).
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/accounts/{account_id}/analytics/completed/statistics_by_subaccount:
+    get:
+      tags:
+      - Analytics
+      operationId: get_department_level_statistics_broken_down_by_subaccount_completed
+      summary: Get department-level statistics, broken down by subaccount
+      description: 'Returns numeric statistics about the department subaccounts and term (or filter).
+
+
+        Shares the same variations on endpoint as the participation data.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/courses/{course_id}/analytics/activity:
+    get:
+      tags:
+      - Analytics
+      operationId: get_course_level_participation_data
+      summary: Get course-level participation data
+      description: 'Returns page view hits and participation numbers grouped by day through the
+
+        entire history of the course. Page views is returned as a hash, where the
+
+        hash keys are dates in the format "YYYY-MM-DD". The page_views result set
+
+        includes page views broken out by access category. Participations is
+
+        returned as an array of dates in the format "YYYY-MM-DD".'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/courses/{course_id}/analytics/assignments:
+    get:
+      tags:
+      - Analytics
+      operationId: get_course_level_assignment_data
+      summary: Get course-level assignment data
+      description: 'Returns a list of assignments for the course sorted by due date. For
+
+        each assignment returns basic assignment information, the grade breakdown,
+
+        and a breakdown of on-time/late status of homework submissions.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: async
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If async is true, then the course_assignments call can happen asynch-
+
+          ronously and MAY return a response containing a progress_url key instead
+
+          of an assignments array. If it does, then it is the caller''s
+
+          responsibility to poll the API again to see if the progress is complete.
+
+          If the data is ready (possibly even on the first async call) then it
+
+          will be passed back normally, as documented in the example response.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/courses/{course_id}/analytics/student_summaries:
+    get:
+      tags:
+      - Analytics
+      operationId: get_course_level_student_summary_data
+      summary: Get course-level student summary data
+      description: 'Returns a summary of per-user access information for all students in
+
+        a course. This includes total page views, total participations, and a
+
+        breakdown of on-time/late status for all homework submissions in the course.
+
+
+        Each student''s summary also includes the maximum number of page views and
+
+        participations by any student in the course, which may be useful for some
+
+        visualizations (since determining maximums client side can be tricky with
+
+        pagination).'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort_column
+        in: query
+        schema:
+          type: string
+          enum:
+          - name
+          - name_descending
+          - score
+          - score_descending
+          - participations
+          - participations_descending
+          - page_views
+          - page_views_descending
+        required: false
+        description: The order results in which results are returned.  Defaults to "name".
+      - name: student_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: If set, returns only the specified student.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/courses/{course_id}/analytics/users/{student_id}/activity:
+    get:
+      tags:
+      - Analytics
+      operationId: get_user_in_a_course_level_participation_data
+      summary: Get user-in-a-course-level participation data
+      description: 'Returns page view hits grouped by hour, and participation details through the
+
+        entire history of the course.
+
+
+        `page_views` are returned as a hash, where the keys are iso8601 dates, bucketed by the hour.
+
+        `participations` are returned as an array of hashes, sorted oldest to newest.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: student_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/courses/{course_id}/analytics/users/{student_id}/assignments:
+    get:
+      tags:
+      - Analytics
+      operationId: get_user_in_a_course_level_assignment_data
+      summary: Get user-in-a-course-level assignment data
+      description: 'Returns a list of assignments for the course sorted by due date. For
+
+        each assignment returns basic assignment information, the grade breakdown
+
+        (including the student''s actual grade), and the basic submission
+
+        information for the student''s submission if it exists.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: student_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+  /v1/courses/{course_id}/analytics/users/{student_id}/communication:
+    get:
+      tags:
+      - Analytics
+      operationId: get_user_in_a_course_level_messaging_data
+      summary: Get user-in-a-course-level messaging data
+      description: 'Returns messaging "hits" grouped by day through the entire history of the
+
+        course. Returns a hash containing the number of instructor-to-student messages,
+
+        and student-to-instructor messages, where the hash keys are dates
+
+        in the format "YYYY-MM-DD". Message hits include Conversation messages and
+
+        comments on homework submissions.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: student_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/analytics.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

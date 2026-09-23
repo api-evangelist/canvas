@@ -1,0 +1,283 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Proficiency Ratings API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Proficiency Ratings
+  x-resource: proficiency_ratings
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/proficiency_ratings.html
+paths:
+  /v1/accounts/{account_id}/outcome_proficiency:
+    post:
+      tags:
+      - Proficiency Ratings
+      operationId: create_update_proficiency_ratings_accounts
+      summary: Create/update proficiency ratings
+      description: 'Create or update account-level proficiency ratings. These ratings will apply to all
+
+        sub-accounts, unless they have their own account-level proficiency ratings defined.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ratings[description]:
+                  type: array
+                  items:
+                    type: string
+                  description: The description of the rating level.
+                ratings[points]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The non-negative number of points of the rating level. Points across ratings should be strictly decreasing in value.
+                ratings[mastery]:
+                  type: array
+                  items:
+                    type: integer
+                  description: Indicates the rating level where mastery is first achieved. Only one rating in a proficiency should be marked for mastery.
+                ratings[color]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The color associated with the rating level. Should be a hex color code like '00FFFF'.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                ratings[description]:
+                  type: array
+                  items:
+                    type: string
+                  description: The description of the rating level.
+                ratings[points]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The non-negative number of points of the rating level. Points across ratings should be strictly decreasing in value.
+                ratings[mastery]:
+                  type: array
+                  items:
+                    type: integer
+                  description: Indicates the rating level where mastery is first achieved. Only one rating in a proficiency should be marked for mastery.
+                ratings[color]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The color associated with the rating level. Should be a hex color code like '00FFFF'.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proficiency'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/proficiency_ratings.html
+    get:
+      tags:
+      - Proficiency Ratings
+      operationId: get_proficiency_ratings_accounts
+      summary: Get proficiency ratings
+      description: 'Get account-level proficiency ratings. If not defined for this account,
+
+        it will return proficiency ratings for the nearest super-account with ratings defined.
+
+        Will return 404 if none found.
+
+
+        Examples:
+
+        curl https:///api/v1/accounts//outcome_proficiency \
+
+        -H ''Authorization: Bearer '''
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proficiency'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/proficiency_ratings.html
+  /v1/courses/{course_id}/outcome_proficiency:
+    post:
+      tags:
+      - Proficiency Ratings
+      operationId: create_update_proficiency_ratings_courses
+      summary: Create/update proficiency ratings
+      description: 'Create or update account-level proficiency ratings. These ratings will apply to all
+
+        sub-accounts, unless they have their own account-level proficiency ratings defined.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ratings[description]:
+                  type: array
+                  items:
+                    type: string
+                  description: The description of the rating level.
+                ratings[points]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The non-negative number of points of the rating level. Points across ratings should be strictly decreasing in value.
+                ratings[mastery]:
+                  type: array
+                  items:
+                    type: integer
+                  description: Indicates the rating level where mastery is first achieved. Only one rating in a proficiency should be marked for mastery.
+                ratings[color]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The color associated with the rating level. Should be a hex color code like '00FFFF'.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                ratings[description]:
+                  type: array
+                  items:
+                    type: string
+                  description: The description of the rating level.
+                ratings[points]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The non-negative number of points of the rating level. Points across ratings should be strictly decreasing in value.
+                ratings[mastery]:
+                  type: array
+                  items:
+                    type: integer
+                  description: Indicates the rating level where mastery is first achieved. Only one rating in a proficiency should be marked for mastery.
+                ratings[color]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The color associated with the rating level. Should be a hex color code like '00FFFF'.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proficiency'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/proficiency_ratings.html
+    get:
+      tags:
+      - Proficiency Ratings
+      operationId: get_proficiency_ratings_courses
+      summary: Get proficiency ratings
+      description: 'Get account-level proficiency ratings. If not defined for this account,
+
+        it will return proficiency ratings for the nearest super-account with ratings defined.
+
+        Will return 404 if none found.
+
+
+        Examples:
+
+        curl https:///api/v1/accounts//outcome_proficiency \
+
+        -H ''Authorization: Bearer '''
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proficiency'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/proficiency_ratings.html
+components:
+  schemas:
+    Proficiency:
+      type: object
+      properties:
+        ratings:
+          type: array
+          items: {}
+          example: []
+          description: An array of proficiency ratings. See the ProficiencyRating specification above.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

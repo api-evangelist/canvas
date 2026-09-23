@@ -1,0 +1,4013 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Submissions API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Submissions
+  x-resource: submissions
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/submissions.html
+paths:
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions:
+    post:
+      tags:
+      - Submissions
+      operationId: submit_assignment_courses
+      summary: Submit an assignment
+      description: 'Make a submission for an assignment. You must be actively enrolled as a student in
+
+        the course/section to do this. Concluded and pending enrollments are not permitted.
+
+
+        All online turn-in submission types are supported in this API. However,
+
+        there are a few things that are not yet supported:
+
+
+        * Files can be submitted based on a file ID of a user or group file or through the {api:SubmissionsApiController#create_file file upload API}. However, there is no API yet for listing the user and group files.
+
+        * Media comments can be submitted, however, there is no API yet for creating a media comment to submit.
+
+        * Integration with Google Docs is not yet supported.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Include a textual comment with the submission.
+                submission[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                submission[submission_type]:
+                  type: string
+                  enum:
+                  - online_text_entry
+                  - online_url
+                  - online_upload
+                  - media_recording
+                  - basic_lti_launch
+                  - student_annotation
+                  description: 'The type of submission being made. The assignment submission_types must
+
+                    include this submission type as an allowed option, or the submission will be rejected with a 400 error.
+
+
+                    The submission_type given determines which of the following parameters is
+
+                    used. For instance, to submit a URL, +submission[submission_type]+ must be
+
+                    set to "online_url", otherwise the +submission[url]+ parameter will be
+
+                    ignored.
+
+
+                    "basic_lti_launch" requires the assignment submission_type "online" or "external_tool"'
+                submission[body]:
+                  type: string
+                  description: 'Submit the assignment as an HTML document snippet. Note this HTML snippet
+
+                    will be sanitized using the same ruleset as a submission made from the
+
+                    Canvas web UI. The sanitized HTML will be returned in the response as the
+
+                    submission body. Requires a submission_type of "online_text_entry".'
+                submission[url]:
+                  type: string
+                  description: 'Submit the assignment as a URL. The URL scheme must be "http" or "https",
+
+                    no "ftp" or other URL schemes are allowed. If no scheme is given (e.g.
+
+                    "www.example.com") then "http" will be assumed. Requires a submission_type
+
+                    of "online_url" or "basic_lti_launch".'
+                submission[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Submit the assignment as a set of one or more previously uploaded files
+
+                    residing in the submitting user''s files section (or the group''s files
+
+                    section, for group assignments).
+
+
+                    To upload a new file to submit, see the submissions {api:SubmissionsApiController#create_file Upload a file API}.
+
+
+                    Requires a submission_type of "online_upload".'
+                submission[media_comment_id]:
+                  type: string
+                  description: 'The media comment id to submit. Media comment ids can be submitted via
+
+                    this API, however, note that there is not yet an API to generate or list
+
+                    existing media comments, so this functionality is currently of limited use.
+
+
+                    Requires a submission_type of "media_recording".'
+                submission[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being submitted.
+                submission[user_id]:
+                  type: integer
+                  format: int64
+                  description: Submit on behalf of the given user. Requires grading permission.
+                submission[annotatable_attachment_id]:
+                  type: integer
+                  format: int64
+                  description: 'The Attachment ID of the document being annotated. This should match
+
+                    the annotatable_attachment_id on the assignment.
+
+
+                    Requires a submission_type of "student_annotation".'
+                submission[submitted_at]:
+                  type: string
+                  format: date-time
+                  description: Choose the time the submission is listed as submitted at.  Requires grading permission.
+              required:
+              - submission[submission_type]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Include a textual comment with the submission.
+                submission[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                submission[submission_type]:
+                  type: string
+                  enum:
+                  - online_text_entry
+                  - online_url
+                  - online_upload
+                  - media_recording
+                  - basic_lti_launch
+                  - student_annotation
+                  description: 'The type of submission being made. The assignment submission_types must
+
+                    include this submission type as an allowed option, or the submission will be rejected with a 400 error.
+
+
+                    The submission_type given determines which of the following parameters is
+
+                    used. For instance, to submit a URL, +submission[submission_type]+ must be
+
+                    set to "online_url", otherwise the +submission[url]+ parameter will be
+
+                    ignored.
+
+
+                    "basic_lti_launch" requires the assignment submission_type "online" or "external_tool"'
+                submission[body]:
+                  type: string
+                  description: 'Submit the assignment as an HTML document snippet. Note this HTML snippet
+
+                    will be sanitized using the same ruleset as a submission made from the
+
+                    Canvas web UI. The sanitized HTML will be returned in the response as the
+
+                    submission body. Requires a submission_type of "online_text_entry".'
+                submission[url]:
+                  type: string
+                  description: 'Submit the assignment as a URL. The URL scheme must be "http" or "https",
+
+                    no "ftp" or other URL schemes are allowed. If no scheme is given (e.g.
+
+                    "www.example.com") then "http" will be assumed. Requires a submission_type
+
+                    of "online_url" or "basic_lti_launch".'
+                submission[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Submit the assignment as a set of one or more previously uploaded files
+
+                    residing in the submitting user''s files section (or the group''s files
+
+                    section, for group assignments).
+
+
+                    To upload a new file to submit, see the submissions {api:SubmissionsApiController#create_file Upload a file API}.
+
+
+                    Requires a submission_type of "online_upload".'
+                submission[media_comment_id]:
+                  type: string
+                  description: 'The media comment id to submit. Media comment ids can be submitted via
+
+                    this API, however, note that there is not yet an API to generate or list
+
+                    existing media comments, so this functionality is currently of limited use.
+
+
+                    Requires a submission_type of "media_recording".'
+                submission[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being submitted.
+                submission[user_id]:
+                  type: integer
+                  format: int64
+                  description: Submit on behalf of the given user. Requires grading permission.
+                submission[annotatable_attachment_id]:
+                  type: integer
+                  format: int64
+                  description: 'The Attachment ID of the document being annotated. This should match
+
+                    the annotatable_attachment_id on the assignment.
+
+
+                    Requires a submission_type of "student_annotation".'
+                submission[submitted_at]:
+                  type: string
+                  format: date-time
+                  description: Choose the time the submission is listed as submitted at.  Requires grading permission.
+              required:
+              - submission[submission_type]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    get:
+      tags:
+      - Submissions
+      operationId: list_assignment_submissions_courses
+      summary: List assignment submissions
+      description: A paginated list of all existing submissions for an assignment.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - submission_html_comments
+            - rubric_assessment
+            - assignment
+            - visibility
+            - course
+            - user
+            - group
+            - read_status
+            - student_entered_score
+        required: false
+        description: Associations to include with the group.  "group" will add group_id and group_name.
+      - name: grouped
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If this argument is true, the response will be grouped by student groups.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submission__submissions'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions:
+    post:
+      tags:
+      - Submissions
+      operationId: submit_assignment_sections
+      summary: Submit an assignment
+      description: 'Make a submission for an assignment. You must be actively enrolled as a student in
+
+        the course/section to do this. Concluded and pending enrollments are not permitted.
+
+
+        All online turn-in submission types are supported in this API. However,
+
+        there are a few things that are not yet supported:
+
+
+        * Files can be submitted based on a file ID of a user or group file or through the {api:SubmissionsApiController#create_file file upload API}. However, there is no API yet for listing the user and group files.
+
+        * Media comments can be submitted, however, there is no API yet for creating a media comment to submit.
+
+        * Integration with Google Docs is not yet supported.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Include a textual comment with the submission.
+                submission[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                submission[submission_type]:
+                  type: string
+                  enum:
+                  - online_text_entry
+                  - online_url
+                  - online_upload
+                  - media_recording
+                  - basic_lti_launch
+                  - student_annotation
+                  description: 'The type of submission being made. The assignment submission_types must
+
+                    include this submission type as an allowed option, or the submission will be rejected with a 400 error.
+
+
+                    The submission_type given determines which of the following parameters is
+
+                    used. For instance, to submit a URL, +submission[submission_type]+ must be
+
+                    set to "online_url", otherwise the +submission[url]+ parameter will be
+
+                    ignored.
+
+
+                    "basic_lti_launch" requires the assignment submission_type "online" or "external_tool"'
+                submission[body]:
+                  type: string
+                  description: 'Submit the assignment as an HTML document snippet. Note this HTML snippet
+
+                    will be sanitized using the same ruleset as a submission made from the
+
+                    Canvas web UI. The sanitized HTML will be returned in the response as the
+
+                    submission body. Requires a submission_type of "online_text_entry".'
+                submission[url]:
+                  type: string
+                  description: 'Submit the assignment as a URL. The URL scheme must be "http" or "https",
+
+                    no "ftp" or other URL schemes are allowed. If no scheme is given (e.g.
+
+                    "www.example.com") then "http" will be assumed. Requires a submission_type
+
+                    of "online_url" or "basic_lti_launch".'
+                submission[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Submit the assignment as a set of one or more previously uploaded files
+
+                    residing in the submitting user''s files section (or the group''s files
+
+                    section, for group assignments).
+
+
+                    To upload a new file to submit, see the submissions {api:SubmissionsApiController#create_file Upload a file API}.
+
+
+                    Requires a submission_type of "online_upload".'
+                submission[media_comment_id]:
+                  type: string
+                  description: 'The media comment id to submit. Media comment ids can be submitted via
+
+                    this API, however, note that there is not yet an API to generate or list
+
+                    existing media comments, so this functionality is currently of limited use.
+
+
+                    Requires a submission_type of "media_recording".'
+                submission[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being submitted.
+                submission[user_id]:
+                  type: integer
+                  format: int64
+                  description: Submit on behalf of the given user. Requires grading permission.
+                submission[annotatable_attachment_id]:
+                  type: integer
+                  format: int64
+                  description: 'The Attachment ID of the document being annotated. This should match
+
+                    the annotatable_attachment_id on the assignment.
+
+
+                    Requires a submission_type of "student_annotation".'
+                submission[submitted_at]:
+                  type: string
+                  format: date-time
+                  description: Choose the time the submission is listed as submitted at.  Requires grading permission.
+              required:
+              - submission[submission_type]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Include a textual comment with the submission.
+                submission[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                submission[submission_type]:
+                  type: string
+                  enum:
+                  - online_text_entry
+                  - online_url
+                  - online_upload
+                  - media_recording
+                  - basic_lti_launch
+                  - student_annotation
+                  description: 'The type of submission being made. The assignment submission_types must
+
+                    include this submission type as an allowed option, or the submission will be rejected with a 400 error.
+
+
+                    The submission_type given determines which of the following parameters is
+
+                    used. For instance, to submit a URL, +submission[submission_type]+ must be
+
+                    set to "online_url", otherwise the +submission[url]+ parameter will be
+
+                    ignored.
+
+
+                    "basic_lti_launch" requires the assignment submission_type "online" or "external_tool"'
+                submission[body]:
+                  type: string
+                  description: 'Submit the assignment as an HTML document snippet. Note this HTML snippet
+
+                    will be sanitized using the same ruleset as a submission made from the
+
+                    Canvas web UI. The sanitized HTML will be returned in the response as the
+
+                    submission body. Requires a submission_type of "online_text_entry".'
+                submission[url]:
+                  type: string
+                  description: 'Submit the assignment as a URL. The URL scheme must be "http" or "https",
+
+                    no "ftp" or other URL schemes are allowed. If no scheme is given (e.g.
+
+                    "www.example.com") then "http" will be assumed. Requires a submission_type
+
+                    of "online_url" or "basic_lti_launch".'
+                submission[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Submit the assignment as a set of one or more previously uploaded files
+
+                    residing in the submitting user''s files section (or the group''s files
+
+                    section, for group assignments).
+
+
+                    To upload a new file to submit, see the submissions {api:SubmissionsApiController#create_file Upload a file API}.
+
+
+                    Requires a submission_type of "online_upload".'
+                submission[media_comment_id]:
+                  type: string
+                  description: 'The media comment id to submit. Media comment ids can be submitted via
+
+                    this API, however, note that there is not yet an API to generate or list
+
+                    existing media comments, so this functionality is currently of limited use.
+
+
+                    Requires a submission_type of "media_recording".'
+                submission[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being submitted.
+                submission[user_id]:
+                  type: integer
+                  format: int64
+                  description: Submit on behalf of the given user. Requires grading permission.
+                submission[annotatable_attachment_id]:
+                  type: integer
+                  format: int64
+                  description: 'The Attachment ID of the document being annotated. This should match
+
+                    the annotatable_attachment_id on the assignment.
+
+
+                    Requires a submission_type of "student_annotation".'
+                submission[submitted_at]:
+                  type: string
+                  format: date-time
+                  description: Choose the time the submission is listed as submitted at.  Requires grading permission.
+              required:
+              - submission[submission_type]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    get:
+      tags:
+      - Submissions
+      operationId: list_assignment_submissions_sections
+      summary: List assignment submissions
+      description: A paginated list of all existing submissions for an assignment.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - submission_html_comments
+            - rubric_assessment
+            - assignment
+            - visibility
+            - course
+            - user
+            - group
+            - read_status
+            - student_entered_score
+        required: false
+        description: Associations to include with the group.  "group" will add group_id and group_name.
+      - name: grouped
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If this argument is true, the response will be grouped by student groups.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submission__submissions'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/students/submissions:
+    get:
+      tags:
+      - Submissions
+      operationId: list_submissions_for_multiple_assignments_courses
+      summary: List submissions for multiple assignments
+      description: A paginated list of all existing submissions for a given set of students and assignments.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: student_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of student ids to return submissions for. If this argument is
+
+          omitted, return submissions for the calling user. Students may only list
+
+          their own submissions. Observers may only list those of associated
+
+          students. The special id "all" will return submissions for all students
+
+          in the course/section as appropriate.'
+      - name: assignment_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of assignments to return submissions for. If none are given,
+
+          submissions for all assignments are returned.'
+      - name: grouped
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is present, the response will be grouped by student,
+
+          rather than a flat array of submissions.'
+      - name: post_to_sis
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is set to true, the response will only include
+
+          submissions for assignments that have the post_to_sis flag set to true and
+
+          user enrollments that were added through sis.'
+      - name: submitted_since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'If this argument is set, the response will only include submissions that
+
+          were submitted after the specified date_time. This will exclude
+
+          submissions that do not have a submitted_at which will exclude unsubmitted
+
+          submissions.
+
+          The value must be formatted as ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: graded_since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'If this argument is set, the response will only include submissions that
+
+          were graded after the specified date_time. This will exclude
+
+          submissions that have not been graded.
+
+          The value must be formatted as ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: grading_period_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'The id of the grading period in which submissions are being requested
+
+          (Requires grading periods to exist on the account)'
+      - name: workflow_state
+        in: query
+        schema:
+          type: string
+          enum:
+          - submitted
+          - unsubmitted
+          - graded
+          - pending_review
+        required: false
+        description: The current status of the submission
+      - name: enrollment_state
+        in: query
+        schema:
+          type: string
+          enum:
+          - active
+          - concluded
+        required: false
+        description: 'The current state of the enrollments. If omitted will include all
+
+          enrollments that are not deleted.'
+      - name: state_based_on_date
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If omitted it is set to true. When set to false it will ignore the effective
+
+          state of the student enrollments and use the workflow_state for the
+
+          enrollments. The argument is ignored unless enrollment_state argument is
+
+          also passed.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - graded_at
+        required: false
+        description: 'The order submissions will be returned in.  Defaults to "id".  Doesn''t
+
+          affect results for "grouped" mode.'
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+        required: false
+        description: 'Determines whether ordered results are returned in ascending or descending
+
+          order.  Defaults to "ascending".  Doesn''t affect results for "grouped" mode.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - submission_html_comments
+            - rubric_assessment
+            - assignment
+            - total_scores
+            - visibility
+            - course
+            - user
+            - sub_assignment_submissions
+            - peer_review_submissions
+            - student_entered_score
+        required: false
+        description: 'Associations to include with the group. `total_scores` requires the
+
+          `grouped` argument.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/students/submissions:
+    get:
+      tags:
+      - Submissions
+      operationId: list_submissions_for_multiple_assignments_sections
+      summary: List submissions for multiple assignments
+      description: A paginated list of all existing submissions for a given set of students and assignments.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: student_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of student ids to return submissions for. If this argument is
+
+          omitted, return submissions for the calling user. Students may only list
+
+          their own submissions. Observers may only list those of associated
+
+          students. The special id "all" will return submissions for all students
+
+          in the course/section as appropriate.'
+      - name: assignment_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of assignments to return submissions for. If none are given,
+
+          submissions for all assignments are returned.'
+      - name: grouped
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is present, the response will be grouped by student,
+
+          rather than a flat array of submissions.'
+      - name: post_to_sis
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is set to true, the response will only include
+
+          submissions for assignments that have the post_to_sis flag set to true and
+
+          user enrollments that were added through sis.'
+      - name: submitted_since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'If this argument is set, the response will only include submissions that
+
+          were submitted after the specified date_time. This will exclude
+
+          submissions that do not have a submitted_at which will exclude unsubmitted
+
+          submissions.
+
+          The value must be formatted as ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: graded_since
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'If this argument is set, the response will only include submissions that
+
+          were graded after the specified date_time. This will exclude
+
+          submissions that have not been graded.
+
+          The value must be formatted as ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: grading_period_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'The id of the grading period in which submissions are being requested
+
+          (Requires grading periods to exist on the account)'
+      - name: workflow_state
+        in: query
+        schema:
+          type: string
+          enum:
+          - submitted
+          - unsubmitted
+          - graded
+          - pending_review
+        required: false
+        description: The current status of the submission
+      - name: enrollment_state
+        in: query
+        schema:
+          type: string
+          enum:
+          - active
+          - concluded
+        required: false
+        description: 'The current state of the enrollments. If omitted will include all
+
+          enrollments that are not deleted.'
+      - name: state_based_on_date
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If omitted it is set to true. When set to false it will ignore the effective
+
+          state of the student enrollments and use the workflow_state for the
+
+          enrollments. The argument is ignored unless enrollment_state argument is
+
+          also passed.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - graded_at
+        required: false
+        description: 'The order submissions will be returned in.  Defaults to "id".  Doesn''t
+
+          affect results for "grouped" mode.'
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+        required: false
+        description: 'Determines whether ordered results are returned in ascending or descending
+
+          order.  Defaults to "ascending".  Doesn''t affect results for "grouped" mode.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - submission_html_comments
+            - rubric_assessment
+            - assignment
+            - total_scores
+            - visibility
+            - course
+            - user
+            - sub_assignment_submissions
+            - peer_review_submissions
+            - student_entered_score
+        required: false
+        description: 'Associations to include with the group. `total_scores` requires the
+
+          `grouped` argument.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}:
+    get:
+      tags:
+      - Submissions
+      operationId: get_single_submission_courses
+      summary: Get a single submission
+      description: Get a single submission, based on user id.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - submission_html_comments
+            - rubric_assessment
+            - full_rubric_assessment
+            - visibility
+            - course
+            - user
+            - read_status
+            - student_entered_score
+        required: false
+        description: Associations to include with the group.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_submission_courses
+      summary: Grade or comment on a submission
+      description: 'Comment on and/or update the grading for a student''s assignment submission.
+
+        If any submission or rubric_assessment arguments are provided, the user
+
+        must have permission to manage grades in the appropriate context (course or
+
+        section).'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[attempt]:
+                  type: integer
+                  format: int64
+                  description: The attempt number (starts at 1) to associate the comment with.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                prefer_points_over_scheme:
+                  type: boolean
+                  description: Treat posted_grade as points if the value matches a grading scheme value
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[sticker]:
+                  type: string
+                  enum:
+                  - apple
+                  - basketball
+                  - bell
+                  - book
+                  - bookbag
+                  - briefcase
+                  - bus
+                  - calendar
+                  - chem
+                  - design
+                  - pencil
+                  - beaker
+                  - paintbrush
+                  - computer
+                  - column
+                  - pen
+                  - tablet
+                  - telescope
+                  - calculator
+                  - paperclip
+                  - composite_notebook
+                  - scissors
+                  - ruler
+                  - clock
+                  - globe
+                  - grad
+                  - gym
+                  - mail
+                  - microscope
+                  - mouse
+                  - music
+                  - notebook
+                  - page
+                  - panda1
+                  - panda2
+                  - panda3
+                  - panda4
+                  - panda5
+                  - panda6
+                  - panda7
+                  - panda8
+                  - panda9
+                  - presentation
+                  - science
+                  - science2
+                  - star
+                  - tag
+                  - tape
+                  - target
+                  - trophy
+                  description: Sets the sticker for the submission.
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                submission[peer_review]:
+                  type: boolean
+                  description: 'When true, updates the peer review sub assignment submission instead of
+
+                    the parent assignment submission. The parent assignment must have peer reviews
+
+                    enabled, the peer_review_allocation_and_grading feature flag must be enabled
+
+                    for the course, and the assignment must have an associated peer review
+
+                    sub assignment. If any of these conditions are not met, the API will
+
+                    return a 422 error.'
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[attempt]:
+                  type: integer
+                  format: int64
+                  description: The attempt number (starts at 1) to associate the comment with.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                prefer_points_over_scheme:
+                  type: boolean
+                  description: Treat posted_grade as points if the value matches a grading scheme value
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[sticker]:
+                  type: string
+                  enum:
+                  - apple
+                  - basketball
+                  - bell
+                  - book
+                  - bookbag
+                  - briefcase
+                  - bus
+                  - calendar
+                  - chem
+                  - design
+                  - pencil
+                  - beaker
+                  - paintbrush
+                  - computer
+                  - column
+                  - pen
+                  - tablet
+                  - telescope
+                  - calculator
+                  - paperclip
+                  - composite_notebook
+                  - scissors
+                  - ruler
+                  - clock
+                  - globe
+                  - grad
+                  - gym
+                  - mail
+                  - microscope
+                  - mouse
+                  - music
+                  - notebook
+                  - page
+                  - panda1
+                  - panda2
+                  - panda3
+                  - panda4
+                  - panda5
+                  - panda6
+                  - panda7
+                  - panda8
+                  - panda9
+                  - presentation
+                  - science
+                  - science2
+                  - star
+                  - tag
+                  - tape
+                  - target
+                  - trophy
+                  description: Sets the sticker for the submission.
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                submission[peer_review]:
+                  type: boolean
+                  description: 'When true, updates the peer review sub assignment submission instead of
+
+                    the parent assignment submission. The parent assignment must have peer reviews
+
+                    enabled, the peer_review_allocation_and_grading feature flag must be enabled
+
+                    for the course, and the assignment must have an associated peer review
+
+                    sub assignment. If any of these conditions are not met, the API will
+
+                    return a 422 error.'
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}:
+    get:
+      tags:
+      - Submissions
+      operationId: get_single_submission_sections
+      summary: Get a single submission
+      description: Get a single submission, based on user id.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - submission_html_comments
+            - rubric_assessment
+            - full_rubric_assessment
+            - visibility
+            - course
+            - user
+            - read_status
+            - student_entered_score
+        required: false
+        description: Associations to include with the group.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_submission_sections
+      summary: Grade or comment on a submission
+      description: 'Comment on and/or update the grading for a student''s assignment submission.
+
+        If any submission or rubric_assessment arguments are provided, the user
+
+        must have permission to manage grades in the appropriate context (course or
+
+        section).'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[attempt]:
+                  type: integer
+                  format: int64
+                  description: The attempt number (starts at 1) to associate the comment with.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                prefer_points_over_scheme:
+                  type: boolean
+                  description: Treat posted_grade as points if the value matches a grading scheme value
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[sticker]:
+                  type: string
+                  enum:
+                  - apple
+                  - basketball
+                  - bell
+                  - book
+                  - bookbag
+                  - briefcase
+                  - bus
+                  - calendar
+                  - chem
+                  - design
+                  - pencil
+                  - beaker
+                  - paintbrush
+                  - computer
+                  - column
+                  - pen
+                  - tablet
+                  - telescope
+                  - calculator
+                  - paperclip
+                  - composite_notebook
+                  - scissors
+                  - ruler
+                  - clock
+                  - globe
+                  - grad
+                  - gym
+                  - mail
+                  - microscope
+                  - mouse
+                  - music
+                  - notebook
+                  - page
+                  - panda1
+                  - panda2
+                  - panda3
+                  - panda4
+                  - panda5
+                  - panda6
+                  - panda7
+                  - panda8
+                  - panda9
+                  - presentation
+                  - science
+                  - science2
+                  - star
+                  - tag
+                  - tape
+                  - target
+                  - trophy
+                  description: Sets the sticker for the submission.
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                submission[peer_review]:
+                  type: boolean
+                  description: 'When true, updates the peer review sub assignment submission instead of
+
+                    the parent assignment submission. The parent assignment must have peer reviews
+
+                    enabled, the peer_review_allocation_and_grading feature flag must be enabled
+
+                    for the course, and the assignment must have an associated peer review
+
+                    sub assignment. If any of these conditions are not met, the API will
+
+                    return a 422 error.'
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[attempt]:
+                  type: integer
+                  format: int64
+                  description: The attempt number (starts at 1) to associate the comment with.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                prefer_points_over_scheme:
+                  type: boolean
+                  description: Treat posted_grade as points if the value matches a grading scheme value
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[sticker]:
+                  type: string
+                  enum:
+                  - apple
+                  - basketball
+                  - bell
+                  - book
+                  - bookbag
+                  - briefcase
+                  - bus
+                  - calendar
+                  - chem
+                  - design
+                  - pencil
+                  - beaker
+                  - paintbrush
+                  - computer
+                  - column
+                  - pen
+                  - tablet
+                  - telescope
+                  - calculator
+                  - paperclip
+                  - composite_notebook
+                  - scissors
+                  - ruler
+                  - clock
+                  - globe
+                  - grad
+                  - gym
+                  - mail
+                  - microscope
+                  - mouse
+                  - music
+                  - notebook
+                  - page
+                  - panda1
+                  - panda2
+                  - panda3
+                  - panda4
+                  - panda5
+                  - panda6
+                  - panda7
+                  - panda8
+                  - panda9
+                  - presentation
+                  - science
+                  - science2
+                  - star
+                  - tag
+                  - tape
+                  - target
+                  - trophy
+                  description: Sets the sticker for the submission.
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                submission[peer_review]:
+                  type: boolean
+                  description: 'When true, updates the peer review sub assignment submission instead of
+
+                    the parent assignment submission. The parent assignment must have peer reviews
+
+                    enabled, the peer_review_allocation_and_grading feature flag must be enabled
+
+                    for the course, and the assignment must have an associated peer review
+
+                    sub assignment. If any of these conditions are not met, the API will
+
+                    return a 422 error.'
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/anonymous_submissions/{anonymous_id}:
+    get:
+      tags:
+      - Submissions
+      operationId: get_single_submission_by_anonymous_id_courses
+      summary: Get a single submission by anonymous id
+      description: Get a single submission, based on the submission's anonymous id.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: anonymous_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - rubric_assessment
+            - full_rubric_assessment
+            - visibility
+            - course
+            - user
+            - read_status
+        required: false
+        description: Associations to include with the group.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_submission_by_anonymous_id_courses
+      summary: Grade or comment on a submission by anonymous id
+      description: 'Comment on and/or update the grading for a student''s assignment submission,
+
+        fetching the submission by anonymous id (instead of user id). If any
+
+        submission or rubric_assessment arguments are provided, the user must
+
+        have permission to manage grades in the appropriate context (course or
+
+        section).'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: anonymous_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/anonymous_submissions/{anonymous_id}:
+    get:
+      tags:
+      - Submissions
+      operationId: get_single_submission_by_anonymous_id_sections
+      summary: Get a single submission by anonymous id
+      description: Get a single submission, based on the submission's anonymous id.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: anonymous_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - submission_history
+            - submission_comments
+            - rubric_assessment
+            - full_rubric_assessment
+            - visibility
+            - course
+            - user
+            - read_status
+        required: false
+        description: Associations to include with the group.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_submission_by_anonymous_id_sections
+      summary: Grade or comment on a submission by anonymous id
+      description: 'Comment on and/or update the grading for a student''s assignment submission,
+
+        fetching the submission by anonymous id (instead of user id). If any
+
+        submission or rubric_assessment arguments are provided, the user must
+
+        have permission to manage grades in the appropriate context (course or
+
+        section).'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: anonymous_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment[text_comment]:
+                  type: string
+                  description: Add a textual comment to the submission.
+                comment[group_comment]:
+                  type: boolean
+                  description: 'Whether or not this comment should be sent to the entire group (defaults
+
+                    to false). Ignored if this is not a group assignment or if no text_comment
+
+                    is provided.'
+                comment[media_comment_id]:
+                  type: string
+                  description: 'Add an audio/video comment to the submission. Media comments can be added
+
+                    via this API, however, note that there is not yet an API to generate or
+
+                    list existing media comments, so this functionality is currently of
+
+                    limited use.'
+                comment[media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: The type of media comment being added.
+                comment[file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Attach files to this comment that were previously uploaded using the
+
+                    Submission Comment API''s files action'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - submission_comments
+                    - visibility
+                    - sub_assignment_submissions
+                    - peer_review_submissions
+                    - provisional_grades
+                    - group
+                  description: 'Associations to include with the submission. "submission_comments" is always included by default.
+
+                    - "submission_comments": Comments on the submission (always included)
+
+                    - "visibility": Whether the assignment is visible to the owner of the submission
+
+                    - "sub_assignment_submissions": Sub-assignment submissions for discussion checkpoints
+
+                    - "peer_review_submissions": Peer review submission data when peer review allocation and grading is enabled
+
+                    - "provisional_grades": Provisional grades (only available for moderated assignments)
+
+                    - "group": Group information (id and name) for group assignments'
+                submission[posted_grade]:
+                  type: string
+                  description: "Assign a score to the submission, updating both the \"score\" and \"grade\"\nfields on the submission record. This parameter can be passed in a few\ndifferent formats:\n\npoints:: A floating point or integral value, such as \"13.5\". The grade\n  will be interpreted directly as the score of the assignment.\n  Values above assignment.points_possible are allowed, for awarding\n  extra credit.\npercentage:: A floating point value appended with a percent sign, such as\n   \"40%\". The grade will be interpreted as a percentage score on the\n   assignment, where 100% == assignment.points_possible. Values above 100%\n   are allowed, for awarding extra credit.\nletter grade:: A letter grade, following the assignment's defined letter\n   grading scheme. For example, \"A-\". The resulting score will be the high\n   end of the defined range for the letter grade. For instance, if \"B\" is\n   defined as 86% to 84%, a letter grade of \"B\" will be worth 86%. The\n   letter grade will be rejected if the assignment does not have a defined\n   letter grading scheme. For more fine-grained control of scores, pass in\n   points or percentage rather than the letter grade.\n\"pass/complete/fail/incomplete\":: A string value of \"pass\" or \"complete\"\n   will give a score of 100%. \"fail\" or \"incomplete\" will give a score of\n   0.\n\nNote that assignments with grading_type of \"pass_fail\" can only be\nassigned a score of 0 or assignment.points_possible, nothing inbetween. If\na posted_grade in the \"points\" or \"percentage\" format is sent, the grade\nwill only be accepted if the grade equals one of those two values."
+                submission[excuse]:
+                  type: boolean
+                  description: Sets the "excused" status of an assignment.
+                submission[late_policy_status]:
+                  type: string
+                  description: "Sets the late policy status to either \"late\", \"missing\", \"extended\", \"none\", or null.\n  NB: \"extended\" values can only be set in the UI when the \"UI features for 'extended' Submissions\" Account Feature is on"
+                submission[seconds_late_override]:
+                  type: integer
+                  format: int64
+                  description: Sets the seconds late if late policy status is "late"
+                rubric_assessment:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: "Assign a rubric assessment to this assignment submission. The\nsub-parameters here depend on the rubric for the assignment. The general\nformat is, for each row in the rubric:\n\nThe points awarded for this row.\n  rubric_assessment[criterion_id][points]\n\nThe rating id for the row.\n  rubric_assessment[criterion_id][rating_id]\n\nComments to add for this row.\n  rubric_assessment[criterion_id][comments]\n\nFor example, if the assignment rubric is (in JSON format):\n  !!!javascript\n  [\n    {\n      'id': 'crit1',\n      'points': 10,\n      'description': 'Criterion 1',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Good', 'points': 10 },\n        { 'id': 'rat2', 'description': 'Poor', 'points': 3 }\n      ]\n    },\n    {\n      'id': 'crit2',\n      'points': 5,\n      'description': 'Criterion 2',\n      'ratings':\n      [\n        { 'id': 'rat1', 'description': 'Exemplary', 'points': 5 },\n        { 'id': 'rat2', 'description': 'Complete', 'points': 5 },\n        { 'id': 'rat3', 'description': 'Incomplete', 'points': 0 }\n      ]\n    }\n  ]\n\nThen a possible set of values for rubric_assessment would be:\n    rubric_assessment[crit1][points]=3&rubric_assessment[crit1][rating_id]=rat1&rubric_assessment[crit2][points]=5&rubric_assessment[crit2][rating_id]=rat2&rubric_assessment[crit2][comments]=Well%20Done."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/files:
+    post:
+      tags:
+      - Submissions
+      operationId: upload_file_courses
+      summary: Upload a file
+      description: 'Upload a file to a submission.
+
+
+        This API endpoint is the first step in uploading a file to a submission as a student.
+
+        See the {file:file.file_uploads.html File Upload Documentation} for details on the file upload workflow.
+
+
+        The final step of the file upload workflow will return the attachment data,
+
+        including the new file id. The caller can then POST to submit the
+
+        +online_upload+ assignment with these file ids.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/files:
+    post:
+      tags:
+      - Submissions
+      operationId: upload_file_sections
+      summary: Upload a file
+      description: 'Upload a file to a submission.
+
+
+        This API endpoint is the first step in uploading a file to a submission as a student.
+
+        See the {file:file.file_uploads.html File Upload Documentation} for details on the file upload workflow.
+
+
+        The final step of the file upload workflow will return the attachment data,
+
+        including the new file id. The caller can then POST to submit the
+
+        +online_upload+ assignment with these file ids.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/gradeable_students:
+    get:
+      tags:
+      - Submissions
+      operationId: list_gradeable_students
+      summary: List gradeable students
+      description: 'A paginated list of gradeable students for the assignment. The caller must have permission to view grades.
+
+
+        If anonymous grading is enabled for the current assignment and the allow_new_anonymous_id parameter is passed,
+
+        the returned data will not include any values identifying the student, but will instead include an
+
+        assignment-specific anonymous ID for each student.
+
+
+        Section-limited instructors will only see students in their own sections.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - name
+        required: false
+        description: Sort results by this field.
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: The sorting order. Defaults to 'asc'.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: UserDisplay if anonymous grading is not enabled for the assignment or if the allow_new_anonymous_id parameter is not true
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/gradeable_students:
+    get:
+      tags:
+      - Submissions
+      operationId: list_multiple_assignments_gradeable_students
+      summary: List multiple assignments gradeable students
+      description: 'A paginated list of students eligible to submit a list of assignments. The caller must have
+
+        permission to view grades for the requested course.
+
+
+        Section-limited instructors will only see students in their own sections.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: Assignments being requested
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/submissions/update_grades:
+    post:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_multiple_submissions_courses_submissions
+      summary: Grade or comment on multiple submissions
+      description: 'Update the grading and comments on multiple student''s assignment
+
+        submissions in an asynchronous job.
+
+
+        The user must have permission to manage grades in the appropriate context
+
+        (course or section).'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/update_grades:
+    post:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_multiple_submissions_courses_assignments
+      summary: Grade or comment on multiple submissions
+      description: 'Update the grading and comments on multiple student''s assignment
+
+        submissions in an asynchronous job.
+
+
+        The user must have permission to manage grades in the appropriate context
+
+        (course or section).'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/submissions/update_grades:
+    post:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_multiple_submissions_sections_submissions
+      summary: Grade or comment on multiple submissions
+      description: 'Update the grading and comments on multiple student''s assignment
+
+        submissions in an asynchronous job.
+
+
+        The user must have permission to manage grades in the appropriate context
+
+        (course or section).'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/update_grades:
+    post:
+      tags:
+      - Submissions
+      operationId: grade_or_comment_on_multiple_submissions_sections_assignments
+      summary: Grade or comment on multiple submissions
+      description: 'Update the grading and comments on multiple student''s assignment
+
+        submissions in an asynchronous job.
+
+
+        The user must have permission to manage grades in the appropriate context
+
+        (course or section).'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grade_data[<student_id>][posted_grade]:
+                  type: string
+                  description: 'See documentation for the posted_grade argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][excuse]:
+                  type: boolean
+                  description: 'See documentation for the excuse argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][rubric_assessment]:
+                  type: string
+                  x-canvas-declared-type: RubricAssessment
+                  description: 'See documentation for the rubric_assessment argument in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<student_id>][text_comment]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][group_comment]:
+                  type: boolean
+                  description: no description
+                grade_data[<student_id>][media_comment_id]:
+                  type: string
+                  description: no description
+                grade_data[<student_id>][media_comment_type]:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: no description
+                grade_data[<student_id>][file_ids]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'See documentation for the comment[] arguments in the
+
+                    {api:SubmissionsApiController#update Submissions Update} documentation'
+                grade_data[<assignment_id>][<student_id>]:
+                  type: integer
+                  format: int64
+                  description: 'Specifies which assignment to grade.  This argument is not necessary when
+
+                    using the assignment-specific endpoints.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/read:
+    put:
+      tags:
+      - Submissions
+      operationId: mark_submission_as_read_courses
+      summary: Mark submission as read
+      description: 'No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    delete:
+      tags:
+      - Submissions
+      operationId: mark_submission_as_unread_courses
+      summary: Mark submission as unread
+      description: 'No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/read:
+    put:
+      tags:
+      - Submissions
+      operationId: mark_submission_as_read_sections
+      summary: Mark submission as read
+      description: 'No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    delete:
+      tags:
+      - Submissions
+      operationId: mark_submission_as_unread_sections
+      summary: Mark submission as unread
+      description: 'No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/submissions/bulk_mark_read:
+    put:
+      tags:
+      - Submissions
+      operationId: mark_bulk_submissions_as_read_courses
+      summary: Mark bulk submissions as read
+      description: 'Accepts a string array of submission ids. Loops through and marks each submission as read
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                submissionIds:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                submissionIds:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/submissions/bulk_mark_read:
+    put:
+      tags:
+      - Submissions
+      operationId: mark_bulk_submissions_as_read_sections
+      summary: Mark bulk submissions as read
+      description: 'Accepts a string array of submission ids. Loops through and marks each submission as read
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                submissionIds:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                submissionIds:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/read/{item}:
+    put:
+      tags:
+      - Submissions
+      operationId: mark_submission_item_as_read_courses
+      summary: Mark submission item as read
+      description: 'No request fields are necessary.
+
+
+        A submission item can be "grade", "comment" or "rubric"
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: item
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/read/{item}:
+    put:
+      tags:
+      - Submissions
+      operationId: mark_submission_item_as_read_sections
+      summary: Mark submission item as read
+      description: 'No request fields are necessary.
+
+
+        A submission item can be "grade", "comment" or "rubric"
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: item
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/submissions/{user_id}/clear_unread:
+    put:
+      tags:
+      - Submissions
+      operationId: clear_unread_status_for_all_submissions_courses
+      summary: Clear unread status for all submissions
+      description: 'Site-admin-only endpoint.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/submissions/{user_id}/clear_unread:
+    put:
+      tags:
+      - Submissions
+      operationId: clear_unread_status_for_all_submissions_sections
+      summary: Clear unread status for all submissions
+      description: 'Site-admin-only endpoint.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/rubric_comments/read:
+    get:
+      tags:
+      - Submissions
+      operationId: get_rubric_assessments_read_state_courses_rubric_comments
+      summary: Get rubric assessments read state
+      description: Return whether new rubric comments/grading made on a submission have been seen by the student being assessed.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: mark_rubric_assessments_as_read_courses_rubric_comments
+      summary: Mark rubric assessments as read
+      description: 'Indicate that rubric comments/grading made on a submission have been read by the student being assessed.
+
+        Only the student who owns the submission can use this endpoint.
+
+
+        NOTE: Rubric assessments will be marked as read automatically when they are viewed in Canvas web.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/rubric_assessments/read:
+    get:
+      tags:
+      - Submissions
+      operationId: get_rubric_assessments_read_state_courses_rubric_assessments
+      summary: Get rubric assessments read state
+      description: Return whether new rubric comments/grading made on a submission have been seen by the student being assessed.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: mark_rubric_assessments_as_read_courses_rubric_assessments
+      summary: Mark rubric assessments as read
+      description: 'Indicate that rubric comments/grading made on a submission have been read by the student being assessed.
+
+        Only the student who owns the submission can use this endpoint.
+
+
+        NOTE: Rubric assessments will be marked as read automatically when they are viewed in Canvas web.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/rubric_comments/read:
+    get:
+      tags:
+      - Submissions
+      operationId: get_rubric_assessments_read_state_sections_rubric_comments
+      summary: Get rubric assessments read state
+      description: Return whether new rubric comments/grading made on a submission have been seen by the student being assessed.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: mark_rubric_assessments_as_read_sections_rubric_comments
+      summary: Mark rubric assessments as read
+      description: 'Indicate that rubric comments/grading made on a submission have been read by the student being assessed.
+
+        Only the student who owns the submission can use this endpoint.
+
+
+        NOTE: Rubric assessments will be marked as read automatically when they are viewed in Canvas web.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/rubric_assessments/read:
+    get:
+      tags:
+      - Submissions
+      operationId: get_rubric_assessments_read_state_sections_rubric_assessments
+      summary: Get rubric assessments read state
+      description: Return whether new rubric comments/grading made on a submission have been seen by the student being assessed.
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: mark_rubric_assessments_as_read_sections_rubric_assessments
+      summary: Mark rubric assessments as read
+      description: 'Indicate that rubric comments/grading made on a submission have been read by the student being assessed.
+
+        Only the student who owns the submission can use this endpoint.
+
+
+        NOTE: Rubric assessments will be marked as read automatically when they are viewed in Canvas web.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submissions/{user_id}/document_annotations/read:
+    get:
+      tags:
+      - Submissions
+      operationId: get_document_annotations_read_state_courses
+      summary: Get document annotations read state
+      description: Return whether annotations made on a submitted document have been read by the student
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: mark_document_annotations_as_read_courses
+      summary: Mark document annotations as read
+      description: 'Indicate that annotations made on a submitted document have been read by the student.
+
+        Only the student who owns the submission can use this endpoint.
+
+
+        NOTE: Document annotations will be marked as read automatically when they are viewed in Canvas web.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submissions/{user_id}/document_annotations/read:
+    get:
+      tags:
+      - Submissions
+      operationId: get_document_annotations_read_state_sections
+      summary: Get document annotations read state
+      description: Return whether annotations made on a submitted document have been read by the student
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+    put:
+      tags:
+      - Submissions
+      operationId: mark_document_annotations_as_read_sections
+      summary: Mark document annotations as read
+      description: 'Indicate that annotations made on a submitted document have been read by the student.
+
+        Only the student who owns the submission can use this endpoint.
+
+
+        NOTE: Document annotations will be marked as read automatically when they are viewed in Canvas web.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/courses/{course_id}/assignments/{assignment_id}/submission_summary:
+    get:
+      tags:
+      - Submissions
+      operationId: submission_summary_courses
+      summary: Submission Summary
+      description: 'Returns the number of submissions for the given assignment based on gradeable students
+
+        that fall into three categories: graded, ungraded, not submitted.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grouped
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If this argument is true, the response will take into account student groups.
+      - name: include_deactivated
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is true, the response will include deactivated students in the summary
+
+          (defaults to false).'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+  /v1/sections/{section_id}/assignments/{assignment_id}/submission_summary:
+    get:
+      tags:
+      - Submissions
+      operationId: submission_summary_sections
+      summary: Submission Summary
+      description: 'Returns the number of submissions for the given assignment based on gradeable students
+
+        that fall into three categories: graded, ungraded, not submitted.'
+      parameters:
+      - name: section_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grouped
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If this argument is true, the response will take into account student groups.
+      - name: include_deactivated
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If this argument is true, the response will include deactivated students in the summary
+
+          (defaults to false).'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/submissions.html
+components:
+  schemas:
+    SubmissionComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 37
+        author_id:
+          type: integer
+          example: 134
+        author_name:
+          type: string
+          example: Toph Beifong
+        author:
+          type: string
+          example: '{}'
+          description: Abbreviated user object UserDisplay (see users API).
+        comment:
+          type: string
+          example: Well here's the thing...
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-01-01T01:00:00Z'
+        edited_at:
+          type: string
+          format: date-time
+          example: '2012-01-02T01:00:00Z'
+        media_comment:
+          type: string
+    Submission__submissions:
+      type: object
+      properties:
+        assignment_id:
+          type: integer
+          example: 23
+          description: The submission's assignment id
+        assignment:
+          type: string
+          description: The submission's assignment (see the assignments API) (optional)
+        course:
+          type: string
+          description: The submission's course (see the course API) (optional)
+        attempt:
+          type: integer
+          example: 1
+          description: This is the submission attempt number.
+        body:
+          type: string
+          example: There are three factors too...
+          description: The content of the submission, if it was submitted directly in a text field.
+        grade:
+          type: string
+          example: A-
+          description: The grade for the submission, translated into the assignment grading scheme (so a letter grade, for example).
+        grade_matches_current_submission:
+          type: boolean
+          example: true
+          description: A boolean flag which is false if the student has re-submitted since the submission was last graded.
+        html_url:
+          type: string
+          example: http://example.com/courses/255/assignments/543/submissions/134
+          description: URL to the submission. This will require the user to log in.
+        preview_url:
+          type: string
+          example: http://example.com/courses/255/assignments/543/submissions/134?preview=1
+          description: URL to the submission preview. This will require the user to log in.
+        score:
+          type: number
+          example: 13.5
+          description: The raw score
+        submission_comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmissionComment'
+          description: Associated comments for a submission (optional)
+        submission_type:
+          type: string
+          example: online_text_entry
+          description: 'The types of submission ex: (''online_text_entry''|''online_url''|''online_upload''|''online_quiz''|''media_recording''|''student_annotation'')'
+        submitted_at:
+          type: string
+          format: date-time
+          example: '2012-01-01T01:00:00Z'
+          description: The timestamp when the assignment was submitted
+        url:
+          type: string
+          description: The URL of the submission (for 'online_url' submissions).
+        user_id:
+          type: integer
+          example: 134
+          description: The id of the user who created the submission
+        grader_id:
+          type: integer
+          example: 86
+          description: The id of the user who graded the submission. This will be null for submissions that haven't been graded yet. It will be a positive number if a real user has graded the submission and a negative number if the submission was graded by a process (e.g. Quiz autograder and autograding LTI tools).  Specifically autograded quizzes set grader_id to the negative of the quiz id.  Submissions autograded by LTI tools set grader_id to the negative of the tool id.
+        graded_at:
+          type: string
+          format: date-time
+          example: '2012-01-02T03:05:34Z'
+        user:
+          type: string
+          description: The submissions user (see user API) (optional)
+        late:
+          type: boolean
+          example: false
+          description: Whether the submission was made after the applicable due date
+        assignment_visible:
+          type: boolean
+          example: true
+          description: Whether the assignment is visible to the user who submitted the assignment. Submissions where `assignment_visible` is false no longer count towards the student's grade and the assignment can no longer be accessed by the student. `assignment_visible` becomes false for submissions that do not have a grade and whose assignment is no longer assigned to the student's section.
+        excused:
+          type: boolean
+          example: true
+          description: Whether the assignment is excused.  Excused assignments have no impact on a user's grade.
+        missing:
+          type: boolean
+          example: true
+          description: Whether the assignment is missing.
+        late_policy_status:
+          type: string
+          example: missing
+          description: The status of the submission in relation to the late policy. Can be late, missing, extended, none, or null.
+        points_deducted:
+          type: number
+          example: 12.3
+          description: The amount of points automatically deducted from the score by the missing/late policy for a late or missing assignment.
+        seconds_late:
+          type: number
+          example: 300
+          description: The amount of time, in seconds, that an submission is late by.
+        workflow_state:
+          type: string
+          example: submitted
+          description: The current state of the submission
+        extra_attempts:
+          type: number
+          example: 10
+          description: Extra submission attempts allowed for the given user and assignment.
+        anonymous_id:
+          type: string
+          example: acJ4Q
+          description: A unique short ID identifying this submission without reference to the owning user. Only included if the caller has administrator access for the current account.
+        posted_at:
+          type: string
+          format: date-time
+          example: '2020-01-02T11:10:30Z'
+          description: The date this submission was posted to the student, or nil if it has not been posted.
+        read_status:
+          type: string
+          example: read
+          description: The read status of this submission for the given user (optional). Including read_status will mark submission(s) as read.
+        redo_request:
+          type: boolean
+          example: 'true'
+          description: This indicates whether the submission has been reassigned by the instructor.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

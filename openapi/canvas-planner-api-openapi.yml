@@ -1,0 +1,811 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Planner API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Planner
+  x-resource: planner
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/planner.html
+paths:
+  /v1/planner/items:
+    get:
+      tags:
+      - Planner
+      operationId: list_planner_items_planner
+      summary: List planner items
+      description: 'Retrieve the paginated list of objects to be shown on the planner for the
+
+        current user with the associated planner override to override an item''s
+
+        visibility if set.
+
+
+        Planner items for a student may also be retrieved by a linked observer. Use
+
+        the path that accepts a user_id and supply the student''s id.'
+      parameters:
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return items starting from the given date.
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return items up to the given date.
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of context codes of courses and/or groups whose items you want to see.
+
+          If not specified, defaults to all contexts associated to the current user.
+
+          Note that concluded courses will be ignored unless specified in the includes[]
+
+          parameter. The format of this field is the context type, followed by an underscore,
+
+          followed by the context id. For example: course_42, group_123'
+      - name: observed_user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Return planner items for the given observed user. Must be accompanied by context_codes[].
+
+          The user making the request must be observing the observed user in all the courses specified by
+
+          context_codes[].'
+      - name: filter
+        in: query
+        schema:
+          type: string
+          enum:
+          - new_activity
+        required: false
+        description: Only return items that have new or unread activity
+      - name: filter
+        in: query
+        schema:
+          type: string
+          enum:
+          - incomplete_items
+        required: false
+        description: Only return items that are not completed (excludes items with planner_override.marked_complete = true or submitted assignments)
+      - name: filter
+        in: query
+        schema:
+          type: string
+          enum:
+          - complete_items
+        required: false
+        description: Only return items that are completed (includes items with planner_override.marked_complete = true or submitted assignments)
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+  /v1/users/{user_id}/planner/items:
+    get:
+      tags:
+      - Planner
+      operationId: list_planner_items_users
+      summary: List planner items
+      description: 'Retrieve the paginated list of objects to be shown on the planner for the
+
+        current user with the associated planner override to override an item''s
+
+        visibility if set.
+
+
+        Planner items for a student may also be retrieved by a linked observer. Use
+
+        the path that accepts a user_id and supply the student''s id.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return items starting from the given date.
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return items up to the given date.
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of context codes of courses and/or groups whose items you want to see.
+
+          If not specified, defaults to all contexts associated to the current user.
+
+          Note that concluded courses will be ignored unless specified in the includes[]
+
+          parameter. The format of this field is the context type, followed by an underscore,
+
+          followed by the context id. For example: course_42, group_123'
+      - name: observed_user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Return planner items for the given observed user. Must be accompanied by context_codes[].
+
+          The user making the request must be observing the observed user in all the courses specified by
+
+          context_codes[].'
+      - name: filter
+        in: query
+        schema:
+          type: string
+          enum:
+          - new_activity
+        required: false
+        description: Only return items that have new or unread activity
+      - name: filter
+        in: query
+        schema:
+          type: string
+          enum:
+          - incomplete_items
+        required: false
+        description: Only return items that are not completed (excludes items with planner_override.marked_complete = true or submitted assignments)
+      - name: filter
+        in: query
+        schema:
+          type: string
+          enum:
+          - complete_items
+        required: false
+        description: Only return items that are completed (includes items with planner_override.marked_complete = true or submitted assignments)
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+  /v1/planner_notes:
+    get:
+      tags:
+      - Planner
+      operationId: list_planner_notes
+      summary: List planner notes
+      description: 'Retrieve the paginated list of planner notes
+
+
+        Retrieve planner note for a user'
+      parameters:
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'Only return notes with todo dates since the start_date (inclusive).
+
+          No default. The value should be formatted as: yyyy-mm-dd or
+
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date-time
+        required: false
+        description: 'Only return notes with todo dates before the end_date (inclusive).
+
+          No default. The value should be formatted as: yyyy-mm-dd or
+
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ.
+
+          If end_date and start_date are both specified and equivalent,
+
+          then only notes with todo dates on that day are returned.'
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of context codes of courses whose notes you want to see.
+
+          If not specified, defaults to all contexts that the user belongs to.
+
+          The format of this field is the context type, followed by an
+
+          underscore, followed by the context id. For example: course_42
+
+          Including a code matching the user''s own context code (e.g. user_1)
+
+          will include notes that are not associated with any particular course.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlannerNote'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+    post:
+      tags:
+      - Planner
+      operationId: create_planner_note
+      summary: Create a planner note
+      description: Create a planner note for the current user
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the planner note.
+                details:
+                  type: string
+                  description: Text of the planner note.
+                todo_date:
+                  type: string
+                  format: date
+                  description: 'The date where this planner note should appear in the planner.
+
+                    The value should be formatted as: yyyy-mm-dd.'
+                course_id:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course to associate with the planner note. The caller must be able to view the course in order to
+
+                    associate it with a planner note.'
+                linked_object_type:
+                  type: string
+                  description: 'The type of a learning object to link to this planner note. Must be used in conjunction wtih linked_object_id
+
+                    and course_id. Valid linked_object_type values are:
+
+                    ''announcement'', ''assignment'', ''discussion_topic'', ''wiki_page'', ''quiz'''
+                linked_object_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of a learning object to link to this planner note. Must be used in conjunction with linked_object_type
+
+                    and course_id. The object must be in the same course as specified by course_id. If the title argument is not
+
+                    provided, the planner note will use the learning object''s title as its title. Only one planner note may be
+
+                    linked to a specific learning object.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the planner note.
+                details:
+                  type: string
+                  description: Text of the planner note.
+                todo_date:
+                  type: string
+                  format: date
+                  description: 'The date where this planner note should appear in the planner.
+
+                    The value should be formatted as: yyyy-mm-dd.'
+                course_id:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course to associate with the planner note. The caller must be able to view the course in order to
+
+                    associate it with a planner note.'
+                linked_object_type:
+                  type: string
+                  description: 'The type of a learning object to link to this planner note. Must be used in conjunction wtih linked_object_id
+
+                    and course_id. Valid linked_object_type values are:
+
+                    ''announcement'', ''assignment'', ''discussion_topic'', ''wiki_page'', ''quiz'''
+                linked_object_id:
+                  type: integer
+                  format: int64
+                  description: 'The id of a learning object to link to this planner note. Must be used in conjunction with linked_object_type
+
+                    and course_id. The object must be in the same course as specified by course_id. If the title argument is not
+
+                    provided, the planner note will use the learning object''s title as its title. Only one planner note may be
+
+                    linked to a specific learning object.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerNote'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+  /v1/planner_notes/{id}:
+    get:
+      tags:
+      - Planner
+      operationId: show_planner_note
+      summary: Show a planner note
+      description: Retrieve a planner note for the current user
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerNote'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+    put:
+      tags:
+      - Planner
+      operationId: update_planner_note
+      summary: Update a planner note
+      description: Update a planner note for the current user
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the planner note.
+                details:
+                  type: string
+                  description: Text of the planner note.
+                todo_date:
+                  type: string
+                  format: date
+                  description: 'The date where this planner note should appear in the planner.
+
+                    The value should be formatted as: yyyy-mm-dd.'
+                course_id:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course to associate with the planner note. The caller must be able to view the course in order to
+
+                    associate it with a planner note. Use a null or empty value to remove a planner note from a course. Note that if
+
+                    the planner note is linked to a learning object, its course_id cannot be changed.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title of the planner note.
+                details:
+                  type: string
+                  description: Text of the planner note.
+                todo_date:
+                  type: string
+                  format: date
+                  description: 'The date where this planner note should appear in the planner.
+
+                    The value should be formatted as: yyyy-mm-dd.'
+                course_id:
+                  type: integer
+                  format: int64
+                  description: 'The ID of the course to associate with the planner note. The caller must be able to view the course in order to
+
+                    associate it with a planner note. Use a null or empty value to remove a planner note from a course. Note that if
+
+                    the planner note is linked to a learning object, its course_id cannot be changed.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerNote'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+    delete:
+      tags:
+      - Planner
+      operationId: delete_planner_note
+      summary: Delete a planner note
+      description: Delete a planner note for the current user
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerNote'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+  /v1/planner/overrides:
+    get:
+      tags:
+      - Planner
+      operationId: list_planner_overrides
+      summary: List planner overrides
+      description: Retrieve a planner override for the current user
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlannerOverride'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+    post:
+      tags:
+      - Planner
+      operationId: create_planner_override
+      summary: Create a planner override
+      description: Create a planner override for the current user
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plannable_type:
+                  type: string
+                  enum:
+                  - announcement
+                  - assignment
+                  - discussion_topic
+                  - quiz
+                  - wiki_page
+                  - planner_note
+                  - calendar_event
+                  - assessment_request
+                  - sub_assignment
+                  - peer_review_sub_assignment
+                  description: Type of the item that you are overriding in the planner
+                plannable_id:
+                  type: integer
+                  format: int64
+                  description: ID of the item that you are overriding in the planner
+                marked_complete:
+                  type: boolean
+                  description: If this is true, the item will show in the planner as completed
+                dismissed:
+                  type: boolean
+                  description: If this is true, the item will not show in the opportunities list
+              required:
+              - plannable_type
+              - plannable_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                plannable_type:
+                  type: string
+                  enum:
+                  - announcement
+                  - assignment
+                  - discussion_topic
+                  - quiz
+                  - wiki_page
+                  - planner_note
+                  - calendar_event
+                  - assessment_request
+                  - sub_assignment
+                  - peer_review_sub_assignment
+                  description: Type of the item that you are overriding in the planner
+                plannable_id:
+                  type: integer
+                  format: int64
+                  description: ID of the item that you are overriding in the planner
+                marked_complete:
+                  type: boolean
+                  description: If this is true, the item will show in the planner as completed
+                dismissed:
+                  type: boolean
+                  description: If this is true, the item will not show in the opportunities list
+              required:
+              - plannable_type
+              - plannable_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerOverride'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+  /v1/planner/overrides/{id}:
+    get:
+      tags:
+      - Planner
+      operationId: show_planner_override
+      summary: Show a planner override
+      description: Retrieve a planner override for the current user
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerOverride'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+    put:
+      tags:
+      - Planner
+      operationId: update_planner_override
+      summary: Update a planner override
+      description: Update a planner override's visibilty for the current user
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                marked_complete:
+                  type: string
+                  description: determines whether the planner item is marked as completed
+                dismissed:
+                  type: string
+                  description: determines whether the planner item shows in the opportunities list
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                marked_complete:
+                  type: string
+                  description: determines whether the planner item is marked as completed
+                dismissed:
+                  type: string
+                  description: determines whether the planner item shows in the opportunities list
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerOverride'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+    delete:
+      tags:
+      - Planner
+      operationId: delete_planner_override
+      summary: Delete a planner override
+      description: Delete a planner override for the current user
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlannerOverride'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/planner.html
+components:
+  schemas:
+    PlannerOverride:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 234
+          description: The ID of the planner override
+        plannable_type:
+          type: string
+          example: Assignment
+          description: The type of the associated object for the planner override
+        plannable_id:
+          type: integer
+          example: 1578941
+          description: The id of the associated object for the planner override
+        user_id:
+          type: integer
+          example: 1578941
+          description: The id of the associated user for the planner override
+        assignment_id:
+          type: integer
+          example: 1578941
+          description: The id of the plannable's associated assignment, if it has one
+        workflow_state:
+          type: string
+          example: published
+          description: The current published state of the item, synced with the associated object
+        marked_complete:
+          type: boolean
+          example: false
+          description: Controls whether or not the associated plannable item is marked complete on the planner
+        dismissed:
+          type: boolean
+          example: false
+          description: Controls whether or not the associated plannable item shows up in the opportunities list
+        created_at:
+          type: string
+          format: date-time
+          example: '2017-05-09T10:12:00Z'
+          description: The datetime of when the planner override was created
+        updated_at:
+          type: string
+          format: date-time
+          example: '2017-05-09T10:12:00Z'
+          description: The datetime of when the planner override was updated
+        deleted_at:
+          type: string
+          format: date-time
+          example: '2017-05-15T12:12:00Z'
+          description: The datetime of when the planner override was deleted, if applicable
+      description: User-controlled setting for whether an item should be displayed on the planner or not
+    PlannerNote:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 234
+          description: The ID of the planner note
+        title:
+          type: string
+          example: Bring books tomorrow
+          description: The title for a planner note
+        description:
+          type: string
+          example: I need to bring books tomorrow for my course on biology
+          description: The description of the planner note
+        user_id:
+          type: integer
+          example: 1578941
+          description: The id of the associated user creating the planner note
+        workflow_state:
+          type: string
+          example: active
+          description: The current published state of the planner note
+        course_id:
+          type: integer
+          example: 1578941
+          description: The course that the note is in relation too, if applicable
+        todo_date:
+          type: string
+          format: date-time
+          example: '2017-05-09T10:12:00Z'
+          description: The datetime of when the planner note should show up on their planner
+        linked_object_type:
+          type: string
+          example: assignment
+          description: the type of the linked learning object
+        linked_object_id:
+          type: integer
+          example: 131072
+          description: the id of the linked learning object
+        linked_object_html_url:
+          type: string
+          example: https://canvas.example.com/courses/1578941/assignments/131072
+          description: the Canvas web URL of the linked learning object
+        linked_object_url:
+          type: string
+          example: https://canvas.example.com/api/v1/courses/1578941/assignments/131072
+          description: the API URL of the linked learning object
+      description: A planner note
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

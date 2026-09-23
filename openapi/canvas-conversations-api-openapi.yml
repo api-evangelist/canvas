@@ -1,0 +1,1043 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Conversations API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Conversations
+  x-resource: conversations
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/conversations.html
+paths:
+  /v1/conversations:
+    get:
+      tags:
+      - Conversations
+      operationId: list_conversations
+      summary: List conversations
+      description: 'Returns the paginated list of conversations for the current user, most
+
+        recent ones first.
+
+
+        "uuid:W9GQIcdoDTqwX8mxIunDQQVL6WZTaGmpa5xovmCB", or "course_456".
+
+        For users, you can use either their numeric ID or UUID prefixed with "uuid:".
+
+        Can be an array (by setting "filter[]") or single value (by setting "filter")'
+      parameters:
+      - name: scope
+        in: query
+        schema:
+          type: string
+          enum:
+          - unread
+          - starred
+          - archived
+          - sent
+        required: false
+        description: 'When set, only return conversations of the specified type. For example,
+
+          set to "unread" to return only conversations that haven''t been read.
+
+          The default behavior is to return all non-archived conversations (i.e.
+
+          read and unread).'
+      - name: filter
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'When set, only return conversations for the specified courses, groups
+
+          or users. The id should be prefixed with its type, e.g. "user_123",'
+      - name: filter_mode
+        in: query
+        schema:
+          type: string
+          enum:
+          - and
+          - or
+          - default or
+        required: false
+        description: 'When filter[] contains multiple filters, combine them with this mode,
+
+          filtering conversations that at have at least all of the contexts ("and")
+
+          or at least one of the contexts ("or")'
+      - name: interleave_submissions
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: '(Obsolete) Submissions are no
+
+          longer linked to conversations. This parameter is ignored.'
+      - name: include_all_conversation_ids
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Default is false. If true,
+
+          the top-level element of the response will be an object rather than
+
+          an array, and will have the keys "conversations" which will contain the
+
+          paged conversation data, and "conversation_ids" which will contain the
+
+          ids of all conversations under this scope/filter in the same order.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - participant_avatars
+            - uuid
+        required: false
+        description: '"participant_avatars":: Optionally include an "avatar_url" key for each user participating in the conversation
+
+          "uuid":: Optionally include an "uuid" key for each user participating in the conversation'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+    post:
+      tags:
+      - Conversations
+      operationId: create_conversation
+      summary: Create a conversation
+      description: 'Create a new conversation with one or more recipients. If there is already
+
+        an existing private conversation with the given recipients, it will be
+
+        reused.
+
+
+        (either numeric IDs or UUIDs prefixed with "uuid:"),
+
+        or course/group ids prefixed with "course_" or "group_" respectively, e.g.
+
+        recipients[]=1&recipients[]=uuid:W9GQIcdoDTqwX8mxIunDQQVL6WZTaGmpa5xovmCBx&recipients[]=course_3.
+
+        If the course/group has over 100 enrollments, ''bulk_message'' and ''group_conversation'' must be
+
+        set to true.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of recipient ids. These may be user ids
+                subject:
+                  type: string
+                  description: 'The subject of the conversation. This is ignored when reusing a
+
+                    conversation. Maximum length is 255 characters.'
+                body:
+                  type: string
+                  description: The message to be sent
+                force_new:
+                  type: boolean
+                  description: Forces a new message to be created, even if there is an existing private conversation.
+                group_conversation:
+                  type: boolean
+                  description: 'Defaults to false.  When false, individual private conversations will be
+
+                    created with each recipient. If true, this will be a group conversation
+
+                    (i.e. all recipients may see all messages and replies). Must be set true if
+
+                    the number of recipients is over the set maximum (default is 100).'
+                attachment_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of attachments ids. These must be files that have been previously
+
+                    uploaded to the sender''s "conversation attachments" folder.'
+                media_comment_id:
+                  type: string
+                  description: 'Media comment id of an audio or video file to be associated with this
+
+                    message.'
+                media_comment_type:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: Type of the associated media file
+                mode:
+                  type: string
+                  enum:
+                  - sync
+                  - async
+                  description: 'Determines whether the messages will be created/sent synchronously or
+
+                    asynchronously. Defaults to sync, and this option is ignored if this is a
+
+                    group conversation or there is just one recipient (i.e. it must be a bulk
+
+                    private message). When sent async, the response will be an empty array
+
+                    (batch status can be queried via the {api:ConversationsController#batches batches API})'
+                scope:
+                  type: string
+                  enum:
+                  - unread
+                  - starred
+                  - archived
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter_mode:
+                  type: string
+                  enum:
+                  - and
+                  - or
+                  - default or
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                context_code:
+                  type: string
+                  description: 'The course or group that is the context for this conversation. Same format
+
+                    as courses or groups in the recipients argument.'
+                display_from:
+                  type: string
+                  description: 'Display name to show as the message sender instead of the
+
+                    authenticated user''s name. Only honored when the request is
+
+                    authenticated with a site admin service user token.'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - uuid
+                  description: '"uuid":: Optionally include an "uuid" key for each user participating in the conversation'
+              required:
+              - recipients
+              - body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of recipient ids. These may be user ids
+                subject:
+                  type: string
+                  description: 'The subject of the conversation. This is ignored when reusing a
+
+                    conversation. Maximum length is 255 characters.'
+                body:
+                  type: string
+                  description: The message to be sent
+                force_new:
+                  type: boolean
+                  description: Forces a new message to be created, even if there is an existing private conversation.
+                group_conversation:
+                  type: boolean
+                  description: 'Defaults to false.  When false, individual private conversations will be
+
+                    created with each recipient. If true, this will be a group conversation
+
+                    (i.e. all recipients may see all messages and replies). Must be set true if
+
+                    the number of recipients is over the set maximum (default is 100).'
+                attachment_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of attachments ids. These must be files that have been previously
+
+                    uploaded to the sender''s "conversation attachments" folder.'
+                media_comment_id:
+                  type: string
+                  description: 'Media comment id of an audio or video file to be associated with this
+
+                    message.'
+                media_comment_type:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: Type of the associated media file
+                mode:
+                  type: string
+                  enum:
+                  - sync
+                  - async
+                  description: 'Determines whether the messages will be created/sent synchronously or
+
+                    asynchronously. Defaults to sync, and this option is ignored if this is a
+
+                    group conversation or there is just one recipient (i.e. it must be a bulk
+
+                    private message). When sent async, the response will be an empty array
+
+                    (batch status can be queried via the {api:ConversationsController#batches batches API})'
+                scope:
+                  type: string
+                  enum:
+                  - unread
+                  - starred
+                  - archived
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter_mode:
+                  type: string
+                  enum:
+                  - and
+                  - or
+                  - default or
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                context_code:
+                  type: string
+                  description: 'The course or group that is the context for this conversation. Same format
+
+                    as courses or groups in the recipients argument.'
+                display_from:
+                  type: string
+                  description: 'Display name to show as the message sender instead of the
+
+                    authenticated user''s name. Only honored when the request is
+
+                    authenticated with a site admin service user token.'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - uuid
+                  description: '"uuid":: Optionally include an "uuid" key for each user participating in the conversation'
+              required:
+              - recipients
+              - body
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+    put:
+      tags:
+      - Conversations
+      operationId: batch_update_conversations
+      summary: Batch update conversations
+      description: 'Perform a change on a set of conversations. Operates asynchronously; use the {api:ProgressController#show progress endpoint}
+
+        to query the status of an operation.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conversation_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of conversations to update. Limited to 500 conversations.
+                event:
+                  type: string
+                  enum:
+                  - mark_as_read
+                  - mark_as_unread
+                  - star
+                  - unstar
+                  - archive
+                  - destroy
+                  description: The action to take on each conversation.
+              required:
+              - conversation_ids
+              - event
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                conversation_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: List of conversations to update. Limited to 500 conversations.
+                event:
+                  type: string
+                  enum:
+                  - mark_as_read
+                  - mark_as_unread
+                  - star
+                  - unstar
+                  - archive
+                  - destroy
+                  description: The action to take on each conversation.
+              required:
+              - conversation_ids
+              - event
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/batches:
+    get:
+      tags:
+      - Conversations
+      operationId: get_running_batches
+      summary: Get running batches
+      description: 'Returns any currently running conversation batches for the current user.
+
+        Conversation batches are created when a bulk private message is sent
+
+        asynchronously (see the mode argument to the {api:ConversationsController#create create API action}).'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/{id}:
+    get:
+      tags:
+      - Conversations
+      operationId: get_single_conversation
+      summary: Get a single conversation
+      description: 'Returns information for a single conversation for the current user. Response includes all
+
+        fields that are present in the list/index action as well as messages
+
+        and extended participant information.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: interleave_submissions
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: '(Obsolete) Submissions are no
+
+          longer linked to conversations. This parameter is ignored.'
+      - name: scope
+        in: query
+        schema:
+          type: string
+          enum:
+          - unread
+          - starred
+          - archived
+        required: false
+        description: 'Used when generating "visible" in the API response. See the explanation
+
+          under the {api:ConversationsController#index index API action}'
+      - name: filter
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Used when generating "visible" in the API response. See the explanation
+
+          under the {api:ConversationsController#index index API action}'
+      - name: filter_mode
+        in: query
+        schema:
+          type: string
+          enum:
+          - and
+          - or
+          - default or
+        required: false
+        description: 'Used when generating "visible" in the API response. See the explanation
+
+          under the {api:ConversationsController#index index API action}'
+      - name: auto_mark_as_read
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Default true. If true, unread
+
+          conversations will be automatically marked as read. This will default
+
+          to false in a future API release, so clients should explicitly send
+
+          true if that is the desired behavior.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+    put:
+      tags:
+      - Conversations
+      operationId: edit_conversation
+      summary: Edit a conversation
+      description: Updates attributes for a single conversation.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                conversation[workflow_state]:
+                  type: string
+                  enum:
+                  - read
+                  - unread
+                  - archived
+                  description: Change the state of this conversation
+                conversation[subscribed]:
+                  type: boolean
+                  description: 'Toggle the current user''s subscription to the conversation (only valid for
+
+                    group conversations). If unsubscribed, the user will still have access to
+
+                    the latest messages, but the conversation won''t be automatically flagged
+
+                    as unread, nor will it jump to the top of the inbox.'
+                conversation[starred]:
+                  type: boolean
+                  description: Toggle the starred state of the current user's view of the conversation.
+                scope:
+                  type: string
+                  enum:
+                  - unread
+                  - starred
+                  - archived
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter_mode:
+                  type: string
+                  enum:
+                  - and
+                  - or
+                  - default or
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                conversation[workflow_state]:
+                  type: string
+                  enum:
+                  - read
+                  - unread
+                  - archived
+                  description: Change the state of this conversation
+                conversation[subscribed]:
+                  type: boolean
+                  description: 'Toggle the current user''s subscription to the conversation (only valid for
+
+                    group conversations). If unsubscribed, the user will still have access to
+
+                    the latest messages, but the conversation won''t be automatically flagged
+
+                    as unread, nor will it jump to the top of the inbox.'
+                conversation[starred]:
+                  type: boolean
+                  description: Toggle the starred state of the current user's view of the conversation.
+                scope:
+                  type: string
+                  enum:
+                  - unread
+                  - starred
+                  - archived
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+                filter_mode:
+                  type: string
+                  enum:
+                  - and
+                  - or
+                  - default or
+                  description: 'Used when generating "visible" in the API response. See the explanation
+
+                    under the {api:ConversationsController#index index API action}'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+    delete:
+      tags:
+      - Conversations
+      operationId: delete_conversation
+      summary: Delete a conversation
+      description: 'Delete this conversation and its messages. Note that this only deletes
+
+        this user''s view of the conversation.
+
+
+        Response includes same fields as UPDATE action'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/mark_all_as_read:
+    post:
+      tags:
+      - Conversations
+      operationId: mark_all_as_read
+      summary: Mark all as read
+      description: Mark all conversations as read.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/{id}/add_recipients:
+    post:
+      tags:
+      - Conversations
+      operationId: add_recipients
+      summary: Add recipients
+      description: 'Add recipients to an existing group conversation. Response is similar to
+
+        the GET/show action, except that only includes the
+
+        latest message (e.g. "joe was added to the conversation by bob")'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of recipient ids. These may be user ids or course/group ids
+
+                    prefixed with "course_" or "group_" respectively, e.g.
+
+                    recipients[]=1&recipients[]=2&recipients[]=course_3'
+              required:
+              - recipients
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of recipient ids. These may be user ids or course/group ids
+
+                    prefixed with "course_" or "group_" respectively, e.g.
+
+                    recipients[]=1&recipients[]=2&recipients[]=course_3'
+              required:
+              - recipients
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/{id}/add_message:
+    post:
+      tags:
+      - Conversations
+      operationId: add_message
+      summary: Add a message
+      description: 'Add a message to an existing conversation. Response is similar to the
+
+        GET/show action, except that only includes the
+
+        latest message (i.e. what we just sent)
+
+
+        An array of user ids. Defaults to all of the current conversation
+
+        recipients. To explicitly send a message to no other recipients,
+
+        this array should consist of the logged-in user id.
+
+
+        An array of message ids from this conversation to send to recipients
+
+        of the new message. Recipients who already had a copy of included
+
+        messages will not be affected.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: The message to be sent.
+                attachment_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of attachments ids. These must be files that have been previously
+
+                    uploaded to the sender''s "conversation attachments" folder.'
+                media_comment_id:
+                  type: string
+                  description: 'Media comment id of an audio of video file to be associated with this
+
+                    message.'
+                media_comment_type:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: Type of the associated media file.
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+                included_messages:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+              required:
+              - body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: The message to be sent.
+                attachment_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: 'An array of attachments ids. These must be files that have been previously
+
+                    uploaded to the sender''s "conversation attachments" folder.'
+                media_comment_id:
+                  type: string
+                  description: 'Media comment id of an audio of video file to be associated with this
+
+                    message.'
+                media_comment_type:
+                  type: string
+                  enum:
+                  - audio
+                  - video
+                  description: Type of the associated media file.
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+                included_messages:
+                  type: array
+                  items:
+                    type: string
+                  description: no description
+              required:
+              - body
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/{id}/remove_messages:
+    post:
+      tags:
+      - Conversations
+      operationId: delete_message
+      summary: Delete a message
+      description: 'Delete messages from this conversation. Note that this only affects this
+
+        user''s view of the conversation. If all messages are deleted, the
+
+        conversation will be as well (equivalent to DELETE)'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                remove:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of message ids to be deleted
+              required:
+              - remove
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                remove:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of message ids to be deleted
+              required:
+              - remove
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+  /v1/conversations/unread_count:
+    get:
+      tags:
+      - Conversations
+      operationId: unread_count
+      summary: Unread count
+      description: Get the number of unread conversations for the current user
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/conversations.html
+components:
+  schemas:
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+          description: the unique identifier for the conversation.
+        subject:
+          type: string
+          example: 2
+          description: the subject of the conversation.
+        workflow_state:
+          type: string
+          example: unread
+          description: The current state of the conversation (read, unread or archived).
+        last_message:
+          type: string
+          example: sure thing, here's the file
+          description: A <=100 character preview from the most recent message.
+        start_at:
+          type: string
+          format: date-time
+          example: '2011-09-02T12:00:00Z'
+          description: the date and time at which the last message was sent.
+        message_count:
+          type: integer
+          example: 2
+          description: the number of messages in the conversation.
+        subscribed:
+          type: boolean
+          example: true
+          description: whether the current user is subscribed to the conversation.
+        private:
+          type: boolean
+          example: true
+          description: whether the conversation is private.
+        starred:
+          type: boolean
+          example: true
+          description: whether the conversation is starred.
+        properties:
+          type: array
+          items:
+            type: string
+          description: Additional conversation flags (last_author, attachments, media_objects). Each listed property means the flag is set to true (i.e. the current user is the most recent author, there are attachments, or there are media objects)
+        audience:
+          type: array
+          items:
+            type: integer
+          description: Array of user ids who are involved in the conversation, ordered by participation level, then alphabetical. Excludes current user, unless this is a monologue.
+        audience_contexts:
+          type: array
+          items:
+            type: string
+          description: Most relevant shared contexts (courses and groups) between current user and other participants. If there is only one participant, it will also include that user's enrollment(s)/ membership type(s) in each course/group.
+        avatar_url:
+          type: string
+          example: https://canvas.instructure.com/images/messages/avatar-group-50.png
+          description: URL to appropriate icon for this conversation (custom, individual or group avatar, depending on audience).
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationParticipant'
+          description: Array of users participating in the conversation. Includes current user.
+        visible:
+          type: boolean
+          example: true
+          description: indicates whether the conversation is visible under the current scope and filter. This attribute is always true in the index API response, and is primarily useful in create/update responses so that you can know if the record should be displayed in the UI. The default scope is assumed, unless a scope or filter is passed to the create/update API call.
+        context_name:
+          type: string
+          example: Canvas 101
+          description: Name of the course or group in which the conversation is occurring.
+    ConversationParticipant:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+          description: The user ID for the participant.
+        name:
+          type: string
+          example: Shelly
+          description: A short name the user has selected, for use in conversations or other less formal places through the site.
+        full_name:
+          type: string
+          example: Sheldon Cooper
+          description: The full name of the user.
+        avatar_url:
+          type: string
+          example: https://canvas.instructure.com/images/messages/avatar-50.png
+          description: If requested, this field will be included and contain a url to retrieve the user's avatar.
+        uuid:
+          type: string
+          example: W9GQIcdoDTqwX8mxIunDQQVL6WZTaGmpa5xovmCB
+          description: The Canvas UUID for the participant.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,324 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Poll Sessions API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Poll Sessions
+  x-resource: poll_sessions
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/poll_sessions.html
+paths:
+  /v1/polls/{poll_id}/poll_sessions:
+    get:
+      tags:
+      - Poll Sessions
+      operationId: list_poll_sessions_for_poll
+      summary: List poll sessions for a poll
+      description: Returns the paginated list of PollSessions in this poll.
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+    post:
+      tags:
+      - Poll Sessions
+      operationId: create_single_poll_session
+      summary: Create a single poll session
+      description: Create a new poll session for this poll
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                poll_sessions[course_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course this session is associated with.
+                poll_sessions[course_section_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course section this session is associated with.
+                poll_sessions[has_public_results]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether or not results are viewable by students.
+              required:
+              - poll_sessions[course_id]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                poll_sessions[course_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course this session is associated with.
+                poll_sessions[course_section_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course section this session is associated with.
+                poll_sessions[has_public_results]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether or not results are viewable by students.
+              required:
+              - poll_sessions[course_id]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+  /v1/polls/{poll_id}/poll_sessions/{id}:
+    get:
+      tags:
+      - Poll Sessions
+      operationId: get_results_for_single_poll_session
+      summary: Get the results for a single poll session
+      description: Returns the poll session with the given id
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+    put:
+      tags:
+      - Poll Sessions
+      operationId: update_single_poll_session
+      summary: Update a single poll session
+      description: Update an existing poll session for this poll
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                poll_sessions[course_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course this session is associated with.
+                poll_sessions[course_section_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course section this session is associated with.
+                poll_sessions[has_public_results]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether or not results are viewable by students.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                poll_sessions[course_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course this session is associated with.
+                poll_sessions[course_section_id]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The id of the course section this session is associated with.
+                poll_sessions[has_public_results]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether or not results are viewable by students.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+    delete:
+      tags:
+      - Poll Sessions
+      operationId: delete_poll_session
+      summary: Delete a poll session
+      description: 204 No Content response code is returned if the deletion was successful.
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+  /v1/polls/{poll_id}/poll_sessions/{id}/open:
+    get:
+      tags:
+      - Poll Sessions
+      operationId: open_poll_session
+      summary: Open a poll session
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+  /v1/polls/{poll_id}/poll_sessions/{id}/close:
+    get:
+      tags:
+      - Poll Sessions
+      operationId: close_opened_poll_session
+      summary: Close an opened poll session
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+  /v1/poll_sessions/opened:
+    get:
+      tags:
+      - Poll Sessions
+      operationId: list_opened_poll_sessions
+      summary: List opened poll sessions
+      description: A paginated list of all opened poll sessions available to the current user.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+  /v1/poll_sessions/closed:
+    get:
+      tags:
+      - Poll Sessions
+      operationId: list_closed_poll_sessions
+      summary: List closed poll sessions
+      description: A paginated list of all closed poll sessions available to the current user.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_sessions.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

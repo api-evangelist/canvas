@@ -1,0 +1,499 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Grading Periods API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Grading Periods
+  x-resource: grading_periods
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/grading_periods.html
+paths:
+  /v1/accounts/{account_id}/grading_periods:
+    get:
+      tags:
+      - Grading Periods
+      operationId: list_grading_periods_accounts
+      summary: List grading periods
+      description: Returns the paginated list of grading periods for the current course.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+  /v1/courses/{course_id}/grading_periods:
+    get:
+      tags:
+      - Grading Periods
+      operationId: list_grading_periods_courses
+      summary: List grading periods
+      description: Returns the paginated list of grading periods for the current course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+  /v1/courses/{course_id}/grading_periods/{id}:
+    get:
+      tags:
+      - Grading Periods
+      operationId: get_single_grading_period
+      summary: Get a single grading period
+      description: Returns the grading period with the given id
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+    put:
+      tags:
+      - Grading Periods
+      operationId: update_single_grading_period
+      summary: Update a single grading period
+      description: Update an existing grading period.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grading_periods[start_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: The date the grading period starts.
+                grading_periods[end_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: no description
+                grading_periods[weight]:
+                  type: array
+                  items:
+                    type: number
+                  description: A weight value that contributes to the overall weight of a grading period set which is used to calculate how much assignments in this period contribute to the total grade
+              required:
+              - grading_periods[start_date]
+              - grading_periods[end_date]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grading_periods[start_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: The date the grading period starts.
+                grading_periods[end_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: no description
+                grading_periods[weight]:
+                  type: array
+                  items:
+                    type: number
+                  description: A weight value that contributes to the overall weight of a grading period set which is used to calculate how much assignments in this period contribute to the total grade
+              required:
+              - grading_periods[start_date]
+              - grading_periods[end_date]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+    delete:
+      tags:
+      - Grading Periods
+      operationId: delete_grading_period_courses
+      summary: Delete a grading period
+      description: '204 No Content response code is returned if the deletion was
+
+        successful.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+  /v1/accounts/{account_id}/grading_periods/{id}:
+    delete:
+      tags:
+      - Grading Periods
+      operationId: delete_grading_period_accounts
+      summary: Delete a grading period
+      description: '204 No Content response code is returned if the deletion was
+
+        successful.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+  /v1/courses/{course_id}/grading_periods/batch_update:
+    patch:
+      tags:
+      - Grading Periods
+      operationId: batch_update_grading_periods_courses
+      summary: Batch update grading periods
+      description: Update multiple grading periods
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                set_id:
+                  type: string
+                  description: The id of the grading period set.
+                grading_periods[id]:
+                  type: array
+                  items:
+                    type: string
+                  description: The id of the grading period. If the id parameter does not exist, a new grading period will be created.
+                grading_periods[title]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The title of the grading period.
+
+                    The title is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[start_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period starts.
+
+                    The start_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[end_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period ends.
+
+                    The end_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[close_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date after which grades can no longer be changed for a grading period.
+
+                    The close_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[weight]:
+                  type: array
+                  items:
+                    type: number
+                  description: A weight value that contributes to the overall weight of a grading period set which is used to calculate how much assignments in this period contribute to the total grade
+              required:
+              - set_id
+              - grading_periods[title]
+              - grading_periods[start_date]
+              - grading_periods[end_date]
+              - grading_periods[close_date]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                set_id:
+                  type: string
+                  description: The id of the grading period set.
+                grading_periods[id]:
+                  type: array
+                  items:
+                    type: string
+                  description: The id of the grading period. If the id parameter does not exist, a new grading period will be created.
+                grading_periods[title]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The title of the grading period.
+
+                    The title is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[start_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period starts.
+
+                    The start_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[end_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period ends.
+
+                    The end_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[close_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date after which grades can no longer be changed for a grading period.
+
+                    The close_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[weight]:
+                  type: array
+                  items:
+                    type: number
+                  description: A weight value that contributes to the overall weight of a grading period set which is used to calculate how much assignments in this period contribute to the total grade
+              required:
+              - set_id
+              - grading_periods[title]
+              - grading_periods[start_date]
+              - grading_periods[end_date]
+              - grading_periods[close_date]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+  /v1/grading_period_sets/{set_id}/grading_periods/batch_update:
+    patch:
+      tags:
+      - Grading Periods
+      operationId: batch_update_grading_periods_grading_period_sets
+      summary: Batch update grading periods
+      description: Update multiple grading periods
+      parameters:
+      - name: set_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: The id of the grading period set.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                grading_periods[id]:
+                  type: array
+                  items:
+                    type: string
+                  description: The id of the grading period. If the id parameter does not exist, a new grading period will be created.
+                grading_periods[title]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The title of the grading period.
+
+                    The title is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[start_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period starts.
+
+                    The start_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[end_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period ends.
+
+                    The end_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[close_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date after which grades can no longer be changed for a grading period.
+
+                    The close_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[weight]:
+                  type: array
+                  items:
+                    type: number
+                  description: A weight value that contributes to the overall weight of a grading period set which is used to calculate how much assignments in this period contribute to the total grade
+              required:
+              - grading_periods[title]
+              - grading_periods[start_date]
+              - grading_periods[end_date]
+              - grading_periods[close_date]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grading_periods[id]:
+                  type: array
+                  items:
+                    type: string
+                  description: The id of the grading period. If the id parameter does not exist, a new grading period will be created.
+                grading_periods[title]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The title of the grading period.
+
+                    The title is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[start_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period starts.
+
+                    The start_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[end_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date the grading period ends.
+
+                    The end_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[close_date]:
+                  type: array
+                  items:
+                    type: string
+                    format: date
+                  description: 'The date after which grades can no longer be changed for a grading period.
+
+                    The close_date is required for creating a new grading period, but not for updating an existing grading period.'
+                grading_periods[weight]:
+                  type: array
+                  items:
+                    type: number
+                  description: A weight value that contributes to the overall weight of a grading period set which is used to calculate how much assignments in this period contribute to the total grade
+              required:
+              - grading_periods[title]
+              - grading_periods[start_date]
+              - grading_periods[end_date]
+              - grading_periods[close_date]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_periods.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

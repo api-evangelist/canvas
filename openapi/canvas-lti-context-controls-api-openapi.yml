@@ -1,0 +1,513 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Lti Context Controls API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Lti Context Controls
+  x-resource: lti_context_controls
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+paths:
+  /v1/accounts/{account_id}/lti_registrations/{registration_id}/controls:
+    get:
+      tags:
+      - Lti Context Controls
+      operationId: list_all_context_controls
+      summary: List All Context Controls
+      description: 'List all LTI ContextControls for the given LTI Registration.
+
+        These controls are partitioned by LTI Deployment, and have added
+
+        calculated fields for display in the Canvas UI.
+
+
+        This endpoint is used to populate the Availability page for an LTI Registration
+
+        and may not be useful for general API Usage. For listing all ContextControls
+
+        for a given Deployment, see the LTI Deployments - List Controls for Deployment endpoint.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Lti::Deployment
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+  /v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/{id}:
+    get:
+      tags:
+      - Lti Context Controls
+      operationId: show_lti_context_control
+      summary: Show LTI Context Control
+      description: Display details of the specified LTI ContextControl for the specified LTI registration in this context.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ContextControl'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+    put:
+      tags:
+      - Lti Context Controls
+      operationId: modify_context_control
+      summary: Modify a Context Control
+      description: 'Changes the availability of a context control. This endpoint can only be used
+
+        to change the availability of a context control; no other attributes about the
+
+        control (such as which course or account it belongs to) can be changed here.
+
+        To change those values, the control should be deleted and a new one created
+
+        instead.
+
+
+        Returns the context control with its new availability value applied.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                available:
+                  type: boolean
+                  description: the new value for this control's availability
+                comment:
+                  type: string
+                  description: A comment to add the to the change-log entry explaining why the changes were made.
+              required:
+              - available
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                available:
+                  type: boolean
+                  description: the new value for this control's availability
+                comment:
+                  type: string
+                  description: A comment to add the to the change-log entry explaining why the changes were made.
+              required:
+              - available
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ContextControl'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+    delete:
+      tags:
+      - Lti Context Controls
+      operationId: delete_context_control
+      summary: Delete a Context Control
+      description: 'Deletes a context control. Returns the control that is now deleted.
+
+
+        Note: Deleting the "primary" control for a deployment (the control associated with the context
+
+        where the deployment is installed) is not allowed and will return an error. This prevents
+
+        situations where a deployment cannot be managed from the Apps page.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ContextControl'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+  /v1/accounts/{current_account_id}/lti_registrations/{registration_id}/controls:
+    post:
+      tags:
+      - Lti Context Controls
+      operationId: create_lti_context_control
+      summary: Create LTI Context Control
+      description: Create a new LTI ContextControl for the specified LTI registration in this context.
+      parameters:
+      - name: current_account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas ID of the Account that owns this. One of account_id or course_id must be present. Can also be a string.
+                course_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas ID of the Course that owns this. One of account_id or course_id must be present. Can also be a string.
+                deployment_id:
+                  type: integer
+                  format: int64
+                  description: 'The Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment.
+
+                    If absent, this ContextControl will be associated with the Deployment of this Registration at the Root Account level.
+
+                    If that is not present, this request will fail.'
+                available:
+                  type: boolean
+                  description: 'The state of this tool in this context. `true` shows the tool in this context and all contexts
+
+                    below it. `false` disables the tool for this context and all contexts below it. Defaults to true.'
+                comment:
+                  type: string
+                  description: A comment to add the to the change-log entry explaining why the changes were made.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                account_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas ID of the Account that owns this. One of account_id or course_id must be present. Can also be a string.
+                course_id:
+                  type: integer
+                  format: int64
+                  description: The Canvas ID of the Course that owns this. One of account_id or course_id must be present. Can also be a string.
+                deployment_id:
+                  type: integer
+                  format: int64
+                  description: 'The Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment.
+
+                    If absent, this ContextControl will be associated with the Deployment of this Registration at the Root Account level.
+
+                    If that is not present, this request will fail.'
+                available:
+                  type: boolean
+                  description: 'The state of this tool in this context. `true` shows the tool in this context and all contexts
+
+                    below it. `false` disables the tool for this context and all contexts below it. Defaults to true.'
+                comment:
+                  type: string
+                  description: A comment to add the to the change-log entry explaining why the changes were made.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ContextControl'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+  /v1/accounts/{account_id}/lti_registrations/{registration_id}/controls/bulk:
+    post:
+      tags:
+      - Lti Context Controls
+      operationId: bulk_create_lti_context_controls
+      summary: Bulk Create LTI Context Controls
+      description: 'Create up to 100 new LTI ContextControls for the specified LTI registration in this context.
+
+        Control parameters are sent as a JSON array of objects, each with the same parameters as the Create LTI Context Control endpoint.
+
+        Note that if a control already exists for the specified context and deployment, it will be updated instead of created.'
+      parameters:
+      - name: registration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: account_id
+        in: path
+        schema:
+          type: array
+          items:
+            type: integer
+        required: true
+        description: The Canvas ID of the Account that owns this. One of account_id or course_id must be present. Can also be a string.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: A comment to add the to the change-log entry explaining why the changes were made.
+                course_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: The Canvas ID of the Course that owns this. One of account_id or course_id must be present. Can also be a string.
+                deployment_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment.
+
+                    If absent, this ContextControl will be associated with the Deployment of this Registration at the Root Account level.
+
+                    If that is not present, this request will fail.'
+                available:
+                  type: array
+                  items:
+                    type: boolean
+                  description: 'The state of this tool in this context. `true` shows the tool in this context and all contexts
+
+                    below it. `false` disables the tool for this context and all contexts below it. Defaults to true.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: A comment to add the to the change-log entry explaining why the changes were made.
+                course_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: The Canvas ID of the Course that owns this. One of account_id or course_id must be present. Can also be a string.
+                deployment_id:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment.
+
+                    If absent, this ContextControl will be associated with the Deployment of this Registration at the Root Account level.
+
+                    If that is not present, this request will fail.'
+                available:
+                  type: array
+                  items:
+                    type: boolean
+                  description: 'The state of this tool in this context. `true` shows the tool in this context and all contexts
+
+                    below it. `false` disables the tool for this context and all contexts below it. Defaults to true.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lti__ContextControl'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/lti_context_controls.html
+components:
+  schemas:
+    Lti__ContextControl:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+          description: the Canvas ID of the Lti::ContextControl object
+        course_id:
+          type: integer
+          example: 2
+          description: the Canvas ID of the Course that owns this. one of this or account_id will always be present
+        account_id:
+          type: integer
+          example: 2
+          description: the Canvas ID of the Account that owns this. one of this or course_id will always be present
+        deployment_id:
+          type: integer
+          example: 2
+          description: the Canvas ID of the ContextExternalTool that owns this, representing an LTI deployment
+        available:
+          type: boolean
+          example: true
+          description: The state of this tool in this context. `true` means the tool is available in this context and in all contexts below it.
+        path:
+          type: string
+          example: a1.a2.c3.
+          description: A representation of the account hierarchy for the context that owns this object. Used for checking availability during LTI operations.
+        display_path:
+          type: array
+          items:
+            type: string
+          example:
+          - Sub Account
+          - Other Account
+          description: For UI display. Names of the accounts in the context's hierarchy. Excludes the root, and the current account if context is an account.
+        context_name:
+          type: string
+          example: My Course
+          description: For UI display. The name of the context this object is associated with
+        depth:
+          type: integer
+          example: 2
+          description: For UI display. The depth of ContextControls for this particular deployment account chain, which can be different from the number of accounts in the chain.
+        course_count:
+          type: integer
+          example: 402
+          description: For UI display. The number of courses in this account and all nested subaccounts. 0 when context is a Course.
+        child_control_count:
+          type: integer
+          example: 42
+          description: For UI display. The number of controls for accounts below this one, including all nested subaccounts. 0 when context is a Course.
+        subaccount_count:
+          type: integer
+          example: 42
+          description: For UI display. The number of subaccounts for this account. Includes all nested subaccounts. 0 when context is a Course.
+        workflow_state:
+          type: string
+          example: active
+          description: The state of the object
+          enum:
+          - active
+          - deleted
+        created_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the object's creation
+        updated_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the object's last update
+        created_by:
+          type: string
+          x-canvas-declared-type: User
+          example:
+            type: User
+          description: The user that created this object. Not always present.
+        updated_by:
+          type: string
+          x-canvas-declared-type: User
+          example:
+            type: User
+          description: The user that last updated this object. Not always present.
+      description: Represent availability of an LTI registration in a specific context
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,677 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Feature Flags API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Feature Flags
+  x-resource: feature_flags
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/feature_flags.html
+paths:
+  /v1/courses/{course_id}/features:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_features_courses
+      summary: List features
+      description: A paginated list of all features that apply to a given Account, Course, or User.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: hide_inherited_enabled
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'When true, feature flags that are enabled in a higher context and cannot
+
+          be overridden will be omitted.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feature'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/accounts/{account_id}/features:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_features_accounts
+      summary: List features
+      description: A paginated list of all features that apply to a given Account, Course, or User.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: hide_inherited_enabled
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'When true, feature flags that are enabled in a higher context and cannot
+
+          be overridden will be omitted.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feature'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/users/{user_id}/features:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_features_users
+      summary: List features
+      description: A paginated list of all features that apply to a given Account, Course, or User.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: hide_inherited_enabled
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'When true, feature flags that are enabled in a higher context and cannot
+
+          be overridden will be omitted.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feature'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/courses/{course_id}/features/enabled:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_enabled_features_courses
+      summary: List enabled features
+      description: 'A paginated list of all features that are enabled on a given Account, Course, or User.
+
+        Only the feature names are returned.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/accounts/{account_id}/features/enabled:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_enabled_features_accounts
+      summary: List enabled features
+      description: 'A paginated list of all features that are enabled on a given Account, Course, or User.
+
+        Only the feature names are returned.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/users/{user_id}/features/enabled:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_enabled_features_users
+      summary: List enabled features
+      description: 'A paginated list of all features that are enabled on a given Account, Course, or User.
+
+        Only the feature names are returned.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/features/environment:
+    get:
+      tags:
+      - Feature Flags
+      operationId: list_environment_features
+      summary: List environment features
+      description: 'Return a hash of global feature options that pertain to the
+
+        Canvas user interface. This is the same information supplied to the
+
+        web interface as +ENV.FEATURES+.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/courses/{course_id}/features/flags/{feature}:
+    get:
+      tags:
+      - Feature Flags
+      operationId: get_feature_flag_courses
+      summary: Get feature flag
+      description: 'Get the feature flag that applies to a given Account, Course, or User.
+
+        The flag may be defined on the object, or it may be inherited from a parent
+
+        account. You can look at the context_id and context_type of the returned object
+
+        to determine which is the case. If these fields are missing, then the object
+
+        is the global Canvas default.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+    put:
+      tags:
+      - Feature Flags
+      operationId: set_feature_flag_courses
+      summary: Set feature flag
+      description: 'Set a feature flag for a given Account, Course, or User. This call will fail if a parent account sets
+
+        a feature flag for the same feature in any state other than "allowed".'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                  - 'off'
+                  - allowed
+                  - 'on'
+                  description: "\"off\":: The feature is not available for the course, user, or account and sub-accounts.\n\"allowed\":: (valid only on accounts) The feature is off in the account, but may be enabled in\n            sub-accounts and courses by setting a feature flag on the sub-account or course.\n\"on\":: The feature is turned on unconditionally for the user, course, or account and sub-accounts."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                  - 'off'
+                  - allowed
+                  - 'on'
+                  description: "\"off\":: The feature is not available for the course, user, or account and sub-accounts.\n\"allowed\":: (valid only on accounts) The feature is off in the account, but may be enabled in\n            sub-accounts and courses by setting a feature flag on the sub-account or course.\n\"on\":: The feature is turned on unconditionally for the user, course, or account and sub-accounts."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+    delete:
+      tags:
+      - Feature Flags
+      operationId: remove_feature_flag_courses
+      summary: Remove feature flag
+      description: 'Remove feature flag for a given Account, Course, or User. (Note that the flag must
+
+        be defined on the Account, Course, or User directly.) The object will then inherit
+
+        the feature flags from a higher account, if any exist. If this flag was ''on'' or ''off'',
+
+        then lower-level account flags that were masked by this one will apply again.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/accounts/{account_id}/features/flags/{feature}:
+    get:
+      tags:
+      - Feature Flags
+      operationId: get_feature_flag_accounts
+      summary: Get feature flag
+      description: 'Get the feature flag that applies to a given Account, Course, or User.
+
+        The flag may be defined on the object, or it may be inherited from a parent
+
+        account. You can look at the context_id and context_type of the returned object
+
+        to determine which is the case. If these fields are missing, then the object
+
+        is the global Canvas default.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+    put:
+      tags:
+      - Feature Flags
+      operationId: set_feature_flag_accounts
+      summary: Set feature flag
+      description: 'Set a feature flag for a given Account, Course, or User. This call will fail if a parent account sets
+
+        a feature flag for the same feature in any state other than "allowed".'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                  - 'off'
+                  - allowed
+                  - 'on'
+                  description: "\"off\":: The feature is not available for the course, user, or account and sub-accounts.\n\"allowed\":: (valid only on accounts) The feature is off in the account, but may be enabled in\n            sub-accounts and courses by setting a feature flag on the sub-account or course.\n\"on\":: The feature is turned on unconditionally for the user, course, or account and sub-accounts."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                  - 'off'
+                  - allowed
+                  - 'on'
+                  description: "\"off\":: The feature is not available for the course, user, or account and sub-accounts.\n\"allowed\":: (valid only on accounts) The feature is off in the account, but may be enabled in\n            sub-accounts and courses by setting a feature flag on the sub-account or course.\n\"on\":: The feature is turned on unconditionally for the user, course, or account and sub-accounts."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+    delete:
+      tags:
+      - Feature Flags
+      operationId: remove_feature_flag_accounts
+      summary: Remove feature flag
+      description: 'Remove feature flag for a given Account, Course, or User. (Note that the flag must
+
+        be defined on the Account, Course, or User directly.) The object will then inherit
+
+        the feature flags from a higher account, if any exist. If this flag was ''on'' or ''off'',
+
+        then lower-level account flags that were masked by this one will apply again.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+  /v1/users/{user_id}/features/flags/{feature}:
+    get:
+      tags:
+      - Feature Flags
+      operationId: get_feature_flag_users
+      summary: Get feature flag
+      description: 'Get the feature flag that applies to a given Account, Course, or User.
+
+        The flag may be defined on the object, or it may be inherited from a parent
+
+        account. You can look at the context_id and context_type of the returned object
+
+        to determine which is the case. If these fields are missing, then the object
+
+        is the global Canvas default.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+    put:
+      tags:
+      - Feature Flags
+      operationId: set_feature_flag_users
+      summary: Set feature flag
+      description: 'Set a feature flag for a given Account, Course, or User. This call will fail if a parent account sets
+
+        a feature flag for the same feature in any state other than "allowed".'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                  - 'off'
+                  - allowed
+                  - 'on'
+                  description: "\"off\":: The feature is not available for the course, user, or account and sub-accounts.\n\"allowed\":: (valid only on accounts) The feature is off in the account, but may be enabled in\n            sub-accounts and courses by setting a feature flag on the sub-account or course.\n\"on\":: The feature is turned on unconditionally for the user, course, or account and sub-accounts."
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                state:
+                  type: string
+                  enum:
+                  - 'off'
+                  - allowed
+                  - 'on'
+                  description: "\"off\":: The feature is not available for the course, user, or account and sub-accounts.\n\"allowed\":: (valid only on accounts) The feature is off in the account, but may be enabled in\n            sub-accounts and courses by setting a feature flag on the sub-account or course.\n\"on\":: The feature is turned on unconditionally for the user, course, or account and sub-accounts."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+    delete:
+      tags:
+      - Feature Flags
+      operationId: remove_feature_flag_users
+      summary: Remove feature flag
+      description: 'Remove feature flag for a given Account, Course, or User. (Note that the flag must
+
+        be defined on the Account, Course, or User directly.) The object will then inherit
+
+        the feature flags from a higher account, if any exist. If this flag was ''on'' or ''off'',
+
+        then lower-level account flags that were masked by this one will apply again.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: feature
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureFlag'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/feature_flags.html
+components:
+  schemas:
+    FeatureFlag:
+      type: object
+      properties:
+        context_type:
+          type: string
+          example: Account
+          description: The type of object to which this flag applies (Account, Course, or User). (This field is not present if this FeatureFlag represents the global Canvas default)
+        context_id:
+          type: integer
+          example: 1038
+          description: The id of the object to which this flag applies (This field is not present if this FeatureFlag represents the global Canvas default)
+        feature:
+          type: string
+          example: fancy_wickets
+          description: The feature this flag controls
+        state:
+          type: string
+          example: allowed
+          description: The policy for the feature at this context.  can be 'off', 'allowed', 'allowed_on', or 'on'.
+        locked:
+          type: boolean
+          example: false
+          description: If set, this feature flag cannot be changed in the caller's context because the flag is set 'off' or 'on' in a higher context
+    Feature:
+      type: object
+      properties:
+        feature:
+          type: string
+          example: fancy_wickets
+          description: The symbolic name of the feature, used in FeatureFlags
+        display_name:
+          type: string
+          example: Fancy Wickets
+          description: The user-visible name of the feature
+        applies_to:
+          type: string
+          example: Course
+          description: "The type of object the feature applies to (SiteAdmin, RootAccount, Account, Course, User, or InheritableUser):\n * SiteAdmin features may only be controlled by flags on the site admin account.\n * RootAccount features may only be controlled by flags on root accounts.\n * Account features may be controlled by flags on accounts and their parent accounts.\n * Course features may be controlled by flags on courses and their parent accounts.\n * User features may be controlled by flags on users and site admin only.\n * InheritableUser features may be controlled by flags on users or on the root account; the root account flag is inherited by all users in that root account."
+        feature_flag:
+          type: string
+          example:
+            feature: fancy_wickets
+            state: allowed
+          description: The FeatureFlag that applies to the caller
+        root_opt_in:
+          type: boolean
+          example: true
+          description: If true, a feature that is 'allowed' globally will be 'off' by default in root accounts. Otherwise, root accounts inherit the global 'allowed' setting, which allows sub-accounts and courses to turn features on with no root account action.
+        beta:
+          type: boolean
+          example: true
+          description: Whether the feature is a feature preview. If true, opting in includes ongoing updates outside the regular release schedule.
+        early_access_program:
+          type: boolean
+          example: false
+          description: Indicates the feature is part of the Early Access Program.
+        autoexpand:
+          type: boolean
+          example: true
+          description: Whether the details of the feature are autoexpanded on page load vs. the user clicking to expand.
+        release_notes_url:
+          type: string
+          example: http://canvas.example.com/release_notes#fancy_wickets
+          description: A URL to the release notes describing the feature
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

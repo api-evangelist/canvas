@@ -1,0 +1,1570 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Accounts API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Accounts
+  x-resource: accounts
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/accounts.html
+paths:
+  /v1/accounts:
+    get:
+      tags:
+      - Accounts
+      operationId: list_accounts
+      summary: List accounts
+      description: 'A paginated list of accounts that the current user can view or manage.
+
+        Typically, students and even teachers will get an empty list in response,
+
+        only account admins can view the accounts that they are in.'
+      parameters:
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - lti_guid
+            - registration_settings
+            - services
+            - course_count
+            - sub_account_count
+        required: false
+        description: 'Array of additional information to include.
+
+
+          "lti_guid":: the ''tool_consumer_instance_guid'' that will be sent for this account on LTI launches
+
+          "registration_settings":: returns info about the privacy policy and terms of use
+
+          "services":: returns services and whether they are enabled (requires account management permissions)
+
+          "course_count":: returns the number of courses directly under each account
+
+          "sub_account_count":: returns the number of sub-accounts directly under each account'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/horizon_accounts:
+    get:
+      tags:
+      - Accounts
+      operationId: list_horizon_accounts
+      summary: List horizon accounts
+      description: 'A paginated list of horizon accounts that the current user can view or manage.
+
+        Returns all accounts with the horizon_account setting enabled. If there are any
+
+        horizon accounts and the user has access to Site Admin, Site Admin will also be
+
+        included in the results.
+
+
+        Typically, students and even teachers will get an empty list in response,
+
+        only account admins can view the accounts that they are in.'
+      parameters:
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - lti_guid
+            - registration_settings
+            - services
+            - course_count
+            - sub_account_count
+            - site_admin
+        required: false
+        description: 'Array of additional information to include.
+
+
+          "lti_guid":: the ''tool_consumer_instance_guid'' that will be sent for this account on LTI launches
+
+          "registration_settings":: returns info about the privacy policy and terms of use
+
+          "services":: returns services and whether they are enabled (requires account management permissions)
+
+          "course_count":: returns the number of courses directly under each account
+
+          "sub_account_count":: returns the number of sub-accounts directly under each account
+
+          "site_admin":: returns true if the account is the Site Admin account (only included if true)'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/manageable_accounts:
+    get:
+      tags:
+      - Accounts
+      operationId: get_accounts_that_admins_can_manage
+      summary: Get accounts that admins can manage
+      description: 'A paginated list of accounts where the current user has permission to create
+
+        or manage courses. List will be empty for students and teachers as only admins
+
+        can view which accounts they are in.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/course_creation_accounts:
+    get:
+      tags:
+      - Accounts
+      operationId: get_accounts_that_users_can_create_courses_in
+      summary: Get accounts that users can create courses in
+      description: 'A paginated list of accounts where the current user has permission to create
+
+        courses.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/course_accounts:
+    get:
+      tags:
+      - Accounts
+      operationId: list_accounts_for_course_admins
+      summary: List accounts for course admins
+      description: 'A paginated list of accounts that the current user can view through their
+
+        admin course enrollments. (Teacher, TA, or designer enrollments).
+
+        Only returns "id", "name", "workflow_state", "root_account_id" and "parent_account_id"'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{id}:
+    get:
+      tags:
+      - Accounts
+      operationId: get_single_account
+      summary: Get a single account
+      description: 'Retrieve information on an individual account, given by id or sis
+
+        sis_account_id.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+    put:
+      tags:
+      - Accounts
+      operationId: update_account
+      summary: Update an account
+      description: Update an existing account.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account[name]:
+                  type: string
+                  description: Updates the account name
+                account[sis_account_id]:
+                  type: string
+                  description: 'Updates the account sis_account_id
+
+                    Must have manage_sis permission and must not be a root_account.'
+                account[default_time_zone]:
+                  type: string
+                  description: 'The default time zone of the account. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                account[default_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default course storage quota to be used, if not otherwise specified.
+                account[default_user_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default user storage quota to be used, if not otherwise specified.
+                account[default_group_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default group storage quota to be used, if not otherwise specified.
+                account[course_template_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of a course to be used as a template for all newly created courses.
+
+                    Empty means to inherit the setting from parent account, 0 means to not
+
+                    use a template even if a parent account has one set. The course must be
+
+                    marked as a template.'
+                account[parent_account_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of a parent account to move the account to. The new parent account
+
+                    must be in the same root account as the original. The hierarchy of
+
+                    sub-accounts will be preserved in the new parent account. The caller must
+
+                    be an administrator in both the original parent account and the new parent
+
+                    account.'
+                account[settings][restrict_student_past_view][value]:
+                  type: boolean
+                  description: Restrict students from viewing courses after end date
+                account[settings][restrict_student_past_view][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][restrict_student_future_view][value]:
+                  type: boolean
+                  description: Restrict students from viewing courses before start date
+                account[settings][microsoft_sync_enabled]:
+                  type: boolean
+                  description: 'Determines whether this account has Microsoft Teams Sync enabled or not.
+
+
+                    Note that if you are altering Microsoft Teams sync settings you must enable
+
+                    the Microsoft Group enrollment syncing feature flag. In addition, if you are enabling
+
+                    Microsoft Teams sync, you must also specify a tenant, login attribute, and a remote attribute.
+
+                    Specifying a suffix to use is optional.'
+                account[settings][microsoft_sync_tenant]:
+                  type: string
+                  description: 'The tenant this account should use when using Microsoft Teams Sync.
+
+                    This should be an Azure Active Directory domain name.'
+                account[settings][microsoft_sync_login_attribute]:
+                  type: string
+                  description: 'The attribute this account should use to lookup users when using Microsoft Teams Sync.
+
+                    Must be one of "sub", "email", "oid", "preferred_username", or "integration_id".'
+                account[settings][microsoft_sync_login_attribute_suffix]:
+                  type: string
+                  description: 'A suffix that will be appended to the result of the login attribute when associating
+
+                    Canvas users with Microsoft users. Must be under 255 characters and contain no whitespace.
+
+                    This field is optional.'
+                account[settings][microsoft_sync_remote_attribute]:
+                  type: string
+                  description: 'The Active Directory attribute to use when associating Canvas users with Microsoft users.
+
+                    Must be one of "mail", "mailNickname", or "userPrincipalName".'
+                account[settings][restrict_student_future_view][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][lock_all_announcements][value]:
+                  type: boolean
+                  description: Disable comments on announcements
+                account[settings][lock_all_announcements][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][usage_rights_required][value]:
+                  type: boolean
+                  description: Copyright and license information must be provided for files before they are published.
+                account[settings][usage_rights_required][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][restrict_student_future_listing][value]:
+                  type: boolean
+                  description: Restrict students from viewing future enrollments in course list
+                account[settings][restrict_student_future_listing][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][conditional_release][value]:
+                  type: boolean
+                  description: Enable or disable individual learning paths for students based on assessment
+                account[settings][conditional_release][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][enable_course_paces][value]:
+                  type: boolean
+                  description: Enable or disable course pacing
+                account[settings][enable_course_paces][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][suppress_notifications]:
+                  type: boolean
+                  description: 'Suppress notification messages from being created and sent. When set to
+
+                    +true+, all notifications are suppressed. When set to an array of
+
+                    notification category slugs (e.g. +["grading", "announcement"]+), only
+
+                    notifications in those categories are suppressed. Set to +false+ to
+
+                    allow all notifications. Root account setting only.'
+                account[settings][password_policy]:
+                  type: object
+                  additionalProperties: true
+                  description: "Hash of optional password policy configuration parameters for a root account\n\n+allow_login_suspension+ boolean:: Allow suspension of user logins upon reaching maximum_login_attempts\n\n+require_number_characters+ boolean:: Require the use of number characters when setting up a new password\n\n+require_symbol_characters+ boolean:: Require the use of symbol characters when setting up a new password\n\n+minimum_character_length+ integer:: Minimum number of characters required for a new password\n\n+maximum_login_attempts+ integer:: Maximum number of login attempts before a user is locked out\n\n_Required_ feature option:\n  Enhance password options"
+                account[settings][enable_as_k5_account][value]:
+                  type: boolean
+                  description: Enable or disable Canvas for Elementary for this account
+                account[settings][use_classic_font_in_k5][value]:
+                  type: boolean
+                  description: Whether or not the classic font is used on the dashboard. Only applies if enable_as_k5_account is true.
+                account[settings][horizon_account][value]:
+                  type: boolean
+                  description: Enable or disable Canvas Career for this account
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+                account[settings][lock_outcome_proficiency][value]:
+                  type: boolean
+                  description: '[DEPRECATED] Restrict instructors from changing mastery scale'
+                account[lock_outcome_proficiency][locked]:
+                  type: boolean
+                  description: '[DEPRECATED] Lock this setting for sub-accounts and courses'
+                account[settings][lock_proficiency_calculation][value]:
+                  type: boolean
+                  description: '[DEPRECATED] Restrict instructors from changing proficiency calculation method'
+                account[lock_proficiency_calculation][locked]:
+                  type: boolean
+                  description: '[DEPRECATED] Lock this setting for sub-accounts and courses'
+                account[services]:
+                  type: object
+                  additionalProperties: true
+                  description: Give this a set of keys and boolean values to enable or disable services matching the keys
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                account[name]:
+                  type: string
+                  description: Updates the account name
+                account[sis_account_id]:
+                  type: string
+                  description: 'Updates the account sis_account_id
+
+                    Must have manage_sis permission and must not be a root_account.'
+                account[default_time_zone]:
+                  type: string
+                  description: 'The default time zone of the account. Allowed time zones are
+
+                    {http://www.iana.org/time-zones IANA time zones} or friendlier
+
+                    {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.'
+                account[default_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default course storage quota to be used, if not otherwise specified.
+                account[default_user_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default user storage quota to be used, if not otherwise specified.
+                account[default_group_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default group storage quota to be used, if not otherwise specified.
+                account[course_template_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of a course to be used as a template for all newly created courses.
+
+                    Empty means to inherit the setting from parent account, 0 means to not
+
+                    use a template even if a parent account has one set. The course must be
+
+                    marked as a template.'
+                account[parent_account_id]:
+                  type: integer
+                  format: int64
+                  description: 'The ID of a parent account to move the account to. The new parent account
+
+                    must be in the same root account as the original. The hierarchy of
+
+                    sub-accounts will be preserved in the new parent account. The caller must
+
+                    be an administrator in both the original parent account and the new parent
+
+                    account.'
+                account[settings][restrict_student_past_view][value]:
+                  type: boolean
+                  description: Restrict students from viewing courses after end date
+                account[settings][restrict_student_past_view][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][restrict_student_future_view][value]:
+                  type: boolean
+                  description: Restrict students from viewing courses before start date
+                account[settings][microsoft_sync_enabled]:
+                  type: boolean
+                  description: 'Determines whether this account has Microsoft Teams Sync enabled or not.
+
+
+                    Note that if you are altering Microsoft Teams sync settings you must enable
+
+                    the Microsoft Group enrollment syncing feature flag. In addition, if you are enabling
+
+                    Microsoft Teams sync, you must also specify a tenant, login attribute, and a remote attribute.
+
+                    Specifying a suffix to use is optional.'
+                account[settings][microsoft_sync_tenant]:
+                  type: string
+                  description: 'The tenant this account should use when using Microsoft Teams Sync.
+
+                    This should be an Azure Active Directory domain name.'
+                account[settings][microsoft_sync_login_attribute]:
+                  type: string
+                  description: 'The attribute this account should use to lookup users when using Microsoft Teams Sync.
+
+                    Must be one of "sub", "email", "oid", "preferred_username", or "integration_id".'
+                account[settings][microsoft_sync_login_attribute_suffix]:
+                  type: string
+                  description: 'A suffix that will be appended to the result of the login attribute when associating
+
+                    Canvas users with Microsoft users. Must be under 255 characters and contain no whitespace.
+
+                    This field is optional.'
+                account[settings][microsoft_sync_remote_attribute]:
+                  type: string
+                  description: 'The Active Directory attribute to use when associating Canvas users with Microsoft users.
+
+                    Must be one of "mail", "mailNickname", or "userPrincipalName".'
+                account[settings][restrict_student_future_view][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][lock_all_announcements][value]:
+                  type: boolean
+                  description: Disable comments on announcements
+                account[settings][lock_all_announcements][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][usage_rights_required][value]:
+                  type: boolean
+                  description: Copyright and license information must be provided for files before they are published.
+                account[settings][usage_rights_required][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][restrict_student_future_listing][value]:
+                  type: boolean
+                  description: Restrict students from viewing future enrollments in course list
+                account[settings][restrict_student_future_listing][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][conditional_release][value]:
+                  type: boolean
+                  description: Enable or disable individual learning paths for students based on assessment
+                account[settings][conditional_release][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][enable_course_paces][value]:
+                  type: boolean
+                  description: Enable or disable course pacing
+                account[settings][enable_course_paces][locked]:
+                  type: boolean
+                  description: Lock this setting for sub-accounts and courses
+                account[settings][suppress_notifications]:
+                  type: boolean
+                  description: 'Suppress notification messages from being created and sent. When set to
+
+                    +true+, all notifications are suppressed. When set to an array of
+
+                    notification category slugs (e.g. +["grading", "announcement"]+), only
+
+                    notifications in those categories are suppressed. Set to +false+ to
+
+                    allow all notifications. Root account setting only.'
+                account[settings][password_policy]:
+                  type: object
+                  additionalProperties: true
+                  description: "Hash of optional password policy configuration parameters for a root account\n\n+allow_login_suspension+ boolean:: Allow suspension of user logins upon reaching maximum_login_attempts\n\n+require_number_characters+ boolean:: Require the use of number characters when setting up a new password\n\n+require_symbol_characters+ boolean:: Require the use of symbol characters when setting up a new password\n\n+minimum_character_length+ integer:: Minimum number of characters required for a new password\n\n+maximum_login_attempts+ integer:: Maximum number of login attempts before a user is locked out\n\n_Required_ feature option:\n  Enhance password options"
+                account[settings][enable_as_k5_account][value]:
+                  type: boolean
+                  description: Enable or disable Canvas for Elementary for this account
+                account[settings][use_classic_font_in_k5][value]:
+                  type: boolean
+                  description: Whether or not the classic font is used on the dashboard. Only applies if enable_as_k5_account is true.
+                account[settings][horizon_account][value]:
+                  type: boolean
+                  description: Enable or disable Canvas Career for this account
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+                account[settings][lock_outcome_proficiency][value]:
+                  type: boolean
+                  description: '[DEPRECATED] Restrict instructors from changing mastery scale'
+                account[lock_outcome_proficiency][locked]:
+                  type: boolean
+                  description: '[DEPRECATED] Lock this setting for sub-accounts and courses'
+                account[settings][lock_proficiency_calculation][value]:
+                  type: boolean
+                  description: '[DEPRECATED] Restrict instructors from changing proficiency calculation method'
+                account[lock_proficiency_calculation][locked]:
+                  type: boolean
+                  description: '[DEPRECATED] Lock this setting for sub-accounts and courses'
+                account[services]:
+                  type: object
+                  additionalProperties: true
+                  description: Give this a set of keys and boolean values to enable or disable services matching the keys
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/settings:
+    get:
+      tags:
+      - Accounts
+      operationId: settings
+      summary: Settings
+      description: 'Returns a JSON object containing a subset of settings for the specified account.
+
+        It''s possible an empty set will be returned if no settings are applicable.
+
+        The caller must be an Account admin with the manage_account_settings permission.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/settings/environment:
+    get:
+      tags:
+      - Accounts
+      operationId: list_environment_settings
+      summary: List environment settings
+      description: 'Return a hash of global settings for the root account
+
+        This is the same information supplied to the web interface as +ENV.SETTINGS+.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/permissions:
+    get:
+      tags:
+      - Accounts
+      operationId: permissions
+      summary: Permissions
+      description: 'Returns permission information for the calling user and the given account.
+
+        You may use `self` as the account id to check permissions against the domain root account.
+
+        The caller must have an account role or admin (teacher/TA/designer) enrollment in a course
+
+        in the account.
+
+
+        See also the {api:CoursesController#permissions Course} and {api:GroupsController#permissions Group}
+
+        counterparts.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: permissions
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'List of permissions to check against the authenticated user.
+
+          Permission names are documented in the {api:RoleOverridesController#manageable_permissions List assignable permissions} endpoint.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/sub_accounts:
+    get:
+      tags:
+      - Accounts
+      operationId: get_sub_accounts_of_account
+      summary: Get the sub-accounts of an account
+      description: List accounts that are sub-accounts of the given account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: recursive
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, the entire account tree underneath
+
+          this account will be returned (though still paginated). If false, only
+
+          direct sub-accounts of this account will be returned. Defaults to false.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - name
+        required: false
+        description: 'Sorts the accounts by id or name.
+
+          Only applies when recursive is false. Defaults to id.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - course_count
+            - sub_account_count
+        required: false
+        description: 'Array of additional information to include.
+
+
+          "course_count":: returns the number of courses directly under each account
+
+          "sub_account_count":: returns the number of sub-accounts directly under each account'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+    post:
+      tags:
+      - Accounts
+      operationId: create_new_sub_account
+      summary: Create a new sub-account
+      description: Add a new sub-account to a given account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account[name]:
+                  type: string
+                  description: The name of the new sub-account.
+                account[sis_account_id]:
+                  type: string
+                  description: The account's identifier in the Student Information System.
+                account[default_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default course storage quota to be used, if not otherwise specified.
+                account[default_user_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default user storage quota to be used, if not otherwise specified.
+                account[default_group_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default group storage quota to be used, if not otherwise specified.
+              required:
+              - account[name]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                account[name]:
+                  type: string
+                  description: The name of the new sub-account.
+                account[sis_account_id]:
+                  type: string
+                  description: The account's identifier in the Student Information System.
+                account[default_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default course storage quota to be used, if not otherwise specified.
+                account[default_user_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default user storage quota to be used, if not otherwise specified.
+                account[default_group_storage_quota_mb]:
+                  type: integer
+                  format: int64
+                  description: The default group storage quota to be used, if not otherwise specified.
+              required:
+              - account[name]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/terms_of_service:
+    get:
+      tags:
+      - Accounts
+      operationId: get_terms_of_service
+      summary: Get the Terms of Service
+      description: Returns the terms of service for that account
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermsOfService'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/help_links:
+    get:
+      tags:
+      - Accounts
+      operationId: get_help_links
+      summary: Get help links
+      description: Returns the help links for that account
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelpLinks'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/manually_created_courses_account:
+    get:
+      tags:
+      - Accounts
+      operationId: get_manually_created_courses_sub_account_for_domain_root_account
+      summary: Get the manually-created courses sub-account for the domain root account
+      description: Returns the sub-account that contains manually created courses for the domain root account.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/courses:
+    get:
+      tags:
+      - Accounts
+      operationId: list_active_courses_in_account
+      summary: List active courses in an account
+      description: Retrieve a paginated list of courses in this account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: with_enrollments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include only courses with at least one enrollment.  If false,
+
+          include only courses with no enrollments.  If not present, do not filter
+
+          on course enrollment status.'
+      - name: enrollment_type
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - teacher
+            - student
+            - ta
+            - observer
+            - designer
+        required: false
+        description: 'If set, only return courses that have at least one user enrolled in
+
+          in the course with one of the specified enrollment types.'
+      - name: enrollment_workflow_state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - active
+            - completed
+            - deleted
+            - invited
+            - pending
+            - creation_pending
+            - rejected
+            - inactive
+        required: false
+        description: 'If set, only return courses that have at least one user enrolled in
+
+          in the course with one of the specified enrollment workflow states.'
+      - name: published
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include only published courses.  If false, exclude published
+
+          courses.  If not present, do not filter on published status.'
+      - name: completed
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include only completed courses (these may be in state
+
+          ''completed'', or their enrollment term may have ended).  If false, exclude
+
+          completed courses.  If not present, do not filter on completed status.'
+      - name: blueprint
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include only blueprint courses. If false, exclude them.
+
+          If not present, do not filter on this basis.'
+      - name: blueprint_associated
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include only courses that inherit content from a blueprint course.
+
+          If false, exclude them. If not present, do not filter on this basis.'
+      - name: public
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include only public courses. If false, exclude them.
+
+          If not present, do not filter on this basis.'
+      - name: by_teachers
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'List of User IDs of teachers; if supplied, include only courses taught by
+
+          one of the referenced users.'
+      - name: by_subaccounts
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'List of Account IDs; if supplied, include only courses associated with one
+
+          of the referenced subaccounts.'
+      - name: hide_enrollmentless_courses
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If present, only return courses that have at least one enrollment.
+
+          Equivalent to ''with_enrollments=true''; retained for compatibility.'
+      - name: state
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - created
+            - claimed
+            - available
+            - completed
+            - deleted
+            - all
+        required: false
+        description: 'If set, only return courses that are in the given state(s). By default,
+
+          all states but "deleted" are returned.'
+      - name: enrollment_term_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+        required: false
+        description: 'If set, only includes courses from the specified terms. Can be either a single ID or
+
+          an array of enrollment term IDs.'
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial course name, code, or full ID to match and return in the results list. Must be at least 3 characters.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - syllabus_body
+            - term
+            - course_progress
+            - storage_quota_used_mb
+            - total_students
+            - teachers
+            - account_name
+            - concluded
+            - post_manually
+        required: false
+        description: '- All explanations can be seen in the {api:CoursesController#index Course API index documentation}
+
+          - "sections", "needs_grading_count" and "total_scores" are not valid options at the account level'
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - course_status
+          - course_name
+          - sis_course_id
+          - teacher
+          - account_name
+        required: false
+        description: The column to sort results by.
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: The order to sort the given column by.
+      - name: search_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - course
+          - teacher
+        required: false
+        description: 'The filter to search by. "course" searches for course names, course codes,
+
+          and SIS IDs. "teacher" searches for teacher names'
+      - name: starts_before
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'If set, only return courses that start before the value (inclusive)
+
+          or their enrollment term starts before the value (inclusive)
+
+          or both the course''s start_at and the enrollment term''s start_at are set to null.
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: ends_after
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'If set, only return courses that end after the value (inclusive)
+
+          or their enrollment term ends after the value (inclusive)
+
+          or both the course''s end_at and the enrollment term''s end_at are set to null.
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: homeroom
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: If set, only return homeroom courses.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: Course
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/users/{user_id}:
+    delete:
+      tags:
+      - Accounts
+      operationId: delete_user_from_root_account
+      summary: Delete a user from the root account
+      description: 'Delete a user record from a Canvas root account. If a user is associated
+
+        with multiple root accounts (in a multi-tenant instance of Canvas), this
+
+        action will NOT remove them from the other accounts.
+
+
+        WARNING: This API will allow a user to remove themselves from the account.
+
+        If they do this, they won''t be able to make API calls or log into Canvas at
+
+        that account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/users:
+    delete:
+      tags:
+      - Accounts
+      operationId: delete_multiple_users_from_root_account
+      summary: Delete multiple users from the root account
+      description: 'Delete multiple users from a Canvas root account. If a user is associated
+
+        with multiple root accounts (in a multi-tenant instance of Canvas), this
+
+        action will NOT remove them from the other accounts.
+
+
+        WARNING: This API will allow a user to remove themselves from the account.
+
+        If they do this, they won''t be able to make API calls or log into Canvas at
+
+        that account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/users/bulk_update:
+    put:
+      tags:
+      - Accounts
+      operationId: update_multiple_users
+      summary: Update multiple users
+      description: Updates multiple users in bulk.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: string
+                  description: '[Array<Integer>]
+
+                    The IDs of the users to update.'
+                user:
+                  type: object
+                  additionalProperties: true
+                  description: The attributes to update for each user.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: string
+                  description: '[Array<Integer>]
+
+                    The IDs of the users to update.'
+                user:
+                  type: object
+                  additionalProperties: true
+                  description: The attributes to update for each user.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Progress
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/users/{user_id}/restore:
+    put:
+      tags:
+      - Accounts
+      operationId: restore_deleted_user_from_root_account
+      summary: Restore a deleted user from a root account
+      description: 'Restore a user record along with the most recently deleted pseudonym
+
+        from a Canvas root account.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+  /v1/accounts/{account_id}/sub_accounts/{id}:
+    delete:
+      tags:
+      - Accounts
+      operationId: delete_sub_account
+      summary: Delete a sub-account
+      description: 'Cannot delete an account with active courses or active sub_accounts.
+
+        Cannot delete a root_account'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account__accounts'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accounts.html
+components:
+  schemas:
+    HelpLink:
+      type: object
+      properties:
+        id:
+          type: string
+          example: instructor_question
+          description: The ID of the help link
+        text:
+          type: string
+          example: Ask Your Instructor a Question
+          description: The name of the help link
+        subtext:
+          type: string
+          example: Questions are submitted to your instructor
+          description: The description of the help link
+        url:
+          type: string
+          example: '#teacher_feedback'
+          description: The URL of the help link
+        type:
+          type: string
+          example: default
+          description: The type of the help link
+          enum:
+          - default
+          - custom
+        available_to:
+          type: array
+          items:
+            type: string
+          example:
+          - user
+          - student
+          - teacher
+          - admin
+          - observer
+          - unenrolled
+          description: The roles that have access to this help link
+    Account__accounts:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+          description: the ID of the Account object
+        name:
+          type: string
+          example: Canvas Account
+          description: The display name of the account
+        uuid:
+          type: string
+          example: WvAHhY5FINzq5IyRIJybGeiXyFkG3SqHUPb7jZY5
+          description: The UUID of the account
+        parent_account_id:
+          type: integer
+          example: 1
+          description: The account's parent ID, or null if this is the root account
+        root_account_id:
+          type: integer
+          example: 1
+          description: The ID of the root account, or null if this is the root account
+        default_storage_quota_mb:
+          type: integer
+          example: 500
+          description: The storage quota for the account in megabytes, if not otherwise specified
+        default_user_storage_quota_mb:
+          type: integer
+          example: 50
+          description: The storage quota for a user in the account in megabytes, if not otherwise specified
+        default_group_storage_quota_mb:
+          type: integer
+          example: 50
+          description: The storage quota for a group in the account in megabytes, if not otherwise specified
+        default_time_zone:
+          type: string
+          example: America/Denver
+          description: The default time zone of the account. Allowed time zones are {http://www.iana.org/time-zones IANA time zones} or friendlier {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.
+        default_time_zone_friendly_name:
+          type: string
+          example: Mountain Time (US & Canada)
+          description: The friendly Ruby on Rails name of the account's default time zone. Since several Rails time zones can share a single IANA identifier (the value returned in default_time_zone), this field disambiguates which one is configured.
+        sis_account_id:
+          type: string
+          example: 123xyz
+          description: The account's identifier in the Student Information System. Only included if the user has permission to view SIS information.
+        integration_id:
+          type: string
+          example: 123xyz
+          description: The account's identifier in the Student Information System. Only included if the user has permission to view SIS information.
+        sis_import_id:
+          type: integer
+          example: '12'
+          description: The id of the SIS import if created through SIS. Only included if the user has permission to manage SIS information.
+        course_count:
+          type: integer
+          example: '10'
+          description: The number of courses directly under the account (available via include)
+        sub_account_count:
+          type: integer
+          example: '10'
+          description: The number of sub-accounts directly under the account (available via include)
+        lti_guid:
+          type: string
+          example: 123xyz
+          description: The account's identifier that is sent as context_id in LTI launches.
+        workflow_state:
+          type: string
+          example: active
+          description: The state of the account. Can be 'active' or 'deleted'.
+    TermsOfService:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: Terms Of Service id
+        terms_type:
+          type: string
+          example: default
+          description: The given type for the Terms of Service
+          enum:
+          - default
+          - custom
+          - no_terms
+        passive:
+          type: boolean
+          example: false
+          description: Boolean dictating if the user must accept Terms of Service
+        account_id:
+          type: integer
+          example: 1
+          description: The id of the root account that owns the Terms of Service
+        content:
+          type: string
+          example: To be or not to be that is the question
+          description: Content of the Terms of Service
+        self_registration_type:
+          type: string
+          example:
+          - none
+          - observer
+          - all
+          description: The type of self registration allowed
+    HelpLinks:
+      type: object
+      properties:
+        help_link_name:
+          type: string
+          example: Help And Policies
+          description: Help link button title
+        help_link_icon:
+          type: string
+          example: help
+          description: Help link button icon
+        custom_help_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/HelpLink'
+          example:
+          - id: link1
+            text: Custom Link!
+            subtext: Something something.
+            url: https://google.com
+            type: custom
+            available_to:
+            - user
+            - student
+            - teacher
+            - admin
+            - observer
+            - unenrolled
+            is_featured: true
+            is_new: false
+            feature_headline: Check this out!
+          description: Help links defined by the account. Could include default help links.
+        default_help_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/HelpLink'
+          example:
+          - available_to:
+            - student
+            text: Ask Your Instructor a Question
+            subtext: Questions are submitted to your instructor
+            url: '#teacher_feedback'
+            type: default
+            id: instructor_question
+            is_featured: false
+            is_new: true
+            feature_headline: ''
+          - available_to:
+            - user
+            - student
+            - teacher
+            - admin
+            - observer
+            - unenrolled
+            text: Search the Canvas Guides
+            subtext: Find answers to common questions
+            url: https://community.canvaslms.com/t5/Guides/ct-p/guides
+            type: default
+            id: search_the_canvas_guides
+            is_featured: false
+            is_new: false
+            feature_headline: ''
+          - available_to:
+            - user
+            - student
+            - teacher
+            - admin
+            - observer
+            - unenrolled
+            text: Report a Problem
+            subtext: If Canvas misbehaves, tell us about it
+            url: '#create_ticket'
+            type: default
+            id: report_a_problem
+            is_featured: false
+            is_new: false
+            feature_headline: ''
+          description: Default help links provided when account has not set help links of their own.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

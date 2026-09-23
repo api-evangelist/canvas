@@ -1,0 +1,118 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Plagiarism Detection Platform Assignments…
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Plagiarism Detection Platform Assignments
+  x-resource: plagiarism_detection_platform_assignments
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/plagiarism_detection_platform_assignments.html
+paths:
+  /lti/assignments/{assignment_id}:
+    get:
+      tags:
+      - Plagiarism Detection Platform Assignments
+      operationId: get_single_assignment_lti
+      summary: Get a single assignment (lti)
+      description: 'Get a single Canvas assignment by Canvas id or LTI id. Tool providers may only access
+
+        assignments that are associated with their tool.'
+      parameters:
+      - name: assignment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The id of the user. Can be a Canvas or LTI id for the user.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LtiAssignment'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/plagiarism_detection_platform_assignments.html
+components:
+  schemas:
+    LtiAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4
+        name:
+          type: string
+          example: Midterm Review
+        description:
+          type: string
+          example: <p>Do the following:</p>...
+        points_possible:
+          type: integer
+          example: 10
+        due_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: The due date for the assignment. If a user id is supplied and an assignment override is in place this field will reflect the due date as it applies to the user.
+        lti_id:
+          type: string
+          example: 86157096483e6b3a50bfedc6bac902c0b20a824f
+        course_id:
+          type: integer
+          example: 10000000000060
+        lti_course_id:
+          type: string
+          example: 66157096483e6b3a50bfedc6bac902c0b20a8241
+      description: A Canvas assignment
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

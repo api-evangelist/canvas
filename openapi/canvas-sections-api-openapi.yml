@@ -1,0 +1,574 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Sections API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Sections
+  x-resource: sections
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/sections.html
+paths:
+  /v1/courses/{course_id}/sections:
+    get:
+      tags:
+      - Sections
+      operationId: list_course_sections
+      summary: List course sections
+      description: A paginated list of the list of sections for this course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - students
+            - avatar_url
+            - enrollments
+            - total_students
+            - passback_status
+            - permissions
+        required: false
+        description: "- \"students\": Associations to include with the group. Note: this is only\n  available if you have permission to view users or grades in the course\n- \"avatar_url\": Include the avatar URLs for students returned.\n- \"enrollments\": If 'students' is also included, return the section\n  enrollment for each student\n- \"total_students\": Returns the total amount of active and invited students\n  for the course section\n- \"passback_status\": Include the grade passback status.\n- \"permissions\": Include whether section grants :manage_calendar permission\n  to the caller"
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'When included, searches course sections for the term. Returns only matching
+
+          results. Term must be at least 2 characters.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+    post:
+      tags:
+      - Sections
+      operationId: create_course_section
+      summary: Create course section
+      description: Creates a new section for this course.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_section[name]:
+                  type: string
+                  description: The name of the section
+                course_section[sis_section_id]:
+                  type: string
+                  description: The sis ID of the section. Must have manage_sis permission to set. This is ignored if caller does not have permission to set.
+                course_section[integration_id]:
+                  type: string
+                  description: The integration_id of the section. Must have manage_sis permission to set. This is ignored if caller does not have permission to set.
+                course_section[start_at]:
+                  type: string
+                  format: date-time
+                  description: Section start date in ISO8601 format, e.g. 2011-01-01T01:00Z
+                course_section[end_at]:
+                  type: string
+                  format: date-time
+                  description: Section end date in ISO8601 format. e.g. 2011-01-01T01:00Z
+                course_section[restrict_enrollments_to_section_dates]:
+                  type: boolean
+                  description: Set to true to restrict user enrollments to the start and end dates of the section.
+                enable_sis_reactivation:
+                  type: boolean
+                  description: When true, will first try to re-activate a deleted section with matching sis_section_id if possible.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                course_section[name]:
+                  type: string
+                  description: The name of the section
+                course_section[sis_section_id]:
+                  type: string
+                  description: The sis ID of the section. Must have manage_sis permission to set. This is ignored if caller does not have permission to set.
+                course_section[integration_id]:
+                  type: string
+                  description: The integration_id of the section. Must have manage_sis permission to set. This is ignored if caller does not have permission to set.
+                course_section[start_at]:
+                  type: string
+                  format: date-time
+                  description: Section start date in ISO8601 format, e.g. 2011-01-01T01:00Z
+                course_section[end_at]:
+                  type: string
+                  format: date-time
+                  description: Section end date in ISO8601 format. e.g. 2011-01-01T01:00Z
+                course_section[restrict_enrollments_to_section_dates]:
+                  type: boolean
+                  description: Set to true to restrict user enrollments to the start and end dates of the section.
+                enable_sis_reactivation:
+                  type: boolean
+                  description: When true, will first try to re-activate a deleted section with matching sis_section_id if possible.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+  /v1/sections/{id}/crosslist/{new_course_id}:
+    post:
+      tags:
+      - Sections
+      operationId: cross_list_section
+      summary: Cross-list a Section
+      description: 'Move the Section to another course. The new course may be in a different account (department),
+
+        but must belong to the same root account (institution).'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: new_course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+  /v1/sections/{id}/crosslist:
+    delete:
+      tags:
+      - Sections
+      operationId: de_cross_list_section
+      summary: De-cross-list a Section
+      description: Undo cross-listing of a Section, returning it to its original course.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: override_sis_stickiness
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+          See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+  /v1/sections/{id}:
+    put:
+      tags:
+      - Sections
+      operationId: edit_section
+      summary: Edit a section
+      description: Modify an existing section.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_section[name]:
+                  type: string
+                  description: The name of the section
+                course_section[sis_section_id]:
+                  type: string
+                  description: The sis ID of the section. Must have manage_sis permission to set.
+                course_section[integration_id]:
+                  type: string
+                  description: The integration_id of the section. Must have manage_sis permission to set.
+                course_section[start_at]:
+                  type: string
+                  format: date-time
+                  description: Section start date in ISO8601 format, e.g. 2011-01-01T01:00Z
+                course_section[end_at]:
+                  type: string
+                  format: date-time
+                  description: Section end date in ISO8601 format. e.g. 2011-01-01T01:00Z
+                course_section[restrict_enrollments_to_section_dates]:
+                  type: boolean
+                  description: Set to true to restrict user enrollments to the start and end dates of the section.
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                course_section[name]:
+                  type: string
+                  description: The name of the section
+                course_section[sis_section_id]:
+                  type: string
+                  description: The sis ID of the section. Must have manage_sis permission to set.
+                course_section[integration_id]:
+                  type: string
+                  description: The integration_id of the section. Must have manage_sis permission to set.
+                course_section[start_at]:
+                  type: string
+                  format: date-time
+                  description: Section start date in ISO8601 format, e.g. 2011-01-01T01:00Z
+                course_section[end_at]:
+                  type: string
+                  format: date-time
+                  description: Section end date in ISO8601 format. e.g. 2011-01-01T01:00Z
+                course_section[restrict_enrollments_to_section_dates]:
+                  type: boolean
+                  description: Set to true to restrict user enrollments to the start and end dates of the section.
+                override_sis_stickiness:
+                  type: boolean
+                  description: 'Default is true. If false, any fields containing “sticky” changes will not be updated.
+
+                    See SIS CSV Format documentation for information on which fields can have SIS stickiness'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+    get:
+      tags:
+      - Sections
+      operationId: get_section_information_sections
+      summary: Get section information
+      description: Gets details about a specific section
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - students
+            - avatar_url
+            - enrollments
+            - total_students
+            - passback_status
+            - permissions
+        required: false
+        description: "- \"students\": Associations to include with the group. Note: this is only\n  available if you have permission to view users or grades in the course\n- \"avatar_url\": Include the avatar URLs for students returned.\n- \"enrollments\": If 'students' is also included, return the section\n  enrollment for each student\n- \"total_students\": Returns the total amount of active and invited students\n  for the course section\n- \"passback_status\": Include the grade passback status.\n- \"permissions\": Include whether section grants :manage_calendar permission\n  to the caller"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+    delete:
+      tags:
+      - Sections
+      operationId: delete_section
+      summary: Delete a section
+      description: Delete an existing section. Returns the former Section.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+  /v1/courses/{course_id}/sections/{id}:
+    get:
+      tags:
+      - Sections
+      operationId: get_section_information_courses
+      summary: Get section information
+      description: Gets details about a specific section
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - students
+            - avatar_url
+            - enrollments
+            - total_students
+            - passback_status
+            - permissions
+        required: false
+        description: "- \"students\": Associations to include with the group. Note: this is only\n  available if you have permission to view users or grades in the course\n- \"avatar_url\": Include the avatar URLs for students returned.\n- \"enrollments\": If 'students' is also included, return the section\n  enrollment for each student\n- \"total_students\": Returns the total amount of active and invited students\n  for the course section\n- \"passback_status\": Include the grade passback status.\n- \"permissions\": Include whether section grants :manage_calendar permission\n  to the caller"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Section'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+  /v1/sections/{id}/users:
+    get:
+      tags:
+      - Sections
+      operationId: list_section_s_users
+      summary: List section's users
+      description: Returns a paginated list of users in the section.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The partial name or full ID of the users to match and return in the
+
+          results list. Must be at least 2 characters.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - avatar_url
+        required: false
+        description: '"avatar_url": Include users'' avatar_urls.'
+      - name: exclude_inactive
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Whether to filter out inactive users from the results. Defaults to
+
+          false unless explicitly provided.'
+      - name: enrollment_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - teacher
+          - student
+          - ta
+          - observer
+          - designer
+        required: false
+        description: When set, only return users with the specified enrollment type for the given section.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: User
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/sections.html
+components:
+  schemas:
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The unique identifier for the section.
+        name:
+          type: string
+          example: Section A
+          description: The name of the section.
+        sis_section_id:
+          type: string
+          example: s34643
+          description: The sis id of the section. This field is only included if the user has permission to view SIS information.
+        integration_id:
+          type: string
+          example: '3452342345'
+          description: 'Optional: The integration ID of the section. This field is only included if the user has permission to view SIS information.'
+        sis_import_id:
+          type: integer
+          example: 47
+          description: The unique identifier for the SIS import if created through SIS. This field is only included if the user has permission to manage SIS information.
+        course_id:
+          type: integer
+          example: 7
+          description: The unique Canvas identifier for the course in which the section belongs
+        sis_course_id:
+          type: string
+          example: 7
+          description: The unique SIS identifier for the course in which the section belongs. This field is only included if the user has permission to view SIS information.
+        start_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: the start date for the section, if applicable
+        end_at:
+          type: string
+          format: date-time
+          description: the end date for the section, if applicable
+        restrict_enrollments_to_section_dates:
+          type: boolean
+          description: Restrict user enrollments to the start and end dates of the section
+        nonxlist_course_id:
+          type: integer
+          description: The unique identifier of the original course of a cross-listed section
+        total_students:
+          type: integer
+          example: 13
+          description: 'optional: the total number of active and invited students in the section'
+        students:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: User
+          description: 'optional: A list of students that are included in the section. Returned only if include[]=students. WARNING: this collection''s size is capped (if there are an extremely large number of users in the section (thousands) not all of them will be returned). If you need to capture all the users in a section with certainty or experiencing slow response consider using the paginated /api/v1/sections/<section_id>/users endpoint.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

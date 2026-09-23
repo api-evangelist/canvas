@@ -1,0 +1,309 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Communication Channels API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Communication Channels
+  x-resource: communication_channels
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/communication_channels.html
+paths:
+  /v1/users/{user_id}/communication_channels:
+    get:
+      tags:
+      - Communication Channels
+      operationId: list_user_communication_channels
+      summary: List user communication channels
+      description: 'Returns a paginated list of communication channels for the specified user,
+
+        sorted by position.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CommunicationChannel'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/communication_channels.html
+    post:
+      tags:
+      - Communication Channels
+      operationId: create_communication_channel
+      summary: Create a communication channel
+      description: Creates a new communication channel for the specified user.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                communication_channel[address]:
+                  type: string
+                  description: An email address or SMS number. Not required for "push" type channels.
+                communication_channel[type]:
+                  type: string
+                  enum:
+                  - email
+                  - sms
+                  - push
+                  description: 'The type of communication channel.
+
+
+                    In order to enable push notification support, the server must be
+
+                    properly configured (via `sns_creds` in Vault) to communicate with Amazon
+
+                    Simple Notification Services, and the developer key used to create
+
+                    the access token from this request must have an SNS ARN configured on
+
+                    it.'
+                communication_channel[token]:
+                  type: string
+                  description: 'A registration id, device token, or equivalent token given to an app when
+
+                    registering with a push notification provider. Only valid for "push" type channels.'
+                skip_confirmation:
+                  type: boolean
+                  description: 'Only valid for site admins and account admins making requests; If true, the channel is
+
+                    automatically validated and no confirmation email or SMS is sent.
+
+                    Otherwise, the user must respond to a confirmation message to confirm the
+
+                    channel.'
+              required:
+              - communication_channel[address]
+              - communication_channel[type]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                communication_channel[address]:
+                  type: string
+                  description: An email address or SMS number. Not required for "push" type channels.
+                communication_channel[type]:
+                  type: string
+                  enum:
+                  - email
+                  - sms
+                  - push
+                  description: 'The type of communication channel.
+
+
+                    In order to enable push notification support, the server must be
+
+                    properly configured (via `sns_creds` in Vault) to communicate with Amazon
+
+                    Simple Notification Services, and the developer key used to create
+
+                    the access token from this request must have an SNS ARN configured on
+
+                    it.'
+                communication_channel[token]:
+                  type: string
+                  description: 'A registration id, device token, or equivalent token given to an app when
+
+                    registering with a push notification provider. Only valid for "push" type channels.'
+                skip_confirmation:
+                  type: boolean
+                  description: 'Only valid for site admins and account admins making requests; If true, the channel is
+
+                    automatically validated and no confirmation email or SMS is sent.
+
+                    Otherwise, the user must respond to a confirmation message to confirm the
+
+                    channel.'
+              required:
+              - communication_channel[address]
+              - communication_channel[type]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunicationChannel'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/communication_channels.html
+  /v1/users/{user_id}/communication_channels/{id}:
+    delete:
+      tags:
+      - Communication Channels
+      operationId: delete_communication_channel_id
+      summary: Delete a communication channel
+      description: Delete an existing communication channel.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunicationChannel'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/communication_channels.html
+  /v1/users/{user_id}/communication_channels/{type}/{address}:
+    delete:
+      tags:
+      - Communication Channels
+      operationId: delete_communication_channel_type
+      summary: Delete a communication channel
+      description: Delete an existing communication channel.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: address
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunicationChannel'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/communication_channels.html
+  /v1/users/self/communication_channels/push:
+    delete:
+      tags:
+      - Communication Channels
+      operationId: delete_push_notification_endpoint
+      summary: Delete a push notification endpoint
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{success: true}'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/communication_channels.html
+components:
+  schemas:
+    CommunicationChannel:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 16
+          description: The ID of the communication channel.
+        address:
+          type: string
+          example: sheldon@caltech.example.com
+          description: The address, or path, of the communication channel.
+        type:
+          type: string
+          example: email
+          description: 'The type of communcation channel being described. Possible values are: ''email'', ''push'', ''sms''. This field determines the type of value seen in ''address''.'
+        position:
+          type: integer
+          example: 1
+          description: The position of this communication channel relative to the user's other channels when they are ordered.
+        user_id:
+          type: integer
+          example: 1
+          description: The ID of the user that owns this communication channel.
+        bounce_count:
+          type: integer
+          example: 0
+          description: The number of bounces the channel has experienced. This is reset if the channel sends successfully.
+        last_bounce_at:
+          type: string
+          format: date-time
+          example: '2012-05-30T17:00:00Z'
+          description: The time the last bounce occurred.
+        workflow_state:
+          type: string
+          example: active
+          description: 'The current state of the communication channel. Possible values are: ''unconfirmed'' or ''active''.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,185 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST E Pub Exports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: E Pub Exports
+  x-resource: e_pub_exports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/e_pub_exports.html
+paths:
+  /v1/epub_exports:
+    get:
+      tags:
+      - E Pub Exports
+      operationId: list_courses_with_their_latest_epub_export
+      summary: List courses with their latest ePub export
+      description: 'A paginated list of all courses a user is actively participating in, and
+
+        the latest ePub export associated with the user & course.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseEpubExport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_pub_exports.html
+  /v1/courses/{course_id}/epub_exports:
+    post:
+      tags:
+      - E Pub Exports
+      operationId: create_epub_export
+      summary: Create ePub Export
+      description: 'Begin an ePub export for a course.
+
+
+        You can use the {api:ProgressController#show Progress API} to track the
+
+        progress of the export. The export''s progress is linked to with the
+
+        _progress_url_ value.
+
+
+        When the export completes, use the {api:EpubExportsController#show Show content export} endpoint
+
+        to retrieve a download URL for the exported content.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpubExport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_pub_exports.html
+  /v1/courses/{course_id}/epub_exports/{id}:
+    get:
+      tags:
+      - E Pub Exports
+      operationId: show_epub_export
+      summary: Show ePub export
+      description: Get information about a single ePub export.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpubExport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/e_pub_exports.html
+components:
+  schemas:
+    EpubExport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+          description: the unique identifier for the export
+        created_at:
+          type: string
+          format: date-time
+          example: '2014-01-01T00:00:00Z'
+          description: the date and time this export was requested
+        attachment:
+          type: string
+          example:
+            url: https://example.com/api/v1/attachments/789?download_frd=1
+          description: attachment api object for the export ePub (not present until the export completes)
+        progress_url:
+          type: string
+          example: https://example.com/api/v1/progress/4
+          description: The api endpoint for polling the current progress
+        user_id:
+          type: integer
+          example: 4
+          description: The ID of the user who started the export
+        workflow_state:
+          type: string
+          example: exported
+          description: 'Current state of the ePub export: created exporting exported generating generated failed'
+    CourseEpubExport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+          description: the unique identifier for the course
+        name:
+          type: string
+          example: Maths 101
+          description: the name for the course
+        epub_export:
+          type: string
+          description: ePub export API object
+      description: Combination of a Course & EpubExport.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

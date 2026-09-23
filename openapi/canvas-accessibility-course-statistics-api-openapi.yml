@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Accessibility Course Statistics API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Accessibility Course Statistics
+  x-resource: accessibility_course_statistics
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/accessibility_course_statistics.html
+paths:
+  /v1/users/{user_id}/educator_accessibility_course_statistics:
+    get:
+      tags:
+      - Accessibility Course Statistics
+      operationId: list_accessibility_course_statistics
+      summary: List accessibility course statistics
+      description: 'Returns per-course accessibility issue statistics for the current user''s
+
+        active teacher and designer courses. Only courses where the accessibility
+
+        checker is enabled and whose workflow state is neither completed nor deleted
+
+        are included. Only statistic records with workflow_state "active" are returned.
+
+
+        Requires the educator_dashboard feature flag to be enabled on the root
+
+        account, and a11y_checker_account_statistics on site admin plus a11y_checker
+
+        on the account (i.e. a11y_checker_account_statistics? must be true).'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: 'The ID of the user, or "self" for the current user.
+
+          The requesting user may only retrieve their own statistics.'
+      - name: enrollment_term_id
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'When present, only include courses that belong to the given enrollment
+
+          term(s). Accepts a single term id or an array
+
+          (enrollment_term_id[]=1&enrollment_term_id[]=2), and each value may be a
+
+          term id or SIS term id. Returns 404 if any given term does not exist in
+
+          this account.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccessibilityCourseStatistic'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accessibility_course_statistics.html
+  /v1/users/{user_id}/educator_accessibility_course_terms:
+    get:
+      tags:
+      - Accessibility Course Statistics
+      operationId: list_accessibility_course_statistic_terms
+      summary: List accessibility course statistic terms
+      description: 'Returns the distinct enrollment terms that the current user''s active teacher
+
+        and designer courses belong to -- the same courses reported by the List
+
+        accessibility course statistics endpoint. Use this to populate a term filter
+
+        for that endpoint. There is no "all terms" entry; "all terms" is represented
+
+        by omitting the enrollment_term_id filter.
+
+
+        Requires the same account settings and feature flags as the statistics
+
+        endpoint.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: 'The ID of the user, or "self" for the current user.
+
+          The requesting user may only retrieve their own terms.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: EnrollmentTerm
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/accessibility_course_statistics.html
+components:
+  schemas:
+    AccessibilityCourseStatistic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The ID of the accessibility course statistic record
+        course_id:
+          type: integer
+          example: 42
+          description: The ID of the course
+        course_name:
+          type: string
+          example: Introduction to Biology
+          description: The name of the course
+        course_code:
+          type: string
+          example: BIO101
+          description: The course code (short name) of the course
+        published:
+          type: boolean
+          example: true
+          description: Whether the course is published
+        active_issue_count:
+          type: integer
+          example: 5
+          description: The number of active accessibility issues in the course
+        resolved_issue_count:
+          type: integer
+          example: 3
+          description: The number of resolved accessibility issues in the course
+        closed_issue_count:
+          type: integer
+          example: 2
+          description: The number of closed accessibility issues in the course
+        workflow_state:
+          type: string
+          example: active
+          description: The workflow state of the statistic record
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-01-01T00:00:00Z'
+          description: The date and time the record was created
+        updated_at:
+          type: string
+          format: date-time
+          example: '2026-01-02T00:00:00Z'
+          description: The date and time the record was last updated
+      description: Per-course accessibility issue counts for a user's active teacher/designer courses.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

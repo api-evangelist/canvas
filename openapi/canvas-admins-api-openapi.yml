@@ -1,0 +1,270 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Admins API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Admins
+  x-resource: admins
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/admins.html
+paths:
+  /v1/accounts/{account_id}/admins:
+    get:
+      tags:
+      - Admins
+      operationId: list_account_admins
+      summary: List account admins
+      description: A paginated list of the admins in the account
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: query
+        schema:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+        required: false
+        description: Scope the results to those with user IDs equal to any of the IDs specified here.
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'The partial name or full ID of the admins to match and return in the
+
+          results list. Must be at least 2 characters.'
+      - name: include_deleted
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: When set to true, returns admins who have been deleted
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Admin'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/admins.html
+    post:
+      tags:
+      - Admins
+      operationId: make_account_admin
+      summary: Make an account admin
+      description: Flag an existing user as an admin within the account.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: The id of the user to promote.
+                role:
+                  type: string
+                  description: '[DEPRECATED] The user''s admin relationship with the account will be
+
+                    created with the given role. Defaults to ''AccountAdmin''.'
+                role_id:
+                  type: integer
+                  format: int64
+                  description: The user's admin relationship with the account will be created with the given role. Defaults to the built-in role for 'AccountAdmin'.
+                send_confirmation:
+                  type: boolean
+                  description: 'Send a notification email to
+
+                    the new admin if true. Default is true.'
+              required:
+              - user_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: The id of the user to promote.
+                role:
+                  type: string
+                  description: '[DEPRECATED] The user''s admin relationship with the account will be
+
+                    created with the given role. Defaults to ''AccountAdmin''.'
+                role_id:
+                  type: integer
+                  format: int64
+                  description: The user's admin relationship with the account will be created with the given role. Defaults to the built-in role for 'AccountAdmin'.
+                send_confirmation:
+                  type: boolean
+                  description: 'Send a notification email to
+
+                    the new admin if true. Default is true.'
+              required:
+              - user_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/admins.html
+  /v1/accounts/{account_id}/admins/{user_id}:
+    delete:
+      tags:
+      - Admins
+      operationId: remove_account_admin
+      summary: Remove account admin
+      description: Remove the rights associated with an account admin role from a user.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: role
+        in: query
+        schema:
+          type: string
+        required: false
+        description: '[DEPRECATED] Account role to remove from the user.'
+      - name: role_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the role representing the user's admin relationship with the account.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/admins.html
+  /v1/accounts/{account_id}/admins/self:
+    get:
+      tags:
+      - Admins
+      operationId: list_my_admin_roles
+      summary: List my admin roles
+      description: 'A paginated list of the current user''s roles in the account. The results are the same
+
+        as those returned by the {api:AdminsController#index List account admins} endpoint with
+
+        +user_id+ set to +self+, except the "Admins - Add / Remove" permission is not required.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Admin'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/admins.html
+components:
+  schemas:
+    Admin:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1023
+          description: The unique identifier for the account role/user assignment.
+        role:
+          type: string
+          example: AccountAdmin
+          description: The account role assigned. This can be 'AccountAdmin' or a user-defined role created by the Roles API.
+        user:
+          type: string
+          description: The user the role is assigned to. See the Users API for details.
+        workflow_state:
+          type: string
+          example: deleted
+          description: The status of the account role/user assignment.
+      required:
+      - id
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,414 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Course Pace API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Course Pace
+  x-resource: course_pace
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/course_pace.html
+paths:
+  /v1/courses/{course_id}/course_pacing/{id}:
+    get:
+      tags:
+      - Course Pace
+      operationId: show_course_pace
+      summary: Show a Course pace
+      description: Returns a course pace for the course and pace id provided
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      - name: course_pace_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course_pace
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursePace'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/course_pace.html
+    put:
+      tags:
+      - Course Pace
+      operationId: update_course_pace
+      summary: Update a Course pace
+      description: Returns the updated course pace
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_pace_id:
+                  type: integer
+                  format: int64
+                  description: The id of the course pace
+                end_date:
+                  type: string
+                  format: date-time
+                  description: End date of the course pace
+                exclude_weekends:
+                  type: boolean
+                  description: Course pace dates excludes weekends if true
+                selected_days_to_skip:
+                  type: string
+                  description: '[Array<String>]
+
+                    Course pace dates excludes weekends if true'
+                hard_end_dates:
+                  type: boolean
+                  description: Course pace uess hard end dates if true
+                workflow_state:
+                  type: string
+                  description: The state of the course pace
+                course_pace_module_item_attributes:
+                  type: array
+                  items:
+                    type: string
+                  description: Module Items attributes
+              required:
+              - course_pace_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                course_pace_id:
+                  type: integer
+                  format: int64
+                  description: The id of the course pace
+                end_date:
+                  type: string
+                  format: date-time
+                  description: End date of the course pace
+                exclude_weekends:
+                  type: boolean
+                  description: Course pace dates excludes weekends if true
+                selected_days_to_skip:
+                  type: string
+                  description: '[Array<String>]
+
+                    Course pace dates excludes weekends if true'
+                hard_end_dates:
+                  type: boolean
+                  description: Course pace uess hard end dates if true
+                workflow_state:
+                  type: string
+                  description: The state of the course pace
+                course_pace_module_item_attributes:
+                  type: array
+                  items:
+                    type: string
+                  description: Module Items attributes
+              required:
+              - course_pace_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursePace'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/course_pace.html
+    delete:
+      tags:
+      - Course Pace
+      operationId: delete_course_pace
+      summary: Delete a Course pace
+      description: Returns the updated course pace
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      - name: course_pace_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course_pace
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursePace'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/course_pace.html
+  /v1/courses/{course_id}/course_pacing:
+    post:
+      tags:
+      - Course Pace
+      operationId: create_course_pace
+      summary: Create a Course pace
+      description: Creates a new course pace with specified parameters.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The id of the course
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                end_date:
+                  type: string
+                  format: date-time
+                  description: End date of the course pace
+                end_date_context:
+                  type: string
+                  description: End date context (course, section, hupothetical)
+                start_date:
+                  type: string
+                  format: date-time
+                  description: Start date of the course pace
+                start_date_context:
+                  type: string
+                  description: Start date context (course, section, hupothetical)
+                exclude_weekends:
+                  type: boolean
+                  description: Course pace dates excludes weekends if true
+                selected_days_to_skip:
+                  type: string
+                  description: '[Array<String>]
+
+                    Course pace dates excludes weekends if true'
+                hard_end_dates:
+                  type: boolean
+                  description: Course pace uess hard end dates if true
+                workflow_state:
+                  type: string
+                  description: The state of the course pace
+                course_pace_module_item_attributes:
+                  type: array
+                  items:
+                    type: string
+                  description: Module Items attributes
+                context_id:
+                  type: integer
+                  format: int64
+                  description: Pace Context ID
+                context_type:
+                  type: string
+                  description: Pace Context Type (Course, Section, User)
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                end_date:
+                  type: string
+                  format: date-time
+                  description: End date of the course pace
+                end_date_context:
+                  type: string
+                  description: End date context (course, section, hupothetical)
+                start_date:
+                  type: string
+                  format: date-time
+                  description: Start date of the course pace
+                start_date_context:
+                  type: string
+                  description: Start date context (course, section, hupothetical)
+                exclude_weekends:
+                  type: boolean
+                  description: Course pace dates excludes weekends if true
+                selected_days_to_skip:
+                  type: string
+                  description: '[Array<String>]
+
+                    Course pace dates excludes weekends if true'
+                hard_end_dates:
+                  type: boolean
+                  description: Course pace uess hard end dates if true
+                workflow_state:
+                  type: string
+                  description: The state of the course pace
+                course_pace_module_item_attributes:
+                  type: array
+                  items:
+                    type: string
+                  description: Module Items attributes
+                context_id:
+                  type: integer
+                  format: int64
+                  description: Pace Context ID
+                context_type:
+                  type: string
+                  description: Pace Context Type (Course, Section, User)
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursePace'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/course_pace.html
+components:
+  schemas:
+    CoursePace:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+          description: the ID of the course pace
+        course_id:
+          type: integer
+          example: 5
+          description: the ID of the course
+        user_id:
+          type: integer
+          example: 10
+          description: the ID of the user for this course pace
+        workflow_state:
+          type: string
+          example: active
+          description: the state of the course pace
+        exclude_weekends:
+          type: boolean
+          example: true
+          description: boolean value depending on exclude weekends setting
+        selected_days_to_skip:
+          type: array
+          items:
+            type: integer
+          example:
+          - fri
+          - sat
+          description: array of strings representing the days of the work week
+        hard_end_dates:
+          type: boolean
+          example: true
+          description: set if the end date is set from course
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: date when course pace is created
+        end_date:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: course end date
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: date when course pace is updated
+        published_at:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: date when course pace is published
+        root_account_id:
+          type: integer
+          example: 10
+          description: the root account ID for this course pace
+        start_date:
+          type: string
+          format: date-time
+          example: '2013-01-23T23:59:00-07:00'
+          description: course start date
+        modules:
+          type: array
+          items: {}
+          description: list of modules and items for this course pace
+        progress:
+          type: string
+          description: progress of pace publishing
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

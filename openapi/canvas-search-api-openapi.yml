@@ -1,0 +1,281 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Search API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Search
+  x-resource: search
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/search.html
+paths:
+  /v1/conversations/find_recipients:
+    get:
+      tags:
+      - Search
+      operationId: find_recipients_conversations
+      summary: Find recipients
+      description: 'Find valid recipients (users, courses and groups) that the current user
+
+        can send messages to. The /api/v1/search/recipients path is the preferred
+
+        endpoint, /api/v1/conversations/find_recipients is deprecated.
+
+
+        Pagination is supported.'
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Search terms used for matching users/courses/groups (e.g. "bob smith"). If
+
+          multiple terms are given (separated via whitespace), only results matching
+
+          all terms will be returned.'
+      - name: context
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Limit the search to a particular course/group (e.g. "course_3" or "group_4").
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of ids to exclude from the search. These may be user ids or
+
+          course/group ids prefixed with "course_" or "group_" respectively,
+
+          e.g. exclude[]=1&exclude[]=2&exclude[]=course_3'
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - user
+          - context
+        required: false
+        description: Limit the search just to users or contexts (groups/courses).
+      - name: user_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Search for a specific user id. This ignores the other above parameters,
+
+          and will never return more than one result.'
+      - name: from_conversation_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'When searching by user_id, only users that could be normally messaged by
+
+          this user will be returned. This parameter allows you to specify a
+
+          conversation that will be referenced for a shared context -- if both the
+
+          current user and the searched user are in the conversation, the user will
+
+          be returned. This is used to start new side conversations.'
+      - name: permissions
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of permission strings to be checked for each matched context (e.g.
+
+          "send_messages"). This argument determines which permissions may be
+
+          returned in the response; it won''t prevent contexts from being returned if
+
+          they don''t grant the permission(s).'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/search.html
+  /v1/search/recipients:
+    get:
+      tags:
+      - Search
+      operationId: find_recipients_search
+      summary: Find recipients
+      description: 'Find valid recipients (users, courses and groups) that the current user
+
+        can send messages to. The /api/v1/search/recipients path is the preferred
+
+        endpoint, /api/v1/conversations/find_recipients is deprecated.
+
+
+        Pagination is supported.'
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Search terms used for matching users/courses/groups (e.g. "bob smith"). If
+
+          multiple terms are given (separated via whitespace), only results matching
+
+          all terms will be returned.'
+      - name: context
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Limit the search to a particular course/group (e.g. "course_3" or "group_4").
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of ids to exclude from the search. These may be user ids or
+
+          course/group ids prefixed with "course_" or "group_" respectively,
+
+          e.g. exclude[]=1&exclude[]=2&exclude[]=course_3'
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - user
+          - context
+        required: false
+        description: Limit the search just to users or contexts (groups/courses).
+      - name: user_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'Search for a specific user id. This ignores the other above parameters,
+
+          and will never return more than one result.'
+      - name: from_conversation_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'When searching by user_id, only users that could be normally messaged by
+
+          this user will be returned. This parameter allows you to specify a
+
+          conversation that will be referenced for a shared context -- if both the
+
+          current user and the searched user are in the conversation, the user will
+
+          be returned. This is used to start new side conversations.'
+      - name: permissions
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'Array of permission strings to be checked for each matched context (e.g.
+
+          "send_messages"). This argument determines which permissions may be
+
+          returned in the response; it won''t prevent contexts from being returned if
+
+          they don''t grant the permission(s).'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/search.html
+  /v1/search/all_courses:
+    get:
+      tags:
+      - Search
+      operationId: list_all_courses
+      summary: List all courses
+      description: A paginated list of all courses visible in the public index
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+        required: false
+        description: 'Search terms used for matching users/courses/groups (e.g. "bob smith"). If
+
+          multiple terms are given (separated via whitespace), only results matching
+
+          all terms will be returned.'
+      - name: public_only
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Only return courses with public content. Defaults to false.
+      - name: open_enrollment_only
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Only return courses that allow self enrollment. Defaults to false.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/search.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,156 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Announcements API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Announcements
+  x-resource: announcements
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/announcements.html
+paths:
+  /v1/announcements:
+    get:
+      tags:
+      - Announcements
+      operationId: list_announcements
+      summary: List announcements
+      description: 'Returns the paginated list of announcements for the given courses and date range. Note that
+
+        a +context_code+ field is added to the responses so you can tell which course each announcement
+
+        belongs to.'
+      parameters:
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: true
+        description: 'List of context_codes to retrieve announcements for (for example, +course_123+). Only courses
+
+          are presently supported. The call will fail unless the caller has View Announcements permission
+
+          in all listed courses.'
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return announcements posted since the start_date (inclusive).
+
+          Defaults to 14 days ago. The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.'
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return announcements posted before the end_date (inclusive).
+
+          Defaults to 28 days from start_date. The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.
+
+          Announcements scheduled for future posting will only be returned to course administrators.'
+      - name: available_after
+        in: query
+        schema:
+          type: string
+          format: date
+        required: false
+        description: 'Only return announcements having locked_at nil or after available_after (exclusive).
+
+          The value should be formatted as: yyyy-mm-dd or ISO 8601 YYYY-MM-DDTHH:MM:SSZ.
+
+          Effective only for students (who don''t have moderate forum right).'
+      - name: active_only
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Only return active announcements that have been published.
+
+          Applies only to requesting users that have permission to view
+
+          unpublished items.
+
+          Defaults to false for users with access to view unpublished items,
+
+          otherwise true and unmodifiable.'
+      - name: latest_only
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Only return the latest announcement for each associated context.
+
+          The response will include at most one announcement for each
+
+          specified context in the context_codes[] parameter.
+
+          Defaults to false.'
+      - name: include
+        in: query
+        schema:
+          type: array
+          items: {}
+        required: false
+        description: "Optional list of resources to include with the response. May include\na string of the name of the resource. Possible values are:\n\"sections\", \"sections_user_count\"\nif \"sections\" is passed, includes the course sections that are associated\nwith the topic, if the topic is specific to certain sections of the course.\nIf \"sections_user_count\" is passed, then:\n  (a) If sections were asked for *and* the topic is specific to certain\n      course sections sections, includes the number of users in each\n      section. (as part of the section json asked for above)\n  (b) Else, includes at the root level the total number of users in the\n      topic's context (group or course) that the topic applies to."
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: DiscussionTopic
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/announcements.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

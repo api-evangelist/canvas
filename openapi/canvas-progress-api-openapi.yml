@@ -1,0 +1,192 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Progress API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Progress
+  x-resource: progress
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/progress.html
+paths:
+  /v1/progress/{id}:
+    get:
+      tags:
+      - Progress
+      operationId: query_progress
+      summary: Query progress
+      description: Return completion and status information about an asynchronous job
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress__progress'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/progress.html
+  /v1/progress/{id}/cancel:
+    post:
+      tags:
+      - Progress
+      operationId: cancel_progress
+      summary: Cancel progress
+      description: 'Cancel an asynchronous job associated with a Progress object
+
+        If you include "message" in the POSTed data, it will be set on
+
+        the Progress and returned. This is handy to distinguish between
+
+        cancel and fail for a workflow_state of "failed".'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress__progress'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/progress.html
+  /lti/courses/{course_id}/progress/{id}:
+    get:
+      tags:
+      - Progress
+      operationId: query_progress_progress
+      summary: Query progress
+      description: Return completion and status information about an asynchronous job
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress__progress'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/progress.html
+components:
+  schemas:
+    Progress__progress:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the Progress object
+        context_id:
+          type: integer
+          example: 1
+          description: the context owning the job.
+        context_type:
+          type: string
+          example: Account
+        user_id:
+          type: integer
+          example: 123
+          description: the id of the user who started the job
+        tag:
+          type: string
+          example: course_batch_update
+          description: the type of operation
+        completion:
+          type: integer
+          example: 100
+          description: percent completed
+        workflow_state:
+          type: string
+          example: completed
+          description: the state of the job one of 'queued', 'running', 'completed', 'failed'
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-01-15T15:00:00Z'
+          description: the time the job was created
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-01-15T15:04:00Z'
+          description: the time the job was last updated
+        message:
+          type: string
+          example: 17 courses processed
+          description: optional details about the job
+        results:
+          type: object
+          additionalProperties: true
+          example:
+            id: '123'
+          description: optional results of the job. omitted when job is still pending
+        url:
+          type: string
+          example: https://canvas.example.edu/api/lti/courses/1/progress/1
+          description: url where a progress update can be retrieved with an LTI access token
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

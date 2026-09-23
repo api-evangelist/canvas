@@ -1,0 +1,3840 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Discussion Topics API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Discussion Topics
+  x-resource: discussion_topics
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/discussion_topics.html
+paths:
+  /v1/courses/{course_id}/discussion_topics:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_discussion_topics_courses
+      summary: List discussion topics
+      description: Returns the paginated list of discussion topics for this course or group.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - all_dates
+            - sections
+            - sections_user_count
+            - overrides
+        required: false
+        description: "If \"all_dates\" is passed, all dates associated with graded discussions'\nassignments will be included.\nif \"sections\" is passed, includes the course sections that are associated\nwith the topic, if the topic is specific to certain sections of the course.\nIf \"sections_user_count\" is passed, then:\n  (a) If sections were asked for *and* the topic is specific to certain\n      course sections, includes the number of users in each\n      section. (as part of the section json asked for above)\n  (b) Else, includes at the root level the total number of users in the\n      topic's context (group or course) that the topic applies to.\nIf \"overrides\" is passed, the overrides for the assignment will be included"
+      - name: order_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - position
+          - recent_activity
+          - title
+        required: false
+        description: Determines the order of the discussion topic list. Defaults to "position".
+      - name: scope
+        in: query
+        schema:
+          type: string
+          enum:
+          - locked
+          - unlocked
+          - pinned
+          - unpinned
+        required: false
+        description: 'Only return discussion topics in the given state(s). Defaults to including
+
+          all topics. Filtering is done after pagination, so pages
+
+          may be smaller than requested if topics are filtered.
+
+          Can pass multiple states as comma separated string.'
+      - name: only_announcements
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Return announcements instead of discussion topics. Defaults to false
+      - name: filter_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - unread
+        required: false
+        description: The state of the discussion topic to return. Currently only supports unread state.
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial title of the discussion topics to match and return.
+      - name: exclude_context_module_locked_topics
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'For students, exclude topics that are locked by module progression.
+
+          Defaults to false.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscussionTopic'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    post:
+      tags:
+      - Discussion Topics
+      operationId: create_new_discussion_topic_courses
+      summary: Create a new discussion topic
+      description: Create an new discussion topic for the course or group.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                allow_rating:
+                  type: boolean
+                  description: Whether or not users can rate entries in this topic.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                attachment:
+                  type: string
+                  format: binary
+                  description: 'A multipart/form-data form-field-style attachment.
+
+                    Attachments larger than 1 kilobyte are subject to quota restrictions.'
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific to.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                allow_rating:
+                  type: boolean
+                  description: Whether or not users can rate entries in this topic.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                attachment:
+                  type: string
+                  format: binary
+                  description: 'A multipart/form-data form-field-style attachment.
+
+                    Attachments larger than 1 kilobyte are subject to quota restrictions.'
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific to.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_discussion_topics_groups
+      summary: List discussion topics
+      description: Returns the paginated list of discussion topics for this course or group.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - all_dates
+            - sections
+            - sections_user_count
+            - overrides
+        required: false
+        description: "If \"all_dates\" is passed, all dates associated with graded discussions'\nassignments will be included.\nif \"sections\" is passed, includes the course sections that are associated\nwith the topic, if the topic is specific to certain sections of the course.\nIf \"sections_user_count\" is passed, then:\n  (a) If sections were asked for *and* the topic is specific to certain\n      course sections, includes the number of users in each\n      section. (as part of the section json asked for above)\n  (b) Else, includes at the root level the total number of users in the\n      topic's context (group or course) that the topic applies to.\nIf \"overrides\" is passed, the overrides for the assignment will be included"
+      - name: order_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - position
+          - recent_activity
+          - title
+        required: false
+        description: Determines the order of the discussion topic list. Defaults to "position".
+      - name: scope
+        in: query
+        schema:
+          type: string
+          enum:
+          - locked
+          - unlocked
+          - pinned
+          - unpinned
+        required: false
+        description: 'Only return discussion topics in the given state(s). Defaults to including
+
+          all topics. Filtering is done after pagination, so pages
+
+          may be smaller than requested if topics are filtered.
+
+          Can pass multiple states as comma separated string.'
+      - name: only_announcements
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Return announcements instead of discussion topics. Defaults to false
+      - name: filter_by
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - unread
+        required: false
+        description: The state of the discussion topic to return. Currently only supports unread state.
+      - name: search_term
+        in: query
+        schema:
+          type: string
+        required: false
+        description: The partial title of the discussion topics to match and return.
+      - name: exclude_context_module_locked_topics
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'For students, exclude topics that are locked by module progression.
+
+          Defaults to false.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscussionTopic'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    post:
+      tags:
+      - Discussion Topics
+      operationId: create_new_discussion_topic_groups
+      summary: Create a new discussion topic
+      description: Create an new discussion topic for the course or group.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                allow_rating:
+                  type: boolean
+                  description: Whether or not users can rate entries in this topic.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                attachment:
+                  type: string
+                  format: binary
+                  description: 'A multipart/form-data form-field-style attachment.
+
+                    Attachments larger than 1 kilobyte are subject to quota restrictions.'
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific to.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                allow_rating:
+                  type: boolean
+                  description: Whether or not users can rate entries in this topic.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                attachment:
+                  type: string
+                  format: binary
+                  description: 'A multipart/form-data form-field-style attachment.
+
+                    Attachments larger than 1 kilobyte are subject to quota restrictions.'
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific to.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: update_topic_courses
+      summary: Update a topic
+      description: Update an existing discussion topic for the course or group.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                allow_rating:
+                  type: boolean
+                  description: If true, users will be allowed to rate entries.
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific too.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                allow_rating:
+                  type: boolean
+                  description: If true, users will be allowed to rate entries.
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific too.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: delete_topic_courses
+      summary: Delete a topic
+      description: 'Deletes the discussion topic. This will also delete the assignment, if it''s
+
+        an assignment discussion.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    get:
+      tags:
+      - Discussion Topics
+      operationId: get_single_topic_courses
+      summary: Get a single topic
+      description: Returns data on an individual discussion topic. See the List action for the response formatting.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - all_dates
+            - sections
+            - sections_user_count
+            - overrides
+        required: false
+        description: "If \"all_dates\" is passed, all dates associated with graded discussions'\nassignments will be included.\nif \"sections\" is passed, includes the course sections that are associated\nwith the topic, if the topic is specific to certain sections of the course.\nIf \"sections_user_count\" is passed, then:\n  (a) If sections were asked for *and* the topic is specific to certain\n      course sections, includes the number of users in each\n      section. (as part of the section json asked for above)\n  (b) Else, includes at the root level the total number of users in the\n      topic's context (group or course) that the topic applies to.\nIf \"overrides\" is passed, the overrides for the assignment will be included"
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: update_topic_groups
+      summary: Update a topic
+      description: Update an existing discussion topic for the course or group.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                allow_rating:
+                  type: boolean
+                  description: If true, users will be allowed to rate entries.
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific too.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: no description
+                message:
+                  type: string
+                  description: no description
+                discussion_type:
+                  type: string
+                  enum:
+                  - side_comment
+                  - threaded
+                  - not_threaded
+                  description: The type of discussion. Defaults to side_comment or not_threaded if not value is given. Accepted values are 'side_comment', 'not_threaded' for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+                published:
+                  type: boolean
+                  description: 'Whether this topic is published (true) or draft state (false). Only
+
+                    teachers and TAs have the ability to create draft state topics.'
+                delayed_post_at:
+                  type: string
+                  format: date-time
+                  description: If a timestamp is given, the topic will not be published until that time.
+                lock_at:
+                  type: string
+                  format: date-time
+                  description: 'If a timestamp is given, the topic will be scheduled to lock at the
+
+                    provided timestamp. If the timestamp is in the past, the topic will be
+
+                    locked.'
+                podcast_enabled:
+                  type: boolean
+                  description: If true, the topic will have an associated podcast feed.
+                podcast_has_student_posts:
+                  type: boolean
+                  description: 'If true, the podcast will include posts from students as well. Implies
+
+                    podcast_enabled.'
+                require_initial_post:
+                  type: boolean
+                  description: 'If true then a user may not respond to other replies until that user has
+
+                    made an initial reply. Defaults to false.'
+                assignment:
+                  type: string
+                  x-canvas-declared-type: Assignment
+                  description: 'To create an assignment discussion, pass the assignment parameters as a
+
+                    sub-object. See the {api:AssignmentsApiController#create Create an Assignment API}
+
+                    for the available parameters. The name parameter will be ignored, as it''s
+
+                    taken from the discussion title. If you want to make a discussion that was
+
+                    an assignment NOT an assignment, pass set_assignment = false as part of
+
+                    the assignment object'
+                is_announcement:
+                  type: boolean
+                  description: 'If true, this topic is an announcement. It will appear in the
+
+                    announcement''s section rather than the discussions section. This requires
+
+                    announcment-posting permissions.'
+                pinned:
+                  type: boolean
+                  description: If true, this topic will be listed in the "Pinned Discussion" section
+                position_after:
+                  type: string
+                  description: 'By default, discussions are sorted chronologically by creation date, you
+
+                    can pass the id of another topic to have this one show up after the other
+
+                    when they are listed.'
+                group_category_id:
+                  type: integer
+                  format: int64
+                  description: 'If present, the topic will become a group discussion assigned
+
+                    to the group.'
+                allow_rating:
+                  type: boolean
+                  description: If true, users will be allowed to rate entries.
+                only_graders_can_rate:
+                  type: boolean
+                  description: If true, only graders will be allowed to rate entries.
+                sort_order:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  description: Default sort order of the discussion. Accepted values are "asc", "desc".
+                sort_order_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered sort order
+                expanded:
+                  type: boolean
+                  description: If true, thread will be expanded by default
+                expanded_locked:
+                  type: boolean
+                  description: If true, users cannot choose their prefered thread expansion setting
+                sort_by_rating:
+                  type: boolean
+                  description: (DEPRECATED) If true, entries will be sorted by rating.
+                specific_sections:
+                  type: string
+                  description: 'A comma-separated list of sections ids to which the discussion topic
+
+                    should be made specific too.  If it is not desired to make the discussion
+
+                    topic specific to sections, then this parameter may be omitted or set to
+
+                    "all".  Can only be present only on announcements and only those that are
+
+                    for a course (as opposed to a group).'
+                lock_comment:
+                  type: boolean
+                  description: If is_announcement and lock_comment are true, ‘Allow Participants to Comment’ setting is disabled.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: delete_topic_groups
+      summary: Delete a topic
+      description: 'Deletes the discussion topic. This will also delete the assignment, if it''s
+
+        an assignment discussion.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    get:
+      tags:
+      - Discussion Topics
+      operationId: get_single_topic_groups
+      summary: Get a single topic
+      description: Returns data on an individual discussion topic. See the List action for the response formatting.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - all_dates
+            - sections
+            - sections_user_count
+            - overrides
+        required: false
+        description: "If \"all_dates\" is passed, all dates associated with graded discussions'\nassignments will be included.\nif \"sections\" is passed, includes the course sections that are associated\nwith the topic, if the topic is specific to certain sections of the course.\nIf \"sections_user_count\" is passed, then:\n  (a) If sections were asked for *and* the topic is specific to certain\n      course sections, includes the number of users in each\n      section. (as part of the section json asked for above)\n  (b) Else, includes at the root level the total number of users in the\n      topic's context (group or course) that the topic applies to.\nIf \"overrides\" is passed, the overrides for the assignment will be included"
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/reorder:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: reorder_pinned_topics_courses
+      summary: Reorder pinned topics
+      description: 'Puts the pinned discussion topics in the specified order.
+
+        All pinned topics should be included.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The ids of the pinned discussion topics in the desired order.
+
+                    (For example, "order=104,102,103".)'
+              required:
+              - order
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The ids of the pinned discussion topics in the desired order.
+
+                    (For example, "order=104,102,103".)'
+              required:
+              - order
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/reorder:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: reorder_pinned_topics_groups
+      summary: Reorder pinned topics
+      description: 'Puts the pinned discussion topics in the specified order.
+
+        All pinned topics should be included.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The ids of the pinned discussion topics in the desired order.
+
+                    (For example, "order=104,102,103".)'
+              required:
+              - order
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The ids of the pinned discussion topics in the desired order.
+
+                    (For example, "order=104,102,103".)'
+              required:
+              - order
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/entries/{id}:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: update_entry_courses
+      summary: Update an entry
+      description: 'Update an existing discussion entry.
+
+
+        The entry must have been created by the current user, or the current user
+
+        must have admin rights to the discussion. If the edit is not allowed, a 401 will be returned.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The updated body of the entry.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The updated body of the entry.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: delete_entry_courses
+      summary: Delete an entry
+      description: 'Delete a discussion entry.
+
+
+        The entry must have been created by the current user, or the current user
+
+        must have admin rights to the discussion. If the delete is not allowed, a 401 will be returned.
+
+
+        The discussion will be marked deleted, and the user_id and message will be cleared out.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/entries/{id}:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: update_entry_groups
+      summary: Update an entry
+      description: 'Update an existing discussion entry.
+
+
+        The entry must have been created by the current user, or the current user
+
+        must have admin rights to the discussion. If the edit is not allowed, a 401 will be returned.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The updated body of the entry.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The updated body of the entry.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: delete_entry_groups
+      summary: Delete an entry
+      description: 'Delete a discussion entry.
+
+
+        The entry must have been created by the current user, or the current user
+
+        must have admin rights to the discussion. If the delete is not allowed, a 401 will be returned.
+
+
+        The discussion will be marked deleted, and the user_id and message will be cleared out.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/summaries:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: find_last_summary_courses
+      summary: Find Last Summary
+      description: 'Returns:
+
+        (1) last userInput (what current user had keyed in to produce the last discussion summary),
+
+        (2) last discussion summary generated by the current user for current discussion topic, based on userInput,
+
+        (3) and some usage information.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    post:
+      tags:
+      - Discussion Topics
+      operationId: find_or_create_summary_courses
+      summary: Find or Create Summary
+      description: Generates a summary for a discussion topic. Returns the summary text and usage information.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userInput:
+                  type: string
+                  description: Areas or topics for the summary to focus on.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userInput:
+                  type: string
+                  description: Areas or topics for the summary to focus on.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/summaries:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: find_last_summary_groups
+      summary: Find Last Summary
+      description: 'Returns:
+
+        (1) last userInput (what current user had keyed in to produce the last discussion summary),
+
+        (2) last discussion summary generated by the current user for current discussion topic, based on userInput,
+
+        (3) and some usage information.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    post:
+      tags:
+      - Discussion Topics
+      operationId: find_or_create_summary_groups
+      summary: Find or Create Summary
+      description: Generates a summary for a discussion topic. Returns the summary text and usage information.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userInput:
+                  type: string
+                  description: Areas or topics for the summary to focus on.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                userInput:
+                  type: string
+                  description: Areas or topics for the summary to focus on.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/summaries/disable:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: disable_summary_courses
+      summary: Disable summary
+      description: 'Deprecated, to remove after VICE-5047 gets merged
+
+        Disables the summary for a discussion topic.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/summaries/disable:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: disable_summary_groups
+      summary: Disable summary
+      description: 'Deprecated, to remove after VICE-5047 gets merged
+
+        Disables the summary for a discussion topic.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/summaries/{summary_id}/feedback:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: summary_feedback_courses
+      summary: Summary Feedback
+      description: Persists feedback on a discussion topic summary.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: summary_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _action:
+                  type: string
+                  description: 'Required
+
+                    The action to take on the summary. Possible values are:
+
+                    - "seen": Marks the summary as seen. This action saves the feedback if it''s not already persisted.
+
+                    - "like": Marks the summary as liked.
+
+                    - "dislike": Marks the summary as disliked.
+
+                    - "add_comment": Adds a written comment to a disliked summary. Requires the "comment" parameter.
+
+                    - "reset_like": Resets the like status of the summary.
+
+                    - "regenerate": Regenerates the summary feedback.
+
+                    - "disable_summary": Disables the summary feedback.
+
+                    Any other value will result in an error response.'
+                comment:
+                  type: string
+                  description: 'Optional
+
+                    A written explanation for the dislike. Only used with the "add_comment" action. Maximum 1024 characters.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                _action:
+                  type: string
+                  description: 'Required
+
+                    The action to take on the summary. Possible values are:
+
+                    - "seen": Marks the summary as seen. This action saves the feedback if it''s not already persisted.
+
+                    - "like": Marks the summary as liked.
+
+                    - "dislike": Marks the summary as disliked.
+
+                    - "add_comment": Adds a written comment to a disliked summary. Requires the "comment" parameter.
+
+                    - "reset_like": Resets the like status of the summary.
+
+                    - "regenerate": Regenerates the summary feedback.
+
+                    - "disable_summary": Disables the summary feedback.
+
+                    Any other value will result in an error response.'
+                comment:
+                  type: string
+                  description: 'Optional
+
+                    A written explanation for the dislike. Only used with the "add_comment" action. Maximum 1024 characters.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/summaries/{summary_id}/feedback:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: summary_feedback_groups
+      summary: Summary Feedback
+      description: Persists feedback on a discussion topic summary.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: summary_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _action:
+                  type: string
+                  description: 'Required
+
+                    The action to take on the summary. Possible values are:
+
+                    - "seen": Marks the summary as seen. This action saves the feedback if it''s not already persisted.
+
+                    - "like": Marks the summary as liked.
+
+                    - "dislike": Marks the summary as disliked.
+
+                    - "add_comment": Adds a written comment to a disliked summary. Requires the "comment" parameter.
+
+                    - "reset_like": Resets the like status of the summary.
+
+                    - "regenerate": Regenerates the summary feedback.
+
+                    - "disable_summary": Disables the summary feedback.
+
+                    Any other value will result in an error response.'
+                comment:
+                  type: string
+                  description: 'Optional
+
+                    A written explanation for the dislike. Only used with the "add_comment" action. Maximum 1024 characters.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                _action:
+                  type: string
+                  description: 'Required
+
+                    The action to take on the summary. Possible values are:
+
+                    - "seen": Marks the summary as seen. This action saves the feedback if it''s not already persisted.
+
+                    - "like": Marks the summary as liked.
+
+                    - "dislike": Marks the summary as disliked.
+
+                    - "add_comment": Adds a written comment to a disliked summary. Requires the "comment" parameter.
+
+                    - "reset_like": Resets the like status of the summary.
+
+                    - "regenerate": Regenerates the summary feedback.
+
+                    - "disable_summary": Disables the summary feedback.
+
+                    Any other value will result in an error response.'
+                comment:
+                  type: string
+                  description: 'Optional
+
+                    A written explanation for the dislike. Only used with the "add_comment" action. Maximum 1024 characters.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/view:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: get_full_topic_courses
+      summary: Get the full topic
+      description: 'Return a cached structure of the discussion topic, containing all entries,
+
+        their authors, and their message bodies.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.
+
+
+        In some rare situations, this cached structure may not be available yet. In
+
+        that case, the server will respond with a 503 error, and the caller should
+
+        try again soon.
+
+
+        The response is an object containing the following keys:
+
+        * "participants": A list of summary information on users who have posted to
+
+        the discussion. Each value is an object containing their id, display_name,
+
+        and avatar_url.
+
+        * "unread_entries": A list of entry ids that are unread by the current
+
+        user. this implies that any entry not in this list is read.
+
+        * "entry_ratings": A map of entry ids to ratings by the current user. Entries
+
+        not in this list have no rating. Only populated if rating is enabled.
+
+        * "forced_entries": A list of entry ids that have forced_read_state set to
+
+        true. This flag is meant to indicate the entry''s read_state has been
+
+        manually set to ''unread'' by the user, so the entry should not be
+
+        automatically marked as read.
+
+        * "view": A threaded view of all the entries in the discussion, containing
+
+        the id, user_id, and message.
+
+        * "new_entries": Because this view is eventually consistent, it''s possible
+
+        that newly created or updated entries won''t yet be reflected in the view.
+
+        If the application wants to also get a flat list of all entries not yet
+
+        reflected in the view, pass include_new_entries=1 to the request and this
+
+        array of entries will be returned. These entries are returned in a flat
+
+        array, in ascending created_at order.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/view:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: get_full_topic_groups
+      summary: Get the full topic
+      description: 'Return a cached structure of the discussion topic, containing all entries,
+
+        their authors, and their message bodies.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.
+
+
+        In some rare situations, this cached structure may not be available yet. In
+
+        that case, the server will respond with a 503 error, and the caller should
+
+        try again soon.
+
+
+        The response is an object containing the following keys:
+
+        * "participants": A list of summary information on users who have posted to
+
+        the discussion. Each value is an object containing their id, display_name,
+
+        and avatar_url.
+
+        * "unread_entries": A list of entry ids that are unread by the current
+
+        user. this implies that any entry not in this list is read.
+
+        * "entry_ratings": A map of entry ids to ratings by the current user. Entries
+
+        not in this list have no rating. Only populated if rating is enabled.
+
+        * "forced_entries": A list of entry ids that have forced_read_state set to
+
+        true. This flag is meant to indicate the entry''s read_state has been
+
+        manually set to ''unread'' by the user, so the entry should not be
+
+        automatically marked as read.
+
+        * "view": A threaded view of all the entries in the discussion, containing
+
+        the id, user_id, and message.
+
+        * "new_entries": Because this view is eventually consistent, it''s possible
+
+        that newly created or updated entries won''t yet be reflected in the view.
+
+        If the application wants to also get a flat list of all entries not yet
+
+        reflected in the view, pass include_new_entries=1 to the request and this
+
+        array of entries will be returned. These entries are returned in a flat
+
+        array, in ascending created_at order.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/entries:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: post_entry_courses
+      summary: Post an entry
+      description: 'Create a new entry in a discussion topic. Returns a json representation of
+
+        the created entry (see documentation for ''entries'' method) on success.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_topic_entries_courses
+      summary: List topic entries
+      description: 'Retrieve the (paginated) top-level entries in a discussion topic.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.
+
+
+        Will include the 10 most recent replies, if any, for each entry returned.
+
+
+        If the topic is a root topic with children corresponding to groups of a
+
+        group assignment, entries from those subtopics for which the user belongs
+
+        to the corresponding group will be returned.
+
+
+        Ordering of returned entries is newest-first by posting timestamp (reply
+
+        activity is ignored).'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/entries:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: post_entry_groups
+      summary: Post an entry
+      description: 'Create a new entry in a discussion topic. Returns a json representation of
+
+        the created entry (see documentation for ''entries'' method) on success.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_topic_entries_groups
+      summary: List topic entries
+      description: 'Retrieve the (paginated) top-level entries in a discussion topic.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.
+
+
+        Will include the 10 most recent replies, if any, for each entry returned.
+
+
+        If the topic is a root topic with children corresponding to groups of a
+
+        group assignment, entries from those subtopics for which the user belongs
+
+        to the corresponding group will be returned.
+
+
+        Ordering of returned entries is newest-first by posting timestamp (reply
+
+        activity is ignored).'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/duplicate:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: duplicate_discussion_topic_courses
+      summary: Duplicate discussion topic
+      description: Duplicate a discussion topic according to context (Course/Group)
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscussionTopic'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/duplicate:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: duplicate_discussion_topic_groups
+      summary: Duplicate discussion topic
+      description: Duplicate a discussion topic according to context (Course/Group)
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscussionTopic'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/entries/{entry_id}/replies:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: post_reply_courses
+      summary: Post a reply
+      description: 'Add a reply to an entry in a discussion topic. Returns a json
+
+        representation of the created reply (see documentation for ''replies''
+
+        method) on success.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_entry_replies_courses
+      summary: List entry replies
+      description: 'Retrieve the (paginated) replies to a top-level entry in a discussion
+
+        topic.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.
+
+
+        Ordering of returned entries is newest-first by creation timestamp.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/entries/{entry_id}/replies:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: post_reply_groups
+      summary: Post a reply
+      description: 'Add a reply to an entry in a discussion topic. Returns a json
+
+        representation of the created reply (see documentation for ''replies''
+
+        method) on success.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The body of the entry.
+                attachment:
+                  type: string
+                  description: 'a multipart/form-data form-field-style
+
+                    attachment. Attachments larger than 1 kilobyte are subject to quota
+
+                    restrictions.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_entry_replies_groups
+      summary: List entry replies
+      description: 'Retrieve the (paginated) replies to a top-level entry in a discussion
+
+        topic.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.
+
+
+        Ordering of returned entries is newest-first by creation timestamp.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/entry_list:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_entries_courses
+      summary: List entries
+      description: 'Retrieve a paginated list of discussion entries, given a list of ids.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of entry ids to retrieve. Entries will be returned in id order,
+
+          smallest id first.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/entry_list:
+    get:
+      tags:
+      - Discussion Topics
+      operationId: list_entries_groups
+      summary: List entries
+      description: 'Retrieve a paginated list of discussion entries, given a list of ids.
+
+
+        May require (depending on the topic) that the user has posted in the topic.
+
+        If it is required, and the user has not posted, will respond with a 403
+
+        Forbidden status and the body ''require_initial_post''.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: 'A list of entry ids to retrieve. Entries will be returned in id order,
+
+          smallest id first.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/read:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_topic_as_read_courses
+      summary: Mark topic as read
+      description: 'Mark the initial text of the discussion topic as read.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: mark_topic_as_unread_courses
+      summary: Mark topic as unread
+      description: 'Mark the initial text of the discussion topic as unread.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/read:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_topic_as_read_groups
+      summary: Mark topic as read
+      description: 'Mark the initial text of the discussion topic as read.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: mark_topic_as_unread_groups
+      summary: Mark topic as unread
+      description: 'Mark the initial text of the discussion topic as unread.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/read_all:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_all_topic_as_read_courses
+      summary: Mark all topic as read
+      description: 'Mark the initial text of all the discussion topics as read in the context.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/read_all:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_all_topic_as_read_groups
+      summary: Mark all topic as read
+      description: 'Mark the initial text of all the discussion topics as read in the context.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/read_all:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_all_entries_as_read_courses
+      summary: Mark all entries as read
+      description: 'Mark the discussion topic and all its entries as read.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set all of the entries'' forced_read_state. No change
+
+                    is made if this argument is not specified.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set all of the entries'' forced_read_state. No change
+
+                    is made if this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: mark_all_entries_as_unread_courses
+      summary: Mark all entries as unread
+      description: 'Mark the discussion topic and all its entries as unread.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: forced_read_state
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'A boolean value to set all of the entries'' forced_read_state. No change is
+
+          made if this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/read_all:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_all_entries_as_read_groups
+      summary: Mark all entries as read
+      description: 'Mark the discussion topic and all its entries as read.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set all of the entries'' forced_read_state. No change
+
+                    is made if this argument is not specified.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set all of the entries'' forced_read_state. No change
+
+                    is made if this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: mark_all_entries_as_unread_groups
+      summary: Mark all entries as unread
+      description: 'Mark the discussion topic and all its entries as unread.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: forced_read_state
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'A boolean value to set all of the entries'' forced_read_state. No change is
+
+          made if this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/entries/{entry_id}/read:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_entry_as_read_courses
+      summary: Mark entry as read
+      description: 'Mark a discussion entry as read.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set the entry''s forced_read_state. No change is made if
+
+                    this argument is not specified.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set the entry''s forced_read_state. No change is made if
+
+                    this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: mark_entry_as_unread_courses
+      summary: Mark entry as unread
+      description: 'Mark a discussion entry as unread.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: forced_read_state
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'A boolean value to set the entry''s forced_read_state. No change is made if
+
+          this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/entries/{entry_id}/read:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: mark_entry_as_read_groups
+      summary: Mark entry as read
+      description: 'Mark a discussion entry as read.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set the entry''s forced_read_state. No change is made if
+
+                    this argument is not specified.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                forced_read_state:
+                  type: boolean
+                  description: 'A boolean value to set the entry''s forced_read_state. No change is made if
+
+                    this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: mark_entry_as_unread_groups
+      summary: Mark entry as unread
+      description: 'Mark a discussion entry as unread.
+
+
+        No request fields are necessary.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: forced_read_state
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'A boolean value to set the entry''s forced_read_state. No change is made if
+
+          this argument is not specified.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/entries/{entry_id}/rating:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: rate_entry_courses
+      summary: Rate entry
+      description: 'Rate a discussion entry.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  format: int64
+                  description: A rating to set on this entry. Only 0 and 1 are accepted.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  format: int64
+                  description: A rating to set on this entry. Only 0 and 1 are accepted.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/entries/{entry_id}/rating:
+    post:
+      tags:
+      - Discussion Topics
+      operationId: rate_entry_groups
+      summary: Rate entry
+      description: 'Rate a discussion entry.
+
+
+        On success, the response will be 204 No Content with an empty body.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: entry_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  format: int64
+                  description: A rating to set on this entry. Only 0 and 1 are accepted.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  format: int64
+                  description: A rating to set on this entry. Only 0 and 1 are accepted.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/courses/{course_id}/discussion_topics/{topic_id}/subscribed:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: subscribe_to_topic_courses
+      summary: Subscribe to a topic
+      description: 'Subscribe to a topic to receive notifications about new entries
+
+
+        On success, the response will be 204 No Content with an empty body'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: unsubscribe_from_topic_courses
+      summary: Unsubscribe from a topic
+      description: 'Unsubscribe from a topic to stop receiving notifications about new entries
+
+
+        On success, the response will be 204 No Content with an empty body'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+  /v1/groups/{group_id}/discussion_topics/{topic_id}/subscribed:
+    put:
+      tags:
+      - Discussion Topics
+      operationId: subscribe_to_topic_groups
+      summary: Subscribe to a topic
+      description: 'Subscribe to a topic to receive notifications about new entries
+
+
+        On success, the response will be 204 No Content with an empty body'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+    delete:
+      tags:
+      - Discussion Topics
+      operationId: unsubscribe_from_topic_groups
+      summary: Unsubscribe from a topic
+      description: 'Unsubscribe from a topic to stop receiving notifications about new entries
+
+
+        On success, the response will be 204 No Content with an empty body'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: topic_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/discussion_topics.html
+components:
+  schemas:
+    FileAttachment:
+      type: object
+      properties:
+        content-type:
+          type: string
+          example: unknown/unknown
+        url:
+          type: string
+          example: http://www.example.com/courses/1/files/1/download
+        filename:
+          type: string
+          example: content.txt
+        display_name:
+          type: string
+          example: content.txt
+      description: A file attachment
+    DiscussionTopic:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The ID of this topic.
+        title:
+          type: string
+          example: Topic 1
+          description: The topic title.
+        message:
+          type: string
+          example: <p>content here</p>
+          description: The HTML content of the message body.
+        html_url:
+          type: string
+          example: https://<canvas>/courses/1/discussion_topics/2
+          description: The URL to the discussion topic in canvas.
+        posted_at:
+          type: string
+          format: date-time
+          example: '2037-07-21T13:29:31Z'
+          description: The datetime the topic was posted. If it is null it hasn't been posted yet. (see delayed_post_at)
+        last_reply_at:
+          type: string
+          format: date-time
+          example: '2037-07-28T19:38:31Z'
+          description: The datetime for when the last reply was in the topic.
+        require_initial_post:
+          type: boolean
+          example: false
+          description: If true then a user may not respond to other replies until that user has made an initial reply. Defaults to false.
+        user_can_see_posts:
+          type: boolean
+          example: true
+          description: Whether or not posts in this topic are visible to the user.
+        discussion_subentry_count:
+          type: integer
+          example: 0
+          description: The count of entries in the topic.
+        read_state:
+          type: string
+          example: read
+          description: The read_state of the topic for the current user, 'read' or 'unread'.
+        unread_count:
+          type: integer
+          example: 0
+          description: The count of unread entries of this topic for the current user.
+        subscribed:
+          type: boolean
+          example: true
+          description: Whether or not the current user is subscribed to this topic.
+        subscription_hold:
+          type: string
+          example: not_in_group_set
+          description: '(Optional) Why the user cannot subscribe to this topic. Only one reason will be returned even if multiple apply. Can be one of: ''initial_post_required'': The user must post a reply first; ''not_in_group_set'': The user is not in the group set for this graded group discussion; ''not_in_group'': The user is not in this topic''s group; ''topic_is_announcement'': This topic is an announcement'
+        assignment_id:
+          type: integer
+          description: The unique identifier of the assignment if the topic is for grading, otherwise null.
+        delayed_post_at:
+          type: string
+          format: date-time
+          description: The datetime to publish the topic (if not right away).
+        published:
+          type: boolean
+          example: true
+          description: Whether this discussion topic is published (true) or draft state (false)
+        lock_at:
+          type: string
+          format: date-time
+          description: The datetime to lock the topic (if ever).
+        locked:
+          type: boolean
+          example: false
+          description: Whether or not the discussion is 'closed for comments'.
+        pinned:
+          type: boolean
+          example: false
+          description: Whether or not the discussion has been 'pinned' by an instructor
+        locked_for_user:
+          type: boolean
+          example: true
+          description: Whether or not this is locked for the user.
+        lock_info:
+          type: string
+          description: (Optional) Information for the user about the lock. Present when locked_for_user is true.
+        lock_explanation:
+          type: string
+          example: This discussion is locked until September 1 at 12:00am
+          description: (Optional) An explanation of why this is locked for the user. Present when locked_for_user is true.
+        user_name:
+          type: string
+          example: User Name
+          description: The username of the topic creator.
+        topic_children:
+          type: array
+          items:
+            type: integer
+          example:
+          - 5
+          - 7
+          - 10
+          description: DEPRECATED An array of topic_ids for the group discussions the user is a part of.
+        group_topic_children:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - id: 5
+            group_id: 1
+          - id: 7
+            group_id: 5
+          - id: 10
+            group_id: 4
+          description: 'An array of group discussions the user is a part of. Fields include: id, group_id'
+        root_topic_id:
+          type: integer
+          description: If the topic is for grading and a group assignment this will point to the original topic in the course.
+        podcast_url:
+          type: string
+          example: /feeds/topics/1/enrollment_1XAcepje4u228rt4mi7Z1oFbRpn3RAkTzuXIGOPe.rss
+          description: If the topic is a podcast topic this is the feed url for the current user.
+        discussion_type:
+          type: string
+          example: side_comment
+          description: The type of discussion. Values are 'side_comment' or 'not_threaded', for discussions that only allow one level of nested comments, and 'threaded' for fully threaded discussions.
+        group_category_id:
+          type: integer
+          description: The unique identifier of the group category if the topic is a group discussion, otherwise null.
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileAttachment'
+          description: Array of file attachments.
+        permissions:
+          type: object
+          additionalProperties: true
+          example:
+            attach: true
+          description: The current user's permissions on this topic.
+        allow_rating:
+          type: boolean
+          example: true
+          description: Whether or not users can rate entries in this topic.
+        only_graders_can_rate:
+          type: boolean
+          example: true
+          description: Whether or not grade permissions are required to rate entries.
+        sort_by_rating:
+          type: boolean
+          example: true
+          description: DEPRECATED, Whether or not entries should be sorted by rating.
+        sort_order:
+          type: string
+          example: asc
+          description: How entries should be sorted by default.
+        sort_order_locked:
+          type: boolean
+          example: true
+          description: Can users decide their preferred sort order.
+        expand:
+          type: boolean
+          example: true
+          description: Threaded replies should be expanded by default.
+        expand_locked:
+          type: boolean
+          example: true
+          description: Can users decide their preferred thread expand setting.
+      description: A discussion topic
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

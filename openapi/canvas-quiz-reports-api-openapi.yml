@@ -1,0 +1,352 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Quiz Reports API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Quiz Reports
+  x-resource: quiz_reports
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/quiz_reports.html
+paths:
+  /v1/courses/{course_id}/quizzes/{quiz_id}/reports:
+    get:
+      tags:
+      - Quiz Reports
+      operationId: retrieve_all_quiz_reports
+      summary: Retrieve all quiz reports
+      description: Returns a list of all available reports.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: includes_all_versions
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'Whether to retrieve reports that consider all the submissions or only
+
+          the most recent. Defaults to false, ignored for item_analysis reports.'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_reports.html
+    post:
+      tags:
+      - Quiz Reports
+      operationId: create_quiz_report_quiz_reports
+      summary: Create a quiz report
+      description: 'Create and return a new report for this quiz. If a previously
+
+        generated report matches the arguments and is still current (i.e.
+
+        there have been no new submissions), it will be returned.
+
+
+        *Responses*
+
+
+        * 400 Bad Request if the specified report type is invalid
+
+        * 409 Conflict if a quiz report of the specified type is already being
+
+        generated'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quiz_report[report_type]:
+                  type: string
+                  enum:
+                  - student_analysis
+                  - item_analysis
+                  description: The type of report to be generated.
+                quiz_report[includes_all_versions]:
+                  type: boolean
+                  description: 'Whether the report should consider all submissions or only the most
+
+                    recent. Defaults to false, ignored for item_analysis.'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - file
+                    - progress
+                  description: 'Whether the output should include documents for the file and/or progress
+
+                    objects associated with this report. (Note: JSON-API only)'
+              required:
+              - quiz_report[report_type]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                quiz_report[report_type]:
+                  type: string
+                  enum:
+                  - student_analysis
+                  - item_analysis
+                  description: The type of report to be generated.
+                quiz_report[includes_all_versions]:
+                  type: boolean
+                  description: 'Whether the report should consider all submissions or only the most
+
+                    recent. Defaults to false, ignored for item_analysis.'
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - file
+                    - progress
+                  description: 'Whether the output should include documents for the file and/or progress
+
+                    objects associated with this report. (Note: JSON-API only)'
+              required:
+              - quiz_report[report_type]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_reports.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/reports/{id}:
+    get:
+      tags:
+      - Quiz Reports
+      operationId: get_quiz_report
+      summary: Get a quiz report
+      description: Returns the data for a single quiz report.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - file
+            - progress
+        required: false
+        description: 'Whether the output should include documents for the file and/or progress
+
+          objects associated with this report. (Note: JSON-API only)'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizReport'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_reports.html
+    delete:
+      tags:
+      - Quiz Reports
+      operationId: abort_generation_of_report_or_remove_previously_generated_one
+      summary: Abort the generation of a report, or remove a previously generated one
+      description: 'This API allows you to cancel a previous request you issued for a report to
+
+        be generated. Or in the case of an already generated report, you''d like to
+
+        remove it, perhaps to generate it another time with an updated version that
+
+        provides new features.
+
+
+        You must check the report''s generation status before attempting to use this
+
+        interface. See the "workflow_state" property of the QuizReport''s Progress
+
+        object for more information. Only when the progress reports itself in a
+
+        "queued" state can the generation be aborted.
+
+
+        *Responses*
+
+
+        - 204 No Content if your request was accepted
+
+        - 422 Unprocessable Entity if the report is not being generated
+
+        or can not be aborted at this stage'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_reports.html
+components:
+  schemas:
+    QuizReport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+          description: the ID of the quiz report
+        quiz_id:
+          type: integer
+          example: 4
+          description: the ID of the quiz
+        report_type:
+          type: string
+          example: student_analysis
+          description: 'which type of report this is possible values: ''student_analysis'', ''item_analysis'''
+        readable_type:
+          type: string
+          example: Student Analysis
+          description: a human-readable (and localized) version of the report_type
+        includes_all_versions:
+          type: boolean
+          example: true
+          description: boolean indicating whether the report represents all submissions or only the most recent ones for each student
+        anonymous:
+          type: boolean
+          example: false
+          description: boolean indicating whether the report is for an anonymous survey. if true, no student names will be included in the csv
+        generatable:
+          type: boolean
+          example: true
+          description: boolean indicating whether the report can be generated, which is true unless the quiz is a survey one
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-05-01T12:34:56-07:00'
+          description: when the report was created
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-05-01T12:34:56-07:00'
+          description: when the report was last updated
+        url:
+          type: string
+          example: http://canvas.example.com/api/v1/courses/1/quizzes/1/reports/1
+          description: the API endpoint for this report
+        file:
+          type: string
+          description: if the report has finished generating, a File object that represents it. refer to the Files API for more information about the format
+        progress_url:
+          type: string
+          description: 'if the report has not yet finished generating, a URL where information about its progress can be retrieved. refer to the Progress API for more information (Note: not available in JSON-API format)'
+        progress:
+          type: string
+          description: 'if the report is being generated, a Progress object that represents the operation. Refer to the Progress API for more information about the format. (Note: available only in JSON-API format)'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

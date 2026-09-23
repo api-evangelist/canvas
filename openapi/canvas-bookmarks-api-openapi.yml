@@ -1,0 +1,248 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Bookmarks API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Bookmarks
+  x-resource: bookmarks
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/bookmarks.html
+paths:
+  /v1/users/self/bookmarks:
+    get:
+      tags:
+      - Bookmarks
+      operationId: list_bookmarks
+      summary: List bookmarks
+      description: Returns the paginated list of bookmarks.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bookmark'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/bookmarks.html
+    post:
+      tags:
+      - Bookmarks
+      operationId: create_bookmark
+      summary: Create bookmark
+      description: Creates a bookmark.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the bookmark
+                url:
+                  type: string
+                  description: The url of the bookmark
+                position:
+                  type: integer
+                  format: int64
+                  description: The position of the bookmark. Defaults to the bottom.
+                data:
+                  type: string
+                  description: The data associated with the bookmark
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the bookmark
+                url:
+                  type: string
+                  description: The url of the bookmark
+                position:
+                  type: integer
+                  format: int64
+                  description: The position of the bookmark. Defaults to the bottom.
+                data:
+                  type: string
+                  description: The data associated with the bookmark
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/bookmarks.html
+  /v1/users/self/bookmarks/{id}:
+    get:
+      tags:
+      - Bookmarks
+      operationId: get_bookmark
+      summary: Get bookmark
+      description: Returns the details for a bookmark.
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/bookmarks.html
+    put:
+      tags:
+      - Bookmarks
+      operationId: update_bookmark
+      summary: Update bookmark
+      description: Updates a bookmark
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the bookmark
+                url:
+                  type: string
+                  description: The url of the bookmark
+                position:
+                  type: integer
+                  format: int64
+                  description: The position of the bookmark. Defaults to the bottom.
+                data:
+                  type: string
+                  description: The data associated with the bookmark
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the bookmark
+                url:
+                  type: string
+                  description: The url of the bookmark
+                position:
+                  type: integer
+                  format: int64
+                  description: The position of the bookmark. Defaults to the bottom.
+                data:
+                  type: string
+                  description: The data associated with the bookmark
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: Folder
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/bookmarks.html
+    delete:
+      tags:
+      - Bookmarks
+      operationId: delete_bookmark
+      summary: Delete bookmark
+      description: Deletes a bookmark
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/bookmarks.html
+components:
+  schemas:
+    Bookmark:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Biology 101
+        url:
+          type: string
+          example: /courses/1
+        position:
+          type: integer
+          example: 1
+        data:
+          type: object
+          additionalProperties: true
+          example:
+            active_tab: 1
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

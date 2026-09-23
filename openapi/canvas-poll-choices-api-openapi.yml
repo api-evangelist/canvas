@@ -1,0 +1,256 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Poll Choices API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Poll Choices
+  x-resource: poll_choices
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/poll_choices.html
+paths:
+  /v1/polls/{poll_id}/poll_choices:
+    get:
+      tags:
+      - Poll Choices
+      operationId: list_poll_choices_in_poll
+      summary: List poll choices in a poll
+      description: Returns the paginated list of PollChoices in this poll.
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_choices.html
+    post:
+      tags:
+      - Poll Choices
+      operationId: create_single_poll_choice
+      summary: Create a single poll choice
+      description: Create a new poll choice for this poll
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                poll_choices[text]:
+                  type: array
+                  items:
+                    type: string
+                  description: The descriptive text of the poll choice.
+                poll_choices[is_correct]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether this poll choice is considered correct or not. Defaults to false.
+                poll_choices[position]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The order this poll choice should be returned in the context it's sibling poll choices.
+              required:
+              - poll_choices[text]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                poll_choices[text]:
+                  type: array
+                  items:
+                    type: string
+                  description: The descriptive text of the poll choice.
+                poll_choices[is_correct]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether this poll choice is considered correct or not. Defaults to false.
+                poll_choices[position]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The order this poll choice should be returned in the context it's sibling poll choices.
+              required:
+              - poll_choices[text]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_choices.html
+  /v1/polls/{poll_id}/poll_choices/{id}:
+    get:
+      tags:
+      - Poll Choices
+      operationId: get_single_poll_choice
+      summary: Get a single poll choice
+      description: Returns the poll choice with the given id
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_choices.html
+    put:
+      tags:
+      - Poll Choices
+      operationId: update_single_poll_choice
+      summary: Update a single poll choice
+      description: Update an existing poll choice for this poll
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                poll_choices[text]:
+                  type: array
+                  items:
+                    type: string
+                  description: The descriptive text of the poll choice.
+                poll_choices[is_correct]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether this poll choice is considered correct or not.  Defaults to false.
+                poll_choices[position]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The order this poll choice should be returned in the context it's sibling poll choices.
+              required:
+              - poll_choices[text]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                poll_choices[text]:
+                  type: array
+                  items:
+                    type: string
+                  description: The descriptive text of the poll choice.
+                poll_choices[is_correct]:
+                  type: array
+                  items:
+                    type: boolean
+                  description: Whether this poll choice is considered correct or not.  Defaults to false.
+                poll_choices[position]:
+                  type: array
+                  items:
+                    type: integer
+                  description: The order this poll choice should be returned in the context it's sibling poll choices.
+              required:
+              - poll_choices[text]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_choices.html
+    delete:
+      tags:
+      - Poll Choices
+      operationId: delete_poll_choice
+      summary: Delete a poll choice
+      description: 204 No Content response code is returned if the deletion was successful.
+      parameters:
+      - name: poll_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/poll_choices.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

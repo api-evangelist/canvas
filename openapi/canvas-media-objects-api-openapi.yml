@@ -1,0 +1,850 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Media Objects API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Media Objects
+  x-resource: media_objects
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/media_objects.html
+paths:
+  /v1/media_objects/{media_object_id}/media_tracks:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_tracks_for_media_object_or_attachment_media_objects
+      summary: List media tracks for a Media Object or Attachment
+      description: List the media tracks associated with a media object or attachment
+      parameters:
+      - name: media_object_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - content
+            - webvtt_content
+            - updated_at
+            - created_at
+        required: false
+        description: 'By default, index returns id, locale, kind, media_object_id, and user_id for each of the
+
+          result MediaTracks. Use include[] to
+
+          add additional fields. For example include[]=content'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaTrack'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+    put:
+      tags:
+      - Media Objects
+      operationId: update_media_tracks_media_objects
+      summary: Update Media Tracks
+      description: 'Replace the media tracks associated with a media object or attachment with
+
+        the array of tracks provided in the body.
+
+        Update will
+
+        delete any existing tracks not listed,
+
+        leave untouched any tracks with no content field,
+
+        and update or create tracks with a content field.'
+      parameters:
+      - name: media_object_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - content
+                    - webvtt_content
+                    - updated_at
+                    - created_at
+                  description: 'By default, an update returns id, locale, kind, media_object_id, and user_id for each of the
+
+                    result MediaTracks. Use include[] to
+
+                    add additional fields. For example include[]=content'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - content
+                    - webvtt_content
+                    - updated_at
+                    - created_at
+                  description: 'By default, an update returns id, locale, kind, media_object_id, and user_id for each of the
+
+                    result MediaTracks. Use include[] to
+
+                    add additional fields. For example include[]=content'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaTrack'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/media_attachments/{attachment_id}/media_tracks:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_tracks_for_media_object_or_attachment_media_attachments
+      summary: List media tracks for a Media Object or Attachment
+      description: List the media tracks associated with a media object or attachment
+      parameters:
+      - name: attachment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - content
+            - webvtt_content
+            - updated_at
+            - created_at
+        required: false
+        description: 'By default, index returns id, locale, kind, media_object_id, and user_id for each of the
+
+          result MediaTracks. Use include[] to
+
+          add additional fields. For example include[]=content'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaTrack'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+    put:
+      tags:
+      - Media Objects
+      operationId: update_media_tracks_media_attachments
+      summary: Update Media Tracks
+      description: 'Replace the media tracks associated with a media object or attachment with
+
+        the array of tracks provided in the body.
+
+        Update will
+
+        delete any existing tracks not listed,
+
+        leave untouched any tracks with no content field,
+
+        and update or create tracks with a content field.'
+      parameters:
+      - name: attachment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - content
+                    - webvtt_content
+                    - updated_at
+                    - created_at
+                  description: 'By default, an update returns id, locale, kind, media_object_id, and user_id for each of the
+
+                    result MediaTracks. Use include[] to
+
+                    add additional fields. For example include[]=content'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                include:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - content
+                    - webvtt_content
+                    - updated_at
+                    - created_at
+                  description: 'By default, an update returns id, locale, kind, media_object_id, and user_id for each of the
+
+                    result MediaTracks. Use include[] to
+
+                    add additional fields. For example include[]=content'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaTrack'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/media_objects:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_objects_media_objects
+      summary: List Media Objects
+      description: 'Returns media objects created by the user making the request. When
+
+        using the second version, returns media objects associated with
+
+        the given course.'
+      parameters:
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - created_at
+        required: false
+        description: 'Field to sort on. Default is "title"
+
+
+          title:: sorts on user_entered_title if available, title if not.
+
+
+          created_at:: sorts on the object''s creation time.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: Sort direction. Default is "asc"
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sources
+            - tracks
+        required: false
+        description: 'Array of data to exclude. By excluding "sources" and "tracks",
+
+          the api will not need to query kaltura, which greatly
+
+          speeds up its response.
+
+
+          sources:: Do not query kaltura for media_sources
+
+          tracks:: Do not query kaltura for media_tracks'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaObject'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/courses/{course_id}/media_objects:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_objects_courses_media_objects
+      summary: List Media Objects
+      description: 'Returns media objects created by the user making the request. When
+
+        using the second version, returns media objects associated with
+
+        the given course.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - created_at
+        required: false
+        description: 'Field to sort on. Default is "title"
+
+
+          title:: sorts on user_entered_title if available, title if not.
+
+
+          created_at:: sorts on the object''s creation time.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: Sort direction. Default is "asc"
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sources
+            - tracks
+        required: false
+        description: 'Array of data to exclude. By excluding "sources" and "tracks",
+
+          the api will not need to query kaltura, which greatly
+
+          speeds up its response.
+
+
+          sources:: Do not query kaltura for media_sources
+
+          tracks:: Do not query kaltura for media_tracks'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaObject'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/groups/{group_id}/media_objects:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_objects_groups_media_objects
+      summary: List Media Objects
+      description: 'Returns media objects created by the user making the request. When
+
+        using the second version, returns media objects associated with
+
+        the given course.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - created_at
+        required: false
+        description: 'Field to sort on. Default is "title"
+
+
+          title:: sorts on user_entered_title if available, title if not.
+
+
+          created_at:: sorts on the object''s creation time.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: Sort direction. Default is "asc"
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sources
+            - tracks
+        required: false
+        description: 'Array of data to exclude. By excluding "sources" and "tracks",
+
+          the api will not need to query kaltura, which greatly
+
+          speeds up its response.
+
+
+          sources:: Do not query kaltura for media_sources
+
+          tracks:: Do not query kaltura for media_tracks'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaObject'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/media_attachments:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_objects_media_attachments
+      summary: List Media Objects
+      description: 'Returns media objects created by the user making the request. When
+
+        using the second version, returns media objects associated with
+
+        the given course.'
+      parameters:
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - created_at
+        required: false
+        description: 'Field to sort on. Default is "title"
+
+
+          title:: sorts on user_entered_title if available, title if not.
+
+
+          created_at:: sorts on the object''s creation time.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: Sort direction. Default is "asc"
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sources
+            - tracks
+        required: false
+        description: 'Array of data to exclude. By excluding "sources" and "tracks",
+
+          the api will not need to query kaltura, which greatly
+
+          speeds up its response.
+
+
+          sources:: Do not query kaltura for media_sources
+
+          tracks:: Do not query kaltura for media_tracks'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaObject'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/courses/{course_id}/media_attachments:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_objects_courses_media_attachments
+      summary: List Media Objects
+      description: 'Returns media objects created by the user making the request. When
+
+        using the second version, returns media objects associated with
+
+        the given course.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - created_at
+        required: false
+        description: 'Field to sort on. Default is "title"
+
+
+          title:: sorts on user_entered_title if available, title if not.
+
+
+          created_at:: sorts on the object''s creation time.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: Sort direction. Default is "asc"
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sources
+            - tracks
+        required: false
+        description: 'Array of data to exclude. By excluding "sources" and "tracks",
+
+          the api will not need to query kaltura, which greatly
+
+          speeds up its response.
+
+
+          sources:: Do not query kaltura for media_sources
+
+          tracks:: Do not query kaltura for media_tracks'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaObject'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/groups/{group_id}/media_attachments:
+    get:
+      tags:
+      - Media Objects
+      operationId: list_media_objects_groups_media_attachments
+      summary: List Media Objects
+      description: 'Returns media objects created by the user making the request. When
+
+        using the second version, returns media objects associated with
+
+        the given course.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - title
+          - created_at
+        required: false
+        description: 'Field to sort on. Default is "title"
+
+
+          title:: sorts on user_entered_title if available, title if not.
+
+
+          created_at:: sorts on the object''s creation time.'
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: Sort direction. Default is "asc"
+      - name: exclude
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - sources
+            - tracks
+        required: false
+        description: 'Array of data to exclude. By excluding "sources" and "tracks",
+
+          the api will not need to query kaltura, which greatly
+
+          speeds up its response.
+
+
+          sources:: Do not query kaltura for media_sources
+
+          tracks:: Do not query kaltura for media_tracks'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaObject'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/media_objects/{media_object_id}:
+    put:
+      tags:
+      - Media Objects
+      operationId: update_media_object_media_objects
+      summary: Update Media Object
+      description: Updates the title of a media object.
+      parameters:
+      - name: media_object_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_entered_title:
+                  type: string
+                  description: The new title.
+                viewer_restrictions:
+                  type: object
+                  additionalProperties: true
+                  description: 'A JSON object describing viewer access restrictions for this media.
+
+                    - show_rolling_transcript [Optional, Boolean]: Whether to show the rolling transcripts of the media during playback, or not.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_entered_title:
+                  type: string
+                  description: The new title.
+                viewer_restrictions:
+                  type: object
+                  additionalProperties: true
+                  description: 'A JSON object describing viewer access restrictions for this media.
+
+                    - show_rolling_transcript [Optional, Boolean]: Whether to show the rolling transcripts of the media during playback, or not.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+  /v1/media_attachments/{attachment_id}:
+    put:
+      tags:
+      - Media Objects
+      operationId: update_media_object_media_attachments
+      summary: Update Media Object
+      description: Updates the title of a media object.
+      parameters:
+      - name: attachment_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_entered_title:
+                  type: string
+                  description: The new title.
+                viewer_restrictions:
+                  type: object
+                  additionalProperties: true
+                  description: 'A JSON object describing viewer access restrictions for this media.
+
+                    - show_rolling_transcript [Optional, Boolean]: Whether to show the rolling transcripts of the media during playback, or not.'
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_entered_title:
+                  type: string
+                  description: The new title.
+                viewer_restrictions:
+                  type: object
+                  additionalProperties: true
+                  description: 'A JSON object describing viewer access restrictions for this media.
+
+                    - show_rolling_transcript [Optional, Boolean]: Whether to show the rolling transcripts of the media during playback, or not.'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/media_objects.html
+components:
+  schemas:
+    MediaObject:
+      type: object
+      properties:
+        can_add_captions:
+          type: boolean
+        user_entered_title:
+          type: string
+        title:
+          type: string
+        media_id:
+          type: string
+        media_type:
+          type: string
+        media_tracks:
+          type: string
+        media_sources:
+          type: string
+    MediaTrack:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        media_object_id:
+          type: integer
+          format: int64
+        kind:
+          type: string
+        locale:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        webvtt_content:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

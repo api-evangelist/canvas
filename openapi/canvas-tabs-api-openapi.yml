@@ -1,0 +1,257 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Tabs API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Tabs
+  x-resource: tabs
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/tabs.html
+paths:
+  /v1/accounts/{account_id}/tabs:
+    get:
+      tags:
+      - Tabs
+      operationId: list_available_tabs_for_course_or_group_accounts
+      summary: List available tabs for a course or group
+      description: Returns a paginated list of navigation tabs available in the current context.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - course_subject_tabs
+        required: false
+        description: "- \"course_subject_tabs\": Optional flag to return the tabs associated with a canvas_for_elementary subject course's\n  home page instead of the typical sidebar navigation. Only takes effect if this request is for a course context\n  in a canvas_for_elementary-enabled account or sub-account."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/tabs.html
+  /v1/courses/{course_id}/tabs:
+    get:
+      tags:
+      - Tabs
+      operationId: list_available_tabs_for_course_or_group_courses
+      summary: List available tabs for a course or group
+      description: Returns a paginated list of navigation tabs available in the current context.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - course_subject_tabs
+        required: false
+        description: "- \"course_subject_tabs\": Optional flag to return the tabs associated with a canvas_for_elementary subject course's\n  home page instead of the typical sidebar navigation. Only takes effect if this request is for a course context\n  in a canvas_for_elementary-enabled account or sub-account."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/tabs.html
+  /v1/groups/{group_id}/tabs:
+    get:
+      tags:
+      - Tabs
+      operationId: list_available_tabs_for_course_or_group_groups
+      summary: List available tabs for a course or group
+      description: Returns a paginated list of navigation tabs available in the current context.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - course_subject_tabs
+        required: false
+        description: "- \"course_subject_tabs\": Optional flag to return the tabs associated with a canvas_for_elementary subject course's\n  home page instead of the typical sidebar navigation. Only takes effect if this request is for a course context\n  in a canvas_for_elementary-enabled account or sub-account."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/tabs.html
+  /v1/users/{user_id}/tabs:
+    get:
+      tags:
+      - Tabs
+      operationId: list_available_tabs_for_course_or_group_users
+      summary: List available tabs for a course or group
+      description: Returns a paginated list of navigation tabs available in the current context.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - course_subject_tabs
+        required: false
+        description: "- \"course_subject_tabs\": Optional flag to return the tabs associated with a canvas_for_elementary subject course's\n  home page instead of the typical sidebar navigation. Only takes effect if this request is for a course context\n  in a canvas_for_elementary-enabled account or sub-account."
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/tabs.html
+  /v1/courses/{course_id}/tabs/{tab_id}:
+    put:
+      tags:
+      - Tabs
+      operationId: update_tab_for_course
+      summary: Update a tab for a course
+      description: 'Home and Settings tabs are not manageable, and can''t be hidden or moved
+
+
+        Returns a tab object'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: tab_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: integer
+                  format: int64
+                  description: The new position of the tab, 1-based
+                hidden:
+                  type: boolean
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: integer
+                  format: int64
+                  description: The new position of the tab, 1-based
+                hidden:
+                  type: boolean
+                  description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tab'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/tabs.html
+components:
+  schemas:
+    Tab:
+      type: object
+      properties:
+        html_url:
+          type: string
+          example: /courses/1/external_tools/4
+        id:
+          type: string
+          example: context_external_tool_4
+        label:
+          type: string
+          example: WordPress
+        type:
+          type: string
+          example: external
+        hidden:
+          type: boolean
+          example: true
+          description: only included if true
+        visibility:
+          type: string
+          example: public
+          description: 'possible values are: public, members, admins, and none'
+        position:
+          type: integer
+          example: 2
+          description: 1 based
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

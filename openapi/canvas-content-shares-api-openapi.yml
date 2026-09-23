@@ -1,0 +1,441 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Content Shares API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Content Shares
+  x-resource: content_shares
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/content_shares.html
+paths:
+  /v1/users/{user_id}/content_shares:
+    post:
+      tags:
+      - Content Shares
+      operationId: create_content_share
+      summary: Create a content share
+      description: Share content directly between two or more users
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiver_ids:
+                  type: array
+                  items: {}
+                  description: IDs of users to share the content with.
+                content_type:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - page
+                  - quiz
+                  - module
+                  - module_item
+                  description: Type of content you are sharing.
+                content_id:
+                  type: integer
+                  format: int64
+                  description: The id of the content that you are sharing
+              required:
+              - receiver_ids
+              - content_type
+              - content_id
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                receiver_ids:
+                  type: array
+                  items: {}
+                  description: IDs of users to share the content with.
+                content_type:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - page
+                  - quiz
+                  - module
+                  - module_item
+                  description: Type of content you are sharing.
+                content_id:
+                  type: integer
+                  format: int64
+                  description: The id of the content that you are sharing
+              required:
+              - receiver_ids
+              - content_type
+              - content_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentShare'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+  /v1/users/{user_id}/content_shares/sent:
+    get:
+      tags:
+      - Content Shares
+      operationId: list_content_shares_sent
+      summary: List content shares
+      description: 'Return a paginated list of content shares a user has sent or received. Use +self+ as the user_id
+
+        to retrieve your own content shares. Only linked observers and administrators may view other users''
+
+        content shares.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentShare'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+  /v1/users/{user_id}/content_shares/received:
+    get:
+      tags:
+      - Content Shares
+      operationId: list_content_shares_received
+      summary: List content shares
+      description: 'Return a paginated list of content shares a user has sent or received. Use +self+ as the user_id
+
+        to retrieve your own content shares. Only linked observers and administrators may view other users''
+
+        content shares.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentShare'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+  /v1/users/{user_id}/content_shares/unread_count:
+    get:
+      tags:
+      - Content Shares
+      operationId: get_unread_shares_count
+      summary: Get unread shares count
+      description: 'Return the number of content shares a user has received that have not yet been read. Use +self+ as the user_id
+
+        to retrieve your own content shares. Only linked observers and administrators may view other users''
+
+        content shares.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: '{ "unread_count": "integer" }'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+  /v1/users/{user_id}/content_shares/{id}:
+    get:
+      tags:
+      - Content Shares
+      operationId: get_content_share
+      summary: Get content share
+      description: Return information about a single content share. You may use +self+ as the user_id to retrieve your own content share.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentShare'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+    delete:
+      tags:
+      - Content Shares
+      operationId: remove_content_share
+      summary: Remove content share
+      description: 'Remove a content share from your list. Use +self+ as the user_id. Note that this endpoint does not delete other users''
+
+        copies of the content share.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+    put:
+      tags:
+      - Content Shares
+      operationId: update_content_share
+      summary: Update a content share
+      description: Mark a content share read or unread
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                read_state:
+                  type: string
+                  enum:
+                  - read
+                  - unread
+                  description: Read state for the content share
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                read_state:
+                  type: string
+                  enum:
+                  - read
+                  - unread
+                  description: Read state for the content share
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentShare'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+  /v1/users/{user_id}/content_shares/{id}/add_users:
+    post:
+      tags:
+      - Content Shares
+      operationId: add_users_to_content_share
+      summary: Add users to content share
+      description: Send a previously created content share to additional users
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiver_ids:
+                  type: array
+                  items: {}
+                  description: IDs of users to share the content with.
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                receiver_ids:
+                  type: array
+                  items: {}
+                  description: IDs of users to share the content with.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentShare'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_shares.html
+components:
+  schemas:
+    ContentShare:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The id of the content share for the current user
+        name:
+          type: string
+          example: War of 1812 homework
+          description: The name of the shared content
+        content_type:
+          type: string
+          example: assignment
+          description: The type of content that was shared. Can be assignment, discussion_topic, page, quiz, module, or module_item.
+        created_at:
+          type: string
+          format: date-time
+          example: '2017-05-09T10:12:00Z'
+          description: The datetime the content was shared with this user.
+        updated_at:
+          type: string
+          format: date-time
+          example: '2017-05-09T10:12:00Z'
+          description: The datetime the content was updated.
+        user_id:
+          type: integer
+          example: 1578941
+          description: The id of the user who sent or received the content share.
+        sender:
+          type: object
+          additionalProperties: true
+          example:
+            id: 1
+            display_name: Matilda Vargas
+            avatar_image_url: http://localhost:3000/image_url
+            html_url: http://localhost:3000/users/1
+          description: The user who shared the content. This field is provided only to receivers; it is not populated in the sender's list of sent content shares.
+        receivers:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - id: 1
+            display_name: Jon Snow
+            avatar_image_url: http://localhost:3000/image_url2
+            html_url: http://localhost:3000/users/2
+          description: An Array of users the content is shared with.  This field is provided only to senders; an empty array will be returned for the receiving users.
+        source_course:
+          type: object
+          additionalProperties: true
+          example:
+            id: 787
+            name: History 105
+          description: The course the content was originally shared from.
+        read_state:
+          type: string
+          example: read
+          description: Whether the recipient has viewed the content share.
+        content_export:
+          type: string
+          example:
+            id: 42
+          description: The content export record associated with this content share
+      description: Content shared between users
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

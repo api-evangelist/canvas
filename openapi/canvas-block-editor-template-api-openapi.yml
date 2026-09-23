@@ -1,0 +1,172 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Block Editor Template API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Block Editor Template
+  x-resource: block_editor_template
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/block_editor_template.html
+paths:
+  /v1/courses/{course_id}/block_editor_templates:
+    get:
+      tags:
+      - Block Editor Template
+      operationId: list_block_templates
+      summary: List block templates
+      description: A list of the block templates available to the current user.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum:
+          - name
+          - created_at
+          - updated_at
+        required: false
+        description: Sort results by this field.
+      - name: order
+        in: query
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+        required: false
+        description: The sorting order. Defaults to 'asc'.
+      - name: drafts
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: 'If true, include draft templates. If false or omitted
+
+          only published templates will be returned.'
+      - name: type
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - page
+            - section
+            - block
+        required: false
+        description: What type of templates should be returned.
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - node_tree
+            - thumbnail
+        required: false
+        description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockEditorTemplate'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/block_editor_template.html
+components:
+  schemas:
+    BlockEditorTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the ID of the page
+        name:
+          type: string
+          example: Navigation Bar
+          description: name of the template
+        description:
+          type: string
+          example: A bar of links to other content
+          description: description of the template
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-08-06T16:46:33-06:00'
+          description: the creation date for the template
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-08-08T14:25:20-06:00'
+          description: the date the template was last updated
+        node_tree:
+          type: string
+          description: The JSON data that is the template
+        editor_version:
+          type: string
+          example: '1.0'
+          description: The version of the editor that created the template
+        template_type:
+          type: string
+          example: page
+          description: The type of template. One of 'block', 'section', or 'page'
+        workflow_state:
+          type: string
+          example: unpublished
+          description: String indicating what state this assignment is in.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

@@ -1,0 +1,745 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Grading Standards API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Grading Standards
+  x-resource: grading_standards
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/grading_standards.html
+paths:
+  /v1/accounts/{account_id}/grading_standards:
+    post:
+      tags:
+      - Grading Standards
+      operationId: create_new_grading_standard_accounts
+      summary: Create a new grading standard
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard.
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - title
+              - grading_scheme_entry[name]
+              - grading_scheme_entry[value]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard.
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - title
+              - grading_scheme_entry[name]
+              - grading_scheme_entry[value]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+    get:
+      tags:
+      - Grading Standards
+      operationId: list_grading_standards_available_in_context_accounts
+      summary: List the grading standards available in a context
+      description: Returns the paginated list of grading standards for the given context that are visible to the user.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+  /v1/courses/{course_id}/grading_standards:
+    post:
+      tags:
+      - Grading Standards
+      operationId: create_new_grading_standard_courses
+      summary: Create a new grading standard
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard.
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - title
+              - grading_scheme_entry[name]
+              - grading_scheme_entry[value]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard.
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - title
+              - grading_scheme_entry[name]
+              - grading_scheme_entry[value]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+    get:
+      tags:
+      - Grading Standards
+      operationId: list_grading_standards_available_in_context_courses
+      summary: List the grading standards available in a context
+      description: Returns the paginated list of grading standards for the given context that are visible to the user.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+  /v1/courses/{course_id}/grading_standards/{grading_standard_id}:
+    get:
+      tags:
+      - Grading Standards
+      operationId: get_single_grading_standard_in_context_courses
+      summary: Get a single grading standard in a context
+      description: Returns a grading standard for the given context that is visible to the user.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grading_standard_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+    put:
+      tags:
+      - Grading Standards
+      operationId: update_grading_standard_courses
+      summary: Update a grading standard
+      description: 'Updates the grading standard with the given id
+
+
+        If the grading standard has been used for grading, only the title can be updated.
+
+        The data, points_based, and scaling_factor cannot be modified once the grading
+
+        standard has been used to grade assignments.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grading_standard_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - grading_scheme_entry[value]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - grading_scheme_entry[value]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+    delete:
+      tags:
+      - Grading Standards
+      operationId: delete_grading_standard_courses
+      summary: Delete a grading standard
+      description: Deletes the grading standard with the given id
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grading_standard_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+  /v1/accounts/{account_id}/grading_standards/{grading_standard_id}:
+    get:
+      tags:
+      - Grading Standards
+      operationId: get_single_grading_standard_in_context_accounts
+      summary: Get a single grading standard in a context
+      description: Returns a grading standard for the given context that is visible to the user.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grading_standard_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+    put:
+      tags:
+      - Grading Standards
+      operationId: update_grading_standard_accounts
+      summary: Update a grading standard
+      description: 'Updates the grading standard with the given id
+
+
+        If the grading standard has been used for grading, only the title can be updated.
+
+        The data, points_based, and scaling_factor cannot be modified once the grading
+
+        standard has been used to grade assignments.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grading_standard_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - grading_scheme_entry[value]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: The title for the Grading Standard
+                points_based:
+                  type: boolean
+                  description: 'Whether or not a grading scheme is points based.
+
+                    Defaults to false.'
+                scaling_factor:
+                  type: integer
+                  format: int64
+                  description: 'The factor by which to scale a percentage into a points based scheme grade.
+
+                    This is the maximum number of points possible in the grading scheme.
+
+                    Defaults to 1. Not required for percentage based grading schemes.'
+                grading_scheme_entry[name]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'The name for an entry value within a GradingStandard that describes the range of the value
+
+                    e.g. A-'
+                grading_scheme_entry[value]:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'The value for the name of the entry within a GradingStandard.
+
+                    The entry represents the lower bound of the range for the entry.
+
+                    This range includes the value up to the next entry in the GradingStandard,
+
+                    or 100 if there is no upper bound. The lowest value will have a lower bound range of 0.
+
+                    e.g. 93'
+              required:
+              - grading_scheme_entry[value]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+    delete:
+      tags:
+      - Grading Standards
+      operationId: delete_grading_standard_accounts
+      summary: Delete a grading standard
+      description: Deletes the grading standard with the given id
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: grading_standard_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradingStandard'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/grading_standards.html
+components:
+  schemas:
+    GradingSchemeEntry:
+      type: object
+      properties:
+        name:
+          type: string
+          example: A
+          description: The name for an entry value within a GradingStandard that describes the range of the value
+        value:
+          type: integer
+          example: 0.9
+          description: The value for the name of the entry within a GradingStandard. The entry represents the lower bound of the range for the entry. This range includes the value up to the next entry in the GradingStandard, or the maximum value for the scheme if there is no upper bound. The lowest value will have a lower bound range of 0.
+        calculated_value:
+          type: integer
+          example: 90
+          description: The value that will be used to compare against a grade. For percentage based grading schemes, this is a number from 0 - 100 representing a percent. For point based grading schemes, this is the lower bound of points to achieve the grade.
+    GradingStandard:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Account Standard
+          description: the title of the grading standard
+        id:
+          type: integer
+          example: 1
+          description: the id of the grading standard
+        context_type:
+          type: string
+          example: Account
+          description: the context this standard is associated with, either 'Account' or 'Course'
+        context_id:
+          type: integer
+          example: 1
+          description: the id for the context either the Account or Course id
+        points_based:
+          type: boolean
+          example: false
+          description: whether this is a points-based standard
+        scaling_factor:
+          type: number
+          example: 1.0
+          description: the factor by which to scale a score. 1 for percentage based schemss and the max value of points for points based schemes. This number cannot be changed for percentage based schemes.
+        grading_scheme:
+          type: array
+          items:
+            $ref: '#/components/schemas/GradingSchemeEntry'
+          example:
+          - name: A
+            value: 0.9
+          - name: B
+            value: 0.8
+          - name: C
+            value: 0.7
+          - name: D
+            value: 0.6
+          description: A list of GradingSchemeEntry that make up the Grading Standard as an array of values with the scheme name and value
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

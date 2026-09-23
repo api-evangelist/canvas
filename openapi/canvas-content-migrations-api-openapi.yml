@@ -1,0 +1,3509 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Content Migrations API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Content Migrations
+  x-resource: content_migrations
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/content_migrations.html
+paths:
+  /v1/accounts/{account_id}/content_migrations/{content_migration_id}/migration_issues:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_issues_accounts
+      summary: List migration issues
+      description: Returns paginated migration issues
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations/{content_migration_id}/migration_issues:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_issues_courses
+      summary: List migration issues
+      description: Returns paginated migration issues
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/groups/{group_id}/content_migrations/{content_migration_id}/migration_issues:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_issues_groups
+      summary: List migration issues
+      description: Returns paginated migration issues
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/users/{user_id}/content_migrations/{content_migration_id}/migration_issues:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_issues_users
+      summary: List migration issues
+      description: Returns paginated migration issues
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/accounts/{account_id}/content_migrations/{content_migration_id}/migration_issues/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_migration_issue_accounts
+      summary: Get a migration issue
+      description: Returns data on an individual migration issue
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_migration_issue_accounts
+      summary: Update a migration issue
+      description: Update the workflow_state of a migration issue
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations/{content_migration_id}/migration_issues/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_migration_issue_courses
+      summary: Get a migration issue
+      description: Returns data on an individual migration issue
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_migration_issue_courses
+      summary: Update a migration issue
+      description: Update the workflow_state of a migration issue
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/groups/{group_id}/content_migrations/{content_migration_id}/migration_issues/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_migration_issue_groups
+      summary: Get a migration issue
+      description: Returns data on an individual migration issue
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_migration_issue_groups
+      summary: Update a migration issue
+      description: Update the workflow_state of a migration issue
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/users/{user_id}/content_migrations/{content_migration_id}/migration_issues/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_migration_issue_users
+      summary: Get a migration issue
+      description: Returns data on an individual migration issue
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_migration_issue_users
+      summary: Update a migration issue
+      description: Update the workflow_state of a migration issue
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: content_migration_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                workflow_state:
+                  type: string
+                  enum:
+                  - active
+                  - resolved
+                  description: Set the workflow_state of the issue.
+              required:
+              - workflow_state
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrationIssue'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/accounts/{account_id}/content_migrations:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_content_migrations_accounts
+      summary: List content migrations
+      description: Returns paginated content migrations
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    post:
+      tags:
+      - Content Migrations
+      operationId: create_content_migration_accounts
+      summary: Create a content migration
+      description: 'Create a content migration. If the migration requires a file to be uploaded
+
+        the actual processing of the file will start once the file upload process is completed.
+
+        File uploading works as described in the {file:file.file_uploads.html File Upload Documentation}
+
+        except that the values are set on a *pre_attachment* sub-hash.
+
+
+        For migrations that don''t require a file to be uploaded, like course copy, the
+
+        processing will begin as soon as the migration is created.
+
+
+        You can use the {api:ProgressController#show Progress API} to track the
+
+        progress of the migration. The migration''s progress is linked to with the
+
+        _progress_url_ value.
+
+
+        The two general workflows are:
+
+
+        If no file upload is needed:
+
+
+        1. POST to create
+
+        2. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        For file uploading:
+
+
+        1. POST to create with file info in *pre_attachment*
+
+        2. Do {file:file.file_uploads.html file upload processing} using the data in the *pre_attachment* data
+
+        3. {api:ContentMigrationsController#show GET} the ContentMigration
+
+        4. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        (required if doing .zip file upload)'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_content_migrations_courses
+      summary: List content migrations
+      description: Returns paginated content migrations
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    post:
+      tags:
+      - Content Migrations
+      operationId: create_content_migration_courses
+      summary: Create a content migration
+      description: 'Create a content migration. If the migration requires a file to be uploaded
+
+        the actual processing of the file will start once the file upload process is completed.
+
+        File uploading works as described in the {file:file.file_uploads.html File Upload Documentation}
+
+        except that the values are set on a *pre_attachment* sub-hash.
+
+
+        For migrations that don''t require a file to be uploaded, like course copy, the
+
+        processing will begin as soon as the migration is created.
+
+
+        You can use the {api:ProgressController#show Progress API} to track the
+
+        progress of the migration. The migration''s progress is linked to with the
+
+        _progress_url_ value.
+
+
+        The two general workflows are:
+
+
+        If no file upload is needed:
+
+
+        1. POST to create
+
+        2. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        For file uploading:
+
+
+        1. POST to create with file info in *pre_attachment*
+
+        2. Do {file:file.file_uploads.html file upload processing} using the data in the *pre_attachment* data
+
+        3. {api:ContentMigrationsController#show GET} the ContentMigration
+
+        4. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        (required if doing .zip file upload)'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/groups/{group_id}/content_migrations:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_content_migrations_groups
+      summary: List content migrations
+      description: Returns paginated content migrations
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    post:
+      tags:
+      - Content Migrations
+      operationId: create_content_migration_groups
+      summary: Create a content migration
+      description: 'Create a content migration. If the migration requires a file to be uploaded
+
+        the actual processing of the file will start once the file upload process is completed.
+
+        File uploading works as described in the {file:file.file_uploads.html File Upload Documentation}
+
+        except that the values are set on a *pre_attachment* sub-hash.
+
+
+        For migrations that don''t require a file to be uploaded, like course copy, the
+
+        processing will begin as soon as the migration is created.
+
+
+        You can use the {api:ProgressController#show Progress API} to track the
+
+        progress of the migration. The migration''s progress is linked to with the
+
+        _progress_url_ value.
+
+
+        The two general workflows are:
+
+
+        If no file upload is needed:
+
+
+        1. POST to create
+
+        2. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        For file uploading:
+
+
+        1. POST to create with file info in *pre_attachment*
+
+        2. Do {file:file.file_uploads.html file upload processing} using the data in the *pre_attachment* data
+
+        3. {api:ContentMigrationsController#show GET} the ContentMigration
+
+        4. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        (required if doing .zip file upload)'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/users/{user_id}/content_migrations:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_content_migrations_users
+      summary: List content migrations
+      description: Returns paginated content migrations
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    post:
+      tags:
+      - Content Migrations
+      operationId: create_content_migration_users
+      summary: Create a content migration
+      description: 'Create a content migration. If the migration requires a file to be uploaded
+
+        the actual processing of the file will start once the file upload process is completed.
+
+        File uploading works as described in the {file:file.file_uploads.html File Upload Documentation}
+
+        except that the values are set on a *pre_attachment* sub-hash.
+
+
+        For migrations that don''t require a file to be uploaded, like course copy, the
+
+        processing will begin as soon as the migration is created.
+
+
+        You can use the {api:ProgressController#show Progress API} to track the
+
+        progress of the migration. The migration''s progress is linked to with the
+
+        _progress_url_ value.
+
+
+        The two general workflows are:
+
+
+        If no file upload is needed:
+
+
+        1. POST to create
+
+        2. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        For file uploading:
+
+
+        1. POST to create with file info in *pre_attachment*
+
+        2. Do {file:file.file_uploads.html file upload processing} using the data in the *pre_attachment* data
+
+        3. {api:ContentMigrationsController#show GET} the ContentMigration
+
+        4. Use the {api:ProgressController#show Progress} specified in _progress_url_ to monitor progress
+
+
+        (required if doing .zip file upload)'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                migration_type:
+                  type: string
+                  description: 'The type of the migration. Use the
+
+                    {api:ContentMigrationsController#available_migrators Migrator} endpoint to
+
+                    see all available migrators. Default allowed values:
+
+                    canvas_cartridge_importer, common_cartridge_importer,
+
+                    course_copy_importer, zip_file_importer, qti_converter, moodle_converter'
+                pre_attachment[name]:
+                  type: string
+                  description: 'Required if uploading a file. This is the first step in uploading a file
+
+                    to the content migration. See the {file:file.file_uploads.html File Upload
+
+                    Documentation} for details on the file upload workflow.'
+                pre_attachment[*]:
+                  type: string
+                  description: 'Other file upload properties, See {file:file.file_uploads.html File Upload
+
+                    Documentation}'
+                settings[file_url]:
+                  type: string
+                  description: A URL to download the file from. Must not require authentication.
+                settings[content_export_id]:
+                  type: string
+                  description: 'The id of a ContentExport to import. This allows you to import content previously exported from Canvas
+
+                    without needing to download and re-upload it.'
+                settings[source_course_id]:
+                  type: string
+                  description: 'The course to copy from for a course copy migration. (required if doing
+
+                    course copy)'
+                settings[folder_id]:
+                  type: string
+                  description: The folder to unzip the .zip file into for a zip_file_import.
+                settings[overwrite_quizzes]:
+                  type: boolean
+                  description: 'Whether to overwrite quizzes with the same identifiers between content
+
+                    packages.'
+                settings[question_bank_id]:
+                  type: integer
+                  format: int64
+                  description: 'The existing question bank ID to import questions into if not specified in
+
+                    the content package.'
+                settings[question_bank_name]:
+                  type: string
+                  description: 'The question bank to import questions into if not specified in the content
+
+                    package, if both bank id and name are set, id will take precedence.'
+                settings[insert_into_module_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of a module in the target course. This will add all imported items
+
+                    (that can be added to a module) to the given module.'
+                settings[insert_into_module_type]:
+                  type: string
+                  enum:
+                  - assignment
+                  - discussion_topic
+                  - file
+                  - page
+                  - quiz
+                  description: 'If provided (and +insert_into_module_id+ is supplied),
+
+                    only add objects of the specified type to the module.'
+                settings[insert_into_module_position]:
+                  type: integer
+                  format: int64
+                  description: 'The (1-based) position to insert the imported items into the course
+
+                    (if +insert_into_module_id+ is supplied). If this parameter
+
+                    is omitted, items will be added to the end of the module.'
+                settings[move_to_assignment_group_id]:
+                  type: integer
+                  format: int64
+                  description: 'The id of an assignment group in the target course. If provided, all
+
+                    imported assignments will be moved to the given assignment group.'
+                settings[importer_skips]:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - all_course_settings
+                    - visibility_settings
+                  description: Set of importers to skip, even if otherwise selected by migration settings.
+                settings[import_blueprint_settings]:
+                  type: boolean
+                  description: 'Import the "use as blueprint course" setting as well as the list of locked items
+
+                    from the source course or package. The destination course must not be associated
+
+                    with an existing blueprint course and cannot have any student or observer enrollments.'
+                date_shift_options[shift_dates]:
+                  type: boolean
+                  description: Whether to shift dates in the copied course
+                date_shift_options[old_start_date]:
+                  type: string
+                  format: date
+                  description: The original start date of the source content/course
+                date_shift_options[old_end_date]:
+                  type: string
+                  format: date
+                  description: The original end date of the source content/course
+                date_shift_options[new_start_date]:
+                  type: string
+                  format: date
+                  description: The new start date for the content/course
+                date_shift_options[new_end_date]:
+                  type: string
+                  format: date
+                  description: The new end date for the source content/course
+                date_shift_options[day_substitutions][X]:
+                  type: integer
+                  format: int64
+                  description: 'Move anything scheduled for day ''X'' to the specified day. (0-Sunday,
+
+                    1-Monday, 2-Tuesday, 3-Wednesday, 4-Thursday, 5-Friday, 6-Saturday)'
+                date_shift_options[remove_dates]:
+                  type: boolean
+                  description: 'Whether to remove dates in the copied course. Cannot be used
+
+                    in conjunction with *shift_dates*.'
+                selective_import:
+                  type: boolean
+                  description: 'If set, perform a selective import instead of importing all content.
+
+                    The migration will identify the contents of the package and then stop
+
+                    in the +waiting_for_select+ workflow state. At this point, use the
+
+                    {api:ContentMigrationsController#content_list List items endpoint}
+
+                    to enumerate the contents of the package, identifying the copy
+
+                    parameters for the desired content. Then call the
+
+                    {api:ContentMigrationsController#update Update endpoint} and provide these
+
+                    copy parameters to start the import.'
+                select:
+                  type: object
+                  additionalProperties: true
+                  enum:
+                  - folders
+                  - files
+                  - attachments
+                  - quizzes
+                  - assignments
+                  - announcements
+                  - calendar_events
+                  - discussion_topics
+                  - modules
+                  - module_items
+                  - pages
+                  - rubrics
+                  description: 'For +course_copy_importer+ migrations, this parameter allows you to select
+
+                    the objects to copy without using the +selective_import+ argument and
+
+                    +waiting_for_select+ state as is required for uploaded imports (though that
+
+                    workflow is also supported for course copy migrations).
+
+                    The keys are object types like ''files'', ''folders'', ''pages'', etc. The value
+
+                    for each key is a list of object ids. An id can be an integer or a string.
+
+                    Multiple object types can be selected in the same call.'
+              required:
+              - migration_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/accounts/{account_id}/content_migrations/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_content_migration_accounts
+      summary: Get a content migration
+      description: Returns data on an individual content migration
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_content_migration_accounts
+      summary: Update a content migration
+      description: 'Update a content migration. Takes same arguments as {api:ContentMigrationsController#create create} except that you
+
+        can''t change the migration type. However, changing most settings after the
+
+        migration process has started will not do anything. Generally updating the
+
+        content migration will be used when there is a file upload problem, or when
+
+        importing content selectively. If the first upload has a problem you can
+
+        supply new _pre_attachment_ values to start the process again.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_content_migration_courses
+      summary: Get a content migration
+      description: Returns data on an individual content migration
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_content_migration_courses
+      summary: Update a content migration
+      description: 'Update a content migration. Takes same arguments as {api:ContentMigrationsController#create create} except that you
+
+        can''t change the migration type. However, changing most settings after the
+
+        migration process has started will not do anything. Generally updating the
+
+        content migration will be used when there is a file upload problem, or when
+
+        importing content selectively. If the first upload has a problem you can
+
+        supply new _pre_attachment_ values to start the process again.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/groups/{group_id}/content_migrations/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_content_migration_groups
+      summary: Get a content migration
+      description: Returns data on an individual content migration
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_content_migration_groups
+      summary: Update a content migration
+      description: 'Update a content migration. Takes same arguments as {api:ContentMigrationsController#create create} except that you
+
+        can''t change the migration type. However, changing most settings after the
+
+        migration process has started will not do anything. Generally updating the
+
+        content migration will be used when there is a file upload problem, or when
+
+        importing content selectively. If the first upload has a problem you can
+
+        supply new _pre_attachment_ values to start the process again.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/users/{user_id}/content_migrations/{id}:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_content_migration_users
+      summary: Get a content migration
+      description: Returns data on an individual content migration
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+    put:
+      tags:
+      - Content Migrations
+      operationId: update_content_migration_users
+      summary: Update a content migration
+      description: 'Update a content migration. Takes same arguments as {api:ContentMigrationsController#create create} except that you
+
+        can''t change the migration type. However, changing most settings after the
+
+        migration process has started will not do anything. Generally updating the
+
+        content migration will be used when there is a file upload problem, or when
+
+        importing content selectively. If the first upload has a problem you can
+
+        supply new _pre_attachment_ values to start the process again.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentMigration'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/accounts/{account_id}/content_migrations/migrators:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_systems_accounts
+      summary: List Migration Systems
+      description: Lists the currently available migration types. These values may change.
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Migrator'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations/migrators:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_systems_courses
+      summary: List Migration Systems
+      description: Lists the currently available migration types. These values may change.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Migrator'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/groups/{group_id}/content_migrations/migrators:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_systems_groups
+      summary: List Migration Systems
+      description: Lists the currently available migration types. These values may change.
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Migrator'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/users/{user_id}/content_migrations/migrators:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_migration_systems_users
+      summary: List Migration Systems
+      description: Lists the currently available migration types. These values may change.
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Migrator'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/accounts/{account_id}/content_migrations/{id}/selective_data:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_items_for_selective_import_accounts
+      summary: List items for selective import
+      description: 'Enumerates the content available for selective import in a tree structure. Each node provides
+
+        a +property+ copy argument that can be supplied to the {api:ContentMigrationsController#update Update endpoint}
+
+        to selectively copy the content associated with that tree node and its children. Each node may also
+
+        provide a +sub_items_url+ or an array of +sub_items+ which you can use to obtain copy parameters
+
+        for a subset of the resources in a given node.
+
+
+        If no +type+ is sent you will get a list of the top-level sections in the content. It will look something like this:
+
+
+        [{
+
+        "type": "course_settings",
+
+        "property": "copy[all_course_settings]",
+
+        "title": "Course Settings"
+
+        },
+
+        {
+
+        "type": "context_modules",
+
+        "property": "copy[all_context_modules]",
+
+        "title": "Modules",
+
+        "count": 5,
+
+        "sub_items_url": "http://example.com/api/v1/courses/22/content_migrations/77/selective_data?type=context_modules"
+
+        },
+
+        {
+
+        "type": "assignments",
+
+        "property": "copy[all_assignments]",
+
+        "title": "Assignments",
+
+        "count": 2,
+
+        "sub_items_url": "http://localhost:3000/api/v1/courses/22/content_migrations/77/selective_data?type=assignments"
+
+        }]
+
+
+        When a +type+ is provided, nodes may be further divided via +sub_items+. For example, using +type=assignments+
+
+        results in a node for each assignment group and a sub_item for each assignment, like this:
+
+
+        [{
+
+        "type": "assignment_groups",
+
+        "title": "An Assignment Group",
+
+        "property": "copy[assignment_groups][id_i855cf145e5acc7435e1bf1c6e2126e5f]",
+
+        "sub_items": [{
+
+        "type": "assignments",
+
+        "title": "Assignment 1",
+
+        "property": "copy[assignments][id_i2102a7fa93b29226774949298626719d]"
+
+        }, {
+
+        "type": "assignments",
+
+        "title": "Assignment 2",
+
+        "property": "copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]"
+
+        }]
+
+        }]
+
+
+        To import the items corresponding to a particular tree node, use the +property+ as a parameter to the
+
+        {api:ContentMigrationsController#update Update endpoint} and assign a value of 1, for example:
+
+
+        copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]=1
+
+
+        You can include multiple copy parameters to selectively import multiple items or groups of items.'
+      parameters:
+      - name: account_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - context_modules
+          - assignments
+          - quizzes
+          - assessment_question_banks
+          - discussion_topics
+          - wiki_pages
+          - context_external_tools
+          - tool_profiles
+          - announcements
+          - calendar_events
+          - rubrics
+          - groups
+          - learning_outcomes
+          - attachments
+        required: false
+        description: The type of content to enumerate.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: list of content items
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations/{id}/selective_data:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_items_for_selective_import_courses
+      summary: List items for selective import
+      description: 'Enumerates the content available for selective import in a tree structure. Each node provides
+
+        a +property+ copy argument that can be supplied to the {api:ContentMigrationsController#update Update endpoint}
+
+        to selectively copy the content associated with that tree node and its children. Each node may also
+
+        provide a +sub_items_url+ or an array of +sub_items+ which you can use to obtain copy parameters
+
+        for a subset of the resources in a given node.
+
+
+        If no +type+ is sent you will get a list of the top-level sections in the content. It will look something like this:
+
+
+        [{
+
+        "type": "course_settings",
+
+        "property": "copy[all_course_settings]",
+
+        "title": "Course Settings"
+
+        },
+
+        {
+
+        "type": "context_modules",
+
+        "property": "copy[all_context_modules]",
+
+        "title": "Modules",
+
+        "count": 5,
+
+        "sub_items_url": "http://example.com/api/v1/courses/22/content_migrations/77/selective_data?type=context_modules"
+
+        },
+
+        {
+
+        "type": "assignments",
+
+        "property": "copy[all_assignments]",
+
+        "title": "Assignments",
+
+        "count": 2,
+
+        "sub_items_url": "http://localhost:3000/api/v1/courses/22/content_migrations/77/selective_data?type=assignments"
+
+        }]
+
+
+        When a +type+ is provided, nodes may be further divided via +sub_items+. For example, using +type=assignments+
+
+        results in a node for each assignment group and a sub_item for each assignment, like this:
+
+
+        [{
+
+        "type": "assignment_groups",
+
+        "title": "An Assignment Group",
+
+        "property": "copy[assignment_groups][id_i855cf145e5acc7435e1bf1c6e2126e5f]",
+
+        "sub_items": [{
+
+        "type": "assignments",
+
+        "title": "Assignment 1",
+
+        "property": "copy[assignments][id_i2102a7fa93b29226774949298626719d]"
+
+        }, {
+
+        "type": "assignments",
+
+        "title": "Assignment 2",
+
+        "property": "copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]"
+
+        }]
+
+        }]
+
+
+        To import the items corresponding to a particular tree node, use the +property+ as a parameter to the
+
+        {api:ContentMigrationsController#update Update endpoint} and assign a value of 1, for example:
+
+
+        copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]=1
+
+
+        You can include multiple copy parameters to selectively import multiple items or groups of items.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - context_modules
+          - assignments
+          - quizzes
+          - assessment_question_banks
+          - discussion_topics
+          - wiki_pages
+          - context_external_tools
+          - tool_profiles
+          - announcements
+          - calendar_events
+          - rubrics
+          - groups
+          - learning_outcomes
+          - attachments
+        required: false
+        description: The type of content to enumerate.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: list of content items
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/groups/{group_id}/content_migrations/{id}/selective_data:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_items_for_selective_import_groups
+      summary: List items for selective import
+      description: 'Enumerates the content available for selective import in a tree structure. Each node provides
+
+        a +property+ copy argument that can be supplied to the {api:ContentMigrationsController#update Update endpoint}
+
+        to selectively copy the content associated with that tree node and its children. Each node may also
+
+        provide a +sub_items_url+ or an array of +sub_items+ which you can use to obtain copy parameters
+
+        for a subset of the resources in a given node.
+
+
+        If no +type+ is sent you will get a list of the top-level sections in the content. It will look something like this:
+
+
+        [{
+
+        "type": "course_settings",
+
+        "property": "copy[all_course_settings]",
+
+        "title": "Course Settings"
+
+        },
+
+        {
+
+        "type": "context_modules",
+
+        "property": "copy[all_context_modules]",
+
+        "title": "Modules",
+
+        "count": 5,
+
+        "sub_items_url": "http://example.com/api/v1/courses/22/content_migrations/77/selective_data?type=context_modules"
+
+        },
+
+        {
+
+        "type": "assignments",
+
+        "property": "copy[all_assignments]",
+
+        "title": "Assignments",
+
+        "count": 2,
+
+        "sub_items_url": "http://localhost:3000/api/v1/courses/22/content_migrations/77/selective_data?type=assignments"
+
+        }]
+
+
+        When a +type+ is provided, nodes may be further divided via +sub_items+. For example, using +type=assignments+
+
+        results in a node for each assignment group and a sub_item for each assignment, like this:
+
+
+        [{
+
+        "type": "assignment_groups",
+
+        "title": "An Assignment Group",
+
+        "property": "copy[assignment_groups][id_i855cf145e5acc7435e1bf1c6e2126e5f]",
+
+        "sub_items": [{
+
+        "type": "assignments",
+
+        "title": "Assignment 1",
+
+        "property": "copy[assignments][id_i2102a7fa93b29226774949298626719d]"
+
+        }, {
+
+        "type": "assignments",
+
+        "title": "Assignment 2",
+
+        "property": "copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]"
+
+        }]
+
+        }]
+
+
+        To import the items corresponding to a particular tree node, use the +property+ as a parameter to the
+
+        {api:ContentMigrationsController#update Update endpoint} and assign a value of 1, for example:
+
+
+        copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]=1
+
+
+        You can include multiple copy parameters to selectively import multiple items or groups of items.'
+      parameters:
+      - name: group_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - context_modules
+          - assignments
+          - quizzes
+          - assessment_question_banks
+          - discussion_topics
+          - wiki_pages
+          - context_external_tools
+          - tool_profiles
+          - announcements
+          - calendar_events
+          - rubrics
+          - groups
+          - learning_outcomes
+          - attachments
+        required: false
+        description: The type of content to enumerate.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: list of content items
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/users/{user_id}/content_migrations/{id}/selective_data:
+    get:
+      tags:
+      - Content Migrations
+      operationId: list_items_for_selective_import_users
+      summary: List items for selective import
+      description: 'Enumerates the content available for selective import in a tree structure. Each node provides
+
+        a +property+ copy argument that can be supplied to the {api:ContentMigrationsController#update Update endpoint}
+
+        to selectively copy the content associated with that tree node and its children. Each node may also
+
+        provide a +sub_items_url+ or an array of +sub_items+ which you can use to obtain copy parameters
+
+        for a subset of the resources in a given node.
+
+
+        If no +type+ is sent you will get a list of the top-level sections in the content. It will look something like this:
+
+
+        [{
+
+        "type": "course_settings",
+
+        "property": "copy[all_course_settings]",
+
+        "title": "Course Settings"
+
+        },
+
+        {
+
+        "type": "context_modules",
+
+        "property": "copy[all_context_modules]",
+
+        "title": "Modules",
+
+        "count": 5,
+
+        "sub_items_url": "http://example.com/api/v1/courses/22/content_migrations/77/selective_data?type=context_modules"
+
+        },
+
+        {
+
+        "type": "assignments",
+
+        "property": "copy[all_assignments]",
+
+        "title": "Assignments",
+
+        "count": 2,
+
+        "sub_items_url": "http://localhost:3000/api/v1/courses/22/content_migrations/77/selective_data?type=assignments"
+
+        }]
+
+
+        When a +type+ is provided, nodes may be further divided via +sub_items+. For example, using +type=assignments+
+
+        results in a node for each assignment group and a sub_item for each assignment, like this:
+
+
+        [{
+
+        "type": "assignment_groups",
+
+        "title": "An Assignment Group",
+
+        "property": "copy[assignment_groups][id_i855cf145e5acc7435e1bf1c6e2126e5f]",
+
+        "sub_items": [{
+
+        "type": "assignments",
+
+        "title": "Assignment 1",
+
+        "property": "copy[assignments][id_i2102a7fa93b29226774949298626719d]"
+
+        }, {
+
+        "type": "assignments",
+
+        "title": "Assignment 2",
+
+        "property": "copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]"
+
+        }]
+
+        }]
+
+
+        To import the items corresponding to a particular tree node, use the +property+ as a parameter to the
+
+        {api:ContentMigrationsController#update Update endpoint} and assign a value of 1, for example:
+
+
+        copy[assignments][id_i310cba275dc3f4aa8a3306bbbe380979]=1
+
+
+        You can include multiple copy parameters to selectively import multiple items or groups of items.'
+      parameters:
+      - name: user_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum:
+          - context_modules
+          - assignments
+          - quizzes
+          - assessment_question_banks
+          - discussion_topics
+          - wiki_pages
+          - context_external_tools
+          - tool_profiles
+          - announcements
+          - calendar_events
+          - rubrics
+          - groups
+          - learning_outcomes
+          - attachments
+        required: false
+        description: The type of content to enumerate.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+                x-canvas-declared-type: list of content items
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+  /v1/courses/{course_id}/content_migrations/{id}/asset_id_mapping:
+    get:
+      tags:
+      - Content Migrations
+      operationId: get_asset_id_mapping
+      summary: Get asset id mapping
+      description: 'Given a complete course copy or blueprint import content migration, return a mapping of asset ids
+
+        from the source course to the destination course that were copied in this migration or an earlier one
+
+        with the same course pair and migration_type (course copy or blueprint).
+
+
+        The returned object''s keys are asset types as they appear in API URLs (+announcements+, +assignments+,
+
+        +discussion_topics+, +files+, +module_items+, +modules+, +pages+, and +quizzes+). The values are a mapping
+
+        from id in source course to id in destination course for objects of this type.'
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/content_migrations.html
+components:
+  schemas:
+    MigrationIssue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 370663
+          description: the unique identifier for the issue
+        content_migration_url:
+          type: string
+          example: https://example.com/api/v1/courses/1/content_migrations/1
+          description: API url to the content migration
+        description:
+          type: string
+          example: Questions in this quiz couldn't be converted
+          description: Description of the issue for the end-user
+        workflow_state:
+          type: string
+          example: active
+          description: 'Current state of the issue: active, resolved'
+        fix_issue_html_url:
+          type: string
+          example: https://example.com/courses/1/quizzes/2
+          description: HTML Url to the Canvas page to investigate the issue
+        issue_type:
+          type: string
+          example: warning
+          description: 'Severity of the issue: todo, warning, error'
+        error_report_html_url:
+          type: string
+          example: https://example.com/error_reports/3
+          description: Link to a Canvas error report if present (If the requesting user has permissions)
+        error_message:
+          type: string
+          example: admin only message
+          description: Site administrator error message (If the requesting user has permissions)
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: timestamp
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: timestamp
+    Migrator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: common_cartridge_importer
+          description: The value to pass to the create endpoint
+        requires_file_upload:
+          type: boolean
+          example: true
+          description: Whether this endpoint requires a file upload
+        name:
+          type: string
+          example: Common Cartridge 1.0/1.1/1.2 Package
+          description: Description of the package type expected
+        required_settings:
+          type: array
+          items:
+            type: string
+          example:
+          - source_course_id
+          description: A list of fields this system requires
+    ContentMigration:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 370663
+          description: the unique identifier for the migration
+        migration_type:
+          type: string
+          example: common_cartridge_importer
+          description: the type of content migration
+        migration_type_title:
+          type: string
+          example: Canvas Cartridge Importer
+          description: the name of the content migration type
+        migration_issues_url:
+          type: string
+          example: https://example.com/api/v1/courses/1/content_migrations/1/migration_issues
+          description: API url to the content migration's issues
+        attachment:
+          type: string
+          example: '{"url"=>"https://example.com/api/v1/courses/1/content_migrations/1/download_archive"}'
+          description: attachment api object for the uploaded file may not be present for all migrations
+        progress_url:
+          type: string
+          example: https://example.com/api/v1/progress/4
+          description: The api endpoint for polling the current progress
+        user_id:
+          type: integer
+          example: 4
+          description: The user who started the migration
+        workflow_state:
+          type: string
+          example: running
+          description: 'Current state of the content migration: pre_processing, pre_processed, running, waiting_for_select, completed, failed'
+        started_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: timestamp
+        finished_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: timestamp
+        pre_attachment:
+          type: string
+          example: '{"upload_url"=>"", "message"=>"file exceeded quota", "upload_params"=>{}}'
+          description: file uploading data, see {file:file.file_uploads.html File Upload Documentation} for file upload workflow This works a little differently in that all the file data is in the pre_attachment hash if there is no upload_url then there was an attachment pre-processing error, the error message will be in the message key This data will only be here after a create or update call
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

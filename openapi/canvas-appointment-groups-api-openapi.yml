@@ -1,0 +1,625 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Appointment Groups API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Appointment Groups
+  x-resource: appointment_groups
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/appointment_groups.html
+paths:
+  /v1/appointment_groups:
+    get:
+      tags:
+      - Appointment Groups
+      operationId: list_appointment_groups
+      summary: List appointment groups
+      description: 'Retrieve the paginated list of appointment groups that can be reserved or
+
+        managed by the current user.'
+      parameters:
+      - name: scope
+        in: query
+        schema:
+          type: string
+          enum:
+          - reservable
+          - manageable
+        required: false
+        description: Defaults to "reservable"
+      - name: context_codes
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: Array of context codes used to limit returned results.
+      - name: include_past_appointments
+        in: query
+        schema:
+          type: boolean
+        required: false
+        description: Defaults to false. If true, includes past appointment groups
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - appointments
+            - child_events
+            - participant_count
+            - reserved_times
+            - all_context_codes
+        required: false
+        description: "Array of additional information to include.\n\n\"appointments\":: calendar event time slots for this appointment group\n\"child_events\":: reservations of those time slots\n\"participant_count\":: number of reservations\n\"reserved_times\":: the event id, start time and end time of reservations\n                   the current user has made)\n\"all_context_codes\":: all context codes associated with this appointment group"
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+    post:
+      tags:
+      - Appointment Groups
+      operationId: create_appointment_group
+      summary: Create an appointment group
+      description: 'Create and return a new appointment group. If new_appointments are
+
+        specified, the response will return a new_appointments array (same format
+
+        as appointments array, see "List appointment groups" action)'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointment_group[context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of context codes (courses, e.g. course_1) this group should be
+
+                    linked to (1 or more). Users in the course(s) with appropriate permissions
+
+                    will be able to sign up for this appointment group.'
+                appointment_group[sub_context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of sub context codes (course sections or a single group category)
+
+                    this group should be linked to. Used to limit the appointment group to
+
+                    particular sections. If a group category is specified, students will sign
+
+                    up in groups and the participant_type will be "Group" instead of "User".'
+                appointment_group[title]:
+                  type: string
+                  description: Short title for the appointment group.
+                appointment_group[description]:
+                  type: string
+                  description: Longer text description of the appointment group.
+                appointment_group[location_name]:
+                  type: string
+                  description: Location name of the appointment group.
+                appointment_group[location_address]:
+                  type: string
+                  description: Location address.
+                appointment_group[publish]:
+                  type: boolean
+                  description: 'Indicates whether this appointment group should be published (i.e. made
+
+                    available for signup). Once published, an appointment group cannot be
+
+                    unpublished. Defaults to false.'
+                appointment_group[participants_per_appointment]:
+                  type: integer
+                  format: int64
+                  description: 'Maximum number of participants that may register for each time slot.
+
+                    Defaults to null (no limit).'
+                appointment_group[min_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum number of time slots a user must register for. If not set, users
+
+                    do not need to sign up for any time slots.'
+                appointment_group[max_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: Maximum number of time slots a user may register for.
+                appointment_group[new_appointments][X]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Nested array of start time/end time pairs indicating time slots for this
+
+                    appointment group. Refer to the example request.'
+                appointment_group[participant_visibility]:
+                  type: string
+                  enum:
+                  - private
+                  - protected
+                  description: "\"private\":: participants cannot see who has signed up for a particular\n            time slot\n\"protected\":: participants can see who has signed up.  Defaults to\n              \"private\"."
+                appointment_group[allow_observer_signup]:
+                  type: boolean
+                  description: Whether observer users can sign-up for an appointment. Defaults to false.
+              required:
+              - appointment_group[context_codes]
+              - appointment_group[title]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                appointment_group[context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of context codes (courses, e.g. course_1) this group should be
+
+                    linked to (1 or more). Users in the course(s) with appropriate permissions
+
+                    will be able to sign up for this appointment group.'
+                appointment_group[sub_context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of sub context codes (course sections or a single group category)
+
+                    this group should be linked to. Used to limit the appointment group to
+
+                    particular sections. If a group category is specified, students will sign
+
+                    up in groups and the participant_type will be "Group" instead of "User".'
+                appointment_group[title]:
+                  type: string
+                  description: Short title for the appointment group.
+                appointment_group[description]:
+                  type: string
+                  description: Longer text description of the appointment group.
+                appointment_group[location_name]:
+                  type: string
+                  description: Location name of the appointment group.
+                appointment_group[location_address]:
+                  type: string
+                  description: Location address.
+                appointment_group[publish]:
+                  type: boolean
+                  description: 'Indicates whether this appointment group should be published (i.e. made
+
+                    available for signup). Once published, an appointment group cannot be
+
+                    unpublished. Defaults to false.'
+                appointment_group[participants_per_appointment]:
+                  type: integer
+                  format: int64
+                  description: 'Maximum number of participants that may register for each time slot.
+
+                    Defaults to null (no limit).'
+                appointment_group[min_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum number of time slots a user must register for. If not set, users
+
+                    do not need to sign up for any time slots.'
+                appointment_group[max_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: Maximum number of time slots a user may register for.
+                appointment_group[new_appointments][X]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Nested array of start time/end time pairs indicating time slots for this
+
+                    appointment group. Refer to the example request.'
+                appointment_group[participant_visibility]:
+                  type: string
+                  enum:
+                  - private
+                  - protected
+                  description: "\"private\":: participants cannot see who has signed up for a particular\n            time slot\n\"protected\":: participants can see who has signed up.  Defaults to\n              \"private\"."
+                appointment_group[allow_observer_signup]:
+                  type: boolean
+                  description: Whether observer users can sign-up for an appointment. Defaults to false.
+              required:
+              - appointment_group[context_codes]
+              - appointment_group[title]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+  /v1/appointment_groups/{id}:
+    get:
+      tags:
+      - Appointment Groups
+      operationId: get_single_appointment_group
+      summary: Get a single appointment group
+      description: Returns information for a single appointment group
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: include
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - child_events
+            - appointments
+            - all_context_codes
+        required: false
+        description: 'Array of additional information to include. See include[] argument of
+
+          "List appointment groups" action.
+
+
+          "child_events":: reservations of time slots time slots
+
+          "appointments":: will always be returned
+
+          "all_context_codes":: all context codes associated with this appointment group'
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+    put:
+      tags:
+      - Appointment Groups
+      operationId: update_appointment_group
+      summary: Update an appointment group
+      description: 'Update and return an appointment group. If new_appointments are specified,
+
+        the response will return a new_appointments array (same format as
+
+        appointments array, see "List appointment groups" action).'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointment_group[context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of context codes (courses, e.g. course_1) this group should be
+
+                    linked to (1 or more). Users in the course(s) with appropriate permissions
+
+                    will be able to sign up for this appointment group.'
+                appointment_group[sub_context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of sub context codes (course sections or a single group category)
+
+                    this group should be linked to. Used to limit the appointment group to
+
+                    particular sections. If a group category is specified, students will sign
+
+                    up in groups and the participant_type will be "Group" instead of "User".'
+                appointment_group[title]:
+                  type: string
+                  description: Short title for the appointment group.
+                appointment_group[description]:
+                  type: string
+                  description: Longer text description of the appointment group.
+                appointment_group[location_name]:
+                  type: string
+                  description: Location name of the appointment group.
+                appointment_group[location_address]:
+                  type: string
+                  description: Location address.
+                appointment_group[publish]:
+                  type: boolean
+                  description: 'Indicates whether this appointment group should be published (i.e. made
+
+                    available for signup). Once published, an appointment group cannot be
+
+                    unpublished. Defaults to false.'
+                appointment_group[participants_per_appointment]:
+                  type: integer
+                  format: int64
+                  description: 'Maximum number of participants that may register for each time slot.
+
+                    Defaults to null (no limit).'
+                appointment_group[min_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum number of time slots a user must register for. If not set, users
+
+                    do not need to sign up for any time slots.'
+                appointment_group[max_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: Maximum number of time slots a user may register for.
+                appointment_group[new_appointments][X]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Nested array of start time/end time pairs indicating time slots for this
+
+                    appointment group. Refer to the example request.'
+                appointment_group[participant_visibility]:
+                  type: string
+                  enum:
+                  - private
+                  - protected
+                  description: "\"private\":: participants cannot see who has signed up for a particular\n            time slot\n\"protected\":: participants can see who has signed up. Defaults to \"private\"."
+                appointment_group[allow_observer_signup]:
+                  type: boolean
+                  description: Whether observer users can sign-up for an appointment.
+              required:
+              - appointment_group[context_codes]
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                appointment_group[context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of context codes (courses, e.g. course_1) this group should be
+
+                    linked to (1 or more). Users in the course(s) with appropriate permissions
+
+                    will be able to sign up for this appointment group.'
+                appointment_group[sub_context_codes]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Array of sub context codes (course sections or a single group category)
+
+                    this group should be linked to. Used to limit the appointment group to
+
+                    particular sections. If a group category is specified, students will sign
+
+                    up in groups and the participant_type will be "Group" instead of "User".'
+                appointment_group[title]:
+                  type: string
+                  description: Short title for the appointment group.
+                appointment_group[description]:
+                  type: string
+                  description: Longer text description of the appointment group.
+                appointment_group[location_name]:
+                  type: string
+                  description: Location name of the appointment group.
+                appointment_group[location_address]:
+                  type: string
+                  description: Location address.
+                appointment_group[publish]:
+                  type: boolean
+                  description: 'Indicates whether this appointment group should be published (i.e. made
+
+                    available for signup). Once published, an appointment group cannot be
+
+                    unpublished. Defaults to false.'
+                appointment_group[participants_per_appointment]:
+                  type: integer
+                  format: int64
+                  description: 'Maximum number of participants that may register for each time slot.
+
+                    Defaults to null (no limit).'
+                appointment_group[min_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: 'Minimum number of time slots a user must register for. If not set, users
+
+                    do not need to sign up for any time slots.'
+                appointment_group[max_appointments_per_participant]:
+                  type: integer
+                  format: int64
+                  description: Maximum number of time slots a user may register for.
+                appointment_group[new_appointments][X]:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Nested array of start time/end time pairs indicating time slots for this
+
+                    appointment group. Refer to the example request.'
+                appointment_group[participant_visibility]:
+                  type: string
+                  enum:
+                  - private
+                  - protected
+                  description: "\"private\":: participants cannot see who has signed up for a particular\n            time slot\n\"protected\":: participants can see who has signed up. Defaults to \"private\"."
+                appointment_group[allow_observer_signup]:
+                  type: boolean
+                  description: Whether observer users can sign-up for an appointment.
+              required:
+              - appointment_group[context_codes]
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+    delete:
+      tags:
+      - Appointment Groups
+      operationId: delete_appointment_group
+      summary: Delete an appointment group
+      description: 'Delete an appointment group (and associated time slots and reservations)
+
+        and return the deleted group'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: cancel_reason
+        in: query
+        schema:
+          type: string
+        required: false
+        description: Reason for deleting/canceling the appointment group.
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+  /v1/appointment_groups/{id}/users:
+    get:
+      tags:
+      - Appointment Groups
+      operationId: list_user_participants
+      summary: List user participants
+      description: 'A paginated list of users that are (or may be) participating in this
+
+        appointment group. Refer to the Users API for the response fields. Returns
+
+        no results for appointment groups with the "Group" participant_type.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_status
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - registered
+          - registered
+        required: false
+        description: Limits results to the a given participation status, defaults to "all"
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+  /v1/appointment_groups/{id}/groups:
+    get:
+      tags:
+      - Appointment Groups
+      operationId: list_student_group_participants
+      summary: List student group participants
+      description: 'A paginated list of student groups that are (or may be) participating in
+
+        this appointment group. Refer to the Groups API for the response fields.
+
+        Returns no results for appointment groups with the "User" participant_type.'
+      parameters:
+      - name: id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: registration_status
+        in: query
+        schema:
+          type: string
+          enum:
+          - all
+          - registered
+          - registered
+        required: false
+        description: Limits results to the a given participation status, defaults to "all"
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+  /v1/appointment_groups/next_appointment:
+    get:
+      tags:
+      - Appointment Groups
+      operationId: get_next_appointment
+      summary: Get next appointment
+      description: 'Return the next appointment available to sign up for. The appointment
+
+        is returned in a one-element array. If no future appointments are
+
+        available, an empty array is returned.'
+      parameters:
+      - name: appointment_group_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        required: false
+        description: List of ids of appointment groups to search.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  x-canvas-declared-type: CalendarEvent
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/appointment_groups.html
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200

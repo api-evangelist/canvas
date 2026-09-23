@@ -1,0 +1,618 @@
+openapi: 3.2.0
+info:
+  title: Canvas LMS REST Quiz Questions API
+  version: v1
+  summary: The complete Canvas LMS REST API, converted from the Swagger 1.2 documents Instructure publishes under https://canvas.instructure.com/doc/api/.
+  description: The Canvas LMS REST API covers courses, assignments, quizzes, grades, users, enrollments, accounts, files, modules, rubrics, submissions, SIS imports, LTI, analytics and account administration.
+  contact:
+    name: Instructure Canvas
+    url: https://canvas.instructure.com/doc/api/
+  license:
+    name: AGPL-3.0
+    url: https://github.com/instructure/canvas-lms/blob/master/LICENSE
+servers:
+- url: https://canvas.instructure.com/api
+  description: Instructure-hosted Canvas (canvas.instructure.com)
+- url: https://{canvas_host}/api
+  description: Any Canvas instance; Canvas is multi-tenant and self-hostable, so the host is the institution's Canvas domain.
+  variables:
+    canvas_host:
+      default: canvas.instructure.com
+      description: Your institution's Canvas hostname, e.g. school.instructure.com
+security:
+- bearerAuth: []
+- oauth2: []
+tags:
+- name: Quiz Questions
+  x-resource: quiz_questions
+  externalDocs:
+    url: https://canvas.instructure.com/doc/api/quiz_questions.html
+paths:
+  /v1/courses/{course_id}/quizzes/{quiz_id}/questions:
+    get:
+      tags:
+      - Quiz Questions
+      operationId: list_questions_in_quiz_or_submission
+      summary: List questions in a quiz or a submission
+      description: Returns the paginated list of QuizQuestions in this quiz.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_submission_id
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: 'If specified, the endpoint will return the questions that were presented
+
+          for that submission. This is useful if the quiz has been modified after
+
+          the submission was created and the latest quiz version''s set of questions
+
+          does not match the submission''s.
+
+          NOTE: you must specify quiz_submission_attempt as well if you specify this
+
+          parameter.'
+      - name: quiz_submission_attempt
+        in: query
+        schema:
+          type: integer
+          format: int64
+        required: false
+        description: The attempt of the submission you want the questions for.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizQuestion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_questions.html
+    post:
+      tags:
+      - Quiz Questions
+      operationId: create_single_quiz_question
+      summary: Create a single quiz question
+      description: Create a new quiz question for this quiz
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question[question_name]:
+                  type: string
+                  description: The name of the question.
+                question[question_text]:
+                  type: string
+                  description: The text of the question.
+                question[quiz_group_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the quiz group to assign the question to.
+                question[question_type]:
+                  type: string
+                  enum:
+                  - calculated_question
+                  - essay_question
+                  - file_upload_question
+                  - fill_in_multiple_blanks_question
+                  - matching_question
+                  - multiple_answers_question
+                  - multiple_choice_question
+                  - multiple_dropdowns_question
+                  - numerical_question
+                  - short_answer_question
+                  - text_only_question
+                  - true_false_question
+                  description: The type of question. Multiple optional fields depend upon the type of question to be used.
+                question[position]:
+                  type: integer
+                  format: int64
+                  description: The order in which the question will be displayed in the quiz in relation to other questions.
+                question[points_possible]:
+                  type: integer
+                  format: int64
+                  description: The maximum amount of points received for answering this question correctly.
+                question[correct_comments]:
+                  type: string
+                  description: The comment to display if the student answers the question correctly.
+                question[incorrect_comments]:
+                  type: string
+                  description: The comment to display if the student answers incorrectly.
+                question[neutral_comments]:
+                  type: string
+                  description: The comment to display regardless of how the student answered.
+                question[text_after_answers]:
+                  type: string
+                  description: no description
+                question[answers]:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Answer'
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                question[question_name]:
+                  type: string
+                  description: The name of the question.
+                question[question_text]:
+                  type: string
+                  description: The text of the question.
+                question[quiz_group_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the quiz group to assign the question to.
+                question[question_type]:
+                  type: string
+                  enum:
+                  - calculated_question
+                  - essay_question
+                  - file_upload_question
+                  - fill_in_multiple_blanks_question
+                  - matching_question
+                  - multiple_answers_question
+                  - multiple_choice_question
+                  - multiple_dropdowns_question
+                  - numerical_question
+                  - short_answer_question
+                  - text_only_question
+                  - true_false_question
+                  description: The type of question. Multiple optional fields depend upon the type of question to be used.
+                question[position]:
+                  type: integer
+                  format: int64
+                  description: The order in which the question will be displayed in the quiz in relation to other questions.
+                question[points_possible]:
+                  type: integer
+                  format: int64
+                  description: The maximum amount of points received for answering this question correctly.
+                question[correct_comments]:
+                  type: string
+                  description: The comment to display if the student answers the question correctly.
+                question[incorrect_comments]:
+                  type: string
+                  description: The comment to display if the student answers incorrectly.
+                question[neutral_comments]:
+                  type: string
+                  description: The comment to display regardless of how the student answered.
+                question[text_after_answers]:
+                  type: string
+                  description: no description
+                question[answers]:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Answer'
+                  description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_questions.html
+  /v1/courses/{course_id}/quizzes/{quiz_id}/questions/{id}:
+    get:
+      tags:
+      - Quiz Questions
+      operationId: get_single_quiz_question
+      summary: Get a single quiz question
+      description: Returns the quiz question with the given id
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The quiz question unique identifier.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_questions.html
+    put:
+      tags:
+      - Quiz Questions
+      operationId: update_existing_quiz_question
+      summary: Update an existing quiz question
+      description: Updates an existing quiz question for this quiz
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The associated quiz's unique identifier.
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The quiz question's unique identifier.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question[question_name]:
+                  type: string
+                  description: The name of the question.
+                question[question_text]:
+                  type: string
+                  description: The text of the question.
+                question[quiz_group_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the quiz group to assign the question to.
+                question[question_type]:
+                  type: string
+                  enum:
+                  - calculated_question
+                  - essay_question
+                  - file_upload_question
+                  - fill_in_multiple_blanks_question
+                  - matching_question
+                  - multiple_answers_question
+                  - multiple_choice_question
+                  - multiple_dropdowns_question
+                  - numerical_question
+                  - short_answer_question
+                  - text_only_question
+                  - true_false_question
+                  description: The type of question. Multiple optional fields depend upon the type of question to be used.
+                question[position]:
+                  type: integer
+                  format: int64
+                  description: The order in which the question will be displayed in the quiz in relation to other questions.
+                question[points_possible]:
+                  type: integer
+                  format: int64
+                  description: The maximum amount of points received for answering this question correctly.
+                question[correct_comments]:
+                  type: string
+                  description: The comment to display if the student answers the question correctly.
+                question[incorrect_comments]:
+                  type: string
+                  description: The comment to display if the student answers incorrectly.
+                question[neutral_comments]:
+                  type: string
+                  description: The comment to display regardless of how the student answered.
+                question[text_after_answers]:
+                  type: string
+                  description: no description
+                question[answers]:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Answer'
+                  description: no description
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                question[question_name]:
+                  type: string
+                  description: The name of the question.
+                question[question_text]:
+                  type: string
+                  description: The text of the question.
+                question[quiz_group_id]:
+                  type: integer
+                  format: int64
+                  description: The id of the quiz group to assign the question to.
+                question[question_type]:
+                  type: string
+                  enum:
+                  - calculated_question
+                  - essay_question
+                  - file_upload_question
+                  - fill_in_multiple_blanks_question
+                  - matching_question
+                  - multiple_answers_question
+                  - multiple_choice_question
+                  - multiple_dropdowns_question
+                  - numerical_question
+                  - short_answer_question
+                  - text_only_question
+                  - true_false_question
+                  description: The type of question. Multiple optional fields depend upon the type of question to be used.
+                question[position]:
+                  type: integer
+                  format: int64
+                  description: The order in which the question will be displayed in the quiz in relation to other questions.
+                question[points_possible]:
+                  type: integer
+                  format: int64
+                  description: The maximum amount of points received for answering this question correctly.
+                question[correct_comments]:
+                  type: string
+                  description: The comment to display if the student answers the question correctly.
+                question[incorrect_comments]:
+                  type: string
+                  description: The comment to display if the student answers incorrectly.
+                question[neutral_comments]:
+                  type: string
+                  description: The comment to display regardless of how the student answered.
+                question[text_after_answers]:
+                  type: string
+                  description: no description
+                question[answers]:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Answer'
+                  description: no description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizQuestion'
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_questions.html
+    delete:
+      tags:
+      - Quiz Questions
+      operationId: delete_quiz_question
+      summary: Delete a quiz question
+      description: 204 No Content response code is returned if the deletion was successful.
+      parameters:
+      - name: course_id
+        in: path
+        schema:
+          type: string
+        required: true
+        description: ID
+      - name: quiz_id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The associated quiz's unique identifier
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: The quiz question's unique identifier
+      responses:
+        '200':
+          description: Success, no content returned
+      externalDocs:
+        url: https://canvas.instructure.com/doc/api/quiz_questions.html
+components:
+  schemas:
+    Answer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 6656
+          description: The unique identifier for the answer.  Do not supply if this answer is part of a new question
+        answer_text:
+          type: string
+          example: Constantinople
+          description: The text of the answer.
+        answer_weight:
+          type: integer
+          format: int64
+          example: 100
+          description: An integer to determine correctness of the answer. Incorrect answers should be 0, correct answers should be 100.
+        answer_comments:
+          type: string
+          example: Remember to check your spelling prior to submitting this answer.
+          description: Specific contextual comments for a particular answer.
+        text_after_answers:
+          type: string
+          example: ' is the capital of Utah.'
+          description: Used in missing word questions.  The text to follow the missing word
+        answer_match_left:
+          type: string
+          example: Salt Lake City
+          description: Used in matching questions.  The static value of the answer that will be displayed on the left for students to match for.
+        answer_match_right:
+          type: string
+          example: Utah
+          description: Used in matching questions. The correct match for the value given in answer_match_left.  Will be displayed in a dropdown with the other answer_match_right values..
+        matching_answer_incorrect_matches:
+          type: string
+          example: 'Nevada
+
+            California
+
+            Washington'
+          description: 'Used in matching questions. A list of distractors, delimited by new lines (
+
+            ) that will be seeded with all the answer_match_right values.'
+        numerical_answer_type:
+          type: string
+          example: exact_answer
+          description: Used in numerical questions.  Values can be 'exact_answer', 'range_answer', or 'precision_answer'.
+        exact:
+          type: integer
+          format: int64
+          example: 42
+          description: Used in numerical questions of type 'exact_answer'.  The value the answer should equal.
+        margin:
+          type: integer
+          format: int64
+          example: 4
+          description: Used in numerical questions of type 'exact_answer'. The margin of error allowed for the student's answer.
+        approximate:
+          type: number
+          example: 1234600000.0
+          description: Used in numerical questions of type 'precision_answer'.  The value the answer should equal.
+        precision:
+          type: integer
+          format: int64
+          example: 4
+          description: Used in numerical questions of type 'precision_answer'. The numerical precision that will be used when comparing the student's answer.
+        start:
+          type: integer
+          format: int64
+          example: 1
+          description: Used in numerical questions of type 'range_answer'. The start of the allowed range (inclusive).
+        end:
+          type: integer
+          format: int64
+          example: 10
+          description: Used in numerical questions of type 'range_answer'. The end of the allowed range (inclusive).
+        blank_id:
+          type: integer
+          format: int64
+          example: 1170
+          description: Used in fill in multiple blank and multiple dropdowns questions.
+      required:
+      - answer_text
+      - answer_weight
+    QuizQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the quiz question.
+        quiz_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the Quiz the question belongs to.
+        assessment_question_bank_id:
+          type: integer
+          format: int64
+          example: 3
+          description: The ID of the assessment question bank this question belongs to. If assessment_question_bank_id has been enabled by SiteAdmin.
+        created_at:
+          type: string
+          example: '2013-01-23T23:59:00-07:00'
+          description: The date and time when the quiz question was created.
+        position:
+          type: integer
+          format: int64
+          example: 1
+          description: The order in which the question will be retrieved and displayed.
+        question_name:
+          type: string
+          example: Prime Number Identification
+          description: The name of the question.
+        question_type:
+          type: string
+          example: multiple_choice_question
+          description: The type of the question.
+        question_text:
+          type: string
+          example: Which of the following is NOT a prime number?
+          description: The text of the question.
+        points_possible:
+          type: integer
+          format: int64
+          example: 5
+          description: The maximum amount of points possible received for getting this question correct.
+        correct_comments:
+          type: string
+          example: That's correct!
+          description: The comments to display if the student answers the question correctly.
+        incorrect_comments:
+          type: string
+          example: Unfortunately, that IS a prime number.
+          description: The comments to display if the student answers incorrectly.
+        neutral_comments:
+          type: string
+          example: Goldbach's conjecture proposes that every even integer greater than 2 can be expressed as the sum of two prime numbers.
+          description: The comments to display regardless of how the student answered.
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          description: An array of available answers to display to the student.
+      required:
+      - id
+      - quiz_id
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Canvas OAuth2 access token sent as "Authorization: Bearer <token>". See https://canvas.instructure.com/doc/api/file.oauth.html'
+    oauth2:
+      type: oauth2
+      description: Canvas OAuth2. See https://canvas.instructure.com/doc/api/file.oauth.html and https://canvas.instructure.com/doc/api/file.oauth_endpoints.html
+      flows:
+        authorizationCode:
+          authorizationUrl: https://canvas.instructure.com/login/oauth2/auth
+          tokenUrl: https://canvas.instructure.com/login/oauth2/token
+          refreshUrl: https://canvas.instructure.com/login/oauth2/token
+          scopes: {}
+externalDocs:
+  description: Canvas LMS REST API Documentation
+  url: https://canvas.instructure.com/doc/api/
+x-generated-from: https://canvas.instructure.com/doc/api/api-docs.json
+x-provenance:
+  method: derived
+  derived_by: API Evangelist enrichment pipeline (Swagger 1.2 -> OpenAPI 3.1 conversion)
+  source: openapi/_original/swagger-1.2/*.json (144 verbatim first-party Swagger 1.2 documents)
+  source_url: https://canvas.instructure.com/doc/api/api-docs.json
+  fetched: '2026-09-05'
+  http_status: 200
