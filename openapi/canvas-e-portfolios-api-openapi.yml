@@ -253,39 +253,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/e_portfolios.html
 components:
   schemas:
-    ePortfolioPage:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-          description: The database ID of the ePortfolio
-        eportfolio_id:
-          type: integer
-          example: 1
-          description: The ePortfolio ID to which the entry belongs
-        position:
-          type: integer
-          example: 1
-          description: The positional order of the entry in the list
-        name:
-          type: string
-          example: My Academic Journey
-          description: The name of the ePortfolio
-        content:
-          type: string
-          example: A long time ago...
-          description: The user entered content of the entry
-        created_at:
-          type: string
-          format: date-time
-          example: '2021-09-20T18:59:37Z'
-          description: The creation timestamp for the ePortfolio
-        updated_at:
-          type: string
-          format: date-time
-          example: '2021-09-20T18:59:37Z'
-          description: The timestamp of the last time any of the ePortfolio attributes changed
     ePortfolio:
       type: object
       properties:
@@ -327,6 +294,39 @@ components:
         spam_status:
           type: string
           description: "A flag indicating whether the ePortfolio has been\n      flagged or moderated as spam. One of 'flagged_as_possible_spam',\n      'marked_as_safe', 'marked_as_spam', or null"
+    ePortfolioPage:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: The database ID of the ePortfolio
+        eportfolio_id:
+          type: integer
+          example: 1
+          description: The ePortfolio ID to which the entry belongs
+        position:
+          type: integer
+          example: 1
+          description: The positional order of the entry in the list
+        name:
+          type: string
+          example: My Academic Journey
+          description: The name of the ePortfolio
+        content:
+          type: string
+          example: A long time ago...
+          description: The user entered content of the entry
+        created_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The creation timestamp for the ePortfolio
+        updated_at:
+          type: string
+          format: date-time
+          example: '2021-09-20T18:59:37Z'
+          description: The timestamp of the last time any of the ePortfolio attributes changed
   securitySchemes:
     bearerAuth:
       type: http

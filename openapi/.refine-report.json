@@ -148,13 +148,16 @@
     "canvas-webhooks-subscriptions-for-plagiarism-platform-api-openapi.yml",
     "canvas-what-if-grades-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "canvas-lms-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0; renamed 14 component key(s) illegal in 3.x (e.g. Account__accounts_(lti))",
-    "apis.yml register: already-registered"
+    "superseded outputs removed: canvas-jwts-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 145 total)"
   ],
   "skipped": [
     "canvas-access-tokens-api-openapi.yml: previously refined output, superseded by openapi/_original/",
@@ -226,7 +229,7 @@
     "canvas-groups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "canvas-history-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "canvas-inst-access-tokens-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "canvas-jw-ts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canvas-jwts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "canvas-late-policy-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "canvas-learning-object-dates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "canvas-line-items-api-openapi.yml: previously refined output, superseded by openapi/_original/",

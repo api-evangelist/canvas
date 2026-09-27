@@ -684,6 +684,55 @@ paths:
         url: https://canvas.instructure.com/doc/api/planner.html
 components:
   schemas:
+    PlannerNote:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 234
+          description: The ID of the planner note
+        title:
+          type: string
+          example: Bring books tomorrow
+          description: The title for a planner note
+        description:
+          type: string
+          example: I need to bring books tomorrow for my course on biology
+          description: The description of the planner note
+        user_id:
+          type: integer
+          example: 1578941
+          description: The id of the associated user creating the planner note
+        workflow_state:
+          type: string
+          example: active
+          description: The current published state of the planner note
+        course_id:
+          type: integer
+          example: 1578941
+          description: The course that the note is in relation too, if applicable
+        todo_date:
+          type: string
+          format: date-time
+          example: '2017-05-09T10:12:00Z'
+          description: The datetime of when the planner note should show up on their planner
+        linked_object_type:
+          type: string
+          example: assignment
+          description: the type of the linked learning object
+        linked_object_id:
+          type: integer
+          example: 131072
+          description: the id of the linked learning object
+        linked_object_html_url:
+          type: string
+          example: https://canvas.example.com/courses/1578941/assignments/131072
+          description: the Canvas web URL of the linked learning object
+        linked_object_url:
+          type: string
+          example: https://canvas.example.com/api/v1/courses/1578941/assignments/131072
+          description: the API URL of the linked learning object
+      description: A planner note
     PlannerOverride:
       type: object
       properties:
@@ -735,55 +784,6 @@ components:
           example: '2017-05-15T12:12:00Z'
           description: The datetime of when the planner override was deleted, if applicable
       description: User-controlled setting for whether an item should be displayed on the planner or not
-    PlannerNote:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 234
-          description: The ID of the planner note
-        title:
-          type: string
-          example: Bring books tomorrow
-          description: The title for a planner note
-        description:
-          type: string
-          example: I need to bring books tomorrow for my course on biology
-          description: The description of the planner note
-        user_id:
-          type: integer
-          example: 1578941
-          description: The id of the associated user creating the planner note
-        workflow_state:
-          type: string
-          example: active
-          description: The current published state of the planner note
-        course_id:
-          type: integer
-          example: 1578941
-          description: The course that the note is in relation too, if applicable
-        todo_date:
-          type: string
-          format: date-time
-          example: '2017-05-09T10:12:00Z'
-          description: The datetime of when the planner note should show up on their planner
-        linked_object_type:
-          type: string
-          example: assignment
-          description: the type of the linked learning object
-        linked_object_id:
-          type: integer
-          example: 131072
-          description: the id of the linked learning object
-        linked_object_html_url:
-          type: string
-          example: https://canvas.example.com/courses/1578941/assignments/131072
-          description: the Canvas web URL of the linked learning object
-        linked_object_url:
-          type: string
-          example: https://canvas.example.com/api/v1/courses/1578941/assignments/131072
-          description: the API URL of the linked learning object
-      description: A planner note
   securitySchemes:
     bearerAuth:
       type: http

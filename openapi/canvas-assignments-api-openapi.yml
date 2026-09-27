@@ -2502,21 +2502,94 @@ paths:
         url: https://canvas.instructure.com/doc/api/assignments.html
 components:
   schemas:
-    RubricRating__assignments:
+    AssignmentOverride:
       type: object
       properties:
-        points:
-          type: integer
-          example: 10
         id:
+          type: integer
+          example: 4
+          description: the ID of the assignment override
+        assignment_id:
+          type: integer
+          example: 123
+          description: the ID of the assignment the override applies to (present if the override applies to an assignment)
+        quiz_id:
+          type: integer
+          example: 123
+          description: the ID of the quiz the override applies to (present if the override applies to a quiz)
+        context_module_id:
+          type: integer
+          example: 123
+          description: the ID of the module the override applies to (present if the override applies to a module)
+        discussion_topic_id:
+          type: integer
+          example: 123
+          description: the ID of the discussion the override applies to (present if the override applies to an ungraded discussion)
+        wiki_page_id:
+          type: integer
+          example: 123
+          description: the ID of the page the override applies to (present if the override applies to a page)
+        attachment_id:
+          type: integer
+          example: 123
+          description: the ID of the file the override applies to (present if the override applies to a file)
+        student_ids:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 2
+          - 3
+          description: the IDs of the override's target students (present if the override targets an ad-hoc set of students)
+        group_id:
+          type: integer
+          example: 2
+          description: the ID of the override's target group (present if the override targets a group and the assignment is a group assignment)
+        course_section_id:
+          type: integer
+          example: 1
+          description: the ID of the overrides's target section (present if the override targets a section)
+        title:
           type: string
-          example: rat1
-        description:
+          example: an assignment override
+          description: the title of the override
+        due_at:
           type: string
-          example: Full marks
-        long_description:
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the overridden due at (present if due_at is overridden)
+        all_day:
+          type: boolean
+          example: true
+          description: the overridden all day flag (present if due_at is overridden)
+        all_day_date:
           type: string
-          example: Student completed the assignment flawlessly.
+          format: date-time
+          example: '2012-07-01'
+          description: the overridden all day date (present if due_at is overridden)
+        unlock_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the overridden unlock at (present if unlock_at is overridden)
+        lock_at:
+          type: string
+          format: date-time
+          example: '2012-07-01T23:59:00-06:00'
+          description: the overridden lock at, if any (present if lock_at is overridden)
+    NeedsGradingCount:
+      type: object
+      properties:
+        section_id:
+          type: string
+          example: '123456'
+          description: The section ID
+        needs_grading_count:
+          type: integer
+          example: 5
+          description: Number of submissions that need grading
+      description: Used by Assignment model
     Assignment:
       type: object
       properties:
@@ -2906,6 +2979,51 @@ components:
           type: string
           example: unpublished
           description: String indicating what state this assignment is in.
+    AssignmentDate:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: (Optional, missing if 'base' is present) id of the assignment override this date represents
+        base:
+          type: boolean
+          example: true
+          description: (Optional, present if 'id' is missing) whether this date represents the assignment's or quiz's default due date
+        title:
+          type: string
+          example: Summer Session
+        due_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: The due date for the assignment. Must be between the unlock date and the lock date if there are lock dates
+        unlock_at:
+          type: string
+          format: date-time
+          example: '2013-08-01T00:00:00-06:00'
+          description: The unlock date for the assignment. Must be before the due date if there is a due date.
+        lock_at:
+          type: string
+          format: date-time
+          example: '2013-08-31T23:59:00-06:00'
+          description: The lock date for the assignment. Must be after the due date if there is a due date.
+      description: Object representing a due date for an assignment or quiz. If the due date came from an assignment override, it will have an 'id' field.
+    RubricRating__assignments:
+      type: object
+      properties:
+        points:
+          type: integer
+          example: 10
+        id:
+          type: string
+          example: rat1
+        description:
+          type: string
+          example: Full marks
+        long_description:
+          type: string
+          example: Student completed the assignment flawlessly.
     RubricCriteria:
       type: object
       properties:
@@ -2951,124 +3069,6 @@ components:
           type: string
           example: Dankey Kang
           description: The user's name
-    NeedsGradingCount:
-      type: object
-      properties:
-        section_id:
-          type: string
-          example: '123456'
-          description: The section ID
-        needs_grading_count:
-          type: integer
-          example: 5
-          description: Number of submissions that need grading
-      description: Used by Assignment model
-    AssignmentDate:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-          description: (Optional, missing if 'base' is present) id of the assignment override this date represents
-        base:
-          type: boolean
-          example: true
-          description: (Optional, present if 'id' is missing) whether this date represents the assignment's or quiz's default due date
-        title:
-          type: string
-          example: Summer Session
-        due_at:
-          type: string
-          format: date-time
-          example: '2013-08-28T23:59:00-06:00'
-          description: The due date for the assignment. Must be between the unlock date and the lock date if there are lock dates
-        unlock_at:
-          type: string
-          format: date-time
-          example: '2013-08-01T00:00:00-06:00'
-          description: The unlock date for the assignment. Must be before the due date if there is a due date.
-        lock_at:
-          type: string
-          format: date-time
-          example: '2013-08-31T23:59:00-06:00'
-          description: The lock date for the assignment. Must be after the due date if there is a due date.
-      description: Object representing a due date for an assignment or quiz. If the due date came from an assignment override, it will have an 'id' field.
-    AssignmentOverride:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 4
-          description: the ID of the assignment override
-        assignment_id:
-          type: integer
-          example: 123
-          description: the ID of the assignment the override applies to (present if the override applies to an assignment)
-        quiz_id:
-          type: integer
-          example: 123
-          description: the ID of the quiz the override applies to (present if the override applies to a quiz)
-        context_module_id:
-          type: integer
-          example: 123
-          description: the ID of the module the override applies to (present if the override applies to a module)
-        discussion_topic_id:
-          type: integer
-          example: 123
-          description: the ID of the discussion the override applies to (present if the override applies to an ungraded discussion)
-        wiki_page_id:
-          type: integer
-          example: 123
-          description: the ID of the page the override applies to (present if the override applies to a page)
-        attachment_id:
-          type: integer
-          example: 123
-          description: the ID of the file the override applies to (present if the override applies to a file)
-        student_ids:
-          type: array
-          items:
-            type: integer
-          example:
-          - 1
-          - 2
-          - 3
-          description: the IDs of the override's target students (present if the override targets an ad-hoc set of students)
-        group_id:
-          type: integer
-          example: 2
-          description: the ID of the override's target group (present if the override targets a group and the assignment is a group assignment)
-        course_section_id:
-          type: integer
-          example: 1
-          description: the ID of the overrides's target section (present if the override targets a section)
-        title:
-          type: string
-          example: an assignment override
-          description: the title of the override
-        due_at:
-          type: string
-          format: date-time
-          example: '2012-07-01T23:59:00-06:00'
-          description: the overridden due at (present if due_at is overridden)
-        all_day:
-          type: boolean
-          example: true
-          description: the overridden all day flag (present if due_at is overridden)
-        all_day_date:
-          type: string
-          format: date-time
-          example: '2012-07-01'
-          description: the overridden all day date (present if due_at is overridden)
-        unlock_at:
-          type: string
-          format: date-time
-          example: '2012-07-01T23:59:00-06:00'
-          description: the overridden unlock at (present if unlock_at is overridden)
-        lock_at:
-          type: string
-          format: date-time
-          example: '2012-07-01T23:59:00-06:00'
-          description: the overridden lock at, if any (present if lock_at is overridden)
   securitySchemes:
     bearerAuth:
       type: http

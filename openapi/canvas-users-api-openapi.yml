@@ -3304,21 +3304,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/users.html
 components:
   schemas:
-    CourseNickname:
-      type: object
-      properties:
-        course_id:
-          type: integer
-          example: 88
-          description: the ID of the course
-        name:
-          type: string
-          example: S1048576 DPMS1200 Intro to Newtonian Mechanics
-          description: the actual name of the course
-        nickname:
-          type: string
-          example: Physics
-          description: the calling user's nickname for the course
     Avatar:
       type: object
       properties:
@@ -3360,102 +3345,21 @@ components:
       - token
       - display_name
       description: Possible avatar for a user.
-    AsyncQueryResponse:
+    CourseNickname:
       type: object
       properties:
-        poll_url:
-          type: string
-          example: /api/v1/users/123/page_views/query/550e8400-e29b-41d4-a716-446655440000
-          description: URL endpoint to poll for query status updates
-      required:
-      - poll_url
-      description: Response returned when successfully initiating a page views query
-    User:
-      type: object
-      properties:
-        id:
+        course_id:
           type: integer
-          format: int64
-          example: 2
-          description: The ID of the user.
+          example: 88
+          description: the ID of the course
         name:
           type: string
-          example: Sheldon Cooper
-          description: The name of the user.
-        sortable_name:
+          example: S1048576 DPMS1200 Intro to Newtonian Mechanics
+          description: the actual name of the course
+        nickname:
           type: string
-          example: Cooper, Sheldon
-          description: The name of the user that is should be used for sorting groups of users, such as in the gradebook.
-        last_name:
-          type: string
-          example: Cooper
-          description: The last name of the user.
-        first_name:
-          type: string
-          example: Sheldon
-          description: The first name of the user.
-        short_name:
-          type: string
-          example: Shelly
-          description: A short name the user has selected, for use in conversations or other less formal places through the site.
-        sis_user_id:
-          type: string
-          example: SHEL93921
-          description: The SIS ID associated with the user.  This field is only included if the user came from a SIS import and has permissions to view SIS information.
-        sis_import_id:
-          type: integer
-          format: int64
-          example: '18'
-          description: The id of the SIS import.  This field is only included if the user came from a SIS import and has permissions to manage SIS information.
-        integration_id:
-          type: string
-          example: ABC59802
-          description: The integration_id associated with the user.  This field is only included if the user came from a SIS import and has permissions to view SIS information.
-        login_id:
-          type: string
-          example: sheldon@caltech.example.com
-          description: The unique login id for the user.  This is what the user uses to log in to Canvas.
-        avatar_url:
-          type: string
-          example: https://en.gravatar.com/avatar/d8cb8c8cd40ddf0cd05241443a591868?s=80&r=g
-          description: If avatars are enabled, this field will be included and contain a url to retrieve the user's avatar.
-        avatar_state:
-          type: string
-          example: approved
-          description: 'Optional: If avatars are enabled and caller is admin, this field can be requested and will contain the current state of the user''s avatar.'
-        enrollments:
-          type: array
-          items:
-            type: string
-            x-canvas-declared-type: Enrollment
-          description: 'Optional: This field can be requested with certain API calls, and will return a list of the users active enrollments. See the List enrollments API for more details about the format of these records.'
-        email:
-          type: string
-          example: sheldon@caltech.example.com
-          description: 'Optional: This field can be requested with certain API calls, and will return the users primary email address.'
-        locale:
-          type: string
-          example: tlh
-          description: 'Optional: This field can be requested with certain API calls, and will return the users locale in RFC 5646 format.'
-        last_login:
-          type: string
-          example: '2012-05-30T17:45:25Z'
-          description: 'Optional: This field is only returned in certain API calls, and will return a timestamp representing the last time the user logged in to canvas.'
-        time_zone:
-          type: string
-          example: America/Denver
-          description: 'Optional: This field is only returned in certain API calls, and will return the IANA time zone name of the user''s preferred timezone.'
-        bio:
-          type: string
-          example: I like the Muppets.
-          description: 'Optional: The user''s bio.'
-        pronouns:
-          type: string
-          example: he/him
-          description: 'Optional: This field is only returned if pronouns are enabled, and will return the pronouns of the user.'
-      required:
-      - id
-      description: A Canvas user, e.g. a student, teacher, administrator, observer, etc.
+          example: Physics
+          description: the calling user's nickname for the course
     AsyncQueryStatusResponse:
       type: object
       properties:
@@ -3581,6 +3485,16 @@ components:
       required:
       - id
       description: The record of a user page view access in Canvas
+    AsyncQueryResponse:
+      type: object
+      properties:
+        poll_url:
+          type: string
+          example: /api/v1/users/123/page_views/query/550e8400-e29b-41d4-a716-446655440000
+          description: URL endpoint to poll for query status updates
+      required:
+      - poll_url
+      description: Response returned when successfully initiating a page views query
     Profile:
       type: object
       properties:
@@ -3644,6 +3558,92 @@ components:
           example: false
           description: 'Optional: Whether or not the user should see the classic font on the dashboard. Only applies if k5_user is true. This field is nil if the user settings are not for the user making the request.'
       description: Profile details for a Canvas user.
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the user.
+        name:
+          type: string
+          example: Sheldon Cooper
+          description: The name of the user.
+        sortable_name:
+          type: string
+          example: Cooper, Sheldon
+          description: The name of the user that is should be used for sorting groups of users, such as in the gradebook.
+        last_name:
+          type: string
+          example: Cooper
+          description: The last name of the user.
+        first_name:
+          type: string
+          example: Sheldon
+          description: The first name of the user.
+        short_name:
+          type: string
+          example: Shelly
+          description: A short name the user has selected, for use in conversations or other less formal places through the site.
+        sis_user_id:
+          type: string
+          example: SHEL93921
+          description: The SIS ID associated with the user.  This field is only included if the user came from a SIS import and has permissions to view SIS information.
+        sis_import_id:
+          type: integer
+          format: int64
+          example: '18'
+          description: The id of the SIS import.  This field is only included if the user came from a SIS import and has permissions to manage SIS information.
+        integration_id:
+          type: string
+          example: ABC59802
+          description: The integration_id associated with the user.  This field is only included if the user came from a SIS import and has permissions to view SIS information.
+        login_id:
+          type: string
+          example: sheldon@caltech.example.com
+          description: The unique login id for the user.  This is what the user uses to log in to Canvas.
+        avatar_url:
+          type: string
+          example: https://en.gravatar.com/avatar/d8cb8c8cd40ddf0cd05241443a591868?s=80&r=g
+          description: If avatars are enabled, this field will be included and contain a url to retrieve the user's avatar.
+        avatar_state:
+          type: string
+          example: approved
+          description: 'Optional: If avatars are enabled and caller is admin, this field can be requested and will contain the current state of the user''s avatar.'
+        enrollments:
+          type: array
+          items:
+            type: string
+            x-canvas-declared-type: Enrollment
+          description: 'Optional: This field can be requested with certain API calls, and will return a list of the users active enrollments. See the List enrollments API for more details about the format of these records.'
+        email:
+          type: string
+          example: sheldon@caltech.example.com
+          description: 'Optional: This field can be requested with certain API calls, and will return the users primary email address.'
+        locale:
+          type: string
+          example: tlh
+          description: 'Optional: This field can be requested with certain API calls, and will return the users locale in RFC 5646 format.'
+        last_login:
+          type: string
+          example: '2012-05-30T17:45:25Z'
+          description: 'Optional: This field is only returned in certain API calls, and will return a timestamp representing the last time the user logged in to canvas.'
+        time_zone:
+          type: string
+          example: America/Denver
+          description: 'Optional: This field is only returned in certain API calls, and will return the IANA time zone name of the user''s preferred timezone.'
+        bio:
+          type: string
+          example: I like the Muppets.
+          description: 'Optional: The user''s bio.'
+        pronouns:
+          type: string
+          example: he/him
+          description: 'Optional: This field is only returned if pronouns are enabled, and will return the pronouns of the user.'
+      required:
+      - id
+      description: A Canvas user, e.g. a student, teacher, administrator, observer, etc.
   securitySchemes:
     bearerAuth:
       type: http

@@ -127,53 +127,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/assessment_question_banks.html
 components:
   schemas:
-    AssessmentQuestionBank:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-          description: The ID of the assessment question bank.
-        context_id:
-          type: integer
-          format: int64
-          example: 2
-          description: The ID of the context (course or account) the question bank belongs to.
-        context_type:
-          type: string
-          example: Course
-          description: The type of context (Course or Account).
-        title:
-          type: string
-          example: Chapter 1 Questions
-          description: The title of the question bank.
-        workflow_state:
-          type: string
-          example: active
-          description: The workflow state of the question bank.
-        assessment_question_count:
-          type: integer
-          format: int64
-          example: 10
-          description: The number of questions in the bank.
-        context_code:
-          type: string
-          example: course_2
-          description: The combined context type and ID.
-        created_at:
-          type: string
-          example: '2013-01-01T00:00:00Z'
-          description: The date and time the question bank was created.
-        updated_at:
-          type: string
-          example: '2013-01-01T00:00:00Z'
-          description: The date and time the question bank was last updated.
-      required:
-      - id
-      - context_id
-      - context_type
-      - title
     AssessmentQuestion:
       type: object
       properties:
@@ -266,6 +219,53 @@ components:
           description: Incorrect match options for matching questions. Null for other question types.
       required:
       - id
+    AssessmentQuestionBank:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the assessment question bank.
+        context_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the context (course or account) the question bank belongs to.
+        context_type:
+          type: string
+          example: Course
+          description: The type of context (Course or Account).
+        title:
+          type: string
+          example: Chapter 1 Questions
+          description: The title of the question bank.
+        workflow_state:
+          type: string
+          example: active
+          description: The workflow state of the question bank.
+        assessment_question_count:
+          type: integer
+          format: int64
+          example: 10
+          description: The number of questions in the bank.
+        context_code:
+          type: string
+          example: course_2
+          description: The combined context type and ID.
+        created_at:
+          type: string
+          example: '2013-01-01T00:00:00Z'
+          description: The date and time the question bank was created.
+        updated_at:
+          type: string
+          example: '2013-01-01T00:00:00Z'
+          description: The date and time the question bank was last updated.
+      required:
+      - id
+      - context_id
+      - context_type
+      - title
   securitySchemes:
     bearerAuth:
       type: http

@@ -47,7 +47,7 @@ tags:
 - Learning Management System
 - LMS
 - LTI
-- Open-Source
+- Open Source
 - REST
 tags_raw:
 - Canvas
@@ -59,6 +59,7 @@ tags_raw:
 - LTI
 - Open Source
 - REST
+- Open-Source
 created: '2025-01-14'
 modified: '2026-09-05'
 specificationVersion: '0.23'
@@ -4404,7 +4405,7 @@ apis:
   - type: DataModel
     url: data-model/canvas-data-model.yml
 - aid: canvas:canvas-jwts-api
-  name: Canvas JW Ts API
+  name: Canvas JWTs API
   description: The JWTs API from Canvas — 2 operation(s) for jwts.
   humanURL: https://canvas.instructure.com/doc/api/file.graphql.html
   baseURL: https://canvas.instructure.com/api/graphql

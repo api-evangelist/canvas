@@ -1431,40 +1431,6 @@ components:
           type: string
           example: active
           description: The state of the account. Can be 'active' or 'deleted'.
-    TermsOfService:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-          description: Terms Of Service id
-        terms_type:
-          type: string
-          example: default
-          description: The given type for the Terms of Service
-          enum:
-          - default
-          - custom
-          - no_terms
-        passive:
-          type: boolean
-          example: false
-          description: Boolean dictating if the user must accept Terms of Service
-        account_id:
-          type: integer
-          example: 1
-          description: The id of the root account that owns the Terms of Service
-        content:
-          type: string
-          example: To be or not to be that is the question
-          description: Content of the Terms of Service
-        self_registration_type:
-          type: string
-          example:
-          - none
-          - observer
-          - all
-          description: The type of self registration allowed
     HelpLinks:
       type: object
       properties:
@@ -1543,6 +1509,40 @@ components:
             is_new: false
             feature_headline: ''
           description: Default help links provided when account has not set help links of their own.
+    TermsOfService:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: Terms Of Service id
+        terms_type:
+          type: string
+          example: default
+          description: The given type for the Terms of Service
+          enum:
+          - default
+          - custom
+          - no_terms
+        passive:
+          type: boolean
+          example: false
+          description: Boolean dictating if the user must accept Terms of Service
+        account_id:
+          type: integer
+          example: 1
+          description: The id of the root account that owns the Terms of Service
+        content:
+          type: string
+          example: To be or not to be that is the question
+          description: Content of the Terms of Service
+        self_registration_type:
+          type: string
+          example:
+          - none
+          - observer
+          - all
+          description: The type of self registration allowed
   securitySchemes:
     bearerAuth:
       type: http

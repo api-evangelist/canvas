@@ -1169,6 +1169,45 @@ paths:
         url: https://canvas.instructure.com/doc/api/modules.html
 components:
   schemas:
+    ModuleItemSequence:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleItemSequenceNode'
+          example:
+          - prev: null
+            current:
+              id: 768
+              module_id: 123
+              title: A lonely page
+              type: Page
+            next:
+              id: 769
+              module_id: 127
+              title: Project 1
+              type: Assignment
+            mastery_path:
+              locked: true
+              assignment_sets: []
+              selected_set_id: null
+              awaiting_choice: false
+              still_processing: false
+              modules_url: /courses/11/modules
+              choose_url: /courses/11/modules/items/9/choose
+              modules_tab_disabled: false
+          description: an array containing one ModuleItemSequenceNode for each appearence of the asset in the module sequence (up to 10 total)
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module__modules'
+          example:
+          - id: 123
+            name: Overview
+          - id: 127
+            name: Imaginary Numbers
+          description: an array containing each Module referenced above
     ModuleAssignmentOverride:
       type: object
       properties:
@@ -1295,45 +1334,6 @@ components:
             choose_url: /courses/11/modules/items/9/choose
             modules_tab_disabled: false
           description: The conditional release rule for the module item, if applicable
-    ModuleItemSequence:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ModuleItemSequenceNode'
-          example:
-          - prev: null
-            current:
-              id: 768
-              module_id: 123
-              title: A lonely page
-              type: Page
-            next:
-              id: 769
-              module_id: 127
-              title: Project 1
-              type: Assignment
-            mastery_path:
-              locked: true
-              assignment_sets: []
-              selected_set_id: null
-              awaiting_choice: false
-              still_processing: false
-              modules_url: /courses/11/modules
-              choose_url: /courses/11/modules/items/9/choose
-              modules_tab_disabled: false
-          description: an array containing one ModuleItemSequenceNode for each appearence of the asset in the module sequence (up to 10 total)
-        modules:
-          type: array
-          items:
-            $ref: '#/components/schemas/Module__modules'
-          example:
-          - id: 123
-            name: Overview
-          - id: 127
-            name: Imaginary Numbers
-          description: an array containing each Module referenced above
     Module__modules:
       type: object
       properties:

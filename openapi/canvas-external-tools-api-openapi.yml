@@ -1202,28 +1202,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/external_tools.html
 components:
   schemas:
-    ContextExternalToolMessageSettings:
-      type: object
-      properties:
-        type:
-          type: string
-          example: LtiEulaRequest
-          description: The message type identifier (e.g., 'LtiEulaRequest')
-        enabled:
-          type: boolean
-          example: true
-          description: Whether this message type is enabled
-        target_link_uri:
-          type: string
-          example: https://example.com/eula
-          description: The target URI for launching this message type
-        custom_fields:
-          type: object
-          additionalProperties: true
-          example:
-            key: value
-          description: Custom fields specific to this message type.
-      description: Configuration for a placementless message type (message type that doesn't belong to a specific placement)
     ContextExternalTool:
       type: object
       properties:
@@ -1571,6 +1549,28 @@ components:
               agreement_version: '2.1'
           description: Configuration for placementless message types (currently only LtiEulaRequest).
       description: An external tool configured for a specific context
+    ContextExternalToolMessageSettings:
+      type: object
+      properties:
+        type:
+          type: string
+          example: LtiEulaRequest
+          description: The message type identifier (e.g., 'LtiEulaRequest')
+        enabled:
+          type: boolean
+          example: true
+          description: Whether this message type is enabled
+        target_link_uri:
+          type: string
+          example: https://example.com/eula
+          description: The target URI for launching this message type
+        custom_fields:
+          type: object
+          additionalProperties: true
+          example:
+            key: value
+          description: Custom fields specific to this message type.
+      description: Configuration for a placementless message type (message type that doesn't belong to a specific placement)
   securitySchemes:
     bearerAuth:
       type: http

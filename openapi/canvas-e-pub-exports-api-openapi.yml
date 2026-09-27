@@ -114,6 +114,21 @@ paths:
         url: https://canvas.instructure.com/doc/api/e_pub_exports.html
 components:
   schemas:
+    CourseEpubExport:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+          description: the unique identifier for the course
+        name:
+          type: string
+          example: Maths 101
+          description: the name for the course
+        epub_export:
+          type: string
+          description: ePub export API object
+      description: Combination of a Course & EpubExport.
     EpubExport:
       type: object
       properties:
@@ -143,21 +158,6 @@ components:
           type: string
           example: exported
           description: 'Current state of the ePub export: created exporting exported generating generated failed'
-    CourseEpubExport:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 101
-          description: the unique identifier for the course
-        name:
-          type: string
-          example: Maths 101
-          description: the name for the course
-        epub_export:
-          type: string
-          description: ePub export API object
-      description: Combination of a Course & EpubExport.
   securitySchemes:
     bearerAuth:
       type: http

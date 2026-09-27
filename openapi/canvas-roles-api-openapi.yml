@@ -662,6 +662,47 @@ components:
             description: Granting this permission may expose your system to security vulnerabilities.
           description: A list of considerations or warnings about using the permission.
       description: Information about a permission, including its purpose and considerations for use.
+    Permission:
+      type: object
+      properties:
+        key:
+          type: string
+          example: manage_lti_add
+          description: The API identifier for the permission
+        label:
+          type: string
+          example: LTI - add
+          description: The human-readable label for the permission
+        group:
+          type: string
+          example: manage_lti
+          description: The group this permission belongs to, if it is part of a granular permission group
+        group_label:
+          type: string
+          example: Manage LTI
+          description: The human-readable label for the group this permission belongs to
+        available_to:
+          type: array
+          items:
+            type: string
+          example:
+          - AccountAdmin
+          - AccountMembership
+          - TeacherEnrollment
+          - TaEnrollment
+          - DesignerEnrollment
+          description: The base role types this permission can be enabled for
+        true_for:
+          type: array
+          items:
+            type: string
+          example:
+          - AccountAdmin
+          - TeacherEnrollment
+          - TaEnrollment
+          - DesignerEnrollment
+          description: The base role types this permission is enabled for by default
+      description: A permission that can be granted to a role
     Role:
       type: object
       properties:
@@ -736,47 +777,6 @@ components:
               readonly: false
               explicit: false
           description: A dictionary of permissions keyed by name (see 'List assignable permissions' API).
-    Permission:
-      type: object
-      properties:
-        key:
-          type: string
-          example: manage_lti_add
-          description: The API identifier for the permission
-        label:
-          type: string
-          example: LTI - add
-          description: The human-readable label for the permission
-        group:
-          type: string
-          example: manage_lti
-          description: The group this permission belongs to, if it is part of a granular permission group
-        group_label:
-          type: string
-          example: Manage LTI
-          description: The human-readable label for the group this permission belongs to
-        available_to:
-          type: array
-          items:
-            type: string
-          example:
-          - AccountAdmin
-          - AccountMembership
-          - TeacherEnrollment
-          - TaEnrollment
-          - DesignerEnrollment
-          description: The base role types this permission can be enabled for
-        true_for:
-          type: array
-          items:
-            type: string
-          example:
-          - AccountAdmin
-          - TeacherEnrollment
-          - TaEnrollment
-          - DesignerEnrollment
-          description: The base role types this permission is enabled for by default
-      description: A permission that can be granted to a role
   securitySchemes:
     bearerAuth:
       type: http

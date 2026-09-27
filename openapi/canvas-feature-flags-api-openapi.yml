@@ -586,29 +586,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/feature_flags.html
 components:
   schemas:
-    FeatureFlag:
-      type: object
-      properties:
-        context_type:
-          type: string
-          example: Account
-          description: The type of object to which this flag applies (Account, Course, or User). (This field is not present if this FeatureFlag represents the global Canvas default)
-        context_id:
-          type: integer
-          example: 1038
-          description: The id of the object to which this flag applies (This field is not present if this FeatureFlag represents the global Canvas default)
-        feature:
-          type: string
-          example: fancy_wickets
-          description: The feature this flag controls
-        state:
-          type: string
-          example: allowed
-          description: The policy for the feature at this context.  can be 'off', 'allowed', 'allowed_on', or 'on'.
-        locked:
-          type: boolean
-          example: false
-          description: If set, this feature flag cannot be changed in the caller's context because the flag is set 'off' or 'on' in a higher context
     Feature:
       type: object
       properties:
@@ -650,6 +627,29 @@ components:
           type: string
           example: http://canvas.example.com/release_notes#fancy_wickets
           description: A URL to the release notes describing the feature
+    FeatureFlag:
+      type: object
+      properties:
+        context_type:
+          type: string
+          example: Account
+          description: The type of object to which this flag applies (Account, Course, or User). (This field is not present if this FeatureFlag represents the global Canvas default)
+        context_id:
+          type: integer
+          example: 1038
+          description: The id of the object to which this flag applies (This field is not present if this FeatureFlag represents the global Canvas default)
+        feature:
+          type: string
+          example: fancy_wickets
+          description: The feature this flag controls
+        state:
+          type: string
+          example: allowed
+          description: The policy for the feature at this context.  can be 'off', 'allowed', 'allowed_on', or 'on'.
+        locked:
+          type: boolean
+          example: false
+          description: If set, this feature flag cannot be changed in the caller's context because the flag is set 'off' or 'on' in a higher context
   securitySchemes:
     bearerAuth:
       type: http

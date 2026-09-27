@@ -3366,73 +3366,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/content_migrations.html
 components:
   schemas:
-    MigrationIssue:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 370663
-          description: the unique identifier for the issue
-        content_migration_url:
-          type: string
-          example: https://example.com/api/v1/courses/1/content_migrations/1
-          description: API url to the content migration
-        description:
-          type: string
-          example: Questions in this quiz couldn't be converted
-          description: Description of the issue for the end-user
-        workflow_state:
-          type: string
-          example: active
-          description: 'Current state of the issue: active, resolved'
-        fix_issue_html_url:
-          type: string
-          example: https://example.com/courses/1/quizzes/2
-          description: HTML Url to the Canvas page to investigate the issue
-        issue_type:
-          type: string
-          example: warning
-          description: 'Severity of the issue: todo, warning, error'
-        error_report_html_url:
-          type: string
-          example: https://example.com/error_reports/3
-          description: Link to a Canvas error report if present (If the requesting user has permissions)
-        error_message:
-          type: string
-          example: admin only message
-          description: Site administrator error message (If the requesting user has permissions)
-        created_at:
-          type: string
-          format: date-time
-          example: '2012-06-01T00:00:00-06:00'
-          description: timestamp
-        updated_at:
-          type: string
-          format: date-time
-          example: '2012-06-01T00:00:00-06:00'
-          description: timestamp
-    Migrator:
-      type: object
-      properties:
-        type:
-          type: string
-          example: common_cartridge_importer
-          description: The value to pass to the create endpoint
-        requires_file_upload:
-          type: boolean
-          example: true
-          description: Whether this endpoint requires a file upload
-        name:
-          type: string
-          example: Common Cartridge 1.0/1.1/1.2 Package
-          description: Description of the package type expected
-        required_settings:
-          type: array
-          items:
-            type: string
-          example:
-          - source_course_id
-          description: A list of fields this system requires
     ContentMigration:
       type: object
       properties:
@@ -3482,6 +3415,73 @@ components:
           type: string
           example: '{"upload_url"=>"", "message"=>"file exceeded quota", "upload_params"=>{}}'
           description: file uploading data, see {file:file.file_uploads.html File Upload Documentation} for file upload workflow This works a little differently in that all the file data is in the pre_attachment hash if there is no upload_url then there was an attachment pre-processing error, the error message will be in the message key This data will only be here after a create or update call
+    Migrator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: common_cartridge_importer
+          description: The value to pass to the create endpoint
+        requires_file_upload:
+          type: boolean
+          example: true
+          description: Whether this endpoint requires a file upload
+        name:
+          type: string
+          example: Common Cartridge 1.0/1.1/1.2 Package
+          description: Description of the package type expected
+        required_settings:
+          type: array
+          items:
+            type: string
+          example:
+          - source_course_id
+          description: A list of fields this system requires
+    MigrationIssue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 370663
+          description: the unique identifier for the issue
+        content_migration_url:
+          type: string
+          example: https://example.com/api/v1/courses/1/content_migrations/1
+          description: API url to the content migration
+        description:
+          type: string
+          example: Questions in this quiz couldn't be converted
+          description: Description of the issue for the end-user
+        workflow_state:
+          type: string
+          example: active
+          description: 'Current state of the issue: active, resolved'
+        fix_issue_html_url:
+          type: string
+          example: https://example.com/courses/1/quizzes/2
+          description: HTML Url to the Canvas page to investigate the issue
+        issue_type:
+          type: string
+          example: warning
+          description: 'Severity of the issue: todo, warning, error'
+        error_report_html_url:
+          type: string
+          example: https://example.com/error_reports/3
+          description: Link to a Canvas error report if present (If the requesting user has permissions)
+        error_message:
+          type: string
+          example: admin only message
+          description: Site administrator error message (If the requesting user has permissions)
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: timestamp
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-06-01T00:00:00-06:00'
+          description: timestamp
   securitySchemes:
     bearerAuth:
       type: http

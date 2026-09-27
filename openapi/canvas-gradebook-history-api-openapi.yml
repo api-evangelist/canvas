@@ -200,30 +200,26 @@ paths:
         url: https://canvas.instructure.com/doc/api/gradebook_history.html
 components:
   schemas:
-    SubmissionHistory:
+    Grader:
       type: object
       properties:
-        submission_id:
+        id:
           type: integer
-          example: 4
-          description: the id of the submission
-        versions:
+          example: 27
+          description: the user_id of the user who graded the contained submissions
+        name:
+          type: string
+          example: Some User
+          description: the name of the user who graded the contained submissions
+        assignments:
           type: array
           items:
-            $ref: '#/components/schemas/SubmissionVersion'
-          description: an array of all the versions of this submission
-    Day:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date-time
-          example: '1986-08-09'
-          description: the date represented by this entry
-        graders:
-          type: integer
-          example: '[]'
-          description: an array of the graders who were responsible for the submissions in this response. the submissions are grouped according to the person who graded them and the assignment they were submitted for.
+            type: integer
+          example:
+          - 1
+          - 2
+          - 3
+          description: the assignment groups for all submissions in this response that were graded by this user.  The details are not nested inside here, but the fact that an assignment is present here means that the grader did grade submissions for this assignment on the contextual date. You can use the id of a grader and of an assignment to make another API call to find all submissions for a grader/assignment combination on a given date.
     SubmissionVersion:
       type: object
       properties:
@@ -323,26 +319,30 @@ components:
           example: unsubmitted
           description: the state of the submission at this version
       description: A SubmissionVersion object contains all the fields that a Submission object does, plus additional fields prefixed with current_* new_* and previous_* described below.
-    Grader:
+    SubmissionHistory:
       type: object
       properties:
-        id:
+        submission_id:
           type: integer
-          example: 27
-          description: the user_id of the user who graded the contained submissions
-        name:
-          type: string
-          example: Some User
-          description: the name of the user who graded the contained submissions
-        assignments:
+          example: 4
+          description: the id of the submission
+        versions:
           type: array
           items:
-            type: integer
-          example:
-          - 1
-          - 2
-          - 3
-          description: the assignment groups for all submissions in this response that were graded by this user.  The details are not nested inside here, but the fact that an assignment is present here means that the grader did grade submissions for this assignment on the contextual date. You can use the id of a grader and of an assignment to make another API call to find all submissions for a grader/assignment combination on a given date.
+            $ref: '#/components/schemas/SubmissionVersion'
+          description: an array of all the versions of this submission
+    Day:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          example: '1986-08-09'
+          description: the date represented by this entry
+        graders:
+          type: integer
+          example: '[]'
+          description: an array of the graders who were responsible for the submissions in this response. the submissions are grouped according to the person who graded them and the assignment they were submitted for.
   securitySchemes:
     bearerAuth:
       type: http

@@ -592,29 +592,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/blueprint_courses.html
 components:
   schemas:
-    BlueprintSubscription:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 101
-          description: The ID of the blueprint course subscription
-        template_id:
-          type: integer
-          format: int64
-          example: 1
-          description: The ID of the blueprint template the associated course is subscribed to
-        blueprint_course:
-          type: object
-          additionalProperties: true
-          example:
-            id: 2
-            name: Biology 100 Blueprint
-            course_code: BIOL 100 BP
-            term_name: Default term
-          description: The blueprint course subscribed to
-      description: Associates a course with a blueprint
     BlueprintMigration:
       type: object
       properties:
@@ -666,6 +643,74 @@ components:
           type: string
           example: Fixed spelling in question 3 of midterm exam
           description: User-specified comment describing changes made in this operation
+    BlueprintRestriction:
+      type: object
+      properties:
+        content:
+          type: boolean
+          example: true
+          description: Restriction on main content (e.g. title, description).
+        points:
+          type: boolean
+          example: true
+          description: Restriction on points possible for assignments and graded learning objects
+        due_dates:
+          type: boolean
+          example: false
+          description: Restriction on due dates for assignments and graded learning objects
+        availability_dates:
+          type: boolean
+          example: true
+          description: Restriction on availability dates for an object
+      description: A set of restrictions on editing for copied objects in associated courses
+    BlueprintSubscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+          description: The ID of the blueprint course subscription
+        template_id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the blueprint template the associated course is subscribed to
+        blueprint_course:
+          type: object
+          additionalProperties: true
+          example:
+            id: 2
+            name: Biology 100 Blueprint
+            course_code: BIOL 100 BP
+            term_name: Default term
+          description: The blueprint course subscribed to
+      description: Associates a course with a blueprint
+    BlueprintTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the template.
+        course_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the Course the template belongs to.
+        last_export_completed_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the last export was completed
+        associated_course_count:
+          type: integer
+          example: 3
+          description: Number of associated courses for the template
+        latest_migration:
+          type: string
+          description: Details of the latest migration
     ChangeRecord:
       type: object
       properties:
@@ -705,51 +750,6 @@ components:
             - points
           description: A list of ExceptionRecords for linked courses that did not receive this update.
       description: Describes a learning object change propagated to associated courses from a blueprint course
-    BlueprintRestriction:
-      type: object
-      properties:
-        content:
-          type: boolean
-          example: true
-          description: Restriction on main content (e.g. title, description).
-        points:
-          type: boolean
-          example: true
-          description: Restriction on points possible for assignments and graded learning objects
-        due_dates:
-          type: boolean
-          example: false
-          description: Restriction on due dates for assignments and graded learning objects
-        availability_dates:
-          type: boolean
-          example: true
-          description: Restriction on availability dates for an object
-      description: A set of restrictions on editing for copied objects in associated courses
-    BlueprintTemplate:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-          description: The ID of the template.
-        course_id:
-          type: integer
-          format: int64
-          example: 2
-          description: The ID of the Course the template belongs to.
-        last_export_completed_at:
-          type: string
-          format: date-time
-          example: '2013-08-28T23:59:00-06:00'
-          description: Time when the last export was completed
-        associated_course_count:
-          type: integer
-          example: 3
-          description: Number of associated courses for the template
-        latest_migration:
-          type: string
-          description: Details of the latest migration
   securitySchemes:
     bearerAuth:
       type: http

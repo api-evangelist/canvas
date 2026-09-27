@@ -2841,21 +2841,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/files.html
 components:
   schemas:
-    License:
-      type: object
-      properties:
-        id:
-          type: string
-          example: cc_by_sa
-          description: a short string identifying the license
-        name:
-          type: string
-          example: CC Attribution ShareAlike
-          description: the name of the license
-        url:
-          type: string
-          example: http://creativecommons.org/licenses/by-sa/4.0
-          description: a link to the license text
     File__files:
       type: object
       properties:
@@ -3035,6 +3020,21 @@ components:
           type: boolean
           example: false
           description: If true, indicates this is a read-only folder containing files submitted to assignments
+    License:
+      type: object
+      properties:
+        id:
+          type: string
+          example: cc_by_sa
+          description: a short string identifying the license
+        name:
+          type: string
+          example: CC Attribution ShareAlike
+          description: the name of the license
+        url:
+          type: string
+          example: http://creativecommons.org/licenses/by-sa/4.0
+          description: a link to the license text
   securitySchemes:
     bearerAuth:
       type: http

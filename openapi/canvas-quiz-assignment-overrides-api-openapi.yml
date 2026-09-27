@@ -100,15 +100,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/quiz_assignment_overrides.html
 components:
   schemas:
-    QuizAssignmentOverrideSetContainer:
-      type: object
-      properties:
-        quiz_assignment_overrides:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuizAssignmentOverrideSet'
-          description: The QuizAssignmentOverrideSet
-      description: Container for set of assignment-overridden dates for a quiz.
     QuizAssignmentOverrideSet:
       type: object
       properties:
@@ -123,6 +114,15 @@ components:
           type: string
           description: An array of all assignment overrides active for the quiz. This is visible only to teachers and staff.
       description: Set of assignment-overridden dates for a quiz.
+    QuizAssignmentOverrideSetContainer:
+      type: object
+      properties:
+        quiz_assignment_overrides:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizAssignmentOverrideSet'
+          description: The QuizAssignmentOverrideSet
+      description: Container for set of assignment-overridden dates for a quiz.
   securitySchemes:
     bearerAuth:
       type: http

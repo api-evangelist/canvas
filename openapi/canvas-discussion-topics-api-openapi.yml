@@ -3626,22 +3626,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/discussion_topics.html
 components:
   schemas:
-    FileAttachment:
-      type: object
-      properties:
-        content-type:
-          type: string
-          example: unknown/unknown
-        url:
-          type: string
-          example: http://www.example.com/courses/1/files/1/download
-        filename:
-          type: string
-          example: content.txt
-        display_name:
-          type: string
-          example: content.txt
-      description: A file attachment
     DiscussionTopic:
       type: object
       properties:
@@ -3813,6 +3797,22 @@ components:
           example: true
           description: Can users decide their preferred thread expand setting.
       description: A discussion topic
+    FileAttachment:
+      type: object
+      properties:
+        content-type:
+          type: string
+          example: unknown/unknown
+        url:
+          type: string
+          example: http://www.example.com/courses/1/files/1/download
+        filename:
+          type: string
+          example: content.txt
+        display_name:
+          type: string
+          example: content.txt
+      description: A file attachment
   securitySchemes:
     bearerAuth:
       type: http

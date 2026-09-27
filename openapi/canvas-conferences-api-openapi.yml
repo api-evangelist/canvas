@@ -126,26 +126,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/conferences.html
 components:
   schemas:
-    ConferenceRecording:
-      type: object
-      properties:
-        duration_minutes:
-          type: integer
-          example: 0
-        title:
-          type: string
-          example: 'course2: Test conference 3 [170]_0'
-        updated_at:
-          type: string
-          format: date-time
-          example: '2013-12-12T16:09:33.903-07:00'
-        created_at:
-          type: string
-          format: date-time
-          example: '2013-12-12T16:09:09.960-07:00'
-        playback_url:
-          type: string
-          example: http://example.com/recording_url
     Conference:
       type: object
       properties:
@@ -247,6 +227,26 @@ components:
         context_id:
           type: integer
           description: The ID of this conference's context.
+    ConferenceRecording:
+      type: object
+      properties:
+        duration_minutes:
+          type: integer
+          example: 0
+        title:
+          type: string
+          example: 'course2: Test conference 3 [170]_0'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2013-12-12T16:09:33.903-07:00'
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-12-12T16:09:09.960-07:00'
+        playback_url:
+          type: string
+          example: http://example.com/recording_url
   securitySchemes:
     bearerAuth:
       type: http

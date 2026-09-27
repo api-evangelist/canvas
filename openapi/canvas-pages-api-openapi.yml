@@ -1367,6 +1367,37 @@ paths:
         url: https://canvas.instructure.com/doc/api/pages.html
 components:
   schemas:
+    PageRevision:
+      type: object
+      properties:
+        revision_id:
+          type: integer
+          example: 7
+          description: an identifier for this revision of the page
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-08-07T11:23:58-06:00'
+          description: the time when this revision was saved
+        latest:
+          type: boolean
+          example: true
+          description: whether this is the latest revision or not
+        edited_by:
+          type: string
+          description: the User who saved this revision, if applicable (this may not be present if the page was imported from another system)
+        url:
+          type: string
+          example: old-page-title
+          description: the following fields are not included in the index action and may be omitted from the show action via summary=1 the historic url of the page
+        title:
+          type: string
+          example: Old Page Title
+          description: the historic page title
+        body:
+          type: string
+          example: <p>Old Page Content</p>
+          description: the historic page contents
     Page:
       type: object
       properties:
@@ -1443,37 +1474,6 @@ components:
             version: '0.2'
             blocks: '{...block json here...}'
           description: The block editor attributes for this page. (optionally included, and only if this is a block editor created page)
-    PageRevision:
-      type: object
-      properties:
-        revision_id:
-          type: integer
-          example: 7
-          description: an identifier for this revision of the page
-        updated_at:
-          type: string
-          format: date-time
-          example: '2012-08-07T11:23:58-06:00'
-          description: the time when this revision was saved
-        latest:
-          type: boolean
-          example: true
-          description: whether this is the latest revision or not
-        edited_by:
-          type: string
-          description: the User who saved this revision, if applicable (this may not be present if the page was imported from another system)
-        url:
-          type: string
-          example: old-page-title
-          description: the following fields are not included in the index action and may be omitted from the show action via summary=1 the historic url of the page
-        title:
-          type: string
-          example: Old Page Title
-          description: the historic page title
-        body:
-          type: string
-          example: <p>Old Page Content</p>
-          description: the historic page contents
   securitySchemes:
     bearerAuth:
       type: http
