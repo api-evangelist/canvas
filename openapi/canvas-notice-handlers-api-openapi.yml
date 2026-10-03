@@ -112,6 +112,22 @@ paths:
         url: https://canvas.instructure.com/doc/api/notice_handlers.html
 components:
   schemas:
+    NoticeHandler:
+      type: object
+      properties:
+        handler:
+          type: string
+          example: https://example.com/notice_handler
+          description: URL to receive the notice
+        notice_type:
+          type: string
+          example: LtiHelloWorldNotice
+          description: The type of notice
+        max_batch_size:
+          type: integer
+          example: 100
+          description: The maximum number of notices to include in a single batch, or 'null' if not set.
+      description: A notice handler for a particular tool deployment and notice type.
     NoticeCatalog:
       type: object
       properties:
@@ -132,22 +148,6 @@ components:
             notice_type: LtiHelloWorldNotice
           description: List of notice handlers for the tool
       description: Set of notice handlers (one per notice type) for an LTI tool deployment.
-    NoticeHandler:
-      type: object
-      properties:
-        handler:
-          type: string
-          example: https://example.com/notice_handler
-          description: URL to receive the notice
-        notice_type:
-          type: string
-          example: LtiHelloWorldNotice
-          description: The type of notice
-        max_batch_size:
-          type: integer
-          example: 100
-          description: The maximum number of notices to include in a single batch, or 'null' if not set.
-      description: A notice handler for a particular tool deployment and notice type.
   securitySchemes:
     bearerAuth:
       type: http

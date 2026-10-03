@@ -662,21 +662,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/grading_standards.html
 components:
   schemas:
-    GradingSchemeEntry:
-      type: object
-      properties:
-        name:
-          type: string
-          example: A
-          description: The name for an entry value within a GradingStandard that describes the range of the value
-        value:
-          type: integer
-          example: 0.9
-          description: The value for the name of the entry within a GradingStandard. The entry represents the lower bound of the range for the entry. This range includes the value up to the next entry in the GradingStandard, or the maximum value for the scheme if there is no upper bound. The lowest value will have a lower bound range of 0.
-        calculated_value:
-          type: integer
-          example: 90
-          description: The value that will be used to compare against a grade. For percentage based grading schemes, this is a number from 0 - 100 representing a percent. For point based grading schemes, this is the lower bound of points to achieve the grade.
     GradingStandard:
       type: object
       properties:
@@ -718,6 +703,21 @@ components:
           - name: D
             value: 0.6
           description: A list of GradingSchemeEntry that make up the Grading Standard as an array of values with the scheme name and value
+    GradingSchemeEntry:
+      type: object
+      properties:
+        name:
+          type: string
+          example: A
+          description: The name for an entry value within a GradingStandard that describes the range of the value
+        value:
+          type: integer
+          example: 0.9
+          description: The value for the name of the entry within a GradingStandard. The entry represents the lower bound of the range for the entry. This range includes the value up to the next entry in the GradingStandard, or the maximum value for the scheme if there is no upper bound. The lowest value will have a lower bound range of 0.
+        calculated_value:
+          type: integer
+          example: 90
+          description: The value that will be used to compare against a grade. For percentage based grading schemes, this is a number from 0 - 100 representing a percent. For point based grading schemes, this is the lower bound of points to achieve the grade.
   securitySchemes:
     bearerAuth:
       type: http

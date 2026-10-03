@@ -919,6 +919,30 @@ paths:
         url: https://canvas.instructure.com/doc/api/conversations.html
 components:
   schemas:
+    ConversationParticipant:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+          description: The user ID for the participant.
+        name:
+          type: string
+          example: Shelly
+          description: A short name the user has selected, for use in conversations or other less formal places through the site.
+        full_name:
+          type: string
+          example: Sheldon Cooper
+          description: The full name of the user.
+        avatar_url:
+          type: string
+          example: https://canvas.instructure.com/images/messages/avatar-50.png
+          description: If requested, this field will be included and contain a url to retrieve the user's avatar.
+        uuid:
+          type: string
+          example: W9GQIcdoDTqwX8mxIunDQQVL6WZTaGmpa5xovmCB
+          description: The Canvas UUID for the participant.
     Conversation:
       type: object
       properties:
@@ -992,30 +1016,6 @@ components:
           type: string
           example: Canvas 101
           description: Name of the course or group in which the conversation is occurring.
-    ConversationParticipant:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 2
-          description: The user ID for the participant.
-        name:
-          type: string
-          example: Shelly
-          description: A short name the user has selected, for use in conversations or other less formal places through the site.
-        full_name:
-          type: string
-          example: Sheldon Cooper
-          description: The full name of the user.
-        avatar_url:
-          type: string
-          example: https://canvas.instructure.com/images/messages/avatar-50.png
-          description: If requested, this field will be included and contain a url to retrieve the user's avatar.
-        uuid:
-          type: string
-          example: W9GQIcdoDTqwX8mxIunDQQVL6WZTaGmpa5xovmCB
-          description: The Canvas UUID for the participant.
   securitySchemes:
     bearerAuth:
       type: http

@@ -2513,33 +2513,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/outcome_groups.html
 components:
   schemas:
-    OutcomeLink:
-      type: object
-      properties:
-        url:
-          type: string
-          example: /api/v1/accounts/1/outcome_groups/1/outcomes/1
-          description: the URL for fetching/updating the outcome link. should be treated as opaque
-        context_id:
-          type: integer
-          example: 1
-          description: the context owning the outcome link. will match the context owning the outcome group containing the outcome link; included for convenience. may be null for links in global outcome groups.
-        context_type:
-          type: string
-          example: Account
-        outcome_group:
-          type: string
-          description: an abbreviated OutcomeGroup object representing the group containing the outcome link.
-        outcome:
-          type: string
-          description: an abbreviated Outcome object representing the outcome linked into the containing outcome group.
-        assessed:
-          type: boolean
-          example: true
-          description: whether this outcome has been used to assess a student in the context of this outcome link.  In other words, this will be set to true if the context is a course, and a student has been assessed with this outcome in that course.
-        can_unlink:
-          type: boolean
-          description: whether this outcome link is manageable and is not the last link to an aligned outcome
     OutcomeGroup:
       type: object
       properties:
@@ -2589,6 +2562,33 @@ components:
           type: boolean
           example: true
           description: whether the current user can update the outcome group
+    OutcomeLink:
+      type: object
+      properties:
+        url:
+          type: string
+          example: /api/v1/accounts/1/outcome_groups/1/outcomes/1
+          description: the URL for fetching/updating the outcome link. should be treated as opaque
+        context_id:
+          type: integer
+          example: 1
+          description: the context owning the outcome link. will match the context owning the outcome group containing the outcome link; included for convenience. may be null for links in global outcome groups.
+        context_type:
+          type: string
+          example: Account
+        outcome_group:
+          type: string
+          description: an abbreviated OutcomeGroup object representing the group containing the outcome link.
+        outcome:
+          type: string
+          description: an abbreviated Outcome object representing the outcome linked into the containing outcome group.
+        assessed:
+          type: boolean
+          example: true
+          description: whether this outcome has been used to assess a student in the context of this outcome link.  In other words, this will be set to true if the context is a course, and a student has been assessed with this outcome in that course.
+        can_unlink:
+          type: boolean
+          description: whether this outcome link is manageable and is not the last link to an aligned outcome
   securitySchemes:
     bearerAuth:
       type: http

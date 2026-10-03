@@ -1299,41 +1299,6 @@ components:
           type: boolean
           example: true
           description: (Optional) Whether this module item is published. This field is present only if the caller has permission to view unpublished items.
-    ModuleItemSequenceNode:
-      type: object
-      properties:
-        prev:
-          type: string
-          description: The previous ModuleItem in the sequence
-        current:
-          type: string
-          example:
-            id: 768
-            module_id: 123
-            title: A lonely page
-            type: Page
-          description: The ModuleItem being queried
-        next:
-          type: string
-          example:
-            id: 769
-            module_id: 127
-            title: Project 1
-            type: Assignment
-          description: The next ModuleItem in the sequence
-        mastery_path:
-          type: object
-          additionalProperties: true
-          example:
-            locked: true
-            assignment_sets: []
-            selected_set_id: null
-            awaiting_choice: false
-            still_processing: false
-            modules_url: /courses/11/modules
-            choose_url: /courses/11/modules/items/9/choose
-            modules_tab_disabled: false
-          description: The conditional release rule for the module item, if applicable
     Module__modules:
       type: object
       properties:
@@ -1402,6 +1367,41 @@ components:
           type: boolean
           example: true
           description: (Optional) Whether this module is published. This field is present only if the caller has permission to view unpublished modules.
+    ModuleItemSequenceNode:
+      type: object
+      properties:
+        prev:
+          type: string
+          description: The previous ModuleItem in the sequence
+        current:
+          type: string
+          example:
+            id: 768
+            module_id: 123
+            title: A lonely page
+            type: Page
+          description: The ModuleItem being queried
+        next:
+          type: string
+          example:
+            id: 769
+            module_id: 127
+            title: Project 1
+            type: Assignment
+          description: The next ModuleItem in the sequence
+        mastery_path:
+          type: object
+          additionalProperties: true
+          example:
+            locked: true
+            assignment_sets: []
+            selected_set_id: null
+            awaiting_choice: false
+            still_processing: false
+            modules_url: /courses/11/modules
+            choose_url: /courses/11/modules/items/9/choose
+            modules_tab_disabled: false
+          description: The conditional release rule for the module item, if applicable
   securitySchemes:
     bearerAuth:
       type: http

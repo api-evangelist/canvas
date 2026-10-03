@@ -592,100 +592,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/blueprint_courses.html
 components:
   schemas:
-    BlueprintMigration:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-          description: The ID of the migration.
-        template_id:
-          type: integer
-          format: int64
-          example: 2
-          description: The ID of the template the migration belongs to. Only present when querying a blueprint course.
-        subscription_id:
-          type: integer
-          format: int64
-          example: 101
-          description: The ID of the associated course's blueprint subscription. Only present when querying a course associated with a blueprint.
-        user_id:
-          type: integer
-          format: int64
-          example: 3
-          description: The ID of the user who queued the migration.
-        workflow_state:
-          type: string
-          example: running
-          description: 'Current state of the content migration: queued, exporting, imports_queued, completed, exports_failed, imports_failed'
-        created_at:
-          type: string
-          format: date-time
-          example: '2013-08-28T23:59:00-06:00'
-          description: Time when the migration was queued
-        exports_started_at:
-          type: string
-          format: date-time
-          example: '2013-08-28T23:59:00-06:00'
-          description: Time when the exports begun
-        imports_queued_at:
-          type: string
-          format: date-time
-          example: '2013-08-28T23:59:00-06:00'
-          description: Time when the exports were completed and imports were queued
-        imports_completed_at:
-          type: string
-          format: date-time
-          example: '2013-08-28T23:59:00-06:00'
-          description: Time when the imports were completed
-        comment:
-          type: string
-          example: Fixed spelling in question 3 of midterm exam
-          description: User-specified comment describing changes made in this operation
-    BlueprintRestriction:
-      type: object
-      properties:
-        content:
-          type: boolean
-          example: true
-          description: Restriction on main content (e.g. title, description).
-        points:
-          type: boolean
-          example: true
-          description: Restriction on points possible for assignments and graded learning objects
-        due_dates:
-          type: boolean
-          example: false
-          description: Restriction on due dates for assignments and graded learning objects
-        availability_dates:
-          type: boolean
-          example: true
-          description: Restriction on availability dates for an object
-      description: A set of restrictions on editing for copied objects in associated courses
-    BlueprintSubscription:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 101
-          description: The ID of the blueprint course subscription
-        template_id:
-          type: integer
-          format: int64
-          example: 1
-          description: The ID of the blueprint template the associated course is subscribed to
-        blueprint_course:
-          type: object
-          additionalProperties: true
-          example:
-            id: 2
-            name: Biology 100 Blueprint
-            course_code: BIOL 100 BP
-            term_name: Default term
-          description: The blueprint course subscribed to
-      description: Associates a course with a blueprint
     BlueprintTemplate:
       type: object
       properties:
@@ -750,6 +656,100 @@ components:
             - points
           description: A list of ExceptionRecords for linked courses that did not receive this update.
       description: Describes a learning object change propagated to associated courses from a blueprint course
+    BlueprintSubscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+          description: The ID of the blueprint course subscription
+        template_id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the blueprint template the associated course is subscribed to
+        blueprint_course:
+          type: object
+          additionalProperties: true
+          example:
+            id: 2
+            name: Biology 100 Blueprint
+            course_code: BIOL 100 BP
+            term_name: Default term
+          description: The blueprint course subscribed to
+      description: Associates a course with a blueprint
+    BlueprintRestriction:
+      type: object
+      properties:
+        content:
+          type: boolean
+          example: true
+          description: Restriction on main content (e.g. title, description).
+        points:
+          type: boolean
+          example: true
+          description: Restriction on points possible for assignments and graded learning objects
+        due_dates:
+          type: boolean
+          example: false
+          description: Restriction on due dates for assignments and graded learning objects
+        availability_dates:
+          type: boolean
+          example: true
+          description: Restriction on availability dates for an object
+      description: A set of restrictions on editing for copied objects in associated courses
+    BlueprintMigration:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: The ID of the migration.
+        template_id:
+          type: integer
+          format: int64
+          example: 2
+          description: The ID of the template the migration belongs to. Only present when querying a blueprint course.
+        subscription_id:
+          type: integer
+          format: int64
+          example: 101
+          description: The ID of the associated course's blueprint subscription. Only present when querying a course associated with a blueprint.
+        user_id:
+          type: integer
+          format: int64
+          example: 3
+          description: The ID of the user who queued the migration.
+        workflow_state:
+          type: string
+          example: running
+          description: 'Current state of the content migration: queued, exporting, imports_queued, completed, exports_failed, imports_failed'
+        created_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the migration was queued
+        exports_started_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the exports begun
+        imports_queued_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the exports were completed and imports were queued
+        imports_completed_at:
+          type: string
+          format: date-time
+          example: '2013-08-28T23:59:00-06:00'
+          description: Time when the imports were completed
+        comment:
+          type: string
+          example: Fixed spelling in question 3 of midterm exam
+          description: User-specified comment describing changes made in this operation
   securitySchemes:
     bearerAuth:
       type: http

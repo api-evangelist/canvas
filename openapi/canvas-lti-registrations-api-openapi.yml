@@ -1922,6 +1922,33 @@ paths:
         url: https://canvas.instructure.com/doc/api/lti_registrations.html
 components:
   schemas:
+    SearchableCourse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+          description: The Canvas DB ID
+        name:
+          type: string
+          example: A Course
+          description: The course name
+        sis_id:
+          type: string
+          example: sis-course-1
+          description: The SIS ID of the course, if any. Only present if user can read or manage SIS.
+        display_path:
+          type: array
+          items:
+            type: string
+          example:
+          - Sub Account
+          description: Names of the accounts in this course's account hierarchy, excluding the root.
+        course_code:
+          type: string
+          example: COURSE-101
+          description: The course code
+      description: A minimal representation of a Course for Canvas Apps search purposes
     Lti__RegistrationAccountBinding:
       type: object
       properties:
@@ -1969,6 +1996,90 @@ components:
             type: User
           description: The user that last updated this binding
       description: A binding between an LTI registration and an account, defining the registration's availability in that account
+    Lti__OverlayVersion:
+      type: object
+      properties:
+        root_account_id:
+          type: integer
+          example: 1
+          description: The Canvas id of the root account
+        created_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the version's creation
+        updated_at:
+          type: string
+          example: '2024-01-01T00:00:00Z'
+          description: Timestamp of the version's last update
+        caused_by_reset:
+          type: boolean
+          example: false
+          description: Whether or not this change was caused by a reset of the tool's configuration
+        created_by:
+          type: string
+          x-canvas-declared-type: string|User
+          example:
+            type: User
+          description: The user that created this version. If a string, this registration was created by Instructure.
+        diff:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+          example:
+          - - +
+            - disabled_placements[0]
+            - top_navigation
+          description: A list of changes made in this version compared to the previous version
+        lti_overlay_id:
+          type: integer
+          example: 1
+          description: The id of the overlay this version is for
+        account_id:
+          type: integer
+          example: 1
+          description: The id of the account this version is for
+      description: A single version of a tool's configuration overlay
+    ListLtiRegistrationsResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 1
+          description: The total number of LTI registrations across all pages
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lti__Registration'
+          example:
+          - $ref: Lti::Registration
+          description: The paginated list of LTI::Registrations
+      description: The response for the List LTI Registrations API endpoint
+    SearchableAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+          description: The Canvas DB ID
+        name:
+          type: string
+          example: An Account
+          description: The account name
+        sis_id:
+          type: string
+          example: sis-account-1
+          description: The SIS ID of the account, if any. Only present if user can read or manage SIS.
+        display_path:
+          type: array
+          items:
+            type: string
+          example:
+          - Sub Account
+          description: Names of the accounts in this account's hierarchy, excluding the root and this account.
+      description: A minimal representation of an Account for Canvas Apps search purposes
     Lti__Registration:
       type: object
       properties:
@@ -2062,102 +2173,6 @@ components:
             type: Lti::ToolConfiguration
           description: The Canvas-style tool configuration for this registration
       description: A registration of an LTI tool in Canvas
-    SearchableAccount:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '1'
-          description: The Canvas DB ID
-        name:
-          type: string
-          example: An Account
-          description: The account name
-        sis_id:
-          type: string
-          example: sis-account-1
-          description: The SIS ID of the account, if any. Only present if user can read or manage SIS.
-        display_path:
-          type: array
-          items:
-            type: string
-          example:
-          - Sub Account
-          description: Names of the accounts in this account's hierarchy, excluding the root and this account.
-      description: A minimal representation of an Account for Canvas Apps search purposes
-    SearchableCourse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '1'
-          description: The Canvas DB ID
-        name:
-          type: string
-          example: A Course
-          description: The course name
-        sis_id:
-          type: string
-          example: sis-course-1
-          description: The SIS ID of the course, if any. Only present if user can read or manage SIS.
-        display_path:
-          type: array
-          items:
-            type: string
-          example:
-          - Sub Account
-          description: Names of the accounts in this course's account hierarchy, excluding the root.
-        course_code:
-          type: string
-          example: COURSE-101
-          description: The course code
-      description: A minimal representation of a Course for Canvas Apps search purposes
-    Lti__OverlayVersion:
-      type: object
-      properties:
-        root_account_id:
-          type: integer
-          example: 1
-          description: The Canvas id of the root account
-        created_at:
-          type: string
-          example: '2024-01-01T00:00:00Z'
-          description: Timestamp of the version's creation
-        updated_at:
-          type: string
-          example: '2024-01-01T00:00:00Z'
-          description: Timestamp of the version's last update
-        caused_by_reset:
-          type: boolean
-          example: false
-          description: Whether or not this change was caused by a reset of the tool's configuration
-        created_by:
-          type: string
-          x-canvas-declared-type: string|User
-          example:
-            type: User
-          description: The user that created this version. If a string, this registration was created by Instructure.
-        diff:
-          type: array
-          items:
-            type: array
-            items:
-              type: object
-              additionalProperties: true
-          example:
-          - - +
-            - disabled_placements[0]
-            - top_navigation
-          description: A list of changes made in this version compared to the previous version
-        lti_overlay_id:
-          type: integer
-          example: 1
-          description: The id of the overlay this version is for
-        account_id:
-          type: integer
-          example: 1
-          description: The id of the account this version is for
-      description: A single version of a tool's configuration overlay
     ContextSearchResponse:
       type: object
       properties:
@@ -2176,21 +2191,6 @@ components:
           - $ref: Course
           description: Courses that match the search query. Limited to 100.
       description: The response for the Search Accounts and Courses API endpoint
-    ListLtiRegistrationsResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-          example: 1
-          description: The total number of LTI registrations across all pages
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Lti__Registration'
-          example:
-          - $ref: Lti::Registration
-          description: The paginated list of LTI::Registrations
-      description: The response for the List LTI Registrations API endpoint
   securitySchemes:
     bearerAuth:
       type: http

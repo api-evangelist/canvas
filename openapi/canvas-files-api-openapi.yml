@@ -2841,6 +2841,121 @@ paths:
         url: https://canvas.instructure.com/doc/api/files.html
 components:
   schemas:
+    License:
+      type: object
+      properties:
+        id:
+          type: string
+          example: cc_by_sa
+          description: a short string identifying the license
+        name:
+          type: string
+          example: CC Attribution ShareAlike
+          description: the name of the license
+        url:
+          type: string
+          example: http://creativecommons.org/licenses/by-sa/4.0
+          description: a link to the license text
+    Folder:
+      type: object
+      properties:
+        context_type:
+          type: string
+          example: Course
+        context_id:
+          type: integer
+          example: 1401
+        files_count:
+          type: integer
+          example: 0
+        position:
+          type: integer
+          example: 3
+        updated_at:
+          type: string
+          format: date-time
+          example: '2012-07-06T14:58:50Z'
+        folders_url:
+          type: string
+          example: https://www.example.com/api/v1/folders/2937/folders
+        files_url:
+          type: string
+          example: https://www.example.com/api/v1/folders/2937/files
+        full_name:
+          type: string
+          example: course files/11folder
+        lock_at:
+          type: string
+          format: date-time
+          example: '2012-07-06T14:58:50Z'
+        id:
+          type: integer
+          example: 2937
+        folders_count:
+          type: integer
+          example: 0
+        name:
+          type: string
+          example: 11folder
+        parent_folder_id:
+          type: integer
+          example: 2934
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-07-06T14:58:50Z'
+        unlock_at:
+          type: string
+          format: date-time
+        hidden:
+          type: boolean
+          example: false
+        hidden_for_user:
+          type: boolean
+          example: false
+        locked:
+          type: boolean
+          example: true
+        locked_for_user:
+          type: boolean
+          example: false
+        for_submissions:
+          type: boolean
+          example: false
+          description: If true, indicates this is a read-only folder containing files submitted to assignments
+    UsageRights:
+      type: object
+      properties:
+        legal_copyright:
+          type: string
+          example: (C) 2014 Incom Corporation Ltd
+          description: Copyright line for the file
+        use_justification:
+          type: string
+          example: creative_commons
+          description: Justification for using the file in a Canvas course. Valid values are 'own_copyright', 'public_domain', 'used_by_permission', 'fair_use', 'creative_commons'
+        license:
+          type: string
+          example: cc_by_sa
+          description: License identifier for the file.
+        license_name:
+          type: string
+          example: CC Attribution Share-Alike
+          description: Readable license name
+        message:
+          type: string
+          example: 4 files updated
+          description: Explanation of the action performed
+        file_ids:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 2
+          - 3
+          description: List of ids of files that were updated
+      description: Describes the copyright and license information for a File
     File__files:
       type: object
       properties:
@@ -2920,121 +3035,6 @@ components:
         preview_url:
           type: string
           description: 'optional: url to the document preview. This url is specific to the user making the api call. Only included in submission endpoints.'
-    UsageRights:
-      type: object
-      properties:
-        legal_copyright:
-          type: string
-          example: (C) 2014 Incom Corporation Ltd
-          description: Copyright line for the file
-        use_justification:
-          type: string
-          example: creative_commons
-          description: Justification for using the file in a Canvas course. Valid values are 'own_copyright', 'public_domain', 'used_by_permission', 'fair_use', 'creative_commons'
-        license:
-          type: string
-          example: cc_by_sa
-          description: License identifier for the file.
-        license_name:
-          type: string
-          example: CC Attribution Share-Alike
-          description: Readable license name
-        message:
-          type: string
-          example: 4 files updated
-          description: Explanation of the action performed
-        file_ids:
-          type: array
-          items:
-            type: integer
-          example:
-          - 1
-          - 2
-          - 3
-          description: List of ids of files that were updated
-      description: Describes the copyright and license information for a File
-    Folder:
-      type: object
-      properties:
-        context_type:
-          type: string
-          example: Course
-        context_id:
-          type: integer
-          example: 1401
-        files_count:
-          type: integer
-          example: 0
-        position:
-          type: integer
-          example: 3
-        updated_at:
-          type: string
-          format: date-time
-          example: '2012-07-06T14:58:50Z'
-        folders_url:
-          type: string
-          example: https://www.example.com/api/v1/folders/2937/folders
-        files_url:
-          type: string
-          example: https://www.example.com/api/v1/folders/2937/files
-        full_name:
-          type: string
-          example: course files/11folder
-        lock_at:
-          type: string
-          format: date-time
-          example: '2012-07-06T14:58:50Z'
-        id:
-          type: integer
-          example: 2937
-        folders_count:
-          type: integer
-          example: 0
-        name:
-          type: string
-          example: 11folder
-        parent_folder_id:
-          type: integer
-          example: 2934
-        created_at:
-          type: string
-          format: date-time
-          example: '2012-07-06T14:58:50Z'
-        unlock_at:
-          type: string
-          format: date-time
-        hidden:
-          type: boolean
-          example: false
-        hidden_for_user:
-          type: boolean
-          example: false
-        locked:
-          type: boolean
-          example: true
-        locked_for_user:
-          type: boolean
-          example: false
-        for_submissions:
-          type: boolean
-          example: false
-          description: If true, indicates this is a read-only folder containing files submitted to assignments
-    License:
-      type: object
-      properties:
-        id:
-          type: string
-          example: cc_by_sa
-          description: a short string identifying the license
-        name:
-          type: string
-          example: CC Attribution ShareAlike
-          description: the name of the license
-        url:
-          type: string
-          example: http://creativecommons.org/licenses/by-sa/4.0
-          description: a link to the license text
   securitySchemes:
     bearerAuth:
       type: http
