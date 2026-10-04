@@ -782,6 +782,23 @@ paths:
         url: https://canvas.instructure.com/doc/api/media_objects.html
 components:
   schemas:
+    MediaObject:
+      type: object
+      properties:
+        can_add_captions:
+          type: boolean
+        user_entered_title:
+          type: string
+        title:
+          type: string
+        media_id:
+          type: string
+        media_type:
+          type: string
+        media_tracks:
+          type: string
+        media_sources:
+          type: string
     MediaTrack:
       type: object
       properties:
@@ -805,23 +822,6 @@ components:
         updated_at:
           type: string
         webvtt_content:
-          type: string
-    MediaObject:
-      type: object
-      properties:
-        can_add_captions:
-          type: boolean
-        user_entered_title:
-          type: string
-        title:
-          type: string
-        media_id:
-          type: string
-        media_type:
-          type: string
-        media_tracks:
-          type: string
-        media_sources:
           type: string
   securitySchemes:
     bearerAuth:

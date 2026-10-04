@@ -278,33 +278,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/outcomes.html
 components:
   schemas:
-    OutcomeAlignment__outcomes:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-          description: the id of the aligned learning outcome.
-        assignment_id:
-          type: integer
-          example: 2
-          description: the id of the aligned assignment (null for live assessments).
-        assessment_id:
-          type: integer
-          example: 3
-          description: the id of the aligned live assessment (null for assignments).
-        submission_types:
-          type: string
-          example: online_text_entry,online_url
-          description: a string representing the different submission types of an aligned assignment.
-        url:
-          type: string
-          example: /courses/1/assignments/5
-          description: the URL for the aligned assignment.
-        title:
-          type: string
-          example: Unit 1 test
-          description: the title of the aligned assignment.
     Outcome:
       type: object
       properties:
@@ -377,6 +350,33 @@ components:
           type: boolean
           example: true
           description: whether updates to this outcome will propagate to unassessed rubrics that have imported it
+    OutcomeAlignment__outcomes:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: the id of the aligned learning outcome.
+        assignment_id:
+          type: integer
+          example: 2
+          description: the id of the aligned assignment (null for live assessments).
+        assessment_id:
+          type: integer
+          example: 3
+          description: the id of the aligned live assessment (null for assignments).
+        submission_types:
+          type: string
+          example: online_text_entry,online_url
+          description: a string representing the different submission types of an aligned assignment.
+        url:
+          type: string
+          example: /courses/1/assignments/5
+          description: the URL for the aligned assignment.
+        title:
+          type: string
+          example: Unit 1 test
+          description: the title of the aligned assignment.
   securitySchemes:
     bearerAuth:
       type: http

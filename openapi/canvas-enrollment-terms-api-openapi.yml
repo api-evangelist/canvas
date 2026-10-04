@@ -349,15 +349,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/enrollment_terms.html
 components:
   schemas:
-    EnrollmentTermsList:
-      type: object
-      properties:
-        enrollment_terms:
-          type: array
-          items:
-            $ref: '#/components/schemas/EnrollmentTerm'
-          example: []
-          description: a paginated list of all terms in the account
     EnrollmentTerm:
       type: object
       properties:
@@ -403,6 +394,15 @@ components:
           type: integer
           example: '80'
           description: The number of courses in the term (available via include)
+    EnrollmentTermsList:
+      type: object
+      properties:
+        enrollment_terms:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrollmentTerm'
+          example: []
+          description: a paginated list of all terms in the account
   securitySchemes:
     bearerAuth:
       type: http

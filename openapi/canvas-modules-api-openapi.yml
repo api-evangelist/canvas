@@ -1169,66 +1169,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/modules.html
 components:
   schemas:
-    ModuleItemSequence:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ModuleItemSequenceNode'
-          example:
-          - prev: null
-            current:
-              id: 768
-              module_id: 123
-              title: A lonely page
-              type: Page
-            next:
-              id: 769
-              module_id: 127
-              title: Project 1
-              type: Assignment
-            mastery_path:
-              locked: true
-              assignment_sets: []
-              selected_set_id: null
-              awaiting_choice: false
-              still_processing: false
-              modules_url: /courses/11/modules
-              choose_url: /courses/11/modules/items/9/choose
-              modules_tab_disabled: false
-          description: an array containing one ModuleItemSequenceNode for each appearence of the asset in the module sequence (up to 10 total)
-        modules:
-          type: array
-          items:
-            $ref: '#/components/schemas/Module__modules'
-          example:
-          - id: 123
-            name: Overview
-          - id: 127
-            name: Imaginary Numbers
-          description: an array containing each Module referenced above
-    ModuleAssignmentOverride:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 4355
-          description: the ID of the assignment override
-        context_module_id:
-          type: integer
-          example: 567
-          description: the ID of the module the override applies to
-        title:
-          type: string
-          example: Section 6
-          description: the title of the override
-        students:
-          type: string
-          description: an array of the override's target students (present only if the override targets an adhoc set of students)
-        course_section:
-          type: string
-          description: the override's target section (present only if the override targets a section)
     ModuleItem__modules:
       type: object
       properties:
@@ -1402,6 +1342,66 @@ components:
             choose_url: /courses/11/modules/items/9/choose
             modules_tab_disabled: false
           description: The conditional release rule for the module item, if applicable
+    ModuleItemSequence:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleItemSequenceNode'
+          example:
+          - prev: null
+            current:
+              id: 768
+              module_id: 123
+              title: A lonely page
+              type: Page
+            next:
+              id: 769
+              module_id: 127
+              title: Project 1
+              type: Assignment
+            mastery_path:
+              locked: true
+              assignment_sets: []
+              selected_set_id: null
+              awaiting_choice: false
+              still_processing: false
+              modules_url: /courses/11/modules
+              choose_url: /courses/11/modules/items/9/choose
+              modules_tab_disabled: false
+          description: an array containing one ModuleItemSequenceNode for each appearence of the asset in the module sequence (up to 10 total)
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module__modules'
+          example:
+          - id: 123
+            name: Overview
+          - id: 127
+            name: Imaginary Numbers
+          description: an array containing each Module referenced above
+    ModuleAssignmentOverride:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 4355
+          description: the ID of the assignment override
+        context_module_id:
+          type: integer
+          example: 567
+          description: the ID of the module the override applies to
+        title:
+          type: string
+          example: Section 6
+          description: the title of the override
+        students:
+          type: string
+          description: an array of the override's target students (present only if the override targets an adhoc set of students)
+        course_section:
+          type: string
+          description: the override's target section (present only if the override targets a section)
   securitySchemes:
     bearerAuth:
       type: http

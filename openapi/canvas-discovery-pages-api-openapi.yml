@@ -260,23 +260,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/discovery_pages.html
 components:
   schemas:
-    DiscoveryPage:
-      type: object
-      properties:
-        primary:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiscoveryPageEntry'
-          description: Primary authentication provider buttons displayed prominently
-        secondary:
-          type: array
-          items:
-            $ref: '#/components/schemas/DiscoveryPageEntry'
-          description: Secondary authentication provider buttons displayed less prominently
-        active:
-          type: boolean
-          description: Whether the discovery page is enabled
-      description: Configuration for the login discovery page
     DiscoveryPageEntry:
       type: object
       properties:
@@ -306,6 +289,23 @@ components:
           - onelogin
           - ping
       description: A single authentication provider entry on the discovery page
+    DiscoveryPage:
+      type: object
+      properties:
+        primary:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryPageEntry'
+          description: Primary authentication provider buttons displayed prominently
+        secondary:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveryPageEntry'
+          description: Secondary authentication provider buttons displayed less prominently
+        active:
+          type: boolean
+          description: Whether the discovery page is enabled
+      description: Configuration for the login discovery page
   securitySchemes:
     bearerAuth:
       type: http

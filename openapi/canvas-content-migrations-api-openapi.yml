@@ -3366,28 +3366,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/content_migrations.html
 components:
   schemas:
-    Migrator:
-      type: object
-      properties:
-        type:
-          type: string
-          example: common_cartridge_importer
-          description: The value to pass to the create endpoint
-        requires_file_upload:
-          type: boolean
-          example: true
-          description: Whether this endpoint requires a file upload
-        name:
-          type: string
-          example: Common Cartridge 1.0/1.1/1.2 Package
-          description: Description of the package type expected
-        required_settings:
-          type: array
-          items:
-            type: string
-          example:
-          - source_course_id
-          description: A list of fields this system requires
     ContentMigration:
       type: object
       properties:
@@ -3437,6 +3415,28 @@ components:
           type: string
           example: '{"upload_url"=>"", "message"=>"file exceeded quota", "upload_params"=>{}}'
           description: file uploading data, see {file:file.file_uploads.html File Upload Documentation} for file upload workflow This works a little differently in that all the file data is in the pre_attachment hash if there is no upload_url then there was an attachment pre-processing error, the error message will be in the message key This data will only be here after a create or update call
+    Migrator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: common_cartridge_importer
+          description: The value to pass to the create endpoint
+        requires_file_upload:
+          type: boolean
+          example: true
+          description: Whether this endpoint requires a file upload
+        name:
+          type: string
+          example: Common Cartridge 1.0/1.1/1.2 Package
+          description: Description of the package type expected
+        required_settings:
+          type: array
+          items:
+            type: string
+          example:
+          - source_course_id
+          description: A list of fields this system requires
     MigrationIssue:
       type: object
       properties:

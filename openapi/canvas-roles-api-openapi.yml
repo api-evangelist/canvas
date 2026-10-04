@@ -640,28 +640,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/roles.html
 components:
   schemas:
-    PermissionHelpText:
-      type: object
-      properties:
-        details:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          example:
-          - title: Add External Tools
-            description: Allows users to add external tools (LTI) to courses.
-          description: Detailed explanations about what the permission does.
-        considerations:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-          example:
-          - title: Security Risk
-            description: Granting this permission may expose your system to security vulnerabilities.
-          description: A list of considerations or warnings about using the permission.
-      description: Information about a permission, including its purpose and considerations for use.
     Role:
       type: object
       properties:
@@ -777,6 +755,28 @@ components:
           - DesignerEnrollment
           description: The base role types this permission is enabled for by default
       description: A permission that can be granted to a role
+    PermissionHelpText:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - title: Add External Tools
+            description: Allows users to add external tools (LTI) to courses.
+          description: Detailed explanations about what the permission does.
+        considerations:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+          example:
+          - title: Security Risk
+            description: Granting this permission may expose your system to security vulnerabilities.
+          description: A list of considerations or warnings about using the permission.
+      description: Information about a permission, including its purpose and considerations for use.
   securitySchemes:
     bearerAuth:
       type: http

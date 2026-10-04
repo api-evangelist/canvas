@@ -414,6 +414,16 @@ paths:
         url: https://canvas.instructure.com/doc/api/custom_gradebook_columns.html
 components:
   schemas:
+    ColumnDatum:
+      type: object
+      properties:
+        content:
+          type: string
+          example: Nut allergy
+        user_id:
+          type: integer
+          example: 2
+      description: ColumnDatum objects contain the entry for a column for each user.
     CustomColumn:
       type: object
       properties:
@@ -441,16 +451,6 @@ components:
           type: boolean
           example: true
           description: won't be editable in the gradebook UI
-    ColumnDatum:
-      type: object
-      properties:
-        content:
-          type: string
-          example: Nut allergy
-        user_id:
-          type: integer
-          example: 2
-      description: ColumnDatum objects contain the entry for a column for each user.
   securitySchemes:
     bearerAuth:
       type: http

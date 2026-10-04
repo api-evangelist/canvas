@@ -2645,6 +2645,26 @@ paths:
         url: https://canvas.instructure.com/doc/api/courses.html
 components:
   schemas:
+    CourseProgress:
+      type: object
+      properties:
+        requirement_count:
+          type: integer
+          example: 10
+          description: total number of requirements from all modules
+        requirement_completed_count:
+          type: integer
+          example: 1
+          description: total number of requirements the user has completed from all modules
+        next_requirement_url:
+          type: string
+          example: http://localhost/courses/1/modules/items/2
+          description: url to next module item that has an unmet requirement. null if the user has completed the course or the current module does not require sequential progress
+        completed_at:
+          type: string
+          format: date-time
+          example: '2013-06-01T00:00:00-06:00'
+          description: date the course was completed. null if the course has not been completed by this user
     Course:
       type: object
       properties:
@@ -2853,26 +2873,6 @@ components:
           type: boolean
           example: true
           description: 'optional: whether the course is set as a template (requires the Course Templates feature)'
-    CourseProgress:
-      type: object
-      properties:
-        requirement_count:
-          type: integer
-          example: 10
-          description: total number of requirements from all modules
-        requirement_completed_count:
-          type: integer
-          example: 1
-          description: total number of requirements the user has completed from all modules
-        next_requirement_url:
-          type: string
-          example: http://localhost/courses/1/modules/items/2
-          description: url to next module item that has an unmet requirement. null if the user has completed the course or the current module does not require sequential progress
-        completed_at:
-          type: string
-          format: date-time
-          example: '2013-06-01T00:00:00-06:00'
-          description: date the course was completed. null if the course has not been completed by this user
   securitySchemes:
     bearerAuth:
       type: http

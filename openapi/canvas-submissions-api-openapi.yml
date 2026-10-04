@@ -3831,35 +3831,6 @@ paths:
         url: https://canvas.instructure.com/doc/api/submissions.html
 components:
   schemas:
-    SubmissionComment:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 37
-        author_id:
-          type: integer
-          example: 134
-        author_name:
-          type: string
-          example: Toph Beifong
-        author:
-          type: string
-          example: '{}'
-          description: Abbreviated user object UserDisplay (see users API).
-        comment:
-          type: string
-          example: Well here's the thing...
-        created_at:
-          type: string
-          format: date-time
-          example: '2012-01-01T01:00:00Z'
-        edited_at:
-          type: string
-          format: date-time
-          example: '2012-01-02T01:00:00Z'
-        media_comment:
-          type: string
     Submission__submissions:
       type: object
       properties:
@@ -3986,6 +3957,35 @@ components:
           type: boolean
           example: 'true'
           description: This indicates whether the submission has been reassigned by the instructor.
+    SubmissionComment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 37
+        author_id:
+          type: integer
+          example: 134
+        author_name:
+          type: string
+          example: Toph Beifong
+        author:
+          type: string
+          example: '{}'
+          description: Abbreviated user object UserDisplay (see users API).
+        comment:
+          type: string
+          example: Well here's the thing...
+        created_at:
+          type: string
+          format: date-time
+          example: '2012-01-01T01:00:00Z'
+        edited_at:
+          type: string
+          format: date-time
+          example: '2012-01-02T01:00:00Z'
+        media_comment:
+          type: string
   securitySchemes:
     bearerAuth:
       type: http
