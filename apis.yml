@@ -4435,6 +4435,8 @@ apis:
   - type: DataModel
     url: data-model/canvas-data-model.yml
 common:
+- type: FinOps
+  url: finops/canvas-finops.yml
 - type: OAuthScopes
   url: scopes/canvas-scopes.yml
 - type: IssueTracker
