@@ -1,0 +1,4520 @@
+asyncapi: 2.6.0
+id: urn:com:instructure:canvas:live-events
+info:
+  title: Canvas LMS Live Events
+  version: 1.0.0
+  description: 'AsyncAPI description of the Canvas LMS Live Events surface. Live Events are emitted by Canvas when interesting
+    actions occur (course/assignment/submission/enrollment/discussion/module/outcome/file/SIS/conversation/quiz/wiki lifecycle
+    events, grade changes, logins, asset access, etc.). Customers subscribe via Canvas Data Services and choose a delivery
+    destination (AWS SQS queue or HTTPS webhook) and a payload format (Canvas JSON or Caliper IMS). HTTPS webhooks may optionally
+    sign payloads as JWTs whose signing keys are advertised at the Canvas JWKS endpoint. Live Events are suited for analytics
+    and data collection, not for use cases that require strictly up-to-date data — use the Canvas REST API for those.
+
+
+    Every event payload is an envelope of `{ metadata, body }`. Metadata fields vary based on whether the event is user-generated
+    (emitted directly from an HTTP request) or system-generated (emitted from an asynchronous job). Body fields are specific
+    to each event type and follow the schemas documented in canvas-lms doc/api/data_services.'
+  contact:
+    name: Instructure / Canvas LMS
+    url: https://canvas.instructure.com/doc/api/file.live_events.html
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+externalDocs:
+  description: Canvas Live Events documentation (Canvas LMS source)
+  url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services
+defaultContentType: application/json
+servers:
+  https-webhook:
+    url: '{webhook_url}'
+    protocol: https
+    description: Customer-operated HTTPS endpoint registered as a Canvas Live Events subscription. Each subscribed event triggers
+      a POST to this URL. If 'Sign Payload' is enabled, the POST body is a JWT whose claims contain the event JSON, signed
+      with keys advertised at https://8axpcl50e4.execute-api.us-east-1.amazonaws.com/main/jwks (keys rotate monthly; the endpoint
+      returns previous, current, and next JWKs).
+    variables:
+      webhook_url:
+        default: https://example.com/canvas/live-events
+        description: Fully qualified HTTPS webhook URL registered for this subscription.
+  aws-sqs:
+    url: '{sqs_url}'
+    protocol: sqs
+    description: Customer-operated AWS SQS queue (standard, not FIFO). Queue name must begin with 'canvas-live-events'. Queue
+      permissions must allow All SQS Actions for principal 636161780776 (Canvas's AWS account for Live Events delivery). IAM
+      key + secret + region may optionally be provided for cross-account auth.
+    variables:
+      sqs_url:
+        default: https://sqs.us-east-1.amazonaws.com/123456789012/canvas-live-events-example
+        description: AWS SQS queue URL.
+channels:
+  canvas/live-events:
+    description: Canvas Live Events stream. Subscriptions filter which event types are delivered to a destination. Each subscription
+      has its own destination (HTTPS webhook or AWS SQS queue) and is configured in Canvas Data Services with a payload format
+      (Canvas JSON or Caliper) and an event-type selection.
+    subscribe:
+      operationId: receiveLiveEvents
+      summary: Receive subscribed Canvas Live Events at the configured destination.
+      description: Canvas pushes events matching the subscription's event-type filter to the configured destination. HTTPS
+        subscriptions receive POST requests; SQS subscriptions receive messages on the configured queue. With the 'Sign Payload'
+        option on HTTPS webhooks, events are delivered as JWTs signed with rotating keys advertised at the Canvas JWKS endpoint.
+      message:
+        oneOf:
+        - $ref: '#/components/messages/AccountCreatedEvent'
+        - $ref: '#/components/messages/AccountNotificationCreatedEvent'
+        - $ref: '#/components/messages/AccountUpdatedEvent'
+        - $ref: '#/components/messages/AssetAccessedEvent'
+        - $ref: '#/components/messages/AssignmentCreatedEvent'
+        - $ref: '#/components/messages/AssignmentGroupCreatedEvent'
+        - $ref: '#/components/messages/AssignmentGroupUpdatedEvent'
+        - $ref: '#/components/messages/AssignmentOverrideCreatedEvent'
+        - $ref: '#/components/messages/AssignmentOverrideUpdatedEvent'
+        - $ref: '#/components/messages/AssignmentUpdatedEvent'
+        - $ref: '#/components/messages/AttachmentCreatedEvent'
+        - $ref: '#/components/messages/AttachmentDeletedEvent'
+        - $ref: '#/components/messages/AttachmentUpdatedEvent'
+        - $ref: '#/components/messages/ContentMigrationCompletedEvent'
+        - $ref: '#/components/messages/ConversationCreatedEvent'
+        - $ref: '#/components/messages/ConversationForwardedEvent'
+        - $ref: '#/components/messages/ConversationMessageCreatedEvent'
+        - $ref: '#/components/messages/CourseCompletedEvent'
+        - $ref: '#/components/messages/CourseCreatedEvent'
+        - $ref: '#/components/messages/CourseGradeChangeEvent'
+        - $ref: '#/components/messages/CourseProgressEvent'
+        - $ref: '#/components/messages/CourseSectionCreatedEvent'
+        - $ref: '#/components/messages/CourseSectionUpdatedEvent'
+        - $ref: '#/components/messages/CourseUpdatedEvent'
+        - $ref: '#/components/messages/DiscussionEntryCreatedEvent'
+        - $ref: '#/components/messages/DiscussionEntrySubmittedEvent'
+        - $ref: '#/components/messages/DiscussionTopicCreatedEvent'
+        - $ref: '#/components/messages/DiscussionTopicUpdatedEvent'
+        - $ref: '#/components/messages/EnrollmentCreatedEvent'
+        - $ref: '#/components/messages/EnrollmentStateCreatedEvent'
+        - $ref: '#/components/messages/EnrollmentStateUpdatedEvent'
+        - $ref: '#/components/messages/EnrollmentUpdatedEvent'
+        - $ref: '#/components/messages/FinalGradeCustomStatusEvent'
+        - $ref: '#/components/messages/GradeChangeEvent'
+        - $ref: '#/components/messages/GradeOverrideEvent'
+        - $ref: '#/components/messages/GroupCategoryCreatedEvent'
+        - $ref: '#/components/messages/GroupCategoryUpdatedEvent'
+        - $ref: '#/components/messages/GroupCreatedEvent'
+        - $ref: '#/components/messages/GroupMembershipCreatedEvent'
+        - $ref: '#/components/messages/GroupMembershipUpdatedEvent'
+        - $ref: '#/components/messages/GroupUpdatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeCreatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeGroupCreatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeGroupUpdatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeLinkCreatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeLinkUpdatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeResultCreatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeResultUpdatedEvent'
+        - $ref: '#/components/messages/LearningOutcomeUpdatedEvent'
+        - $ref: '#/components/messages/LoggedInEvent'
+        - $ref: '#/components/messages/LoggedOutEvent'
+        - $ref: '#/components/messages/LtiResourceLinkCreatedEvent'
+        - $ref: '#/components/messages/LtiResourceLinkUpdatedEvent'
+        - $ref: '#/components/messages/ModuleCreatedEvent'
+        - $ref: '#/components/messages/ModuleItemCreatedEvent'
+        - $ref: '#/components/messages/ModuleItemUpdatedEvent'
+        - $ref: '#/components/messages/ModuleUpdatedEvent'
+        - $ref: '#/components/messages/OutcomeCalculationMethodCreatedEvent'
+        - $ref: '#/components/messages/OutcomeCalculationMethodUpdatedEvent'
+        - $ref: '#/components/messages/OutcomeProficiencyCreatedEvent'
+        - $ref: '#/components/messages/OutcomeProficiencyUpdatedEvent'
+        - $ref: '#/components/messages/Outcomes.retryOutcomeAlignmentCloneEvent'
+        - $ref: '#/components/messages/PlagiarismResubmitEvent'
+        - $ref: '#/components/messages/QuizSubmittedEvent'
+        - $ref: '#/components/messages/RubricAssessedEvent'
+        - $ref: '#/components/messages/SisBatchCreatedEvent'
+        - $ref: '#/components/messages/SisBatchUpdatedEvent'
+        - $ref: '#/components/messages/SubmissionCommentCreatedEvent'
+        - $ref: '#/components/messages/SubmissionCreatedEvent'
+        - $ref: '#/components/messages/SubmissionCustomGradeStatusEvent'
+        - $ref: '#/components/messages/SubmissionUpdatedEvent'
+        - $ref: '#/components/messages/SyllabusUpdatedEvent'
+        - $ref: '#/components/messages/UserAccountAssociationCreatedEvent'
+        - $ref: '#/components/messages/UserCreatedEvent'
+        - $ref: '#/components/messages/UserUpdatedEvent'
+        - $ref: '#/components/messages/WikiPageCreatedEvent'
+        - $ref: '#/components/messages/WikiPageDeletedEvent'
+        - $ref: '#/components/messages/WikiPageUpdatedEvent'
+components:
+  messages:
+    AccountCreatedEvent:
+      name: account_created
+      title: AccountCreated
+      summary: The event is emitted anytime an account is created by an end user or API request.
+      description: Triggered anytime a new account is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AccountCreatedEventPayload'
+      tags:
+      - name: Account
+    AccountNotificationCreatedEvent:
+      name: account_notification_created
+      title: AccountNotificationCreated
+      summary: The event is emitted anytime an account level notification is created by and end user or API request.
+      description: Triggered anytime a new account notification is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AccountNotificationCreatedEventPayload'
+      tags:
+      - name: Account
+    AccountUpdatedEvent:
+      name: account_updated
+      title: AccountUpdated
+      summary: The event is emitted anytime an account is updated by an end user or API request.
+      description: Triggered anytime an existing account is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AccountUpdatedEventPayload'
+      tags:
+      - name: Account
+    AssetAccessedEvent:
+      name: asset_accessed
+      title: AssetAccessed
+      summary: '`asset_accessed` events are triggered for viewing various objects in Canvas. Viewing a quiz, a wiki page,
+        the list of quizzes, etc, all generate `asset_access` events. The item being accessed is identified by `asset_type`,
+        `asset_id`, and `asset_subtype`. If `asset_subtype` is set, then it refers to a list of items in the asset. For example,
+        if `asset_type` is `course`, and `asset_subtype` is `quizzes`, then this is referring to viewing the list of quizzes
+        in the course.
+
+
+        If `asset_subtype` is not set, then the access is on the asset described by `asset_type` and `asset_id`.'
+      description: Triggered when a variety of assets are viewed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssetAccessedEventPayload'
+      tags:
+      - name: AssetAccess
+    AssignmentCreatedEvent:
+      name: assignment_created
+      title: AssignmentCreated
+      summary: The event is emitted anytime a new assignment is created by an end user or API request.
+      description: Triggered when a new assignment is created in a course.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssignmentCreatedEventPayload'
+      tags:
+      - name: Assignment
+    AssignmentGroupCreatedEvent:
+      name: assignment_group_created
+      title: AssignmentGroupCreated
+      summary: The event is emitted anytime a new assignment group is created by an end user or API request.
+      description: Triggered when a new assignment group is created in a course.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssignmentGroupCreatedEventPayload'
+      tags:
+      - name: Assignment
+    AssignmentGroupUpdatedEvent:
+      name: assignment_group_updated
+      title: AssignmentGroupUpdated
+      summary: The event is emitted anytime an assignment group is updated by an end user or API request. Only changes to
+        the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a user or asynchronous job updates a new assignment group in a course context.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssignmentGroupUpdatedEventPayload'
+      tags:
+      - name: Assignment
+    AssignmentOverrideCreatedEvent:
+      name: assignment_override_created
+      title: AssignmentOverrideCreated
+      summary: The event is emitted anytime an assignment override is created by an end user or API request.
+      description: Triggered when an assignment override is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssignmentOverrideCreatedEventPayload'
+      tags:
+      - name: Assignment
+    AssignmentOverrideUpdatedEvent:
+      name: assignment_override_updated
+      title: AssignmentOverrideUpdated
+      summary: The event is emitted anytime an assignment override is updated by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when an assignment override has been modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssignmentOverrideUpdatedEventPayload'
+      tags:
+      - name: Assignment
+    AssignmentUpdatedEvent:
+      name: assignment_updated
+      title: AssignmentUpdated
+      summary: The event is emitted anytime an assignment is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      description: Triggered when an assignment has been modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AssignmentUpdatedEventPayload'
+      tags:
+      - name: Assignment
+    AttachmentCreatedEvent:
+      name: attachment_created
+      title: AttachmentCreated
+      summary: The event is emitted anytime a new file is uploaded by an end user or API request.
+      description: Triggered anytime a file is uploaded into a course or user file directory.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AttachmentCreatedEventPayload'
+      tags:
+      - name: Files
+    AttachmentDeletedEvent:
+      name: attachment_deleted
+      title: AttachmentDeleted
+      summary: The event is emitted anytime a file is removed by an end user or API request.
+      description: Triggered anytime a file is deleted from a course or user file directory.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AttachmentDeletedEventPayload'
+      tags:
+      - name: Files
+    AttachmentUpdatedEvent:
+      name: attachment_updated
+      title: AttachmentUpdated
+      summary: The event is emitted anytime a file is updated by an end user or API request. Only changes to the fields included
+        in the body of the event payload will emit the `updated` event.
+      description: Triggered anytime a file is updated in a course or user file directory.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AttachmentUpdatedEventPayload'
+      tags:
+      - name: Files
+    ContentMigrationCompletedEvent:
+      name: content_migration_completed
+      title: ContentMigrationCompleted
+      summary: The event is emitted anytime a content migration request is completed.
+      description: Triggered anytime a content migration request is completed.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ContentMigrationCompletedEventPayload'
+      tags:
+      - name: ContentMigration
+    ConversationCreatedEvent:
+      name: conversation_created
+      title: ConversationCreated
+      summary: The event is emitted anytime a new conversation is initiated by the sender.
+      description: Triggered when a new conversation is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ConversationCreatedEventPayload'
+      tags:
+      - name: Conversation
+    ConversationForwardedEvent:
+      name: conversation_forwarded
+      title: ConversationForwarded
+      summary: The event is emitted when a conversation is updated.
+      description: Triggered when a new user is added to a conversation
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ConversationForwardedEventPayload'
+      tags:
+      - name: Conversation
+    ConversationMessageCreatedEvent:
+      name: conversation_message_created
+      title: ConversationMessageCreated
+      summary: The event is emitted anytime a new conversation message is added to a conversation.
+      description: Triggered when a new conversation mesage is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ConversationMessageCreatedEventPayload'
+      tags:
+      - name: Conversation
+    CourseCompletedEvent:
+      name: course_completed
+      title: CourseCompleted
+      summary: The event is emitted when all of the module requirements in a course are met.
+      description: Triggered when all the module requirements of a course have been met. Also gets triggered when a module
+        has a set completion time or when the completion time gets updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseCompletedEventPayload'
+      tags:
+      - name: Course
+    CourseCreatedEvent:
+      name: course_created
+      title: CourseCreated
+      summary: The event is emitted anytime a new course is created by an end user or API request.
+      description: Triggered when a new course is created (or copied).
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseCreatedEventPayload'
+      tags:
+      - name: Course
+    CourseGradeChangeEvent:
+      name: course_grade_change
+      title: CourseGradeChange
+      summary: The event gets emitted anytime any of the course scores are changed for a student.
+      description: Triggered when anything (a user or asynchronous job) updates the final_score, course_score, unposted_current_score,
+        or unposted_final_score columns in the scores table in the database.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseGradeChangeEventPayload'
+      tags:
+      - name: Grades
+    CourseProgressEvent:
+      name: course_progress
+      title: CourseProgress
+      summary: The event is emitted when a course module requirement is met.
+      description: 'Triggered when a user makes progress in a course by completing a module requirement, unless the completed
+        requirement is the last remaining requirement in the course (in this case, a `course_completed` event is emitted).
+        The following setup should be enabled in Canvas in order for this event to get triggered:
+
+        1. Module is set to be published
+
+        2. Module has at least one requirement enabled
+
+        3. Student completed at least one requirement in Module
+
+
+        Note that these events have a 2-minute debounce, meaning that a single `course_progress` event will be emitted per
+        student per course 2 minutes after the student has finished completing requirements.'
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseProgressEventPayload'
+      tags:
+      - name: Course
+    CourseSectionCreatedEvent:
+      name: course_section_created
+      title: CourseSectionCreated
+      summary: The event is emitted anytime a new course section is created by an end user or API request.
+      description: Triggered when a new section is created in a course.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseSectionCreatedEventPayload'
+      tags:
+      - name: Course
+    CourseSectionUpdatedEvent:
+      name: course_section_updated
+      title: CourseSectionUpdated
+      summary: The event is emitted anytime a course section is updated by an end user or API request. Only changes to the
+        fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a course section has been modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseSectionUpdatedEventPayload'
+      tags:
+      - name: Course
+    CourseUpdatedEvent:
+      name: course_updated
+      title: CourseUpdated
+      summary: The event is emitted anytime a course is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      description: Triggered when the course is renamed, deleted, or other properties (except for syllabus) of a course are
+        modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CourseUpdatedEventPayload'
+      tags:
+      - name: Course
+    DiscussionEntryCreatedEvent:
+      name: discussion_entry_created
+      title: DiscussionEntryCreated
+      summary: The event is emitted anytime an end user or a system replies to a discussion topic or thread.
+      description: Triggered when a user replies to the discussion topic or thread.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DiscussionEntryCreatedEventPayload'
+      tags:
+      - name: Discussion
+    DiscussionEntrySubmittedEvent:
+      name: discussion_entry_submitted
+      title: DiscussionEntrySubmitted
+      summary: The event is emitted anytime a user or system replies to a graded discussion topic.
+      description: Triggered when a user replies to a graded discussion topic or discussion thread.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DiscussionEntrySubmittedEventPayload'
+      tags:
+      - name: Discussion
+    DiscussionTopicCreatedEvent:
+      name: discussion_topic_created
+      title: DiscussionTopicCreated
+      summary: The event is emitted anytime an new discussion topic is created by an end user or API request.
+      description: Triggered when a new discussion topic is created in a course. Also triggered when a new course announcement
+        is created with `is_announcement` set to TRUE.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DiscussionTopicCreatedEventPayload'
+      tags:
+      - name: Discussion
+    DiscussionTopicUpdatedEvent:
+      name: discussion_topic_updated
+      title: DiscussionTopicUpdated
+      summary: The event is emitted anytime a discussion topic or course announcement is updated by an end user or API request.
+        Only changes to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a discussion topic is modified in a course. Also triggered when a course announcement is
+        modified in a course.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DiscussionTopicUpdatedEventPayload'
+      tags:
+      - name: Discussion
+    EnrollmentCreatedEvent:
+      name: enrollment_created
+      title: EnrollmentCreated
+      summary: The event is emitted anytime a new enrollment is added to a course by an end user or API request.
+      description: Triggered when a new course enrollment is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EnrollmentCreatedEventPayload'
+      tags:
+      - name: Enrollment
+    EnrollmentStateCreatedEvent:
+      name: enrollment_state_created
+      title: EnrollmentStateCreated
+      summary: The event is emitted anytime a new enrollment record is added to a course.
+      description: Triggered when a new course enrollment is created with a new workflow_state.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EnrollmentStateCreatedEventPayload'
+      tags:
+      - name: Enrollment
+    EnrollmentStateUpdatedEvent:
+      name: enrollment_state_updated
+      title: EnrollmentStateUpdated
+      summary: The event is emitted anytime an enrollment record workflow state changes.
+      description: Triggered when a course enrollment workflow_state changes.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EnrollmentStateUpdatedEventPayload'
+      tags:
+      - name: Enrollment
+    EnrollmentUpdatedEvent:
+      name: enrollment_updated
+      title: EnrollmentUpdated
+      summary: The event is emitted anytime an enrollment record is updated by an end user or API request. Only changes to
+        the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a course enrollment is modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/EnrollmentUpdatedEventPayload'
+      tags:
+      - name: Enrollment
+    FinalGradeCustomStatusEvent:
+      name: final_grade_custom_status
+      title: FinalGradeCustomStatus
+      summary: The event gets emitted when a custom status is removed or applied to a student's final grade.
+      description: Triggered when a custom status is applied or removed from a student's final grade.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/FinalGradeCustomStatusEventPayload'
+      tags:
+      - name: Grades
+    GradeChangeEvent:
+      name: grade_change
+      title: GradeChange
+      summary: The event is emitted anytime when a submission is graded. These can happen as the result of a teacher changing
+        a grade in the gradebook or speedgrader, a quiz being automatically scored, or changing an assignment's points possible
+        or grade type. In the case of a quiz being scored, the `grade_change` event will be emitted as the result of a student
+        turning in a quiz, and the `user_id` in the message attributes will be the student's user ID.
+      description: Triggered anytime a grade is created or modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GradeChangeEventPayload'
+      tags:
+      - name: Grades
+    GradeOverrideEvent:
+      name: grade_override
+      title: GradeOverride
+      summary: The event is emitted anytime a student course grade is overriden. Typically grade override feature is used
+        to edit student course grade
+      description: Triggered when the final grade override has been changed. Only triggered when the override changes the
+        existing score.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GradeOverrideEventPayload'
+      tags:
+      - name: Grades
+    GroupCategoryCreatedEvent:
+      name: group_category_created
+      title: GroupCategoryCreated
+      summary: The event is emitted anytime a new group category is added to a course group by an end user or API request.
+      description: Triggered when a new group category is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GroupCategoryCreatedEventPayload'
+      tags:
+      - name: Group
+    GroupCategoryUpdatedEvent:
+      name: group_category_updated
+      title: GroupCategoryUpdated
+      summary: The event is emitted anytime a group category is updated by an end user or API request. Only changes to the
+        fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a group category is modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GroupCategoryUpdatedEventPayload'
+      tags:
+      - name: Group
+    GroupCreatedEvent:
+      name: group_created
+      title: GroupCreated
+      summary: The event is emitted anytime a new group is added to a course by an end user or API request.
+      description: Triggered when a new group is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GroupCreatedEventPayload'
+      tags:
+      - name: Group
+    GroupMembershipCreatedEvent:
+      name: group_membership_created
+      title: GroupMembershipCreated
+      summary: The event is emitted anytime a new member is added to a course group by an end user or API request.
+      description: Triggered when a new user is added to a group.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GroupMembershipCreatedEventPayload'
+      tags:
+      - name: Group
+    GroupMembershipUpdatedEvent:
+      name: group_membership_updated
+      title: GroupMembershipUpdated
+      summary: The event is emitted anytime an existing group membership  is updated by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a existing group membership is modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GroupMembershipUpdatedEventPayload'
+      tags:
+      - name: Group
+    GroupUpdatedEvent:
+      name: group_updated
+      title: GroupUpdated
+      summary: The event is emitted anytime an existing group is updated by an end user or API request. Only changes to the
+        fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a group is modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/GroupUpdatedEventPayload'
+      tags:
+      - name: Group
+    LearningOutcomeCreatedEvent:
+      name: learning_outcome_created
+      title: LearningOutcomeCreated
+      summary: The event is emitted anytime a outcome is created in the account by an end user or API request.
+      description: Triggered when a new learning outcome is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeCreatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeGroupCreatedEvent:
+      name: learning_outcome_group_created
+      title: LearningOutcomeGroupCreated
+      summary: The event is emitted anytime a new outcome group is created in the account by an end user or API request.
+      description: Triggered when a new group of learning outcomes is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeGroupCreatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeGroupUpdatedEvent:
+      name: learning_outcome_group_updated
+      title: LearningOutcomeGroupUpdated
+      summary: The event is emitted anytime an existing outcome group  is updated by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a group of learning outcomes is modified.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeGroupUpdatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeLinkCreatedEvent:
+      name: learning_outcome_link_created
+      title: LearningOutcomeLinkCreated
+      summary: The event is emitted anytime an outcome is linked to a context by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when an outcome is linked inside of a context.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeLinkCreatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeLinkUpdatedEvent:
+      name: learning_outcome_link_updated
+      title: LearningOutcomeLinkUpdated
+      summary: The event is emitted anytime an outcome context link is changed by an end user or API request.
+      description: Triggered when an outcome link is changed inside of a context.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeLinkUpdatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeResultCreatedEvent:
+      name: learning_outcome_result_created
+      title: LearningOutcomeResultCreated
+      summary: 'The event is emitted anytime a submission is assessed against an outcome. The following setup should be enabled
+        in Canvas in order for the event to be triggered:
+
+        1. Administrator has set up learning outcomes at the account/sub-account level
+
+        2. Instructor has added outcome to assignment rubric
+
+        3. Student submitted a rubric based assignment
+
+        4. Instructor graded a rubric based assignment at the outcome level => there is a result associated with assignment
+        outcome'
+      description: Triggered when a submission is rated against an outcome.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeResultCreatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeResultUpdatedEvent:
+      name: learning_outcome_result_updated
+      title: LearningOutcomeResultUpdated
+      summary: The event is emitted anytime a existing outcome rating for a submission is updated. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a submission outcome rating is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeResultUpdatedEventPayload'
+      tags:
+      - name: Outcomes
+    LearningOutcomeUpdatedEvent:
+      name: learning_outcome_updated
+      title: LearningOutcomeUpdated
+      summary: The event is emitted anytime an outcome is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      description: Triggered when an outcome is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LearningOutcomeUpdatedEventPayload'
+      tags:
+      - name: Outcomes
+    LoggedInEvent:
+      name: logged_in
+      title: LoggedIn
+      summary: The event is emitted anytime an end user logs into Canvas
+      description: Triggered when a user has logged in.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LoggedInEventPayload'
+      tags:
+      - name: Session
+    LoggedOutEvent:
+      name: logged_out
+      title: LoggedOut
+      summary: The event is emitted anytime an end user logs out of Canvas
+      description: Triggered when a user has logged out.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LoggedOutEventPayload'
+      tags:
+      - name: Session
+    LtiResourceLinkCreatedEvent:
+      name: lti_resource_link_created
+      title: LtiResourceLinkCreated
+      summary: The event is emitted any time a new resource link is created during LTI 1.3 Deep Linking.
+      description: Triggered when a new LTI resource link is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LtiResourceLinkCreatedEventPayload'
+      tags:
+      - name: LTI
+    LtiResourceLinkUpdatedEvent:
+      name: lti_resource_link_updated
+      title: LtiResourceLinkUpdated
+      summary: The event is emitted any time an existing resource link is updated via API request.
+      description: Triggered when an existing LTI resource link is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/LtiResourceLinkUpdatedEventPayload'
+      tags:
+      - name: LTI
+    ModuleCreatedEvent:
+      name: module_created
+      title: ModuleCreated
+      summary: The event is emitted anytime a new module is created by an end user or API request.
+      description: Triggered when a new module is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ModuleCreatedEventPayload'
+      tags:
+      - name: Module
+    ModuleItemCreatedEvent:
+      name: module_item_created
+      title: ModuleItemCreated
+      summary: The event is emitted anytime a new module item is added to a module by an end user or API request.
+      description: Triggered when a new module item is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ModuleItemCreatedEventPayload'
+      tags:
+      - name: Module
+    ModuleItemUpdatedEvent:
+      name: module_item_updated
+      title: ModuleItemUpdated
+      summary: The event is emitted anytime a module item is updated in a module by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a new module item is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ModuleItemUpdatedEventPayload'
+      tags:
+      - name: Module
+    ModuleUpdatedEvent:
+      name: module_updated
+      title: ModuleUpdated
+      summary: The event is emitted anytime a module is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a new module is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ModuleUpdatedEventPayload'
+      tags:
+      - name: Module
+    OutcomeCalculationMethodCreatedEvent:
+      name: outcome_calculation_method_created
+      title: OutcomeCalculationMethodCreated
+      summary: The event is emitted anytime a new outcome_calculation_method is created by an end user or API request.
+      description: Triggered when a new outcome_calculation_method is saved.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OutcomeCalculationMethodCreatedEventPayload'
+      tags:
+      - name: Outcomes
+    OutcomeCalculationMethodUpdatedEvent:
+      name: outcome_calculation_method_updated
+      title: OutcomeCalculationMethodUpdated
+      summary: The event is emitted anytime an outcome_calculation_method is updated by an end user or API request.
+      description: Triggered when an outcome_calculation_method is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OutcomeCalculationMethodUpdatedEventPayload'
+      tags:
+      - name: Outcomes
+    OutcomeProficiencyCreatedEvent:
+      name: outcome_proficiency_created
+      title: OutcomeProficiencyCreated
+      summary: The event is emitted anytime a new outcome_proficiency (mastery scale) is created by an end user or API request.
+      description: Triggered when a new outcome_proficiency is saved.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OutcomeProficiencyCreatedEventPayload'
+      tags:
+      - name: Outcomes
+    OutcomeProficiencyUpdatedEvent:
+      name: outcome_proficiency_updated
+      title: OutcomeProficiencyUpdated
+      summary: The event is emitted anytime an outcome_proficiency (mastery scale) is updated or its associated ratings are
+        updated by an end user or API request.
+      description: Triggered when an outcome_proficiency is saved.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OutcomeProficiencyUpdatedEventPayload'
+      tags:
+      - name: Outcomes
+    Outcomes.retryOutcomeAlignmentCloneEvent:
+      name: outcomes.retry_outcome_alignment_clone
+      title: Outcomes.retryOutcomeAlignmentClone
+      summary: The event is emitted anytime an outcome alignment clone process is retried, this can happend due to a network
+        issue or a missing alignment
+      description: Manually triggered by the user
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/Outcomes.retryOutcomeAlignmentCloneEventPayload'
+      tags:
+      - name: Other
+    PlagiarismResubmitEvent:
+      name: plagiarism_resubmit
+      title: PlagiarismResubmit
+      summary: The event is emitted anytime a submission is created for an assignment with plagiarism settings turned on.
+      description: Triggered when a submission is resubmitted.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PlagiarismResubmitEventPayload'
+      tags:
+      - name: Plagiarism
+    QuizSubmittedEvent:
+      name: quiz_submitted
+      title: QuizSubmitted
+      summary: The event is emitted anytime a user submits a quiz assignment in Canvas [old quizzes].
+      description: Triggered when a user submits a quiz assignment [old quizzes].
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/QuizSubmittedEventPayload'
+      tags:
+      - name: Quiz
+    RubricAssessedEvent:
+      name: rubric_assessed
+      title: RubricAssessed
+      summary: The event is emitted anytime a rubric is assessed that is aligned to an active rubric association.
+      description: Triggered anytime a rubric is assessed that is aligned to an active rubric association.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/RubricAssessedEventPayload'
+      tags:
+      - name: Rubric
+    SisBatchCreatedEvent:
+      name: sis_batch_created
+      title: SisBatchCreated
+      summary: The event is emitted when a new SIS import is created.
+      description: Triggered when a user or API call imported a new SIS csv file.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SisBatchCreatedEventPayload'
+      tags:
+      - name: SIS
+    SisBatchUpdatedEvent:
+      name: sis_batch_updated
+      title: SisBatchUpdated
+      summary: The event is emitted when a newly created SIS import status changes.
+      description: Triggered when workflow_state state changes for a newly created SIS import.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SisBatchUpdatedEventPayload'
+      tags:
+      - name: SIS
+    SubmissionCommentCreatedEvent:
+      name: submission_comment_created
+      title: SubmissionCommentCreated
+      summary: The event is emitted anytime an end user or API request comments on a submission.
+      description: Triggered when a new comment is added to a submission.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SubmissionCommentCreatedEventPayload'
+      tags:
+      - name: Submission
+    SubmissionCreatedEvent:
+      name: submission_created
+      title: SubmissionCreated
+      summary: The event is emitted anytime an end user or API request submits or re-submits an assignment. This applies to
+        assignments and new quizzes, not classic quizzes. Use quiz_submitted for classic quiz submissions.
+      description: Triggered when an assignment or new quizzes submission gets updated and has not yet been submitted.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SubmissionCreatedEventPayload'
+      tags:
+      - name: Submission
+    SubmissionCustomGradeStatusEvent:
+      name: submission_custom_grade_status
+      title: SubmissionCustomGradeStatus
+      summary: The event gets emitted when a custom status is removed or applied to a student's submission.
+      description: Triggered when a custom status is applied or removed from a student's submission.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SubmissionCustomGradeStatusEventPayload'
+      tags:
+      - name: Submission
+    SubmissionUpdatedEvent:
+      name: submission_updated
+      title: SubmissionUpdated
+      summary: The event is emitted anytime an end user or API request modifies a submitted assignment or when a Teacher grades
+        an assignment.
+      description: Triggered when a submission gets updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SubmissionUpdatedEventPayload'
+      tags:
+      - name: Submission
+    SyllabusUpdatedEvent:
+      name: syllabus_updated
+      title: SyllabusUpdated
+      summary: The event is emitted anytime a syllabus is changed in a course by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      description: Triggered when a course syllabus gets updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SyllabusUpdatedEventPayload'
+      tags:
+      - name: Course
+    UserAccountAssociationCreatedEvent:
+      name: user_account_association_created
+      title: UserAccountAssociationCreated
+      summary: The event is emitted anytime a user is created in an account.
+      description: Triggered when a user is added to an account.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserAccountAssociationCreatedEventPayload'
+      tags:
+      - name: User
+    UserCreatedEvent:
+      name: user_created
+      title: UserCreated
+      summary: The event is emitted anytime a user is added to an account.
+      description: Triggered when a new user is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserCreatedEventPayload'
+      tags:
+      - name: User
+    UserUpdatedEvent:
+      name: user_updated
+      title: UserUpdated
+      summary: The event is emitted anytime a user details are updated. Only changes to the fields included in the body of
+        the event payload will emit the `updated` event. The metadata of the event payload will list a user or process that
+        updated the user profile details and the body of the event will list a user details that were updated.
+      description: Triggered when a user record is updated.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserUpdatedEventPayload'
+      tags:
+      - name: User
+    WikiPageCreatedEvent:
+      name: wiki_page_created
+      title: WikiPageCreated
+      summary: The event is emitted anytime a new wiki page is created by an end user or API request.
+      description: Triggered when a new wiki page is created.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WikiPageCreatedEventPayload'
+      tags:
+      - name: Wiki
+    WikiPageDeletedEvent:
+      name: wiki_page_deleted
+      title: WikiPageDeleted
+      summary: The event is emitted anytime a wiki page is deleted by an end user or API request.
+      description: Triggered when a wiki page is deleted.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WikiPageDeletedEventPayload'
+      tags:
+      - name: Wiki
+    WikiPageUpdatedEvent:
+      name: wiki_page_updated
+      title: WikiPageUpdated
+      summary: The event is emitted anytime a wiki page is altered by an end user or API request.
+      description: Triggered when title, body, or workflow_state of wiki page is altered.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/WikiPageUpdatedEventPayload'
+      tags:
+      - name: Wiki
+  schemas:
+    Metadata:
+      type: object
+      title: Metadata
+      description: Metadata included in each event. Exact fields vary by event type and whether the event is system- or user-
+        generated.
+      required:
+      - event_name
+      - event_time
+      - producer
+      - root_account_id
+      - root_account_uuid
+      properties:
+        client_ip:
+          type: string
+          description: The client IP address of the request that triggered the event. Only present in user-generated events.
+        context_account_id:
+          type: string
+          description: The account id of the current context. This is the actual account the context is attached to.
+        context_id:
+          type: string
+          description: The Canvas id of the current context.
+        context_role:
+          type: string
+          description: The role of the current user in the current context.
+        context_sis_source_id:
+          type: string
+          description: SIS source id of the current context.
+        context_type:
+          type: string
+          description: The type of context where the event happened.
+        developer_key_id:
+          type: string
+          description: The id of the Developer Key used to create the access token for user. Only available for events triggered
+            by an external tool.
+        event_name:
+          type: string
+          description: The event type.
+        event_time:
+          type: string
+          format: date-time
+          description: The time that Canvas emitted the event, in ISO 8601 format with millisecond precision.
+        hostname:
+          type: string
+          description: The domain of the Canvas instance for the request. Only present in user-generated events.
+        http_method:
+          type: string
+          description: HTTP method/verb (GET, PUT, POST etc.) that the request was sent with. Only present in user-generated
+            events.
+        job_id:
+          type: string
+          description: The identifier for the asynchronous job. Only present in system-generated events (events emitted in
+            an asynchronous job, not an HTTP request).
+        job_tag:
+          type: string
+          description: A string identifying the type of job being performed. Only present in system-generated events (events
+            emitted in an asynchronous job, not an HTTP request).
+        producer:
+          type: string
+          description: Always "canvas".
+        real_user_id:
+          type: string
+          description: If the current user is being masqueraded, this is the Canvas id of the masquerading user. Only present
+            in user-generated events.
+        referrer:
+          type: string
+          description: URL of the page the user clicked to get to the current page. Only present in user-generated events.
+        request_id:
+          type: string
+          description: The identifier for this request. Correlates to Canvas Data table Requests.id. Only present in user-generated
+            events.
+        root_account_id:
+          type: string
+          description: The Canvas id of the root account associated with the context of the job.
+        root_account_lti_guid:
+          type: string
+          description: The Canvas lti_guid of the root account associated with the context of the job.
+        root_account_uuid:
+          type: string
+          description: The Canvas uuid of the root account associated with the context of the job.
+        session_id:
+          type: string
+          description: The session identifier for this request. Can be used to correlate events in the same session for a
+            user. Only present in user-generated events.
+        time_zone:
+          type: string
+          description: Time zone of the currently logged in user. Only present in user-generated events (events emitted directly
+            from an HTTP request).
+        url:
+          type: string
+          description: The URL of the request that triggered the event. Only present in user-generated events.
+        user_account_id:
+          type: string
+          description: The Canvas id of the account that the current user belongs to. Only present in user-generated events
+            (events emitted directly from an HTTP request).
+        user_agent:
+          type: string
+          description: The User-Agent sent by the browser making the request. Only present in user-generated events.
+        user_id:
+          type: string
+          description: The Canvas id of the currently logged in user.
+        user_login:
+          type: string
+          description: The login of the current user. Only present in user-generated events (events emitted directly from
+            an HTTP request).
+        user_sis_id:
+          type: string
+          description: The SIS id of the user. Only present in user-generated events (events emitted directly from an HTTP
+            request).
+    AccountCreatedEventPayload:
+      type: object
+      title: AccountCreated
+      description: The event is emitted anytime an account is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the account_created Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Canvas id of the account.
+            default_locale:
+              type: string
+              description: The default locale of the account.
+            default_time_zone:
+              type: string
+              format: date-time
+              description: The default time zone of the account.
+            domain:
+              type: string
+              description: The Canvas domain of the root account of the account.
+            external_status:
+              type: string
+              description: The external status of the account.
+            name:
+              type: string
+              description: The name of the account.
+            parent_account_id:
+              type: string
+              description: The id of the Canvas parent account of the created account.
+            root_account_id:
+              type: string
+              description: The id of the Canvas root account the created account belongs to.
+            root_account_uuid:
+              type: string
+              description: The uuid of the Canvas root account the created account belongs to.
+            workflow_state:
+              type: string
+              description: The workflow state of the account.
+    AccountNotificationCreatedEventPayload:
+      type: object
+      title: AccountNotificationCreated
+      description: The event is emitted anytime an account level notification is created by and end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the account_notification_created Live Event.
+          properties:
+            account_notification_id:
+              type: string
+              description: The Canvas id of the account notification.
+            end_at:
+              type: string
+              format: date-time
+              description: When to expire the notification.
+            icon:
+              type: string
+              description: The icon to display with the message.  Defaults to warning.
+            message:
+              type: string
+              description: 'The message to be sent in the notification. NOTE: This field will be truncated to only include
+                the first 8192 characters.'
+            start_at:
+              type: string
+              format: date-time
+              description: When to send out the notification.
+            subject:
+              type: string
+              description: 'The subject of the notification. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+    AccountUpdatedEventPayload:
+      type: object
+      title: AccountUpdated
+      description: The event is emitted anytime an account is updated by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the account_updated Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Canvas id of the account.
+            default_locale:
+              type: string
+              description: The default locale of the account.
+            default_time_zone:
+              type: string
+              format: date-time
+              description: The default time zone of the account.
+            domain:
+              type: string
+              description: The Canvas domain of the root account of the account.
+            external_status:
+              type: string
+              description: The external status of the account.
+            name:
+              type: string
+              description: The name of the account.
+            parent_account_id:
+              type: string
+              description: The id of the Canvas parent account of the created account.
+            root_account_id:
+              type: string
+              description: The id of the Canvas root account the created account belongs to.
+            root_account_uuid:
+              type: string
+              description: The uuid of the Canvas root account the created account belongs to.
+            workflow_state:
+              type: string
+              description: The workflow state of the account.
+    AssetAccessedEventPayload:
+      type: object
+      title: AssetAccessed
+      description: '`asset_accessed` events are triggered for viewing various objects in Canvas. Viewing a quiz, a wiki page,
+        the list of quizzes, etc, all generate `asset_access` events. The item being accessed is identified by `asset_type`,
+        `asset_id`, and `asset_subtype`. If `asset_subtype` is set, then it refers to a list of items in the asset. For example,
+        if `asset_type` is `course`, and `asset_subtype` is `quizzes`, then this is referring to viewing the list of quizzes
+        in the course.
+
+
+        If `asset_subtype` is not set, then the access is on the asset described by `asset_type` and `asset_id`.'
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the asset_accessed Live Event.
+          properties:
+            asset_id:
+              type: string
+              description: The Canvas id of the asset.
+            asset_name:
+              type: string
+              description: The title of a course, page, module, assignment, LTI, attachment etc.
+            asset_subtype:
+              type: string
+              description: The sub type of asset being accessed.
+            asset_type:
+              type: string
+              description: The type of asset being accessed.
+            category:
+              type: string
+              description: A categorized list of values based on the asset or asset subtype accessed. (announcements, assignments,
+                calendar, collaborations, conferences, external_tools, external_urls, files, grades, home, modules, outcomes,
+                pages, quizzes, roster, syllabus, topics, wiki)
+            display_name:
+              type: string
+              description: The display name of the attachment, possibly truncated.
+            domain:
+              type: string
+              description: The domain of the LTI tool, when subtype is context_external_tool.
+            filename:
+              type: string
+              description: The file name of the attachment, possibly truncated.
+            level:
+              type: string
+              description: Usually null, can be used to indicate a deeper level of access. Can be "submit" for assignments.
+                Can be "participate" for collaboration, calendar, discussion_topic (user posts to topic), quizzes:quiz, web_conference,
+                or wiki_page (page created or edited).
+            role:
+              type: string
+              description: The role of the user accessing the asset. (AccountUser, DesignerEnrollment, GroupMembership, ObserverEnrollment,
+                StudentEnrollment, StudentViewEnrollment, TaEnrollment, TeacherEnrollment, User)
+            url:
+              type: string
+              description: The URL of the LTI tool, when subtype is context_external_tool.
+    AssignmentCreatedEventPayload:
+      type: object
+      title: AssignmentCreated
+      description: The event is emitted anytime a new assignment is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the assignment_created Live Event.
+          properties:
+            assignment_group_id:
+              type: string
+              description: The Canvas id of the assignment group.
+            assignment_id:
+              type: string
+              description: The Canvas id of the new assignment.
+            assignment_id_duplicated__from:
+              type: string
+              description: The Canvas id of the original assignment.  Present if new assigment is a copy.
+            context_id:
+              type: string
+              description: The type of context the assignment is used in.
+            context_type:
+              type: string
+              description: The type of context the assignment is used in.
+            context_uuid:
+              type: string
+              description: The uuid of the context associated with the assignment.
+            created_on_blueprint_sync:
+              type: boolean
+              description: Whether or not the assignment was created in the context of a blueprint sync.
+            description:
+              type: string
+              description: 'The description of the assignment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            domain:
+              type: string
+              description: The Canvas domain of the root account of the assignment.
+            domain_duplicated_from:
+              type: string
+              description: The Canvas domain of the root account of the original assignment. Present if new assigment is a
+                copy.
+            due_at:
+              type: string
+              format: date-time
+              description: The due date for the assignment.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (assignment is locked after this date).
+            lti_assignment_id:
+              type: string
+              description: The LTI assignment guid for the assignment.
+            lti_resource_link_id:
+              type: string
+              description: The unique identifier of the assignment resource in the LTI specification. Unique per Canvas shard.
+            lti_resource_link_id_duplicated_from:
+              type: string
+              description: The LTI resource link ID of the original assignment. Present if new assigment is a copy.
+            points_possible:
+              type: number
+              description: The maximum points possible for the assignment.
+            submission_types:
+              type: array
+              items:
+                type: string
+              description: 'Valid methods for submitting the assignment, may include multiple comma separated options of:
+                discussion_topic, external_tool, media_recording, none, not_graded, online_quiz, online_text_entry, online_upload,
+                online_url, on_paper.'
+            title:
+              type: string
+              description: 'The title of the assignment. NOTE: This field will be truncated to only include the first 8192
+                characters.'
+            unlock_at:
+              type: string
+              format: date-time
+              description: The unlock date (assignment is unlocked after this date).
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this assignment was last modified in any way.
+            workflow_state:
+              type: string
+              description: 'Workflow state of the assignment. E.g duplicating, fail_to_import, failed_to_duplicate, published,
+                unpublished. See API documentation for more details. '
+    AssignmentGroupCreatedEventPayload:
+      type: object
+      title: AssignmentGroupCreated
+      description: The event is emitted anytime a new assignment group is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the assignment_group_created Live Event.
+          properties:
+            assignment_group_id:
+              type: string
+              description: The Canvas id of the new assignment group.
+            context_id:
+              type: string
+              description: The Canvas context id of the new assignment group.
+            context_type:
+              type: string
+              description: The context type of the new assignment group.
+            group_weight:
+              type: string
+              description: The group weight of the new assignment group.
+            integration_data:
+              type: string
+              description: Integration data for the new assignment group.
+            name:
+              type: string
+              description: The name of the new assignment group.
+            position:
+              type: integer
+              description: The position of the new assignment group on the assignments page.
+            rules:
+              type: string
+              description: Rules for the new assignment group.
+            sis_source_id:
+              type: string
+              description: The SIS source id of the new assignment group.
+            workflow_state:
+              type: string
+              description: Workflow state of the assignment group.
+    AssignmentGroupUpdatedEventPayload:
+      type: object
+      title: AssignmentGroupUpdated
+      description: The event is emitted anytime an assignment group is updated by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the assignment_group_updated Live Event.
+          properties:
+            assignment_group_id:
+              type: string
+              description: The Canvas id of the updated assignment group.
+            context_id:
+              type: string
+              description: The Canvas context id of the updated assignment group.
+            context_type:
+              type: string
+              description: The context type of the updated assignment group.
+            group_weight:
+              type: string
+              description: The group weight of the updated assignment group.
+            integration_data:
+              type: string
+              description: Integration data for the updated assignment group.
+            name:
+              type: string
+              description: The name of the updated assignment group.
+            position:
+              type: integer
+              description: The position of the updated assignment group.
+            rules:
+              type: string
+              description: Rules for the updated assignment group.
+            sis_source_id:
+              type: string
+              description: The SIS source id of the updated assignment group.
+            workflow_state:
+              type: string
+              description: Workflow state of the assignment group.
+    AssignmentOverrideCreatedEventPayload:
+      type: object
+      title: AssignmentOverrideCreated
+      description: The event is emitted anytime an assignment override is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the assignment_override_created Live Event.
+          properties:
+            all_day:
+              type: boolean
+              description: The overridden all_day flag, or nil if not overridden.
+            all_day_date:
+              type: string
+              description: The overridden all_day_date, or nil if not overridden.
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment linked to the override.
+            assignment_override_id:
+              type: string
+              description: The Canvas id of the assignment override.
+            course_section_id:
+              type: string
+              description: (if `type='CourseSection'`) Canvas section id that this override applies to.
+            due_at:
+              type: string
+              format: date-time
+              description: The override due_at timestamp, or nil if not overridden.
+            group_id:
+              type: string
+              description: (if `type='Group'`) Canvas group id that this override applies to.
+            lock_at:
+              type: string
+              format: date-time
+              description: The overridden lock_at timestamp, or nil if not overridden.
+            type:
+              type: string
+              description: Override type - `ADHOC` (list of Students), `CourseSection`, or `Group`.
+            unlock_at:
+              type: string
+              format: date-time
+              description: The overridden unlock_at timestamp, or nil if not overridden.
+            workflow_state:
+              type: string
+              description: Workflow state of the override. (active, deleted)
+    AssignmentOverrideUpdatedEventPayload:
+      type: object
+      title: AssignmentOverrideUpdated
+      description: The event is emitted anytime an assignment override is updated by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the assignment_override_updated Live Event.
+          properties:
+            all_day:
+              type: boolean
+              description: The overridden all_day flag, or nil if not overridden.
+            all_day_date:
+              type: string
+              description: The overridden all_day_date, or nil if not overridden.
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment linked to the override.
+            assignment_override_id:
+              type: string
+              description: The Canvas id of the assignment override.
+            course_section_id:
+              type: string
+              description: (if `type='CourseSection'`) Canvas section id that this override applies to.
+            due_at:
+              type: string
+              format: date-time
+              description: The override due_at timestamp, or nil if not overridden.
+            group_id:
+              type: string
+              description: (if `type='Group'`) Canvas group id that this override applies to.
+            lock_at:
+              type: string
+              format: date-time
+              description: The overridden lock_at timestamp, or nil if not overridden.
+            type:
+              type: string
+              description: Override type - `ADHOC` (list of Students), `CourseSection`, or `Group`.
+            unlock_at:
+              type: string
+              format: date-time
+              description: The overridden unlock_at timestamp, or nil if not overridden.
+            workflow_state:
+              type: string
+              description: Workflow state of the override. (active, deleted)
+    AssignmentUpdatedEventPayload:
+      type: object
+      title: AssignmentUpdated
+      description: The event is emitted anytime an assignment is updated by an end user or API request. Only changes to the
+        fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the assignment_updated Live Event.
+          properties:
+            assignment_group_id:
+              type: string
+              description: The Canvas id of the assignment group.
+            assignment_id:
+              type: string
+              description: The Canvas id of the new assignment.
+            assignment_id_duplicated__from:
+              type: string
+              description: The Canvas id of the original assignment.  Present if new assigment is a copy.
+            context_id:
+              type: string
+              description: The Canvas id for the context the assignment is used in.
+            context_type:
+              type: string
+              description: The type of context the assignment is used in (usually Course).
+            context_uuid:
+              type: string
+              description: The uuid of the context associated with the assignment.
+            created_on_blueprint_sync:
+              type: boolean
+              description: Whether or not the assignment was created in the context of a blueprint sync.
+            description:
+              type: string
+              description: 'The description of the assignment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            domain:
+              type: string
+              description: The Canvas domain of the root account of the assignment.
+            domain_duplicated_from:
+              type: string
+              description: The Canvas domain of the root account of the original assignment. Present if new assigment is a
+                copy.
+            due_at:
+              type: string
+              format: date-time
+              description: The due date for the assignment.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (assignment is locked after this date).
+            lti_assignment_id:
+              type: string
+              description: The LTI assignment guid for the assignment.
+            lti_resource_link_id:
+              type: string
+              description: The unique identifier of the assignment resource in the LTI specification. Unique per Canvas shard.
+            lti_resource_link_id_duplicated_from:
+              type: string
+              description: The LTI resource link ID of the original assignment. Present if new assigment is a copy.
+            points_possible:
+              type: number
+              description: The maximum points possible for the assignment.
+            submission_types:
+              type: array
+              items:
+                type: string
+              description: Valid methods for submitting the assignment, may include multiple comma separated options.
+            title:
+              type: string
+              description: 'The title of the assignment. NOTE: This field will be truncated to only include the first 8192
+                characters.'
+            unlock_at:
+              type: string
+              format: date-time
+              description: The unlock date (assignment is unlocked after this date), or null if not applicable.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this assignment was last modified in any way.
+            workflow_state:
+              type: string
+              description: Workflow state of the assignment (deleted, duplicating, fail_to_import, failed_to_duplicate, failed_to_migrate,
+                importing, published, unpublished).
+    AttachmentCreatedEventPayload:
+      type: object
+      title: AttachmentCreated
+      description: The event is emitted anytime a new file is uploaded by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the attachment_created Live Event.
+          properties:
+            attachment_id:
+              type: string
+              description: The Canvas id of the attachment.
+            content_type:
+              type: string
+              description: The attached files mime-type.
+            context_id:
+              type: string
+              description: The id of the context the attachment is used in.
+            context_type:
+              type: string
+              description: The type of context the attachment is used in.
+            display_name:
+              type: string
+              description: 'The display name of the attachment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            filename:
+              type: string
+              description: 'The file name of the attachment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            folder_id:
+              type: string
+              description: The id of the folder where the attachment was saved.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (attachment is locked after this date).
+            unlock_at:
+              type: string
+              format: date-time
+              description: The unlock date (attachment is unlocked after this date).
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this attachment was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the attachment.
+    AttachmentDeletedEventPayload:
+      type: object
+      title: AttachmentDeleted
+      description: The event is emitted anytime a file is removed by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the attachment_deleted Live Event.
+          properties:
+            attachment_id:
+              type: string
+              description: The Canvas id of the attachment.
+            content_type:
+              type: string
+              description: The attached files mime-type.
+            context_id:
+              type: string
+              description: The id of the context the attachment is used in.
+            context_type:
+              type: string
+              description: The type of context the attachment is used in.
+            display_name:
+              type: string
+              description: 'The display name of the attachment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            filename:
+              type: string
+              description: 'The file name of the attachment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            folder_id:
+              type: string
+              description: The id of the folder where the attachment was saved.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (attachment is locked after this date).
+            unlock_at:
+              type: string
+              format: date-time
+              description: The unlock date (attachment is unlocked after this date).
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this attachment was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the attachment.
+    AttachmentUpdatedEventPayload:
+      type: object
+      title: AttachmentUpdated
+      description: The event is emitted anytime a file is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the attachment_updated Live Event.
+          properties:
+            attachment_id:
+              type: string
+              description: The Canvas id of the attachment.
+            content_type:
+              type: string
+              description: The attached files mime-type.
+            context_id:
+              type: string
+              description: The id of the context the attachment is used in.
+            context_type:
+              type: string
+              description: The type of context the attachment is used in.
+            display_name:
+              type: string
+              description: 'The display name of the attachment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            filename:
+              type: string
+              description: 'The file name of the attachment. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            folder_id:
+              type: string
+              description: The id of the folder where the attachment was saved.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (attachment is locked after this date).
+            old_display_name:
+              type: string
+              description: 'The old display name of the attachment. NOTE: This field will be truncated to only include the
+                first 8192 characters.'
+            unlock_at:
+              type: string
+              format: date-time
+              description: The unlock date (attachment is unlocked after this date).
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this attachment was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the attachment.
+    ContentMigrationCompletedEventPayload:
+      type: object
+      title: ContentMigrationCompleted
+      description: The event is emitted anytime a content migration request is completed.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the content_migration_completed Live Event.
+          properties:
+            content_migration_id:
+              type: string
+              description: The Canvas id of the content migration.
+            context_id:
+              type: string
+              description: The Canvas id of the context associated with the content migration.
+            context_type:
+              type: string
+              description: The type of context associated with the content migration.
+            context_uuid:
+              type: string
+              description: The uuid of the context associated with the content migration.
+            destination_course_lti_id:
+              type: string
+              description: Alias for lti_context_id.
+            domain:
+              type: string
+              description: The default hostname for the Canvas root account.
+            import_quizzes_next:
+              type: string
+              description: Indicates whether the user requested that the quizzes in the content migration be created in Quizzes.Next
+                (true) or in native Canvas (false).
+            lti_context_id:
+              type: string
+              description: The lti context id of the context associated with the content migration.
+            migration_type:
+              type: string
+              description: 'The migration type. Examples include: academic_benchmark_importer, angel_exporter, blackboard_exporter,
+                canvas_cartridge_importer, common_cartridge_importer, course_copy_importer, d2l_exporter, master_course_import,
+                moodle_converter, qti_converter, webct_scraper, zip_file_importer, context_external_tool_1234.'
+            source_course_lti_id:
+              type: string
+              description: The lti context id of the the source course, if applicable.
+    ConversationCreatedEventPayload:
+      type: object
+      title: ConversationCreated
+      description: The event is emitted anytime a new conversation is initiated by the sender.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the conversation_created Live Event.
+          properties:
+            conversation_id:
+              type: string
+              description: The Canvas id of the conversation.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time this conversation was updated.
+    ConversationForwardedEventPayload:
+      type: object
+      title: ConversationForwarded
+      description: The event is emitted when a conversation is updated.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the conversation_forwarded Live Event.
+          properties:
+            conversation_id:
+              type: string
+              description: The Canvas id of the conversation.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time this conversation was updated.
+    ConversationMessageCreatedEventPayload:
+      type: object
+      title: ConversationMessageCreated
+      description: The event is emitted anytime a new conversation message is added to a conversation.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the conversation_message_created Live Event.
+          properties:
+            author_id:
+              type: string
+              description: The Canvas id of the author.
+            conversation_id:
+              type: string
+              description: The Canvas id of the conversation.
+            created_at:
+              type: string
+              format: date-time
+              description: The time this conversation message was created.
+            message_id:
+              type: string
+              description: The Canvas id of the conversation message.
+    CourseCompletedEventPayload:
+      type: object
+      title: CourseCompleted
+      description: The event is emitted when all of the module requirements in a course are met.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_completed Live Event.
+          properties:
+            course:
+              type: object
+              properties:
+                account_id:
+                  type: string
+                id:
+                  type: string
+                name:
+                  type: string
+                sis_source_id:
+                  type: string
+            progress:
+              type: object
+              properties:
+                completed_at:
+                  type: string
+                  format: date-time
+                next_requirement_url:
+                  type: string
+                requirement_completed_count:
+                  type: string
+                requirement_count:
+                  type: string
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                name:
+                  type: string
+    CourseCreatedEventPayload:
+      type: object
+      title: CourseCreated
+      description: The event is emitted anytime a new course is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_created Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Account id of the updated course.
+            course_id:
+              type: string
+              description: The Canvas id of the updated course.
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this course was created.
+            name:
+              type: string
+              description: The name the updated course.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this course was last modified in any way.
+            uuid:
+              type: string
+              description: The unique id of the course.
+            workflow_state:
+              type: string
+              description: The state of the course (available, claimed, completed, created, deleted).
+    CourseGradeChangeEventPayload:
+      type: object
+      title: CourseGradeChange
+      description: The event gets emitted anytime any of the course scores are changed for a student.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_grade_change Live Event.
+          properties:
+            course_id:
+              type: string
+              description: The Canvas ID of the course.
+            created_at:
+              type: string
+              format: date-time
+              description: The time when the row in the scores table (representing the course grade) was created. The score
+                row is created as a result of some grade calculation, even if there are not yet any graded submissions for
+                a student, i.e. when a student is enrolled in the class.
+            current_score:
+              type: number
+              description: The user's current score in the class.
+            final_score:
+              type: number
+              description: The user's final score for the class.
+            old_current_score:
+              type: string
+              description: The user's current score in the class before it was changed. This field will not be available until
+                a student submits the first assignment in the  class.
+            old_final_score:
+              type: string
+              description: The user's final score for the class before it was changed. This field will be set to 0.0 until
+                a student submits the first assignment in the class.
+            old_unposted_current_score:
+              type: string
+              description: The user's current grade in the class including unposted assignments, before it was changed. This
+                field will not be available until a student submits the first assignment in the class.
+            old_unposted_final_score:
+              type: string
+              description: The user's final grade for the class including unposted assignments, before it was changed. This
+                field will not be available when a student submits the first assignment in the class.
+            unposted_current_score:
+              type: string
+              description: The user's current grade in the class including unposted assignments.
+            unposted_final_score:
+              type: string
+              description: The user's final grade for the class including unposted assignments.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time when the row in the scores table was last updated -- that is, when the event is emitted.
+            user_id:
+              type: string
+              description: The Canvas user ID of the student.
+            workflow_state:
+              type: string
+              description: The state of the score record in the database, could be "active" or "deleted".
+    CourseProgressEventPayload:
+      type: object
+      title: CourseProgress
+      description: The event is emitted when a course module requirement is met.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_progress Live Event.
+          properties:
+            course:
+              type: object
+              properties:
+                account_id:
+                  type: string
+                id:
+                  type: string
+                name:
+                  type: string
+                sis_source_id:
+                  type: string
+            progress:
+              type: object
+              properties:
+                completed_at:
+                  type: string
+                  format: date-time
+                next_requirement_url:
+                  type: string
+                requirement_completed_count:
+                  type: string
+                requirement_count:
+                  type: string
+            user:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                name:
+                  type: string
+    CourseSectionCreatedEventPayload:
+      type: object
+      title: CourseSectionCreated
+      description: The event is emitted anytime a new course section is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_section_created Live Event.
+          properties:
+            accepting_enrollments:
+              type: boolean
+              description: True if this section is open for enrollment. False or null otherwise.
+            can_manually_enroll:
+              type: boolean
+              description: Deprecated, will always be null.
+            course_id:
+              type: string
+              description: The Canvas id of the course that this section belongs to.
+            course_section_id:
+              type: string
+              description: The local Canvas id of the created course section.
+            default_section:
+              type: boolean
+              description: True if this is the default section for the course. False or null otherwise.
+            end_at:
+              type: string
+              format: date-time
+              description: Section end date in ISO8601 format.
+            enrollment_term_id:
+              type: string
+              description: The Canvas id of the enrollment term.
+            integration_id:
+              type: string
+              description: The integration id of the section.
+            name:
+              type: string
+              description: The name of this section.
+            nonxlist_course_id:
+              type: string
+              description: The unique identifier of the original course of a cross-listed section.
+            restrict_enrollments_to_section_dates:
+              type: boolean
+              description: True when 'Users can only participate in the course between these dates' is checked.
+            root_account_id:
+              type: string
+              description: Canvas id of the root account that this section is in.
+            sis_batch_id:
+              type: string
+              description: The SIS Batch id of the section.
+            sis_source_id:
+              type: string
+              description: Correlated id for the record for this course in the SIS system (assuming SIS integration is configured).
+            start_at:
+              type: string
+              format: date-time
+              description: Section start date in ISO8601 format.
+            stuck_sis_fields:
+              type: array
+              items:
+                type: string
+              description: Array of strings of field names with the SIS stickiness field set, indicating they will not be
+                replaced by SIS imports.
+            workflow_state:
+              type: string
+              description: The workflow state of the section.
+    CourseSectionUpdatedEventPayload:
+      type: object
+      title: CourseSectionUpdated
+      description: The event is emitted anytime a course section is updated by an end user or API request. Only changes to
+        the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_section_updated Live Event.
+          properties:
+            accepting_enrollments:
+              type: boolean
+              description: True if this section is open for enrollment. False or null otherwise.
+            can_manually_enroll:
+              type: boolean
+              description: Deprecated, will always be null.
+            course_id:
+              type: string
+              description: The Canvas id of the course that this section belongs to.
+            course_section_id:
+              type: string
+              description: The local Canvas id of the created course section.
+            default_section:
+              type: boolean
+              description: True if this is the default section for the course.
+            end_at:
+              type: string
+              format: date-time
+              description: Section end date in ISO8601 format.
+            enrollment_term_id:
+              type: string
+              description: The Canvas id of the enrollment term.
+            integration_id:
+              type: string
+              description: The integration id of the section.
+            name:
+              type: string
+              description: The name of this section.
+            nonxlist_course_id:
+              type: string
+              description: The unique identifier of the original course of a cross-listed section.
+            restrict_enrollments_to_section_dates:
+              type: boolean
+              description: True when 'Users can only participate in the course between these dates' is checked.
+            root_account_id:
+              type: string
+              description: Canvas id of the root account that this section is in.
+            sis_batch_id:
+              type: string
+              description: The SIS Batch id of the section.
+            sis_source_id:
+              type: string
+              description: Correlated id for the record for this course in the SIS system (assuming SIS integration is configured).
+            start_at:
+              type: string
+              format: date-time
+              description: Section start date in ISO8601 format.
+            stuck_sis_fields:
+              type: array
+              items:
+                type: string
+              description: Array of strings of field names with the SIS stickiness field set, indicating they will not be
+                replaced by SIS imports.
+            workflow_state:
+              type: string
+              description: The workflow state of the section.
+    CourseUpdatedEventPayload:
+      type: object
+      title: CourseUpdated
+      description: The event is emitted anytime a course is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the course_updated Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Account id of the updated course.
+            course_id:
+              type: string
+              description: The Canvas id of the updated course.
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this course was created.
+            name:
+              type: string
+              description: The name the updated course.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this course was last modified in any way.
+            uuid:
+              type: string
+              description: The unique id of the course.
+            workflow_state:
+              type: string
+              description: The state of the course (available, claimed, completed, created, deleted).
+    DiscussionEntryCreatedEventPayload:
+      type: object
+      title: DiscussionEntryCreated
+      description: The event is emitted anytime an end user or a system replies to a discussion topic or thread.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the discussion_entry_created Live Event.
+          properties:
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this entry was created.
+            discussion_entry_id:
+              type: string
+              description: The Canvas id of the newly added entry.
+            discussion_topic_id:
+              type: string
+              description: The Canvas id of the topic the entry was added to.
+            parent_discussion_entry_id:
+              type: string
+              description: If this was a reply, the Canvas id of the parent entry.
+            text:
+              type: string
+              description: 'The text of the post. NOTE: This field will be truncated to only include the first 8192 characters.'
+            user_id:
+              type: string
+              description: The Canvas id of the user being that created the entry.
+    DiscussionEntrySubmittedEventPayload:
+      type: object
+      title: DiscussionEntrySubmitted
+      description: The event is emitted anytime a user or system replies to a graded discussion topic.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the discussion_entry_submitted Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment if the discussion topic is graded.
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this entry was created.
+            discussion_entry_id:
+              type: string
+              description: The Canvas id of the newly added entry.
+            discussion_topic_id:
+              type: string
+              description: The Canvas id of the topic the entry was added to.
+            parent_discussion_entry_id:
+              type: string
+              description: If this was a reply, the Canvas id of the parent entry.
+            submission_id:
+              type: string
+              description: The Canvas id of the submission if the discussion topic is graded.
+            text:
+              type: string
+              description: 'The text of the post. NOTE: This field will be truncated to only include the first 8192 characters.'
+            user_id:
+              type: string
+              description: The Canvas id of the user being that created the entry.
+    DiscussionTopicCreatedEventPayload:
+      type: object
+      title: DiscussionTopicCreated
+      description: The event is emitted anytime an new discussion topic is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the discussion_topic_created Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas id of the topic's associated assignment
+            body:
+              type: string
+              description: 'Body of the topic. NOTE: This field will be truncated to only include the first 8192 characters.'
+            context_id:
+              type: string
+              description: The Canvas id of the topic's context.
+            context_type:
+              type: string
+              description: The type of the topic's context (usually Course or Group)
+            discussion_topic_id:
+              type: string
+              description: The Canvas id of the new discussion topic.
+            is_announcement:
+              type: string
+              description: true if this topic was posted as an announcement, false otherwise.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (discussion is locked after this date), or null.
+            title:
+              type: string
+              description: 'Title of the topic. NOTE: This field will be truncated to only include the first 8192 characters.'
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this topic was last modified in any way
+            workflow_state:
+              type: string
+              description: The state of the discussion topic (active, deleted, post_delayed, unpublished).
+    DiscussionTopicUpdatedEventPayload:
+      type: object
+      title: DiscussionTopicUpdated
+      description: The event is emitted anytime a discussion topic or course announcement is updated by an end user or API
+        request. Only changes to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the discussion_topic_updated Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The local Canvas id of the assignment.
+            body:
+              type: string
+              description: 'Body of the topic. NOTE: This field will be truncated to only include the first 8192 characters.'
+            context_id:
+              type: string
+              description: The Canvas id of the topic's context.
+            context_type:
+              type: string
+              description: The type of context the discussion_topicis used in.
+            discussion_topic_id:
+              type: string
+              description: The Canvas id of the new discussion topic.
+            is_announcement:
+              type: string
+              description: true if this topic was posted as an announcement, false otherwise.
+            lock_at:
+              type: string
+              format: date-time
+              description: The lock date (discussion is locked after this date), or null.
+            title:
+              type: string
+              description: 'Title of the topic. NOTE: This field will be truncated to only include the first 8192 characters.'
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this discussion was last modified in any way.
+            workflow_state:
+              type: string
+              description: The state of the discussion topic (active, deleted, post_delayed, unpublished).
+    EnrollmentCreatedEventPayload:
+      type: object
+      title: EnrollmentCreated
+      description: The event is emitted anytime a new enrollment is added to a course by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the enrollment_created Live Event.
+          properties:
+            associated_user_id:
+              type: string
+              description: The id of the user observed by an observer's enrollment. Omitted from non-observer enrollments.
+            course_id:
+              type: string
+              description: The Canvas id of the course for this enrollment.
+            course_section_id:
+              type: string
+              description: The id of the section of the course for the new enrollment.
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this enrollment was created.
+            enrollment_id:
+              type: string
+              description: The Canvas id of the new enrollment.
+            limit_privileges_to_course_section:
+              type: boolean
+              description: Whether students can only talk to students within their course section.
+            type:
+              type: string
+              description: The type of enrollment; e.g. StudentEnrollment, TeacherEnrollment, ObserverEnrollment, etc.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this enrollment was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of the user for this enrollment.
+            user_name:
+              type: string
+              description: The user's name.
+            workflow_state:
+              type: string
+              description: The state of the enrollment (active, completed, creation_pending, deleted, inactive, invited)
+    EnrollmentStateCreatedEventPayload:
+      type: object
+      title: EnrollmentStateCreated
+      description: The event is emitted anytime a new enrollment record is added to a course.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the enrollment_state_created Live Event.
+          properties:
+            access_is_current:
+              type: boolean
+              description: If this enrollment_state access is upto date.
+            enrollment_id:
+              type: string
+              description: The Canvas id of the new enrollment.
+            restricted_access:
+              type: boolean
+              description: True if this enrollment_state is restricted.
+            state:
+              type: string
+              description: The state of the enrollment.
+            state_is_current:
+              type: boolean
+              description: If this enrollment_state is uptodate
+            state_started_at:
+              type: string
+              format: date-time
+              description: The time when this enrollment state starts.
+            state_valid_until:
+              type: string
+              format: date-time
+              description: The time at which this enrollment is no longer valid.
+    EnrollmentStateUpdatedEventPayload:
+      type: object
+      title: EnrollmentStateUpdated
+      description: The event is emitted anytime an enrollment record workflow state changes.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the enrollment_state_updated Live Event.
+          properties:
+            access_is_current:
+              type: boolean
+              description: If this enrollment_state access is upto date.
+            enrollment_id:
+              type: string
+              description: The Canvas id of the new enrollment.
+            restricted_access:
+              type: boolean
+              description: True if this enrollment_state is restricted.
+            state:
+              type: string
+              description: The state of the enrollment.
+            state_is_current:
+              type: boolean
+              description: If this enrollment_state is uptodate
+            state_started_at:
+              type: string
+              format: date-time
+              description: The time when this enrollment state starts.
+            state_valid_until:
+              type: string
+              format: date-time
+              description: The time at which this enrollment is no longer valid.
+    EnrollmentUpdatedEventPayload:
+      type: object
+      title: EnrollmentUpdated
+      description: The event is emitted anytime an enrollment record is updated by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the enrollment_updated Live Event.
+          properties:
+            associated_user_id:
+              type: string
+              description: The id of the user observed by an observer's enrollment. Omitted from non-observer enrollments.
+            course_id:
+              type: string
+              description: The Canvas id of the course for this enrollment.
+            course_section_id:
+              type: string
+              description: The id of the section of the course for the new enrollment.
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this enrollment was created.
+            enrollment_id:
+              type: string
+              description: The Canvas id of the new enrollment.
+            limit_privileges_to_course_section:
+              type: boolean
+              description: Whether students can only talk to students within their course section.
+            type:
+              type: string
+              description: The type of enrollment; e.g. StudentEnrollment, TeacherEnrollment, ObserverEnrollment, etc.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this enrollment was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of the user for this enrollment.
+            user_name:
+              type: string
+              description: The user's name.
+            workflow_state:
+              type: string
+              description: The state of the enrollment (active, completed, creation_pending, deleted, inactive, invited)
+    FinalGradeCustomStatusEventPayload:
+      type: object
+      title: FinalGradeCustomStatus
+      description: The event gets emitted when a custom status is removed or applied to a student's final grade.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the final_grade_custom_status Live Event.
+          properties:
+            course_id:
+              type: string
+              description: The Canvas ID of the course.
+            enrollment_id:
+              type: string
+              description: The Canvas ID of the enrollment record for the student.
+            grading_period_id:
+              type: string
+              description: The Canvas ID of the grading period, if applicable.
+            old_override_status:
+              type: string
+              description: The previous custom status name applied to a user's final grade, if applicable
+            old_override_status_id:
+              type: string
+              description: The previous custom status ID applied to a user's final grade, if applicable
+            override_status:
+              type: string
+              description: The new custom status name applied to a user's final grade
+            override_status_id:
+              type: string
+              description: The new custom status ID applied to a user's final grade
+            score_id:
+              type: string
+              description: The Canvas ID of the score record.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time when the custom status was applied.
+            user_id:
+              type: string
+              description: The Canvas user ID of the student.
+    GradeChangeEventPayload:
+      type: object
+      title: GradeChange
+      description: The event is emitted anytime when a submission is graded. These can happen as the result of a teacher changing
+        a grade in the gradebook or speedgrader, a quiz being automatically scored, or changing an assignment's points possible
+        or grade type. In the case of a quiz being scored, the `grade_change` event will be emitted as the result of a student
+        turning in a quiz, and the `user_id` in the message attributes will be the student's user ID.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the grade_change Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment associated with the submission.
+            grade:
+              type: string
+              description: The new grade.
+            grader_id:
+              type: string
+              description: The Canvas id of the user making the grade change. Null if this was the result of automatic grading.
+            grading_complete:
+              type: boolean
+              description: The boolean state that the submission is completely graded.  False if the assignment is only partially
+                graded, for example a quiz with automatically and manuall...
+            muted:
+              type: boolean
+              description: The boolean muted state of the submissions's assignment.  Muted grade changes should not be published
+                to students.
+            old_grade:
+              type: string
+              description: The previous grade, if there was one.
+            old_points_possible:
+              type: number
+              description: The maximum points possible for the previous grade.
+            old_score:
+              type: number
+              description: The previous score.
+            points_possible:
+              type: number
+              description: The maximum points possible for the submission's assignment.
+            score:
+              type: number
+              description: The new score.
+            student_id:
+              type: string
+              description: Same as the user_id.
+            student_sis_id:
+              type: string
+              description: The SIS ID of the student.
+            submission_id:
+              type: string
+              description: The Canvas id of the submission that the grade is changing on.
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the submission with the change.
+    GradeOverrideEventPayload:
+      type: object
+      title: GradeOverride
+      description: The event is emitted anytime a student course grade is overriden. Typically grade override feature is used
+        to edit student course grade
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the grade_override Live Event.
+          properties:
+            course_id:
+              type: string
+              description: Canvas Id of Course attached to this enrollment
+            enrollment_id:
+              type: string
+              description: Canvas Id of Employment record
+            grading_period_id:
+              type: string
+              description: Canvas Id of Grading Period
+            old_override_score:
+              type: string
+              description: Previous value of score before override
+            override_score:
+              type: string
+              description: New value of score after override
+            score_id:
+              type: string
+              description: Canvas Id of Score record
+            updated_at:
+              type: string
+              format: date-time
+              description: Date/Time the override occurred
+            user_id:
+              type: string
+              description: Canvas Id of User attached to this enrollment
+    GroupCategoryCreatedEventPayload:
+      type: object
+      title: GroupCategoryCreated
+      description: The event is emitted anytime a new group category is added to a course group by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the group_category_created Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The Canvas id of the group's context.
+            context_type:
+              type: string
+              description: The type of the group's context.
+            group_category_id:
+              type: string
+              description: The Canvas id of the newly created group category.
+            group_category_name:
+              type: string
+              description: The name of the newly created group category.
+            group_limit:
+              type: string
+              description: The cap of the number of users in each group.
+    GroupCategoryUpdatedEventPayload:
+      type: object
+      title: GroupCategoryUpdated
+      description: The event is emitted anytime a group category is updated by an end user or API request. Only changes to
+        the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the group_category_updated Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The Canvas id of the group's context.
+            context_type:
+              type: string
+              description: The type of the group's context.
+            group_category_id:
+              type: string
+              description: The Canvas id of the newly created group category.
+            group_category_name:
+              type: string
+              description: The name of the newly created group category.
+            group_limit:
+              type: string
+              description: The cap of the number of users in each group.
+    GroupCreatedEventPayload:
+      type: object
+      title: GroupCreated
+      description: The event is emitted anytime a new group is added to a course by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the group_created Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Canvas id of the group's account.
+            context_id:
+              type: string
+              description: The Canvas id of the group's context.
+            context_type:
+              type: string
+              description: The type of the group's context ('Account' or 'Course').
+            group_category_id:
+              type: string
+              description: The Canvas id of the group category.
+            group_category_name:
+              type: string
+              description: The name of the group category.
+            group_id:
+              type: string
+              description: The Canvas id of the group.
+            group_name:
+              type: string
+              description: The name of the group.
+            max_membership:
+              type: integer
+              description: The maximum membership cap for the group.
+            uuid:
+              type: string
+              description: The unique id of the group.
+            workflow_state:
+              type: string
+              description: The state of the group. (available, deleted)
+    GroupMembershipCreatedEventPayload:
+      type: object
+      title: GroupMembershipCreated
+      description: The event is emitted anytime a new member is added to a course group by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the group_membership_created Live Event.
+          properties:
+            group_category_id:
+              type: string
+              description: The Canvas id of the group category.
+            group_category_name:
+              type: string
+              description: The name of the group category.
+            group_id:
+              type: string
+              description: The Canvas id of the group the user is assigned to.
+            group_membership_id:
+              type: string
+              description: The Canvas id of the group membership.
+            group_name:
+              type: string
+              description: The name of the group the user is being assigned to.
+            user_id:
+              type: string
+              description: The Canvas id of the user being assigned to a group.
+            workflow_state:
+              type: string
+              description: The state of the group membership.
+    GroupMembershipUpdatedEventPayload:
+      type: object
+      title: GroupMembershipUpdated
+      description: The event is emitted anytime an existing group membership  is updated by an end user or API request. Only
+        changes to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the group_membership_updated Live Event.
+          properties:
+            group_category_id:
+              type: string
+              description: The Canvas id of the group category.
+            group_category_name:
+              type: string
+              description: The name of the group category.
+            group_id:
+              type: string
+              description: The Canvas id of the group the user is assigned to.
+            group_membership_id:
+              type: string
+              description: The Canvas id of the group membership.
+            group_name:
+              type: string
+              description: The name of the group the user is assigned to.
+            user_id:
+              type: string
+              description: The Canvas id of the user assigned to a group.
+            workflow_state:
+              type: string
+              description: The state of the group membership.
+    GroupUpdatedEventPayload:
+      type: object
+      title: GroupUpdated
+      description: The event is emitted anytime an existing group is updated by an end user or API request. Only changes to
+        the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the group_updated Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Canvas id of the group's account.
+            context_id:
+              type: string
+              description: The Canvas id of the group's context.
+            context_type:
+              type: string
+              description: The type of the group's context ('Account' or 'Course').
+            group_category_id:
+              type: string
+              description: The Canvas id of the group category.
+            group_category_name:
+              type: string
+              description: The name of the group category.
+            group_id:
+              type: string
+              description: The Canvas id of the group.
+            group_name:
+              type: string
+              description: The name of the group.
+            max_membership:
+              type: integer
+              description: The maximum membership cap for the group.
+            uuid:
+              type: string
+              description: The unique id of the group.
+            workflow_state:
+              type: string
+              description: The state of the group. (available, deleted)
+    LearningOutcomeCreatedEventPayload:
+      type: object
+      title: LearningOutcomeCreated
+      description: The event is emitted anytime a outcome is created in the account by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_created Live Event.
+          properties:
+            calculation_int:
+              type: string
+              description: Defines the variable value used by the calculation_method. Included only if calculation_method
+                uses it.
+            calculation_method:
+              type: string
+              description: The method used to calculate student score.
+            context_id:
+              type: string
+              description: The ID of the context the learning_outcome is used in.
+            context_type:
+              type: string
+              description: The type of context the learning_outcome is used in.
+            description:
+              type: string
+              description: Description of the outcome.
+            display_name:
+              type: string
+              description: Optional friendly name for reporting.
+            learning_outcome_id:
+              type: string
+              description: The local Canvas ID of the learning outcome.
+            rubric_criterion:
+              type: object
+              properties:
+                description:
+                  type: string
+                mastery_points:
+                  type: number
+                points_possible:
+                  type: number
+                ratings:
+                  type: string
+            short_description:
+              type: string
+              description: Also the title of the outcome.
+            title:
+              type: string
+              description: The title of the learning outcome or learning outcome group.
+            vendor_guid:
+              type: string
+              description: A custom GUID for the learning standard.
+            workflow_state:
+              type: string
+              description: Workflow status of the learning outcome (e.g. active, deleted).
+    LearningOutcomeGroupCreatedEventPayload:
+      type: object
+      title: LearningOutcomeGroupCreated
+      description: The event is emitted anytime a new outcome group is created in the account by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_group_created Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The ID of the context the learning outcome is used in.
+            context_type:
+              type: string
+              description: The type of context the learning outcome is used in, usually Course.
+            description:
+              type: string
+              description: Description of the learnning outcome group.
+            learning_outcome_group_id:
+              type: string
+              description: The local Canvas ID of the learning outcome group.
+            parent_outcome_group_id:
+              type: string
+              description: The local Canvas ID of the group's parent outcome group.
+            title:
+              type: string
+              description: Title of the learning outcome group.
+            vendor_guid:
+              type: string
+              description: A custom GUID for the learning standard.
+            workflow_state:
+              type: string
+              description: Workflow status of the learning outcome group, defaults to active.
+    LearningOutcomeGroupUpdatedEventPayload:
+      type: object
+      title: LearningOutcomeGroupUpdated
+      description: The event is emitted anytime an existing outcome group  is updated by an end user or API request. Only
+        changes to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_group_updated Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The ID of the context the learning outcome is used in.
+            context_type:
+              type: string
+              description: The type of context the learning outcome is used in, usually Course.
+            description:
+              type: string
+              description: Description of the learnning outcome group.
+            learning_outcome_group_id:
+              type: string
+              description: The local Canvas ID of the learning outcome group.
+            parent_outcome_group_id:
+              type: string
+              description: The local Canvas ID of the group's parent outcome group.
+            title:
+              type: string
+              description: Title of the learning outcome group.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this group was last modified in any way.
+            vendor_guid:
+              type: string
+              description: A custom GUID for the learning standard.
+            workflow_state:
+              type: string
+              description: Workflow status of the learning outcome group, defaults to active.
+    LearningOutcomeLinkCreatedEventPayload:
+      type: object
+      title: LearningOutcomeLinkCreated
+      description: The event is emitted anytime an outcome is linked to a context by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_link_created Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The Canvas ID of the context the learning outcome is used in.
+            context_type:
+              type: string
+              description: The type of context the learning outcome is used in, usually Course.
+            learning_outcome_group_id:
+              type: string
+              description: The local Canvas id of the related learning outcome group.
+            learning_outcome_id:
+              type: string
+              description: The local Canvas id of the related learning outcome.
+            learning_outcome_link_id:
+              type: string
+              description: The local Canvas id of the new learning outcome link.
+            workflow_state:
+              type: string
+              description: The workflow status of the learning outcome link, by default active.
+    LearningOutcomeLinkUpdatedEventPayload:
+      type: object
+      title: LearningOutcomeLinkUpdated
+      description: The event is emitted anytime an outcome context link is changed by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_link_updated Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The Canvas ID of the context the learning outcome is used in.
+            context_type:
+              type: string
+              description: The type of context the learning outcome is used in, usually Course.
+            learning_outcome_group_id:
+              type: string
+              description: The local Canvas id of the related learning outcome group.
+            learning_outcome_id:
+              type: string
+              description: The local Canvas id of the related learning outcome.
+            learning_outcome_link_id:
+              type: string
+              description: The local Canvas id of the learning outcome link that was updated.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time that the learning outcome link was last modified.
+            workflow_state:
+              type: string
+              description: The workflow status of the learning outcome link (e.g. active, deleted)
+    LearningOutcomeResultCreatedEventPayload:
+      type: object
+      title: LearningOutcomeResultCreated
+      description: 'The event is emitted anytime a submission is assessed against an outcome. The following setup should be
+        enabled in Canvas in order for the event to be triggered:
+
+        1. Administrator has set up learning outcomes at the account/sub-account level
+
+        2. Instructor has added outcome to assignment rubric
+
+        3. Student submitted a rubric based assignment
+
+        4. Instructor graded a rubric based assignment at the outcome level => there is a result associated with assignment
+        outcome'
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_result_created Live Event.
+          properties:
+            artifact_created_at:
+              type: string
+              format: date-time
+              description: The date when the artifact was created or nil.
+            artifact_id:
+              type: string
+              description: The id of the artifact that contains the outcome assessment. Value will be an string representation
+                of an integer or nil.
+            artifact_type:
+              type: string
+              description: 'The type of artifact that contains the outcome assessment.  Value will be one of the following:
+                RubricAssessment, Submission, Quizzes::QuizSubmission, LiveAssessments::Submission or nil.'
+            artifact_updated_at:
+              type: string
+              format: date-time
+              description: The date when the artifact was last updated or nil.
+            assessed_at:
+              type: string
+              format: date-time
+              description: The date when the outcome was last assessed.
+            associated_asset_id:
+              type: string
+              description: The id of the asset that the outcome is aligned to. Value will be an string representation of an
+                integer or nil.
+            associated_asset_type:
+              type: string
+              description: 'The type of the asset that the outcome is aligned to. Value will be one of the following: AssessmentQuestion,
+                Assignment, Quizzes::Quiz, LiveAssessments::Assessment or nil.'
+            attempt:
+              type: integer
+              description: The submission attempt number.
+            created_at:
+              type: string
+              format: date-time
+              description: Time when the result was created.
+            id:
+              type: string
+              description: The local Canvas ID of the learning outcome result.
+            learning_outcome_context_uuid:
+              type: string
+              description: The uuid of the context associated with the learning outcome.
+            learning_outcome_id:
+              type: string
+              description: The local Canvas ID of the learning outcome.
+            mastery:
+              type: string
+              description: True if student achieved mastery.
+            original_mastery:
+              type: string
+              description: True if student achieved mastery on the first attempt.
+            original_possible:
+              type: string
+              description: Possible points on the first attempt.
+            original_score:
+              type: string
+              description: Score on the first attempt.
+            percent:
+              type: string
+              description: Percent of maximum points possible for an outcome, scaled to reflect any custom mastery levels
+                that differ from the learning outcome.
+            possible:
+              type: number
+              description: Total number of points possible.
+            result_context_id:
+              type: string
+              description: The local Canvas ID of the context associated with the learning outcome result.
+            result_context_type:
+              type: string
+              description: 'The type of the context associated with the learning outcome result. Value will be one of the
+                following: Account or Course.'
+            result_context_uuid:
+              type: string
+              description: The uuid of the context associated with the learning outcome result.
+            score:
+              type: number
+              description: The student's score.
+            user_uuid:
+              type: string
+              description: The unique identifier for the user that the outcome was assessed.
+    LearningOutcomeResultUpdatedEventPayload:
+      type: object
+      title: LearningOutcomeResultUpdated
+      description: The event is emitted anytime a existing outcome rating for a submission is updated. Only changes to the
+        fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_result_updated Live Event.
+          properties:
+            artifact_created_at:
+              type: string
+              format: date-time
+              description: The date when the artifact was created or nil.
+            artifact_id:
+              type: string
+              description: The id of the artifact that contains the outcome assessment. Value will be an string representation
+                of an integer or nil.
+            artifact_type:
+              type: string
+              description: 'The type of artifact that contains the outcome assessment.  Value will be one of the following:
+                RubricAssessment, Submission, Quizzes::QuizSubmission, LiveAssessments::Submission or nil.'
+            artifact_updated_at:
+              type: string
+              format: date-time
+              description: The date when the artifact was last updated or nil.
+            assessed_at:
+              type: string
+              format: date-time
+              description: The date when the outcome was last assessed.
+            associated_asset_id:
+              type: string
+              description: The id of the asset that the outcome is aligned to. Value will be an string representation of an
+                integer or nil.
+            associated_asset_type:
+              type: string
+              description: 'The type of the asset that the outcome is aligned to. Value will be one of the following: AssessmentQuestion,
+                Assignment, Quizzes::Quiz, LiveAssessments::Assessment or nil.'
+            attempt:
+              type: integer
+              description: The submission attempt number.
+            created_at:
+              type: string
+              format: date-time
+              description: Time when the result was created.
+            id:
+              type: string
+              description: The local Canvas ID of the learning outcome result.
+            learning_outcome_context_uuid:
+              type: string
+              description: The uuid of the context associated with the learning outcome.
+            learning_outcome_id:
+              type: string
+              description: The local Canvas ID of the learning outcome.
+            mastery:
+              type: string
+              description: True if student achieved mastery.
+            original_mastery:
+              type: string
+              description: True if student achieved mastery on the first attempt.
+            original_possible:
+              type: string
+              description: Possible points on the first attempt.
+            original_score:
+              type: string
+              description: Score on the first attempt.
+            percent:
+              type: string
+              description: Percent of maximum points possible for an outcome, scaled to reflect any custom mastery levels
+                that differ from the learning outcome.
+            possible:
+              type: number
+              description: Total number of points possible.
+            result_context_id:
+              type: string
+              description: The local Canvas ID of the context associated with the learning outcome result.
+            result_context_type:
+              type: string
+              description: 'The type of the context associated with the learning outcome result. Value will be one of the
+                following: Account or Course.'
+            result_context_uuid:
+              type: string
+              description: The uuid of the context associated with the learning outcome result.
+            score:
+              type: number
+              description: The student's score.
+            updated_at:
+              type: string
+              format: date-time
+              description: Time the learning outcome result was updated at.
+            user_uuid:
+              type: string
+              description: The uuid of the user that the outcome was assessed.
+    LearningOutcomeUpdatedEventPayload:
+      type: object
+      title: LearningOutcomeUpdated
+      description: The event is emitted anytime an outcome is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the learning_outcome_updated Live Event.
+          properties:
+            calculation_int:
+              type: string
+              description: Defines the variable value used by the calculation_method. Included only if calculation_method
+                uses it.
+            calculation_method:
+              type: string
+              description: The method used to calculate student score.
+            context_id:
+              type: string
+              description: The ID of the context the learning_outcome is used in.
+            context_type:
+              type: string
+              description: The type of context the learning_outcome is used in.
+            description:
+              type: string
+              description: Description of the outcome.
+            display_name:
+              type: string
+              description: Optional friendly name for reporting.
+            learning_outcome_id:
+              type: string
+              description: The local Canvas ID of the learning outcome.
+            rubric_criterion:
+              type: object
+              properties:
+                description:
+                  type: string
+                mastery_points:
+                  type: number
+                points_possible:
+                  type: number
+                ratings:
+                  type: string
+            short_description:
+              type: string
+              description: Also the title of the outcome.
+            title:
+              type: string
+              description: The title of the learning outcome or learning outcome group.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this outcome was last modified in any way.
+            vendor_guid:
+              type: string
+              description: A custom GUID for the learning standard.
+            workflow_state:
+              type: string
+              description: Workflow status of the learning outcome. Defaults to active
+    LoggedInEventPayload:
+      type: object
+      title: LoggedIn
+      description: The event is emitted anytime an end user logs into Canvas
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the logged_in Live Event.
+          properties:
+            redirect_url:
+              type: string
+              description: The URL the user was redirected to after logging in. Is set when the user logs in after clicking
+                a deep link into Canvas.
+    LoggedOutEventPayload:
+      type: object
+      title: LoggedOut
+      description: The event is emitted anytime an end user logs out of Canvas
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the logged_out Live Event.
+          properties: {}
+    LtiResourceLinkCreatedEventPayload:
+      type: object
+      title: LtiResourceLinkCreated
+      description: The event is emitted any time a new resource link is created during LTI 1.3 Deep Linking.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the lti_resource_link_created Live Event.
+          properties:
+            context_external_tool_id:
+              type: string
+              description: The global Canvas id of the LTI 1.3 deployment that owns this resource link.
+            context_id:
+              type: string
+              description: The global Canvas id of the context.
+            context_type:
+              type: string
+              description: The type of the context, either Course or Assignment.
+            lookup_uuid:
+              type: string
+              description: Used to track resource links across content migrations.
+            resource_link_id:
+              type: string
+              description: The global Canvas id of the resource link.
+            resource_link_uuid:
+              type: string
+              description: The LTI uuid of the resource link.
+            url:
+              type: string
+              description: The LTI launch URL for this resource link.
+            workflow_state:
+              type: string
+              description: The workflow state of the resource link.
+    LtiResourceLinkUpdatedEventPayload:
+      type: object
+      title: LtiResourceLinkUpdated
+      description: The event is emitted any time an existing resource link is updated via API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the lti_resource_link_updated Live Event.
+          properties:
+            context_external_tool_id:
+              type: string
+              description: The global Canvas id of the LTI 1.3 deployment that owns this resource link.
+            context_id:
+              type: string
+              description: The global Canvas id of the context.
+            context_type:
+              type: string
+              description: The type of the context, either Course or Assignment.
+            lookup_uuid:
+              type: string
+              description: Used to track resource links across content migrations.
+            resource_link_id:
+              type: string
+              description: The global Canvas id of the resource link.
+            resource_link_uuid:
+              type: string
+              description: The LTI uuid of the resource link.
+            url:
+              type: string
+              description: The LTI launch URL for this resource link.
+            workflow_state:
+              type: string
+              description: The workflow state of the resource link.
+    ModuleCreatedEventPayload:
+      type: object
+      title: ModuleCreated
+      description: The event is emitted anytime a new module is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the module_created Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The local Canvas id of the context.
+            context_type:
+              type: string
+              description: The type of module's context.
+            module_id:
+              type: string
+              description: The Canvas id of the module.
+            name:
+              type: string
+              description: The name of the module.
+            position:
+              type: integer
+              description: The position of the module in the course.
+            workflow_state:
+              type: string
+              description: The workflow state of the module.
+    ModuleItemCreatedEventPayload:
+      type: object
+      title: ModuleItemCreated
+      description: The event is emitted anytime a new module item is added to a module by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the module_item_created Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The local Canvas id of the context.
+            context_type:
+              type: string
+              description: The type of module's context, usually "Course".
+            module_id:
+              type: string
+              description: The Canvas id of the module.
+            module_item_id:
+              type: string
+              description: The Canvas id of the module item.
+            position:
+              type: integer
+              description: The position of the module item in the module.
+            workflow_state:
+              type: string
+              description: The workflow state of the module item.
+    ModuleItemUpdatedEventPayload:
+      type: object
+      title: ModuleItemUpdated
+      description: The event is emitted anytime a module item is updated in a module by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the module_item_updated Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The local Canvas id of the context.
+            context_type:
+              type: string
+              description: The type of module's context.
+            module_id:
+              type: string
+              description: The Canvas id of the module.
+            module_item_id:
+              type: string
+              description: The Canvas id of the module item.
+            position:
+              type: integer
+              description: The position of the module item in the module.
+            workflow_state:
+              type: string
+              description: The workflow state of the module item (active, deleted, unpublished).
+    ModuleUpdatedEventPayload:
+      type: object
+      title: ModuleUpdated
+      description: The event is emitted anytime a module is updated by an end user or API request. Only changes to the fields
+        included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the module_updated Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The local Canvas id of the context.
+            context_type:
+              type: string
+              description: The type of module's context.
+            module_id:
+              type: string
+              description: The Canvas id of the module.
+            name:
+              type: string
+              description: The name of the module.
+            position:
+              type: integer
+              description: The position of the module in the course.
+            workflow_state:
+              type: string
+              description: The workflow state of the module (active, deleted, unpublished).
+    OutcomeCalculationMethodCreatedEventPayload:
+      type: object
+      title: OutcomeCalculationMethodCreated
+      description: The event is emitted anytime a new outcome_calculation_method is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the outcome_calculation_method_created Live Event.
+          properties:
+            calculation_int:
+              type: string
+              description: Defines the variable value used by the calculation_method. Included only if calculation_method
+                uses it.
+            calculation_method:
+              type: string
+              description: The method used to calculate student score.
+            context_id:
+              type: string
+              description: The id of the context the outcome calculation method is used in.
+            context_type:
+              type: string
+              description: The type of context the outcome calculation method is used in.
+            outcome_calculation_method_id:
+              type: string
+              description: The Canvas id of the outcome calculation method.
+            workflow_state:
+              type: string
+              description: Workflow state of the outcome calculation method. E.g active, deleted.
+    OutcomeCalculationMethodUpdatedEventPayload:
+      type: object
+      title: OutcomeCalculationMethodUpdated
+      description: The event is emitted anytime an outcome_calculation_method is updated by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the outcome_calculation_method_updated Live Event.
+          properties:
+            calculation_int:
+              type: string
+              description: Defines the variable value used by the calculation_method. Included only if calculation_method
+                uses it.
+            calculation_method:
+              type: string
+              description: The method used to calculate student score.
+            context_id:
+              type: string
+              description: The id of the context the outcome calculation method is used in.
+            context_type:
+              type: string
+              description: The type of context the outcome calculation method is used in.
+            outcome_calculation_method_id:
+              type: string
+              description: The Canvas id of the outcome calculation method.
+            workflow_state:
+              type: string
+              description: Workflow state of the outcome calculation method. E.g active, deleted.
+    OutcomeProficiencyCreatedEventPayload:
+      type: object
+      title: OutcomeProficiencyCreated
+      description: The event is emitted anytime a new outcome_proficiency (mastery scale) is created by an end user or API
+        request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the outcome_proficiency_created Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The id of the context the outcome proficiency is used in.
+            context_type:
+              type: string
+              description: The type of context the outcome proficiency is used in.
+            outcome_proficiency_id:
+              type: string
+              description: The Canvas id of the outcome proficiency.
+            outcome_proficiency_ratings:
+              type: string
+              description: An array of the associated ratings with this proficiency. Description, points, mastery, color,
+                workflow_state, and outcome_proficiency_rating_id are required keys.
+            workflow_state:
+              type: string
+              description: Workflow state of the outcome proficiency. E.g active, deleted.
+    OutcomeProficiencyUpdatedEventPayload:
+      type: object
+      title: OutcomeProficiencyUpdated
+      description: The event is emitted anytime an outcome_proficiency (mastery scale) is updated or its associated ratings
+        are updated by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the outcome_proficiency_updated Live Event.
+          properties:
+            context_id:
+              type: string
+              description: The id of the context the outcome proficiency is used in.
+            context_type:
+              type: string
+              description: The type of context the outcome proficiency is used in.
+            outcome_proficiency_id:
+              type: string
+              description: The Canvas id of the outcome proficiency.
+            outcome_proficiency_ratings:
+              type: string
+              description: An array of the associated ratings with this proficiency. Description, points, mastery, color,
+                workflow_state, and outcome_proficiency_rating_id are required keys.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this proficiency was last modified in any way.
+            workflow_state:
+              type: string
+              description: Workflow state of the outcome proficiency. E.g active, deleted.
+    Outcomes.retryOutcomeAlignmentCloneEventPayload:
+      type: object
+      title: Outcomes.retryOutcomeAlignmentClone
+      description: The event is emitted anytime an outcome alignment clone process is retried, this can happend due to a network
+        issue or a missing alignment
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the outcomes.retry_outcome_alignment_clone Live Event.
+          properties:
+            domain:
+              type: string
+              description: account url host
+            new_assignment_resource_link_id:
+              type: string
+              description: lti_resource_link_id of the target assignment
+            new_course_resource_link_id:
+              type: string
+              description: lti_context_id of the target course
+            new_course_uuid:
+              type: string
+              description: The uuid of the target course
+            original_assignment_resource_link_id:
+              type: string
+              description: lti_resource_link_id of the source assignment
+            original_course_uuid:
+              type: string
+              description: The uuid of the source course
+            status:
+              type: string
+              description: status of the target assignment
+    PlagiarismResubmitEventPayload:
+      type: object
+      title: PlagiarismResubmit
+      description: The event is emitted anytime a submission is created for an assignment with plagiarism settings turned
+        on.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the plagiarism_resubmit Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment being submitted.
+            attempt:
+              type: integer
+              description: This is the submission attempt number.
+            body:
+              type: string
+              description: 'The content of the submission, if it was submitted directly in a text field. NOTE: This field
+                will be truncated to only include the first 8192 characters.'
+            grade:
+              type: string
+              description: The grade for the submission, translated into the assignment grading scheme (so a letter grade,
+                for example)
+            graded_at:
+              type: string
+              format: date-time
+              description: The timestamp when the assignment was graded.
+            group_id:
+              type: string
+              description: The submissions’s group ID if the assignment is a group assignment.
+            lti_assignment_id:
+              type: string
+              description: The LTI assignment guid of the submission's assignment
+            lti_user_id:
+              type: string
+              description: The LTI id of the user associated with the submission.
+            score:
+              type: number
+              description: The raw score.
+            submission_id:
+              type: string
+              description: The Canvas id of the new submission.
+            submission_type:
+              type: string
+              description: The type of submission (online_text_entry, online_url, online_upload, media_recording)
+            submitted_at:
+              type: string
+              format: date-time
+              description: The timestamp when the assignment was submitted.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this assignment was last modified in any way.
+            url:
+              type: string
+              description: The URL of the submission (for 'online_url' submissions).
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the submission.
+            workflow_state:
+              type: string
+              description: The state of the submission, such as 'submitted'
+    QuizSubmittedEventPayload:
+      type: object
+      title: QuizSubmitted
+      description: The event is emitted anytime a user submits a quiz assignment in Canvas [old quizzes].
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the quiz_submitted Live Event.
+          properties:
+            quiz_id:
+              type: string
+              description: The Canvas id of the quiz.
+            submission_id:
+              type: string
+              description: The Canvas id of the quiz submission.
+    RubricAssessedEventPayload:
+      type: object
+      title: RubricAssessed
+      description: The event is emitted anytime a rubric is assessed that is aligned to an active rubric association.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the rubric_assessed Live Event.
+          properties:
+            aligned_to_outcomes:
+              type: boolean
+              description: Boolean value that indicates if the rubric is aligned with learning outcomes. values will be true
+                if the rubric is aligned to learning outcomes or false if the rubric is not aligned to learning outcomes.
+            artifact_id:
+              type: string
+              description: The ID of the artifact object aligned to the Rubric Assessment object.
+            artifact_type:
+              type: string
+              description: The type of the artifact object aligned to the Rubric Assessment object. Values will be either
+                'Submission', 'ModeratedGrading::ProvisionalGrade', or 'Assignment'.
+            assessment_type:
+              type: string
+              description: The type of assessment. Values will be either 'grading', 'peer_review', or 'provisional_grade'.
+            attempt:
+              type: integer
+              description: The integer representation of the number of attempts made by the student on the rubric aligned
+                Artifact. The value will be nil if the Artifact aligned is not a Submission or if the assignment has yet to
+                be submitted by the student.
+            context_uuid:
+              type: string
+              description: The unique id of the Context object associated with the Rubric Association object. If this value
+                is not present on the context, it will not be present in the live event body.
+            created_at:
+              type: string
+              format: date-time
+              description: The date and time the initial rubric assessment was created.
+            id:
+              type: string
+              description: The ID of the Rubric Assessment object.
+            submitted_at:
+              type: string
+              format: date-time
+              description: The date and time the student submitted the assignment that the rubric is aligned to or the date
+                time the instructor assessed the rubric.
+            updated_at:
+              type: string
+              format: date-time
+              description: The date and time the rubric assessment was updated.
+    SisBatchCreatedEventPayload:
+      type: object
+      title: SisBatchCreated
+      description: The event is emitted when a new SIS import is created.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the sis_batch_created Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The id of the Canvas account the SIS csv file is being imported to.
+            sis_batch_id:
+              type: string
+              description: The internal SIS import id.
+            workflow_state:
+              type: string
+              description: The status of the current SIS Import.
+    SisBatchUpdatedEventPayload:
+      type: object
+      title: SisBatchUpdated
+      description: The event is emitted when a newly created SIS import status changes.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the sis_batch_updated Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The id of the Canvas account the SIS data is being imported to.
+            sis_batch_id:
+              type: string
+              description: The internal SIS import id.
+            workflow_state:
+              type: string
+              description: The status of the current SIS Import.
+    SubmissionCommentCreatedEventPayload:
+      type: object
+      title: SubmissionCommentCreated
+      description: The event is emitted anytime an end user or API request comments on a submission.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the submission_comment_created Live Event.
+          properties:
+            attachment_ids:
+              type: string
+              description: Array of Canvas ids (as strings) of attachments for this comment.
+            body:
+              type: string
+              description: 'The text of the comment. NOTE: This field will be truncated to only include the first 8192 characters.'
+            created_at:
+              type: string
+              format: date-time
+              description: The timestamp when the comment was created.
+            submission_comment_id:
+              type: string
+              description: The Canvas id of the new comment.
+            submission_id:
+              type: string
+              description: The Canvas id of the new submission.
+            user_id:
+              type: string
+              description: The Canvas id of the user who authored the comment.
+    SubmissionCreatedEventPayload:
+      type: object
+      title: SubmissionCreated
+      description: The event is emitted anytime an end user or API request submits or re-submits an assignment. This applies
+        to assignments and new quizzes, not classic quizzes. Use quiz_submitted for classic quiz submissions.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the submission_created Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment being submitted.
+            attempt:
+              type: integer
+              description: This is the submission attempt number.
+            body:
+              type: string
+              description: 'The content of the submission, if it was submitted directly in a text field. NOTE: This field
+                will be truncated to only include the first 8192 characters.'
+            grade:
+              type: string
+              description: The grade for the submission, translated into the assignment grading scheme (so a letter grade,
+                for example)
+            graded_at:
+              type: string
+              format: date-time
+              description: The timestamp when the assignment was graded, if it was graded.
+            group_id:
+              type: string
+              description: The submissions’s group ID if the assignment is a group assignment.
+            late:
+              type: boolean
+              description: Whether the submission was made after the applicable due date.
+            lti_assignment_id:
+              type: string
+              description: The LTI assignment guid of the submission's assignment
+            lti_user_id:
+              type: string
+              description: The Lti id of the user associated with the submission.
+            missing:
+              type: boolean
+              description: Whether the submission is missing, which generally means past-due and not yet submitted.
+            score:
+              type: number
+              description: The raw score
+            submission_id:
+              type: string
+              description: The Canvas id of the new submission.
+            submission_type:
+              type: string
+              description: The types of submission (basic_lti_launch, discussion_topic, media_recording, online_quiz, online_text_entry,
+                online_upload, online_url)
+            submitted_at:
+              type: string
+              format: date-time
+              description: The timestamp when the assignment was submitted.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this assignment was last modified in any way
+            url:
+              type: string
+              description: The URL of the submission (for 'online_url' submissions)
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the submission.
+            workflow_state:
+              type: string
+              description: 'The state of the submission: normally ''submitted'' or ''pending_review''.'
+    SubmissionCustomGradeStatusEventPayload:
+      type: object
+      title: SubmissionCustomGradeStatus
+      description: The event gets emitted when a custom status is removed or applied to a student's submission.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the submission_custom_grade_status Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas ID of the assignment.
+            course_id:
+              type: string
+              description: The Canvas ID of the course.
+            old_submission_status:
+              type: string
+              description: The previous custom status name applied to a user's submission, if applicable
+            old_submission_status_id:
+              type: string
+              description: The previous custom status ID applied to a user's submission, if applicable
+            submission_id:
+              type: string
+              description: The Canvas ID of the submission_id.
+            submission_status:
+              type: string
+              description: The new custom status name applied to a user's submission
+            submission_status_id:
+              type: string
+              description: The new custom status ID applied to a user's submission
+            updated_at:
+              type: string
+              format: date-time
+              description: The time when the custom status was applied.
+            user_id:
+              type: string
+              description: The Canvas user ID of the student.
+    SubmissionUpdatedEventPayload:
+      type: object
+      title: SubmissionUpdated
+      description: The event is emitted anytime an end user or API request modifies a submitted assignment or when a Teacher
+        grades an assignment.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the submission_updated Live Event.
+          properties:
+            assignment_id:
+              type: string
+              description: The Canvas id of the assignment being submitted.
+            attempt:
+              type: integer
+              description: This is the submission attempt number.
+            body:
+              type: string
+              description: 'The content of the submission, if it was submitted directly in a text field. NOTE: This field
+                will be truncated to only include the first 8192 characters.'
+            grade:
+              type: string
+              description: The grade for the submission, translated into the assignment grading scheme (so a letter grade,
+                for example)
+            graded_at:
+              type: string
+              format: date-time
+              description: The timestamp when the assignment was graded, if it was graded.
+            group_id:
+              type: string
+              description: The submissions’s group ID if the assignment is a group assignment.
+            late:
+              type: boolean
+              description: Whether the submission was made after the applicable due date.
+            lti_assignment_id:
+              type: string
+              description: The LTI assignment guid of the submission's assignment
+            lti_user_id:
+              type: string
+              description: The Lti id of the user associated with the submission.
+            missing:
+              type: boolean
+              description: Whether the submission is missing, which generally means past-due and not yet submitted.
+            score:
+              type: number
+              description: The raw score
+            submission_id:
+              type: string
+              description: The Canvas id of the new submission.
+            submission_type:
+              type: string
+              description: The types of submission (online_text_entry, online_url, online_upload, media_recording)
+            submitted_at:
+              type: string
+              format: date-time
+              description: The timestamp when the assignment was submitted.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this assignment was last modified in any way
+            url:
+              type: string
+              description: The URL of the submission (for 'online_url' submissions)
+            user_id:
+              type: string
+              description: The Canvas id of the user associated with the submission.
+            workflow_state:
+              type: string
+              description: The state of the submission, such as 'submitted' or 'graded'.
+    SyllabusUpdatedEventPayload:
+      type: object
+      title: SyllabusUpdated
+      description: The event is emitted anytime a syllabus is changed in a course by an end user or API request. Only changes
+        to the fields included in the body of the event payload will emit the `updated` event.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the syllabus_updated Live Event.
+          properties:
+            course_id:
+              type: string
+              description: The Canvas id of the updated course.
+            old_syllabus_body:
+              type: string
+              description: 'The old syllabus content. NOTE: This field will be truncated to only include the first 8192 characters.
+                NOTE: This field will be truncated to only include the first 8192 characters.'
+            syllabus_body:
+              type: string
+              description: 'The new syllabus content. NOTE: This field will be truncated to only include the first 8192 characters.'
+    UserAccountAssociationCreatedEventPayload:
+      type: object
+      title: UserAccountAssociationCreated
+      description: The event is emitted anytime a user is created in an account.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the user_account_association_created Live Event.
+          properties:
+            account_id:
+              type: string
+              description: The Canvas id of the account for this association.
+            account_uuid:
+              type: string
+              description: The unique id of the account for this association.
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this association was created.
+            is_admin:
+              type: string
+              description: Is user an administrator?
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this association was last modified.
+            user_id:
+              type: string
+              description: The Canvas id of the user for this association.
+    UserCreatedEventPayload:
+      type: object
+      title: UserCreated
+      description: The event is emitted anytime a user is added to an account.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the user_created Live Event.
+          properties:
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this user was created.
+            name:
+              type: string
+              description: Name of user.
+            short_name:
+              type: string
+              description: Short name of user.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this user was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of user.
+            user_login:
+              type: string
+              description: The login of the current user.
+            user_sis_id:
+              type: string
+              description: The SIS id of the user.
+            uuid:
+              type: string
+              description: Unique user id.
+            workflow_state:
+              type: string
+              description: State of the user.
+    UserUpdatedEventPayload:
+      type: object
+      title: UserUpdated
+      description: The event is emitted anytime a user details are updated. Only changes to the fields included in the body
+        of the event payload will emit the `updated` event. The metadata of the event payload will list a user or process
+        that updated the user profile details and the body of the event will list a user details that were updated.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the user_updated Live Event.
+          properties:
+            created_at:
+              type: string
+              format: date-time
+              description: The time at which this user was created.
+            name:
+              type: string
+              description: Name of user.
+            short_name:
+              type: string
+              description: Short name of user.
+            updated_at:
+              type: string
+              format: date-time
+              description: The time at which this user was last modified in any way.
+            user_id:
+              type: string
+              description: The Canvas id of user.
+            user_login:
+              type: string
+              description: The login of the current user.
+            user_sis_id:
+              type: string
+              description: The SIS id of the user.
+            uuid:
+              type: string
+              description: Unique user id.
+            workflow_state:
+              type: string
+              description: State of the user. (deleted, pre_registered, registered)
+    WikiPageCreatedEventPayload:
+      type: object
+      title: WikiPageCreated
+      description: The event is emitted anytime a new wiki page is created by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the wiki_page_created Live Event.
+          properties:
+            body:
+              type: string
+              description: 'The body of the new page. NOTE: This field will be truncated to only include the first 8192 characters.'
+            title:
+              type: string
+              description: 'The title of the new page. NOTE: This field will be truncated to only include the first 8192 characters.'
+            wiki_page_id:
+              type: string
+              description: The Canvas id of the new wiki page.
+    WikiPageDeletedEventPayload:
+      type: object
+      title: WikiPageDeleted
+      description: The event is emitted anytime a wiki page is deleted by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the wiki_page_deleted Live Event.
+          properties:
+            title:
+              type: string
+              description: 'The title of the deleted wiki page. NOTE: This field will be truncated to only include the first
+                8192 characters.'
+            wiki_page_id:
+              type: string
+              description: The Canvas id of the deleted wiki page.
+    WikiPageUpdatedEventPayload:
+      type: object
+      title: WikiPageUpdated
+      description: The event is emitted anytime a wiki page is altered by an end user or API request.
+      required:
+      - metadata
+      - body
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        body:
+          type: object
+          description: Body payload for the wiki_page_updated Live Event.
+          properties:
+            body:
+              type: string
+              description: 'The new page body. NOTE: This field will be truncated to only include the first 8192 characters.'
+            old_body:
+              type: string
+              description: 'The old page body. NOTE: This field will be truncated to only include the first 8192 characters.'
+            old_title:
+              type: string
+              description: 'The old title. NOTE: This field will be truncated to only include the first 8192 characters.'
+            title:
+              type: string
+              description: 'The new title. NOTE: This field will be truncated to only include the first 8192 characters.'
+            wiki_page_id:
+              type: string
+              description: The Canvas id of the changed wiki page.
+            workflow_state:
+              type: string
+              description: The current workflow_state of the wiki page. Possible values are "active", "unpublished", and "deleted".
+  securitySchemes:
+    jwtSignature:
+      type: httpApiKey
+      description: When the HTTPS subscription has 'Sign Payload' enabled, the POST body is a JWT signed by Canvas. Verify
+        with the JWKs at https://8axpcl50e4.execute-api.us-east-1.amazonaws.com/main/jwks. Match the JWT header `kid` to one
+        of the JWKs (previous/current/next) returned by that endpoint.
+      name: Authorization
+      in: header
+    awsSigV4:
+      type: userPassword
+      description: AWS SQS delivery may optionally use an IAM access key and secret (with region) configured on the Canvas
+        subscription. Otherwise queue access is granted via SQS queue policy allowing principal 636161780776.

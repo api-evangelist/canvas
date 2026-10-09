@@ -49,6 +49,10 @@ tags:
 - LTI
 - Open Source
 - REST
+- Learning Management
+- Higher Education
+- K-12
+- AGPL
 tags_raw:
 - Canvas
 - Education
@@ -60,6 +64,10 @@ tags_raw:
 - Open Source
 - REST
 - Open-Source
+- Learning Management
+- Higher Education
+- K-12
+- AGPL
 created: '2025-01-14'
 modified: '2026-09-05'
 specificationVersion: '0.23'
@@ -4434,6 +4442,130 @@ apis:
     url: errors/canvas-problem-types.yml
   - type: DataModel
     url: data-model/canvas-data-model.yml
+- aid: canvas:canvas-platform-notification-service
+  name: Canvas Platform Notification Service
+  tags:
+  - Webhook
+  - Notification
+  - Event
+  - LTI
+  - Server-to-Server
+  tags_raw:
+  - Webhooks
+  - Notifications
+  - Events
+  - LTI
+  - Server to Server
+  humanURL: https://canvas.instructure.com/doc/api/file.pns.html
+  properties:
+  - url: https://canvas.instructure.com/doc/api/file.pns.html
+    type: Documentation
+  - url: https://canvas.instructure.com/doc/api/notice_handlers.html
+    type: Documentation
+    name: Notice Handlers
+  - url: https://canvas.instructure.com/doc/api/webhooks_subscriptions_for_plagiarism_platform.html
+    type: Documentation
+    name: Plagiarism Platform Webhook Subscriptions
+  description: Platform Notification Service (PNS) enables server-to-server communication by allowing
+    Canvas to send Notices (webhook deliveries) to LTI tools outside the scope of an active user session.
+    Tools register notice handlers for specific event types and receive signed deliveries that integrate
+    with the IMS LTI 1.3 security model.
+- aid: canvas:canvas-live-events
+  name: Canvas Live Events
+  tags:
+  - Live Events
+  - Webhook
+  - Event
+  - Streaming
+  - AsyncAPI
+  - SQS
+  - HTTP
+  - JWT
+  - Caliper
+  - Analytics
+  tags_raw:
+  - Live Events
+  - Webhooks
+  - Events
+  - Streaming
+  - AsyncAPI
+  - SQS
+  - HTTPS
+  - JWT
+  - Caliper
+  - Analytics
+  humanURL: https://canvas.instructure.com/doc/api/file.live_events.html
+  properties:
+  - url: https://canvas.instructure.com/doc/api/file.live_events.html
+    type: Documentation
+    name: Live Events Overview
+  - url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services
+    type: Documentation
+    name: Canvas Data Services Event Schemas (Source)
+  - url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services/json/canvas/event-types
+    type: Documentation
+    name: Canvas Event-Type JSON Descriptors
+  - url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services/json/caliper
+    type: Documentation
+    name: Caliper Event-Type JSON Descriptors
+  - url: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-subscribe-to-Live-Events-using-Canvas-Data-Services/ta-p/227
+    type: Documentation
+    name: How do I subscribe to Live Events using Canvas Data Services
+  - url: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-configure-and-test-Canvas-Live-Events-using-HTTPS/ta-p/151
+    type: Documentation
+    name: Configure and Test Live Events using HTTPS
+  - url: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-create-an-SQS-queue-in-Amazon-Web-Services-to-receive/ta-p/170
+    type: Documentation
+    name: Create an SQS Queue to Receive Live Events
+  - url: https://8axpcl50e4.execute-api.us-east-1.amazonaws.com/main/jwks
+    type: Authentication
+    name: Live Events JWKS (Signed HTTPS Webhook Verification)
+  - url: asyncapi/canvas-live-events-asyncapi.yml
+    type: AsyncAPI
+  description: Canvas Live Events stream lifecycle events emitted by Canvas (course, enrollment, assignment,
+    submission, grade change, discussion, module, outcome, file/attachment, SIS batch, conversation, quiz,
+    wiki page, LTI resource link, login, asset access, and more) to subscribed destinations. Customers
+    subscribe via Canvas Data Services and choose a delivery method — AWS SQS (standard queue named beginning
+    with `canvas-live-events`, granted to Canvas AWS account 636161780776, optional IAM key/secret/region)
+    or an HTTPS webhook (POSTs the event JSON, or a signed JWT whose signing keys rotate monthly and are
+    advertised at the Canvas JWKS endpoint). Two payload formats are supported — Canvas JSON and Caliper
+    IMS. Failed HTTPS deliveries are retried up to three times with exponential backoff over ~10–20 minutes;
+    sustained failure deactivates the subscription. Live Events are designed for analytics and data collection
+    workflows, not for use cases requiring strictly up-to-date data.
+- aid: canvas:canvas-data-access-platform
+  name: Canvas Data Access Platform
+  tags:
+  - Canvas Data
+  - DAP
+  - Data Warehouse
+  - Analytics
+  - Snapshots
+  - Event
+  tags_raw:
+  - Canvas Data
+  - DAP
+  - Data Warehouse
+  - Analytics
+  - Snapshots
+  - Events
+  humanURL: https://data-access-platform-api.s3.amazonaws.com/index.html
+  baseURL: https://api-gateway.instructure.com/dap
+  properties:
+  - url: https://data-access-platform-api.s3.amazonaws.com/index.html
+    type: Documentation
+    name: DAP Query API Reference
+  - url: https://github.com/instructure/dap-client-py
+    type: SDKs
+    name: DAP Client (Python)
+  - url: https://github.com/instructure/canvas-data-loader
+    type: Tools
+    name: Canvas Data Loader (Rust)
+  - url: https://github.com/instructure/canvas-hosted-data-examples
+    type: CodeExamples
+  description: Data Access Platform (DAP) is the warehouse-scale data export API for Canvas Data 2 — the
+    successor to Canvas Data 1 / Canvas Data CLI. DAP exposes Canvas tables and Caliper-derived event
+    streams as snapshot and incremental queries against the canvas and catalog namespaces, intended for
+    bulk download into a customer's data lake or warehouse.
 common:
 - type: FinOps
   url: finops/canvas-finops.yml
@@ -4545,6 +4677,21 @@ common:
 - type: X-MCPServerCandidate
   url: mcp/canvas-mcp.yml
   name: Derived candidate tool set — Instructure publishes no MCP server (probes 404/503)
+- url: https://canvas.instructure.com/doc/api/all_resources.html
+  name: All Resources Reference
+  type: Documentation
+- url: https://canvas.instructure.com/doc/api/file.graphql.html
+  name: Canvas GraphQL
+  type: Documentation
+- url: https://canvas.instructure.com/doc/api/file.tools_intro.html
+  name: LTI Tools Introduction
+  type: Documentation
+- url: https://www.instructure.com/blog
+  name: Instructure Blog
+  type: Blog
+- url: https://github.com/instructure/canvas-lms/wiki
+  name: Canvas LMS Wiki
+  type: Documentation
 integrations:
 - name: Become a partner
 - name: Scale with us
