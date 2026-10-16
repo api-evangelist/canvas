@@ -1,21 +1,19 @@
-# Kin Score artifact — canvas — 2026-09-08T232836
+# Kin Score artifact — canvas — 2026-10-11T110117
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: canvas
-  schema_version: 0.20.0
-  scored_at: '2026-09-08'
-  run_ts: 2026-09-08T232836
-  composite: 73.7
+  schema_version: 0.23.0
+  scored_at: '2026-10-11'
+  run_ts: 2026-10-11T110117
+  composite: 70.3
   band: exemplar
   facets:
-    discoverability: 81.5
-    contract_quality: 24.4
-    governance: 18.2
+    discoverability: 78.6
+    contract_quality: 31.1
+    contract_governance: 18.2
     operational_transparency: 81.6
     developer_ergonomics: 80.4
-    commercial_clarity: 89.5
-    contract_governance: 18.2
     access_clarity: 89.5
   agent_readiness:
     score: 39.7
@@ -45,7 +43,7 @@ kin_score:
     applies: true
     regime: Education & Research
     regime_id: education
-    score: 85.2
+    score: 45.1
     matched_via: tags
   open_source:
     applies: true
@@ -56,7 +54,7 @@ kin_score:
     agentic_access: derived
     conformance: first-party
     contracts:
-      total: 2
-      derived: 2
+      total: 143
+      derived: 143
       coverage: 100.0
       callable: 100.0

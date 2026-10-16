@@ -2,17 +2,17 @@
 kin_checks:
   slug: canvas
   schema_version: 0.23.0
-  scored_at: '2026-10-03'
-  run_ts: 2026-10-03T024842
+  scored_at: '2026-10-11'
+  run_ts: 2026-10-11T110117
   note: Actionable checks (missed + partial) in `checks`, plus the ids that did not
     apply in `na`. Everything else in rubric/scoring-0.23.0.yml was earned; counts
     below let you verify that.
   counts:
     total: 153
-    earned: 54
+    earned: 58
     partial: 25
-    missed: 51
-    na: 23
+    missed: 52
+    na: 18
   checks:
   - id: newsroom_present
     status: missed
@@ -44,6 +44,12 @@ kin_checks:
       were derived by API Evangelist from what the provider published
   - id: inbound_contract_published
     status: missed
+  - id: asyncapi_3_x
+    status: missed
+    detail: 0 of 1 asyncapi documents pass
+  - id: server_bindings
+    status: missed
+    detail: 0 of 1 asyncapi documents pass
   - id: json_schema_present
     status: missed
   - id: json_schema_per_resource
@@ -69,8 +75,6 @@ kin_checks:
   - id: rate_limits_rich
     status: missed
   - id: roadmap_present
-    status: missed
-  - id: examples_published
     status: missed
   - id: sdk_count_3
     status: missed
@@ -174,7 +178,7 @@ kin_checks:
       were derived by API Evangelist from what the provider published
   - id: examples_present
     status: partial
-    earned: 0.01
+    earned: 0.25
   - id: components_reuse
     status: partial
     earned: 0.03
@@ -236,8 +240,6 @@ kin_checks:
     earned: 3.0
     detail: 'grade: documented'
   na:
-  - asyncapi_3_x
-  - channels_defined
   - contract_self_operated
   - fhir_capability_statement
   - fhir_resource_coverage
@@ -245,7 +247,6 @@ kin_checks:
   - graphql_sdl_present
   - graphql_type_depth
   - mcp_endpoint_discoverable
-  - messages_with_schema
   - reg_ai_transparency
   - reg_camara_conformance
   - reg_certification_signal
@@ -257,5 +258,3 @@ kin_checks:
   - reg_smart_configuration
   - reg_training_data_summary
   - reg_write_surface
-  - security_schemes
-  - server_bindings
