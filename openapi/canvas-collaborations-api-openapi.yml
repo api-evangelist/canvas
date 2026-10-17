@@ -196,6 +196,23 @@ paths:
         url: https://canvas.instructure.com/doc/api/collaborations.html
 components:
   schemas:
+    Collaborator:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 12345
+          description: The unique user or group identifier for the collaborator.
+        type:
+          type: string
+          example: user
+          description: The type of collaborator (e.g. 'user' or 'group').
+        name:
+          type: string
+          example: Don Draper
+          description: The name of the collaborator.
+      required:
+      - id
     Collaboration:
       type: object
       properties:
@@ -251,23 +268,6 @@ components:
           type: string
           example: John Danger
           description: The name of the user who owns the collaboration
-    Collaborator:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 12345
-          description: The unique user or group identifier for the collaborator.
-        type:
-          type: string
-          example: user
-          description: The type of collaborator (e.g. 'user' or 'group').
-        name:
-          type: string
-          example: Don Draper
-          description: The name of the collaborator.
-      required:
-      - id
   securitySchemes:
     bearerAuth:
       type: http

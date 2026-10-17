@@ -2856,6 +2856,39 @@ components:
           type: string
           example: http://creativecommons.org/licenses/by-sa/4.0
           description: a link to the license text
+    UsageRights:
+      type: object
+      properties:
+        legal_copyright:
+          type: string
+          example: (C) 2014 Incom Corporation Ltd
+          description: Copyright line for the file
+        use_justification:
+          type: string
+          example: creative_commons
+          description: Justification for using the file in a Canvas course. Valid values are 'own_copyright', 'public_domain', 'used_by_permission', 'fair_use', 'creative_commons'
+        license:
+          type: string
+          example: cc_by_sa
+          description: License identifier for the file.
+        license_name:
+          type: string
+          example: CC Attribution Share-Alike
+          description: Readable license name
+        message:
+          type: string
+          example: 4 files updated
+          description: Explanation of the action performed
+        file_ids:
+          type: array
+          items:
+            type: integer
+          example:
+          - 1
+          - 2
+          - 3
+          description: List of ids of files that were updated
+      description: Describes the copyright and license information for a File
     Folder:
       type: object
       properties:
@@ -2923,39 +2956,6 @@ components:
           type: boolean
           example: false
           description: If true, indicates this is a read-only folder containing files submitted to assignments
-    UsageRights:
-      type: object
-      properties:
-        legal_copyright:
-          type: string
-          example: (C) 2014 Incom Corporation Ltd
-          description: Copyright line for the file
-        use_justification:
-          type: string
-          example: creative_commons
-          description: Justification for using the file in a Canvas course. Valid values are 'own_copyright', 'public_domain', 'used_by_permission', 'fair_use', 'creative_commons'
-        license:
-          type: string
-          example: cc_by_sa
-          description: License identifier for the file.
-        license_name:
-          type: string
-          example: CC Attribution Share-Alike
-          description: Readable license name
-        message:
-          type: string
-          example: 4 files updated
-          description: Explanation of the action performed
-        file_ids:
-          type: array
-          items:
-            type: integer
-          example:
-          - 1
-          - 2
-          - 3
-          description: List of ids of files that were updated
-      description: Describes the copyright and license information for a File
     File__files:
       type: object
       properties:

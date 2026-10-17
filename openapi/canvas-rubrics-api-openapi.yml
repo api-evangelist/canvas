@@ -1199,6 +1199,28 @@ components:
           items:
             $ref: '#/components/schemas/RubricAssociation'
           description: If an association type is included in the 'include' parameter, includes an array of rubric association objects for a given rubric, based on the association type requested. If the user does not request an association type this key will be absent.
+    RubricCriterion:
+      type: object
+      properties:
+        id:
+          type: string
+          example: _10
+          description: the ID of the criterion
+        description:
+          type: string
+        long_description:
+          type: string
+        points:
+          type: integer
+          example: '5'
+        criterion_use_range:
+          type: boolean
+          example: 'false'
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RubricRating__rubrics'
+          description: the possible ratings for this Criterion
     RubricAssociation:
       type: object
       properties:
@@ -1239,28 +1261,6 @@ components:
         hide_outcome_results:
           type: boolean
           example: 'true'
-    RubricCriterion:
-      type: object
-      properties:
-        id:
-          type: string
-          example: _10
-          description: the ID of the criterion
-        description:
-          type: string
-        long_description:
-          type: string
-        points:
-          type: integer
-          example: '5'
-        criterion_use_range:
-          type: boolean
-          example: 'false'
-        ratings:
-          type: array
-          items:
-            $ref: '#/components/schemas/RubricRating__rubrics'
-          description: the possible ratings for this Criterion
   securitySchemes:
     bearerAuth:
       type: http

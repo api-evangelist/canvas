@@ -1394,6 +1394,77 @@ components:
           - observer
           - unenrolled
           description: The roles that have access to this help link
+    Account__accounts:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+          description: the ID of the Account object
+        name:
+          type: string
+          example: Canvas Account
+          description: The display name of the account
+        uuid:
+          type: string
+          example: WvAHhY5FINzq5IyRIJybGeiXyFkG3SqHUPb7jZY5
+          description: The UUID of the account
+        parent_account_id:
+          type: integer
+          example: 1
+          description: The account's parent ID, or null if this is the root account
+        root_account_id:
+          type: integer
+          example: 1
+          description: The ID of the root account, or null if this is the root account
+        default_storage_quota_mb:
+          type: integer
+          example: 500
+          description: The storage quota for the account in megabytes, if not otherwise specified
+        default_user_storage_quota_mb:
+          type: integer
+          example: 50
+          description: The storage quota for a user in the account in megabytes, if not otherwise specified
+        default_group_storage_quota_mb:
+          type: integer
+          example: 50
+          description: The storage quota for a group in the account in megabytes, if not otherwise specified
+        default_time_zone:
+          type: string
+          example: America/Denver
+          description: The default time zone of the account. Allowed time zones are {http://www.iana.org/time-zones IANA time zones} or friendlier {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.
+        default_time_zone_friendly_name:
+          type: string
+          example: Mountain Time (US & Canada)
+          description: The friendly Ruby on Rails name of the account's default time zone. Since several Rails time zones can share a single IANA identifier (the value returned in default_time_zone), this field disambiguates which one is configured.
+        sis_account_id:
+          type: string
+          example: 123xyz
+          description: The account's identifier in the Student Information System. Only included if the user has permission to view SIS information.
+        integration_id:
+          type: string
+          example: 123xyz
+          description: The account's identifier in the Student Information System. Only included if the user has permission to view SIS information.
+        sis_import_id:
+          type: integer
+          example: '12'
+          description: The id of the SIS import if created through SIS. Only included if the user has permission to manage SIS information.
+        course_count:
+          type: integer
+          example: '10'
+          description: The number of courses directly under the account (available via include)
+        sub_account_count:
+          type: integer
+          example: '10'
+          description: The number of sub-accounts directly under the account (available via include)
+        lti_guid:
+          type: string
+          example: 123xyz
+          description: The account's identifier that is sent as context_id in LTI launches.
+        workflow_state:
+          type: string
+          example: active
+          description: The state of the account. Can be 'active' or 'deleted'.
     HelpLinks:
       type: object
       properties:
@@ -1472,77 +1543,6 @@ components:
             is_new: false
             feature_headline: ''
           description: Default help links provided when account has not set help links of their own.
-    Account__accounts:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 2
-          description: the ID of the Account object
-        name:
-          type: string
-          example: Canvas Account
-          description: The display name of the account
-        uuid:
-          type: string
-          example: WvAHhY5FINzq5IyRIJybGeiXyFkG3SqHUPb7jZY5
-          description: The UUID of the account
-        parent_account_id:
-          type: integer
-          example: 1
-          description: The account's parent ID, or null if this is the root account
-        root_account_id:
-          type: integer
-          example: 1
-          description: The ID of the root account, or null if this is the root account
-        default_storage_quota_mb:
-          type: integer
-          example: 500
-          description: The storage quota for the account in megabytes, if not otherwise specified
-        default_user_storage_quota_mb:
-          type: integer
-          example: 50
-          description: The storage quota for a user in the account in megabytes, if not otherwise specified
-        default_group_storage_quota_mb:
-          type: integer
-          example: 50
-          description: The storage quota for a group in the account in megabytes, if not otherwise specified
-        default_time_zone:
-          type: string
-          example: America/Denver
-          description: The default time zone of the account. Allowed time zones are {http://www.iana.org/time-zones IANA time zones} or friendlier {http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html Ruby on Rails time zones}.
-        default_time_zone_friendly_name:
-          type: string
-          example: Mountain Time (US & Canada)
-          description: The friendly Ruby on Rails name of the account's default time zone. Since several Rails time zones can share a single IANA identifier (the value returned in default_time_zone), this field disambiguates which one is configured.
-        sis_account_id:
-          type: string
-          example: 123xyz
-          description: The account's identifier in the Student Information System. Only included if the user has permission to view SIS information.
-        integration_id:
-          type: string
-          example: 123xyz
-          description: The account's identifier in the Student Information System. Only included if the user has permission to view SIS information.
-        sis_import_id:
-          type: integer
-          example: '12'
-          description: The id of the SIS import if created through SIS. Only included if the user has permission to manage SIS information.
-        course_count:
-          type: integer
-          example: '10'
-          description: The number of courses directly under the account (available via include)
-        sub_account_count:
-          type: integer
-          example: '10'
-          description: The number of sub-accounts directly under the account (available via include)
-        lti_guid:
-          type: string
-          example: 123xyz
-          description: The account's identifier that is sent as context_id in LTI launches.
-        workflow_state:
-          type: string
-          example: active
-          description: The state of the account. Can be 'active' or 'deleted'.
   securitySchemes:
     bearerAuth:
       type: http

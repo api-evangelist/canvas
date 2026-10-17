@@ -232,18 +232,6 @@ components:
           type: integer
           example: '[]'
           description: an array of the graders who were responsible for the submissions in this response. the submissions are grouped according to the person who graded them and the assignment they were submitted for.
-    SubmissionHistory:
-      type: object
-      properties:
-        submission_id:
-          type: integer
-          example: 4
-          description: the id of the submission
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubmissionVersion'
-          description: an array of all the versions of this submission
     SubmissionVersion:
       type: object
       properties:
@@ -343,6 +331,18 @@ components:
           example: unsubmitted
           description: the state of the submission at this version
       description: A SubmissionVersion object contains all the fields that a Submission object does, plus additional fields prefixed with current_* new_* and previous_* described below.
+    SubmissionHistory:
+      type: object
+      properties:
+        submission_id:
+          type: integer
+          example: 4
+          description: the id of the submission
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmissionVersion'
+          description: an array of all the versions of this submission
   securitySchemes:
     bearerAuth:
       type: http

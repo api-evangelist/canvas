@@ -4412,36 +4412,6 @@ apis:
     url: errors/canvas-problem-types.yml
   - type: DataModel
     url: data-model/canvas-data-model.yml
-- aid: canvas:canvas-jwts-api
-  name: Canvas JWTs API
-  description: The JWTs API from Canvas — 2 operation(s) for jwts.
-  humanURL: https://canvas.instructure.com/doc/api/file.graphql.html
-  baseURL: https://canvas.instructure.com/api/graphql
-  tags:
-  - JWTs
-  properties:
-  - type: OpenAPI
-    url: openapi/canvas-jwts-api-openapi.yml
-  - type: Documentation
-    url: https://canvas.instructure.com/doc/api/
-  - type: Authentication
-    url: https://canvas.instructure.com/doc/api/file.oauth.html
-  - type: Pagination
-    url: https://canvas.instructure.com/doc/api/file.pagination.html
-  - type: GitHubRepository
-    url: https://github.com/instructure/canvas-lms
-  - type: APIReference
-    url: https://canvas.instructure.com/doc/api/
-  - type: Swagger
-    url: https://canvas.instructure.com/doc/api/api-docs.json
-  - type: RateLimits
-    url: rate-limits/canvas-rate-limits.yml
-  - type: OAuthScopes
-    url: scopes/canvas-scopes.yml
-  - type: ErrorCatalog
-    url: errors/canvas-problem-types.yml
-  - type: DataModel
-    url: data-model/canvas-data-model.yml
 - aid: canvas:canvas-platform-notification-service
   name: Canvas Platform Notification Service
   tags:
@@ -4463,13 +4433,15 @@ apis:
   - url: https://canvas.instructure.com/doc/api/notice_handlers.html
     type: Documentation
     name: Notice Handlers
-  - url: https://canvas.instructure.com/doc/api/webhooks_subscriptions_for_plagiarism_platform.html
+  - url: >-
+      https://canvas.instructure.com/doc/api/webhooks_subscriptions_for_plagiarism_platform.html
     type: Documentation
     name: Plagiarism Platform Webhook Subscriptions
-  description: Platform Notification Service (PNS) enables server-to-server communication by allowing
-    Canvas to send Notices (webhook deliveries) to LTI tools outside the scope of an active user session.
-    Tools register notice handlers for specific event types and receive signed deliveries that integrate
-    with the IMS LTI 1.3 security model.
+  description: >-
+    Platform Notification Service (PNS) enables server-to-server communication by allowing Canvas to send
+    Notices (webhook deliveries) to LTI tools outside the scope of an active user session. Tools register
+    notice handlers for specific event types and receive signed deliveries that integrate with the IMS
+    LTI 1.3 security model.
 - aid: canvas:canvas-live-events
   name: Canvas Live Events
   tags:
@@ -4502,19 +4474,23 @@ apis:
   - url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services
     type: Documentation
     name: Canvas Data Services Event Schemas (Source)
-  - url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services/json/canvas/event-types
+  - url: >-
+      https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services/json/canvas/event-types
     type: Documentation
     name: Canvas Event-Type JSON Descriptors
   - url: https://github.com/instructure/canvas-lms/tree/master/doc/api/data_services/json/caliper
     type: Documentation
     name: Caliper Event-Type JSON Descriptors
-  - url: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-subscribe-to-Live-Events-using-Canvas-Data-Services/ta-p/227
+  - url: >-
+      https://community.canvaslms.com/t5/Admin-Guide/How-do-I-subscribe-to-Live-Events-using-Canvas-Data-Services/ta-p/227
     type: Documentation
     name: How do I subscribe to Live Events using Canvas Data Services
-  - url: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-configure-and-test-Canvas-Live-Events-using-HTTPS/ta-p/151
+  - url: >-
+      https://community.canvaslms.com/t5/Admin-Guide/How-do-I-configure-and-test-Canvas-Live-Events-using-HTTPS/ta-p/151
     type: Documentation
     name: Configure and Test Live Events using HTTPS
-  - url: https://community.canvaslms.com/t5/Admin-Guide/How-do-I-create-an-SQS-queue-in-Amazon-Web-Services-to-receive/ta-p/170
+  - url: >-
+      https://community.canvaslms.com/t5/Admin-Guide/How-do-I-create-an-SQS-queue-in-Amazon-Web-Services-to-receive/ta-p/170
     type: Documentation
     name: Create an SQS Queue to Receive Live Events
   - url: https://8axpcl50e4.execute-api.us-east-1.amazonaws.com/main/jwks
@@ -4522,11 +4498,12 @@ apis:
     name: Live Events JWKS (Signed HTTPS Webhook Verification)
   - url: asyncapi/canvas-live-events-asyncapi.yml
     type: AsyncAPI
-  description: Canvas Live Events stream lifecycle events emitted by Canvas (course, enrollment, assignment,
-    submission, grade change, discussion, module, outcome, file/attachment, SIS batch, conversation, quiz,
-    wiki page, LTI resource link, login, asset access, and more) to subscribed destinations. Customers
-    subscribe via Canvas Data Services and choose a delivery method — AWS SQS (standard queue named beginning
-    with `canvas-live-events`, granted to Canvas AWS account 636161780776, optional IAM key/secret/region)
+  description: >-
+    Canvas Live Events stream lifecycle events emitted by Canvas (course, enrollment, assignment, submission,
+    grade change, discussion, module, outcome, file/attachment, SIS batch, conversation, quiz, wiki page,
+    LTI resource link, login, asset access, and more) to subscribed destinations. Customers subscribe
+    via Canvas Data Services and choose a delivery method — AWS SQS (standard queue named beginning with
+    `canvas-live-events`, granted to Canvas AWS account 636161780776, optional IAM key/secret/region)
     or an HTTPS webhook (POSTs the event JSON, or a signed JWT whose signing keys rotate monthly and are
     advertised at the Canvas JWKS endpoint). Two payload formats are supported — Canvas JSON and Caliper
     IMS. Failed HTTPS deliveries are retried up to three times with exponential backoff over ~10–20 minutes;
@@ -4562,10 +4539,41 @@ apis:
     name: Canvas Data Loader (Rust)
   - url: https://github.com/instructure/canvas-hosted-data-examples
     type: CodeExamples
-  description: Data Access Platform (DAP) is the warehouse-scale data export API for Canvas Data 2 — the
-    successor to Canvas Data 1 / Canvas Data CLI. DAP exposes Canvas tables and Caliper-derived event
-    streams as snapshot and incremental queries against the canvas and catalog namespaces, intended for
-    bulk download into a customer's data lake or warehouse.
+  description: >-
+    Data Access Platform (DAP) is the warehouse-scale data export API for Canvas Data 2 — the successor
+    to Canvas Data 1 / Canvas Data CLI. DAP exposes Canvas tables and Caliper-derived event streams as
+    snapshot and incremental queries against the canvas and catalog namespaces, intended for bulk download
+    into a customer's data lake or warehouse.
+- aid: canvas:canvas-jwts-api
+  name: Canvas JWTs API
+  description: The JWTs API from Canvas — 2 operation(s) for jwts.
+  humanURL: https://canvas.instructure.com/doc/api/file.graphql.html
+  baseURL: https://canvas.instructure.com/api/graphql
+  tags:
+  - JWTs
+  properties:
+  - type: OpenAPI
+    url: openapi/canvas-jwts-api-openapi.yml
+  - type: Documentation
+    url: https://canvas.instructure.com/doc/api/
+  - type: Authentication
+    url: https://canvas.instructure.com/doc/api/file.oauth.html
+  - type: Pagination
+    url: https://canvas.instructure.com/doc/api/file.pagination.html
+  - type: GitHubRepository
+    url: https://github.com/instructure/canvas-lms
+  - type: APIReference
+    url: https://canvas.instructure.com/doc/api/
+  - type: Swagger
+    url: https://canvas.instructure.com/doc/api/api-docs.json
+  - type: RateLimits
+    url: rate-limits/canvas-rate-limits.yml
+  - type: OAuthScopes
+    url: scopes/canvas-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canvas-problem-types.yml
+  - type: DataModel
+    url: data-model/canvas-data-model.yml
 common:
 - type: FinOps
   url: finops/canvas-finops.yml

@@ -157,7 +157,7 @@
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "canvas-lms-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0; renamed 14 component key(s) illegal in 3.x (e.g. Account__accounts_(lti))",
     "superseded outputs removed: canvas-jwts-api-openapi.yml",
-    "apis.yml register: written (+1 apis, 145 total)"
+    "apis.yml register: written (+1 apis, 148 total)"
   ],
   "skipped": [
     "canvas-access-tokens-api-openapi.yml: previously refined output, superseded by openapi/_original/",
