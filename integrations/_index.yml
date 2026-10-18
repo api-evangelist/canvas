@@ -5659,3 +5659,32 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: canvas-meltano
+  label: Meltano
+  partner: meltano
+  partner_name: Meltano
+  type: marketplace
+  marketplace: meltano-hub
+  channel: elt-connector
+  evidence: https://hub.meltano.com/extractors/tap-canvas--mwcooley99
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Meltano Hub (github.com/meltano/hub _data/meltano extractors + loaders)
+    spec_file: null
+    role: elt-connector:meltano-hub
+    registered_name: Canvas
+    matched_domain: instructure.com
+    matched_by: domain+name-among-holders
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    plugins:
+    - tap-canvas--mwcooley99
+    maintenance_status:
+    - active
+    quality:
+    - silver
+    builder: 'community (Meltano Hub variant maintainers: mwcooley99)'
+  status: pending-partner-spec
+  arazzo: null

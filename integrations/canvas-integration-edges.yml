@@ -7209,9 +7209,39 @@ edges:
   detected_by: sweep-edtech.py
   detected: '2026-10-14'
   category: Assessment, Content, Math, Science
+- partner_name: Meltano
+  partner: meltano
+  partner_match: aggregator
+  type: marketplace
+  marketplace: meltano-hub
+  channel: elt-connector
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://hub.meltano.com/extractors/tap-canvas--mwcooley99
+  category: null
+  contract_reference:
+    register: Meltano Hub (github.com/meltano/hub _data/meltano extractors + loaders)
+    spec_file: null
+    role: elt-connector:meltano-hub
+    registered_name: Canvas
+    matched_domain: instructure.com
+    matched_by: domain+name-among-holders
+    detected_by: sweep-data-integration.py
+    detected: '2026-10-18'
+    signal_note: one edge per (provider, platform); connectors, streams, packages and usage are context, never read
+    plugins:
+    - tap-canvas--mwcooley99
+    maintenance_status:
+    - active
+    quality:
+    - silver
+    builder: 'community (Meltano Hub variant maintainers: mwcooley99)'
+  detected_by: sweep-data-integration.py
+  first_seen: '2026-10-18'
 generated: '2026-10-14'
 method: searched
 checked:
+- https://github.com/meltano/hub
 - https://site.imsglobal.org/certifications
 - https://www.eduappcenter.com/api/v1/lti_apps
 marketplace_apps:
@@ -7222,3 +7252,5 @@ marketplace_apps:
   app_count: 471
   listed: 471
   adapter: sweep-edtech.py
+source:
+- https://github.com/meltano/hub
