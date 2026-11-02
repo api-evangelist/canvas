@@ -1,0 +1,60 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+provider: Canvas
+providerId: canvas
+generated: '2026-09-05'
+modified: '2026-09-05'
+created: '2026-05-04'
+method: searched
+source: https://www.instructure.com/canvas
+description: Instructure publishes NO pricing page for Canvas. /pricing, /canvas/pricing and /canvas/pricing-plans
+  all return HTTP 404. Institutional Canvas is quote-only through sales. The one publicly available, publicly priced
+  tier is Canvas Free-for-Teacher. Replaces the 2026-05-04 scaffold, which invented a Free / Professional / Enterprise
+  ladder with request quotas Canvas does not publish and does not meter.
+plan_count: 1
+pricing_page_published: false
+evidence:
+- url: https://www.instructure.com/pricing
+  status: 404
+- url: https://www.instructure.com/canvas/pricing
+  status: 404
+- url: https://www.instructure.com/canvas/pricing-plans
+  status: 404
+- url: https://www.instructure.com/canvas/free-for-teacher
+  status: 200
+- url: https://canvas.instructure.com/register
+  status: 503
+plans:
+- id: canvas-free-for-teacher
+  name: Canvas Free-for-Teacher
+  type: free
+  price: '0.00'
+  currency: USD
+  billing_period: n/a
+  onboarding: self-serve
+  url: https://www.instructure.com/canvas/free-for-teacher
+  description: A free, individually provisioned Canvas account for teachers on canvas.instructure.com. Carries the
+    same REST and GraphQL API surface; API access is by OAuth token or a manually generated personal access token.
+  api_access: true
+  note: Self-serve signup at https://canvas.instructure.com/register returned HTTP 503 behind a "Free-for-Teacher
+    Platform Restoration" notice on 2026-09-05.
+unpriced_tiers:
+- name: Canvas LMS (institutional)
+  pricing: quote-only, contact sales
+  note: No published list price, no published API quota, no published overage. Nothing here is inferred.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - free
+  units: []
+  plans:
+  - name: Canvas Free-for-Teacher
+    access: free
+    model: free
+    model_how: derived
+    units: []
+    periods: []
