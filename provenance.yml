@@ -65,7 +65,7 @@ artifacts:
   kin/checks-2026-10-23T222754.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
-  kin/checks-2026-10-31T095417.yml:
+  kin/checks-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-23T000603.yml:
@@ -123,6 +123,15 @@ artifacts:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-10-31T095417.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-01T171331.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-01T200237.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   lifecycle/canvas-lifecycle.yml:
@@ -1587,11 +1596,17 @@ artifacts:
   packages/canvas-packages.yml:
     method: searched
     evidence: declared in the artifact
+  patterns/canvas-patterns.yml:
+    method: derived
+    evidence: declared in the artifact
   plans/canvas-plans-pricing.yml:
     method: searched
     evidence: declared in the artifact
   rate-limits/canvas-rate-limits.yml:
     method: searched
+    evidence: declared in the artifact
+  rules/canvas-rules.yml:
+    method: generated
     evidence: declared in the artifact
   sandbox/canvas-sandbox.yml:
     method: searched
@@ -1624,6 +1639,9 @@ artifacts:
     method: generated
     evidence: declared in the artifact
   skills/canvas-sync-roster-via-sis-import.md:
+    method: generated
+    evidence: declared in the artifact
+  sla/canvas-sla.yml:
     method: generated
     evidence: declared in the artifact
   well-known/canvas-security.txt:
